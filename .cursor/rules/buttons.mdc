@@ -1,0 +1,88 @@
+---
+description:  Rules for implementing button components
+globs: 
+alwaysApply: false
+---
+// BUTTON COMPONENTS RULE
+// Rules for implementing button components
+
+// Reference the base rule
+// @uikit-base.mdc
+
+const buttonTypes = `
+Implement these button types:
+
+1. Primary - Filled button with brand color
+2. Secondary - Outlined button with brand color
+3. Tertiary - Text-only button with brand color
+4. Ghost - Transparent button that shows background on press
+5. Danger - Button for destructive actions
+6. Success - Button for confirming actions
+`;
+
+const buttonStates = `
+Each button should support these states:
+
+1. Normal
+2. Pressed
+3. Disabled
+4. Loading
+
+Implement proper visual feedback for each state.
+`;
+
+const buttonSizes = `
+Support multiple button sizes:
+
+1. Small
+2. Medium (default)
+3. Large
+`;
+
+const buttonImplementationDetails = `
+Button implementation should:
+
+1. Support haptic feedback
+2. Use TouchableOpacity (or custom implementation) for touch handling
+3. Support accessibility props (accessibilityLabel, accessibilityRole, etc.)
+4. Support custom styling through style props
+5. Use proper animation for state changes
+6. Support leading and trailing icons
+`;
+
+// Example Button Implementation Pattern
+const buttonTemplate = `
+import React from 'react';
+import { TouchableOpacity, Text, View, ActivityIndicator, StyleSheet } from 'react-native';
+import { useTheme } from '../theme/ThemeContext';
+
+export interface ButtonProps {
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'danger' | 'success';
+  size?: 'small' | 'medium' | 'large';
+  title: string;
+  onPress?: () => void;
+  disabled?: boolean;
+  loading?: boolean;
+  leadingIcon?: React.ReactNode;
+  trailingIcon?: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  variant = 'primary',
+  size = 'medium',
+  title,
+  onPress,
+  disabled = false,
+  loading = false,
+  leadingIcon,
+  trailingIcon,
+  style,
+  textStyle,
+}) => {
+  const { theme } = useTheme();
+  
+  // Implementation follows...
+};
+`;

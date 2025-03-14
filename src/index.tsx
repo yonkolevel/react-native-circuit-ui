@@ -1,3 +1,9 @@
-export function multiply(a: number, b: number): number {
-  return a * b;
-}
+/**
+ * CircuitUI - React Native Component Library
+ */
+
+// Export theme
+export * from './theme';
+
+// Export components
+export * from './components';

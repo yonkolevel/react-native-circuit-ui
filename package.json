@@ -183,5 +183,9 @@
     "languages": "js",
     "type": "library",
     "version": "0.48.3"
+  },
+  "dependencies": {
+    "lucide-react-native": "^0.481.0",
+    "react-native-svg": "^15.11.2"
   }
 }

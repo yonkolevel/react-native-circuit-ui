@@ -1,0 +1,63 @@
+---
+description: This is the foundational rule for our React Native CircuitKit project
+globs: 
+alwaysApply: false
+---
+// CIRCUITKIT BASE RULE
+// This is the foundational rule for our React Native UIKit project
+
+// Project Context
+const projectContext = `
+This UIKit is a React Native implementation of a Swift/SwiftUI design system.
+We're creating reusable components that maintain design consistency while leveraging React Native capabilities.
+The architecture follows a feature-driven design approach with atomic design principles.
+`;
+
+// Core Design Principles
+const designPrinciples = `
+1. Maintain visual consistency with the original Swift/SwiftUI design
+2. Ensure cross-platform consistency (iOS and Android)
+3. Follow accessibility best practices
+4. Support light and dark themes
+5. Use TypeScript for all components
+6. Implement proper theming through React Context
+7. Make components self-contained and reusable
+`;
+
+// File Structure
+const fileStructure = `
+src/
+  components/
+    atoms/         # Basic building blocks
+      Button/      # Component with its variants, tests, etc.
+      Input/
+      Icon/
+      ...
+    molecules/     # Combinations of atoms
+      FormField/
+      Card/
+      ...
+    organisms/     # Complex UI components
+      Header/
+      Navigation/
+      ...
+  screens/         # Full screens or screen templates
+  theme/           # Theming system
+  hooks/           # Custom hooks
+  utils/           # Helper functions
+  types/           # TypeScript definitions
+  platform/        # Platform-specific implementations or overrides
+`;
+
+// Component Implementation Guidelines
+const componentGuidelines = `
+When implementing a component:
+
+1. Define clear TypeScript interfaces for props
+2. Include proper default props
+3. Support theming via the theme context
+4. Implement proper state handling (normal, disabled, loading, etc.)
+5. Support accessibility features
+6. Document usage with comments
+7. Match the design and behavior of the original Swift/SwiftUI component
+`;

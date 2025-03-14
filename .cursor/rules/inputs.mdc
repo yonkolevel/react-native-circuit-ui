@@ -1,0 +1,78 @@
+---
+description: Rules for implementing input components
+globs: 
+alwaysApply: false
+---
+// INPUT COMPONENTS RULE
+// Rules for implementing input components
+
+// Reference the base rule
+// @uikit-base.mdc
+
+const inputTypes = `
+Implement these input types:
+
+1. Text input - For single line text
+2. Text area - For multiline text
+3. Password input - With secure text entry
+4. Number input - For numeric values
+5. Date input - For date selection
+6. Select input - For choosing from options
+`;
+
+const inputStates = `
+Each input should support these states:
+
+1. Normal
+2. Focused
+3. Disabled
+4. Error
+5. Success
+`;
+
+const inputFeatures = `
+Input implementation should:
+
+1. Support labels and placeholders
+2. Support validation and error messages
+3. Support leading and trailing icons/actions
+4. Support proper keyboard types
+5. Support form integration
+6. Implement proper animations for focus states
+`;
+
+// Example Input Implementation Pattern
+const inputTemplate = `
+import React, { useState } from 'react';
+import { View, TextInput, Text, StyleSheet } from 'react-native';
+import { useTheme } from '../theme/ThemeContext';
+
+export interface InputProps {
+  label?: string;
+  placeholder?: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  error?: string;
+  disabled?: boolean;
+  leadingIcon?: React.ReactNode;
+  trailingIcon?: React.ReactNode;
+  // Other props...
+}
+
+export const Input: React.FC<InputProps> = ({
+  label,
+  placeholder,
+  value,
+  onChangeText,
+  error,
+  disabled = false,
+  leadingIcon,
+  trailingIcon,
+  // Other props...
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const { theme } = useTheme();
+  
+  // Implementation follows...
+};
+`;

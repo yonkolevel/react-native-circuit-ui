@@ -1,0 +1,66 @@
+---
+description: Rules for implementing the theme system
+globs: 
+alwaysApply: false
+---
+// THEMING RULE
+// Rules for implementing the theme system
+
+// Reference the base rule
+// @uikit-base.mdc
+
+const themingGuidelines = `
+Our theming system should closely mirror the Swift/SwiftUI design:
+
+1. Use semantic color names that match the Swift design system
+2. Support both light and dark modes
+3. Implement dynamic color values based on the current theme
+4. Use relative units for spacing and sizing
+5. Create a consistent type scale that matches the original design
+`;
+
+// Theme Context Implementation
+const themeContextImplementation = `
+The theme context should:
+
+1. Provide easy access to the current theme
+2. Support automatic switching based on system theme
+3. Allow manual theme overrides
+4. Include a complete set of colors, typography, spacing, and other design tokens
+`;
+
+// Color System
+const colorSystem = `
+Define colors in this structure:
+
+1. Base palette with raw color values
+2. Semantic color tokens that reference the palette
+3. Component-specific colors that reference semantic tokens
+4. Support for both light and dark mode variants
+`;
+
+// Typography System
+const typographySystem = `
+Typography should match the SwiftUI text styles:
+
+1. largeTitle, title1, title2, title3
+2. headline, subheadline
+3. body, callout
+4. footnote, caption, caption2
+
+Each style should specify:
+- Font family
+- Font size
+- Line height
+- Font weight
+- Letter spacing
+`;
+
+// Spacing System
+const spacingSystem = `
+Create a spacing scale that matches the SwiftUI design:
+
+1. Define a base unit (typically 4 or 8)
+2. Create a geometric scale
+3. Define semantic spacing values for common use cases
+`;

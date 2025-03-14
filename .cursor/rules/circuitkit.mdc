@@ -1,0 +1,39 @@
+---
+description: This rule ties together all CircuitKit rules
+globs: 
+alwaysApply: false
+---
+// CircuitKit MASTER RULE
+// This rule ties together all UIKit rules
+
+// Reference all component rules
+// @uikit-base.mdc
+// @theming.mdc
+// @buttons.mdc
+// @inputs.mdc
+// @cards.mdc
+// Add other component rules as needed...
+
+const uiKitOverview = `
+This React Native UIKit is a comprehensive component library based on a Swift/SwiftUI design.
+It provides a complete set of components following atomic design principles.
+
+Key features:
+1. Feature-driven design
+2. Atomic components (atoms, molecules, organisms, templates)
+3. Comprehensive theming system
+4. Cross-platform consistency
+5. Accessibility support
+6. TypeScript integration
+`;
+
+const implementationGuide = `
+When implementing new components:
+
+1. Follow the established patterns in existing components
+2. Use the theme context for styling
+3. Implement proper TypeScript interfaces
+4. Document usage with comments
+5. Ensure cross-platform compatibility
+6. Match the original Swift/SwiftUI design
+`;
