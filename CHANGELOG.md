@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.2](https://github.com/txbrown/react-native-circuit-ui/compare/v0.3.1...v0.3.2) (2025-03-15)
+
+
+### Bug Fixes
+
+* circuitcard colours based on state ([4f5d753](https://github.com/txbrown/react-native-circuit-ui/commit/4f5d7534825cba69a3f3b18952d1a059ca307cc8))
+* fix blue theming colours ([dc5995f](https://github.com/txbrown/react-native-circuit-ui/commit/dc5995fe10ded2a5299954c20eba958c12b15c24))
+
 ## [0.3.1](https://github.com/txbrown/react-native-circuit-ui/compare/v0.3.0...v0.3.1) (2025-03-15)
 
 

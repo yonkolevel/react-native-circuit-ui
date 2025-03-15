@@ -1,6 +1,6 @@
 {
   "name": "react-native-circuit-ui",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "UI Kit for building React Native apps at Yonko Level",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
