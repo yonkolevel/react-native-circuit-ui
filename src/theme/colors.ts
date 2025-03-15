@@ -17,11 +17,11 @@ const palette = {
   mcPink4: '#FFB9B7',
   mcPink5: '#FFDEDC',
 
-  mcBlue1: '#2979FF',
-  mcBlue2: '#5393FF',
-  mcBlue3: '#7DADFF',
-  mcBlue4: '#A6C8FF',
-  mcBlue5: '#D0E3FF',
+  mcBlue1: '#2496FF',
+  mcBlue2: '#3AA0FF',
+  mcBlue3: '#66B6FF',
+  mcBlue4: '#91CBFF',
+  mcBlue5: '#BDDFFF',
 
   mcPurple1: '#AA00FF',
   mcPurple2: '#BB33FF',
