@@ -6,6 +6,7 @@ import {
   Platform,
   Image,
   Pressable,
+  Dimensions,
 } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { useTheme } from '../../theme';
@@ -173,6 +174,8 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
 }) => {
   const { colors, isDark } = useTheme();
   const [isPressed, setIsPressed] = useState(false);
+  const isIphone =
+    Platform.OS === 'ios' && Dimensions.get('window').width < 768;
 
   const bgColor =
     backgroundColor || (isDark ? colors.mcBlack2 : colors.mcWhite1);
@@ -200,7 +203,7 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
       }
     : {};
 
-  const dimensions = getCardDimensions(size, variant);
+  const dimensions = getCardDimensions(size, variant, isIphone);
 
   const cardStyles = [
     styles.container,
@@ -250,7 +253,13 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
         <View style={styles.horizontalLayout}>
           {coverImageUrl && (
             <View
-              style={[styles.imageContainer, { width: dimensions.imageWidth }]}
+              style={[
+                styles.imageContainer,
+                {
+                  width: dimensions.imageWidth,
+                  height: '100%',
+                },
+              ]}
             >
               <Image
                 source={{ uri: coverImageUrl }}
@@ -274,6 +283,7 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
             level={level}
             isPressed={isPressed}
             padding={padding}
+            style={{ flex: 1 }}
           />
         </View>
       ) : (
@@ -374,7 +384,7 @@ const CardContent: React.FC<CardContentProps> = ({
     : isDark
       ? colors.mcWhite2
       : colors.mcBlack2;
-  const titleColor = isPressed ? colors.mcWhite2 : colors.mcBlue2;
+  const titleColor = isPressed ? colors.mcWhite1 : colors.mcBlue2;
   const backgroundColor = isPressed
     ? tintColor
     : isDark
@@ -389,7 +399,12 @@ const CardContent: React.FC<CardContentProps> = ({
       {title && (
         <View style={styles.titleContainer}>
           <View style={styles.titleRow}>
-            <Text variant="h5" color={titleColor}>
+            <Text
+              variant="h5"
+              color={titleColor}
+              numberOfLines={2}
+              style={styles.titleText}
+            >
               {title}
             </Text>
             {isPreview && (
@@ -483,7 +498,12 @@ const CardContent: React.FC<CardContentProps> = ({
         ) : (
           <View style={styles.descriptionContainer}>
             {description && (
-              <Text variant="small" color={textColor} numberOfLines={4}>
+              <Text
+                variant="small"
+                color={textColor}
+                numberOfLines={4}
+                style={styles.descriptionText}
+              >
                 {description}
               </Text>
             )}
@@ -528,38 +548,41 @@ const CardContent: React.FC<CardContentProps> = ({
 
 const getCardDimensions = (
   size: CircuitCardSize,
-  variant: CircuitCardVariant
+  variant: CircuitCardVariant,
+  isIphone: boolean
 ) => {
   let dimensions: any = {};
 
+  // Set image dimensions based on size and device
   switch (size) {
     case 'small':
       dimensions.imageHeight = 140;
-      dimensions.imageWidth = 122;
+      dimensions.imageWidth = isIphone ? 122 : 122;
       break;
     case 'medium':
       dimensions.imageHeight = 160;
-      dimensions.imageWidth = 180;
+      dimensions.imageWidth = isIphone ? 180 : 298;
       break;
     case 'large':
       dimensions.imageHeight = 250;
-      dimensions.imageWidth = 298;
+      dimensions.imageWidth = isIphone ? 298 : 298;
       break;
     default:
       dimensions.imageHeight = 160;
-      dimensions.imageWidth = 180;
+      dimensions.imageWidth = isIphone ? 180 : 298;
   }
 
   if (variant === 'horizontal') {
-    dimensions.minHeight = size === 'small' ? 141 : 180;
-    dimensions.height = size === 'small' ? 141 : 180;
-    dimensions.flexDirection = 'row';
-  } else {
+    // Match the SwiftUI implementation for horizontal layout
+    dimensions.minHeight = isIphone ? (size === 'small' ? 141 : 180) : 180;
+    dimensions.height = isIphone ? (size === 'small' ? 141 : 180) : 180;
     dimensions.minWidth = 300;
-    dimensions.maxWidth = '100%';
-
+    dimensions.maxWidth = isIphone ? 358 : '100%';
+  } else {
+    // Vertical layout dimensions
+    dimensions.minWidth = 300;
+    dimensions.maxWidth = isIphone ? 358 : '100%';
     dimensions.contentHeight = dimensions.imageHeight;
-
     dimensions.height = dimensions.imageHeight * 2;
   }
 
@@ -575,6 +598,7 @@ const styles = StyleSheet.create({
   horizontalLayout: {
     flexDirection: 'row',
     height: '100%',
+    width: '100%',
   },
   verticalLayout: {
     flexDirection: 'column',
@@ -594,13 +618,17 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 8,
   },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
+    flexWrap: 'wrap',
+  },
+  titleText: {
+    flexShrink: 1,
   },
   titleActions: {
     flexDirection: 'row',
@@ -635,6 +663,9 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     flex: 1,
+  },
+  descriptionText: {
+    lineHeight: 20,
   },
   lessonsTrophiesContent: {
     flexDirection: 'row',
