@@ -8,3 +8,4 @@ export * from './Avatar';
 export * from './ProgressBar';
 export * from './LevelIndicator';
 export * from './CircuitCard';
+export * from './LearningPathCard';

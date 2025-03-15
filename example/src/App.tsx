@@ -15,9 +15,10 @@ import {
   ProgressBar,
   LevelIndicator,
   CircuitCard,
+  LearningPathCard,
   useTheme,
 } from 'react-native-circuit-ui';
-import type { Level } from 'react-native-circuit-ui';
+import type { Level, LearningPathDetails } from 'react-native-circuit-ui';
 
 const ComponentSection = ({
   title,
@@ -87,6 +88,33 @@ function AppContent() {
   const [fastAnimation, setFastAnimation] = useState(false);
   const [currentLevel, setCurrentLevel] = useState<Level>('beginner');
   const [pressCount, setPressCount] = useState(0);
+  const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
+
+  // Sample learning paths data
+  const learningPaths: LearningPathDetails[] = [
+    {
+      id: '1',
+      title: 'Foundations of Music',
+      coverImageUrl:
+        'https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+    },
+    {
+      id: '2',
+      title: 'Music Production',
+      coverImageUrl:
+        'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+    },
+    {
+      id: '3',
+      title: 'Sound Design',
+      coverImageUrl:
+        'https://images.unsplash.com/photo-1516280440614-37939bbacd81?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+    },
+    {
+      id: '4',
+      title: 'Mixing & Mastering',
+    },
+  ];
 
   const gamingLabels = {
     beginner: 'easy',
@@ -113,6 +141,10 @@ function AppContent() {
     setPressCount(pressCount + 1);
   };
 
+  const handleLearningPathPress = (id: string) => {
+    setSelectedPathId(id);
+  };
+
   return (
     <>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
@@ -131,6 +163,107 @@ function AppContent() {
           <Text variant="body" center style={styles.subtitle}>
             React Native Component Library
           </Text>
+
+          {/* LearningPathCard Section */}
+          <ComponentSection title="LearningPathCard">
+            <View style={styles.learningPathSection}>
+              <Text variant="label" style={styles.learningPathLabel}>
+                Selected Path: {selectedPathId ? `#${selectedPathId}` : 'None'}
+              </Text>
+
+              <Text variant="label" style={styles.learningPathLabel}>
+                Default (Medium Size)
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.learningPathRow}
+              >
+                {learningPaths.map((path) => (
+                  <LearningPathCard
+                    key={path.id}
+                    learningPath={path}
+                    onPress={() => handleLearningPathPress(path.id)}
+                  />
+                ))}
+              </ScrollView>
+
+              <Text variant="label" style={styles.learningPathLabel}>
+                Small Size
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.learningPathRow}
+              >
+                {learningPaths.map((path) => (
+                  <LearningPathCard
+                    key={`small-${path.id}`}
+                    learningPath={path}
+                    size="small"
+                    onPress={() => handleLearningPathPress(path.id)}
+                  />
+                ))}
+              </ScrollView>
+
+              <Text variant="label" style={styles.learningPathLabel}>
+                Large Size
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.learningPathRow}
+              >
+                {learningPaths.map((path) => (
+                  <LearningPathCard
+                    key={`large-${path.id}`}
+                    learningPath={path}
+                    size="large"
+                    onPress={() => handleLearningPathPress(path.id)}
+                  />
+                ))}
+              </ScrollView>
+
+              <Text variant="label" style={styles.learningPathLabel}>
+                Custom Colors
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.learningPathRow}
+              >
+                {learningPaths.map((path, index) => {
+                  // Assign different colors based on index
+                  let bgColor;
+                  switch (index % 4) {
+                    case 0:
+                      bgColor = colors.mcBlue2;
+                      break;
+                    case 1:
+                      bgColor = colors.mcGreen2;
+                      break;
+                    case 2:
+                      bgColor = colors.mcOrange2;
+                      break;
+                    case 3:
+                      bgColor = colors.mcPurple2;
+                      break;
+                    default:
+                      bgColor = colors.mcPink2;
+                  }
+
+                  return (
+                    <LearningPathCard
+                      key={`color-${path.id}`}
+                      learningPath={path}
+                      backgroundColor={bgColor}
+                      onPress={() => handleLearningPathPress(path.id)}
+                    />
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </ComponentSection>
 
           {/* CircuitCard Section */}
           <ComponentSection title="CircuitCard">
@@ -877,5 +1010,15 @@ const styles = StyleSheet.create({
   },
   cardProgress: {
     marginVertical: 16,
+  },
+  learningPathSection: {
+    marginBottom: 16,
+  },
+  learningPathLabel: {
+    marginBottom: 12,
+  },
+  learningPathRow: {
+    paddingBottom: 16,
+    gap: 16,
   },
 });
