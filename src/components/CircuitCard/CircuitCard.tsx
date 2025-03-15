@@ -148,7 +148,7 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
   children,
   style,
   showShadow = true,
-  showBorder = true,
+  showBorder = false,
   borderRadius = 6,
   backgroundColor,
   borderColor,
@@ -177,8 +177,7 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
   const isIphone =
     Platform.OS === 'ios' && Dimensions.get('window').width < 768;
 
-  const bgColor =
-    backgroundColor || (isDark ? colors.mcBlack2 : colors.mcWhite1);
+  const bgColor = backgroundColor || colors.mcBlue2;
   const borderClr = borderColor || (isDark ? colors.mcBlack4 : colors.mcWhite4);
 
   const shadowStyle = showShadow
@@ -208,7 +207,7 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
   const cardStyles = [
     styles.container,
     {
-      backgroundColor: isPressed ? colors.mcBlue2 : bgColor,
+      backgroundColor: bgColor,
       borderRadius,
     },
     shadowStyle,
@@ -283,7 +282,7 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
             level={level}
             isPressed={isPressed}
             padding={padding}
-            style={{ flex: 1 }}
+            style={{ flex: 1, backgroundColor: bgColor }}
           />
         </View>
       ) : (
@@ -317,7 +316,10 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
             level={level}
             isPressed={isPressed}
             padding={padding}
-            style={{ height: dimensions.contentHeight }}
+            style={{
+              height: dimensions.contentHeight,
+              backgroundColor: bgColor,
+            }}
           />
         </View>
       )}
@@ -384,7 +386,7 @@ const CardContent: React.FC<CardContentProps> = ({
     : isDark
       ? colors.mcWhite2
       : colors.mcBlack2;
-  const titleColor = isPressed ? colors.mcWhite1 : colors.mcBlue2;
+  const titleColor = colors.mcWhite1;
   const backgroundColor = isPressed
     ? tintColor
     : isDark
@@ -428,11 +430,7 @@ const CardContent: React.FC<CardContentProps> = ({
                   },
                 ]}
               >
-                <Check
-                  size={18}
-                  color={isPressed ? colors.mcGreen2 : colors.mcWhite1}
-                  strokeWidth={2.5}
-                />
+                <Check size={18} color={colors.mcWhite1} strokeWidth={2.5} />
               </View>
             )}
 
@@ -443,20 +441,8 @@ const CardContent: React.FC<CardContentProps> = ({
               >
                 <Heart
                   size={20}
-                  color={
-                    isPressed
-                      ? colors.mcWhite2
-                      : isFavorite
-                        ? colors.mcBlue2
-                        : colors.mcWhite2
-                  }
-                  fill={
-                    isFavorite
-                      ? isPressed
-                        ? colors.mcWhite2
-                        : colors.mcBlue2
-                      : 'none'
-                  }
+                  color={isFavorite ? colors.mcWhite1 : colors.mcBlack1}
+                  fill={isFavorite ? colors.mcWhite1 : colors.mcBlack2}
                   strokeWidth={2}
                 />
               </TouchableOpacity>
@@ -473,10 +459,7 @@ const CardContent: React.FC<CardContentProps> = ({
               <Text variant="small" uppercase color={colors.mcWhite2}>
                 Lessons
               </Text>
-              <Text
-                variant="label"
-                color={isPressed ? colors.mcWhite2 : colors.mcBlue2}
-              >
+              <Text variant="label" color={colors.mcWhite2}>
                 {completedModulesCount}/{totalModulesCount}
               </Text>
             </View>
@@ -486,10 +469,7 @@ const CardContent: React.FC<CardContentProps> = ({
                 <Text variant="small" uppercase color={colors.mcWhite2}>
                   Trophies
                 </Text>
-                <Text
-                  variant="label"
-                  color={isPressed ? colors.mcWhite2 : colors.mcBlue2}
-                >
+                <Text variant="label" color={colors.mcWhite2}>
                   {trophies}
                 </Text>
               </View>
@@ -525,7 +505,7 @@ const CardContent: React.FC<CardContentProps> = ({
             </Text>
             <ProgressBar
               value={progress}
-              tintColor={isPressed ? colors.mcWhite2 : colors.mcBlue2}
+              tintColor={colors.mcWhite2}
               style={styles.progressBar}
             />
           </View>
@@ -534,9 +514,9 @@ const CardContent: React.FC<CardContentProps> = ({
             {level && (
               <LevelIndicator
                 level={level}
-                tintColor={isPressed ? colors.mcWhite2 : colors.mcBlue2}
+                tintColor={colors.mcWhite1}
                 textColor={colors.mcWhite2}
-                backgroundColor={isPressed ? colors.mcBlack1 : colors.mcBlack4}
+                backgroundColor={colors.mcBlack1}
               />
             )}
           </View>
