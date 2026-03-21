@@ -4061,574 +4061,579 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                 <View
                   style={
                     {
-                      "flexDirection": "row",
                       "gap": 4,
-                      "height": 60,
-                      "marginBottom": 4,
-                      "paddingLeft": 84,
                     }
                   }
                 >
                   <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
                     style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "height": 60,
-                          "justifyContent": "center",
-                          "padding": 4,
-                          "width": 80,
-                        },
-                        {
-                          "backgroundColor": "#1AFFA8",
-                          "borderRadius": 6,
-                        },
-                      ]
+                      {
+                        "flexDirection": "row",
+                        "gap": 4,
+                        "height": 60,
+                        "paddingLeft": 84,
+                      }
                     }
                   >
                     <View
-                      style={
+                      accessibilityState={
                         {
-                          "flex": 1,
-                          "position": "relative",
-                          "width": "100%",
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
                         }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                      style={
+                        [
+                          {
+                            "alignItems": "center",
+                            "height": 60,
+                            "justifyContent": "center",
+                            "padding": 4,
+                            "width": 80,
+                          },
+                          {
+                            "backgroundColor": "#1AFFA8",
+                            "borderRadius": 6,
+                          },
+                        ]
                       }
                     >
                       <View
                         style={
                           {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 6.933333333333334,
-                            "left": 0,
-                            "position": "absolute",
-                            "top": 52,
-                            "width": 4.5,
+                            "flex": 1,
+                            "position": "relative",
+                            "width": "100%",
                           }
                         }
-                      />
-                      <View
-                        style={
+                      >
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 6.933333333333334,
+                              "left": 0,
+                              "position": "absolute",
+                              "top": 52,
+                              "width": 4.5,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 6.933333333333334,
+                              "left": 36,
+                              "position": "absolute",
+                              "top": 52,
+                              "width": 4.5,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 6.933333333333334,
+                              "left": 18,
+                              "position": "absolute",
+                              "top": 36,
+                              "width": 4.5,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 6.933333333333334,
+                              "left": 54,
+                              "position": "absolute",
+                              "top": 36,
+                              "width": 4.5,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 6.933333333333334,
+                              "left": 0,
+                              "position": "absolute",
+                              "top": 4,
+                              "width": 4.5,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 6.933333333333334,
+                              "left": 9,
+                              "position": "absolute",
+                              "top": 4,
+                              "width": 4.5,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 6.933333333333334,
+                              "left": 18,
+                              "position": "absolute",
+                              "top": 4,
+                              "width": 4.5,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 6.933333333333334,
+                              "left": 27,
+                              "position": "absolute",
+                              "top": 4,
+                              "width": 4.5,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 6.933333333333334,
+                              "left": 36,
+                              "position": "absolute",
+                              "top": 4,
+                              "width": 4.5,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 6.933333333333334,
+                              "left": 45,
+                              "position": "absolute",
+                              "top": 4,
+                              "width": 4.5,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 6.933333333333334,
+                              "left": 54,
+                              "position": "absolute",
+                              "top": 4,
+                              "width": 4.5,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 6.933333333333334,
+                              "left": 63,
+                              "position": "absolute",
+                              "top": 4,
+                              "width": 4.5,
+                            }
+                          }
+                        />
+                      </View>
+                    </View>
+                    <View
+                      accessibilityState={
+                        {
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                      style={
+                        [
                           {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 6.933333333333334,
-                            "left": 36,
-                            "position": "absolute",
-                            "top": 52,
-                            "width": 4.5,
-                          }
-                        }
-                      />
-                      <View
-                        style={
+                            "alignItems": "center",
+                            "height": 60,
+                            "justifyContent": "center",
+                            "padding": 4,
+                            "width": 80,
+                          },
                           {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 6.933333333333334,
-                            "left": 18,
-                            "position": "absolute",
-                            "top": 36,
-                            "width": 4.5,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 6.933333333333334,
-                            "left": 54,
-                            "position": "absolute",
-                            "top": 36,
-                            "width": 4.5,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 6.933333333333334,
-                            "left": 0,
-                            "position": "absolute",
-                            "top": 4,
-                            "width": 4.5,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 6.933333333333334,
-                            "left": 9,
-                            "position": "absolute",
-                            "top": 4,
-                            "width": 4.5,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 6.933333333333334,
-                            "left": 18,
-                            "position": "absolute",
-                            "top": 4,
-                            "width": 4.5,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 6.933333333333334,
-                            "left": 27,
-                            "position": "absolute",
-                            "top": 4,
-                            "width": 4.5,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 6.933333333333334,
-                            "left": 36,
-                            "position": "absolute",
-                            "top": 4,
-                            "width": 4.5,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 6.933333333333334,
-                            "left": 45,
-                            "position": "absolute",
-                            "top": 4,
-                            "width": 4.5,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 6.933333333333334,
-                            "left": 54,
-                            "position": "absolute",
-                            "top": 4,
-                            "width": 4.5,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 6.933333333333334,
-                            "left": 63,
-                            "position": "absolute",
-                            "top": 4,
-                            "width": 4.5,
-                          }
-                        }
-                      />
+                            "backgroundColor": "#1AFFA8",
+                            "borderRadius": 6,
+                          },
+                        ]
+                      }
+                    >
+                      <View>
+                        <View
+                          color="rgba(0,0,0,0.3)"
+                          size={14}
+                          testID="lucide-Plus"
+                        />
+                      </View>
                     </View>
                   </View>
                   <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
                     style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "height": 60,
-                          "justifyContent": "center",
-                          "padding": 4,
-                          "width": 80,
-                        },
-                        {
-                          "backgroundColor": "#1AFFA8",
-                          "borderRadius": 6,
-                        },
-                      ]
-                    }
-                  >
-                    <View>
-                      <View
-                        color="rgba(0,0,0,0.3)"
-                        size={14}
-                        testID="lucide-Plus"
-                      />
-                    </View>
-                  </View>
-                </View>
-                <View
-                  style={
-                    {
-                      "flexDirection": "row",
-                      "gap": 4,
-                      "height": 60,
-                      "marginBottom": 4,
-                      "paddingLeft": 84,
-                    }
-                  }
-                >
-                  <View
-                    accessibilityState={
                       {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
+                        "flexDirection": "row",
+                        "gap": 4,
+                        "height": 60,
+                        "paddingLeft": 84,
                       }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "height": 60,
-                          "justifyContent": "center",
-                          "padding": 4,
-                          "width": 80,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "borderRadius": 6,
-                        },
-                      ]
                     }
                   >
                     <View
-                      style={
+                      accessibilityState={
                         {
-                          "flex": 1,
-                          "position": "relative",
-                          "width": "100%",
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
                         }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                      style={
+                        [
+                          {
+                            "alignItems": "center",
+                            "height": 60,
+                            "justifyContent": "center",
+                            "padding": 4,
+                            "width": 80,
+                          },
+                          {
+                            "backgroundColor": "#FF6C3A",
+                            "borderRadius": 6,
+                          },
+                        ]
                       }
                     >
                       <View
                         style={
                           {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 3.466666666666667,
-                            "left": 0,
-                            "position": "absolute",
-                            "top": 52,
-                            "width": 18,
+                            "flex": 1,
+                            "position": "relative",
+                            "width": "100%",
                           }
                         }
-                      />
-                      <View
-                        style={
+                      >
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 3.466666666666667,
+                              "left": 0,
+                              "position": "absolute",
+                              "top": 52,
+                              "width": 18,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 3.466666666666667,
+                              "left": 18,
+                              "position": "absolute",
+                              "top": 36,
+                              "width": 18,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 3.466666666666667,
+                              "left": 36,
+                              "position": "absolute",
+                              "top": 24,
+                              "width": 18,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 1,
+                              "height": 3.466666666666667,
+                              "left": 54,
+                              "position": "absolute",
+                              "top": 4,
+                              "width": 18,
+                            }
+                          }
+                        />
+                      </View>
+                    </View>
+                    <View
+                      accessibilityState={
+                        {
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                      style={
+                        [
                           {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 3.466666666666667,
-                            "left": 18,
-                            "position": "absolute",
-                            "top": 36,
-                            "width": 18,
-                          }
-                        }
-                      />
-                      <View
-                        style={
+                            "alignItems": "center",
+                            "height": 60,
+                            "justifyContent": "center",
+                            "padding": 4,
+                            "width": 80,
+                          },
                           {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 3.466666666666667,
-                            "left": 36,
-                            "position": "absolute",
-                            "top": 24,
-                            "width": 18,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 1,
-                            "height": 3.466666666666667,
-                            "left": 54,
-                            "position": "absolute",
-                            "top": 4,
-                            "width": 18,
-                          }
-                        }
-                      />
+                            "backgroundColor": "#FF6C3A",
+                            "borderRadius": 6,
+                          },
+                        ]
+                      }
+                    >
+                      <View>
+                        <View
+                          color="rgba(0,0,0,0.3)"
+                          size={14}
+                          testID="lucide-Plus"
+                        />
+                      </View>
                     </View>
                   </View>
                   <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
                     style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "height": 60,
-                          "justifyContent": "center",
-                          "padding": 4,
-                          "width": 80,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "borderRadius": 6,
-                        },
-                      ]
+                      {
+                        "flexDirection": "row",
+                        "gap": 4,
+                        "height": 60,
+                        "paddingLeft": 84,
+                      }
                     }
                   >
-                    <View>
-                      <View
-                        color="rgba(0,0,0,0.3)"
-                        size={14}
-                        testID="lucide-Plus"
-                      />
+                    <View
+                      accessibilityState={
+                        {
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                      style={
+                        [
+                          {
+                            "alignItems": "center",
+                            "height": 60,
+                            "justifyContent": "center",
+                            "padding": 4,
+                            "width": 80,
+                          },
+                          {
+                            "backgroundColor": "#3AA0FF",
+                            "borderRadius": 6,
+                          },
+                        ]
+                      }
+                    >
+                      <View>
+                        <View
+                          color="rgba(0,0,0,0.3)"
+                          size={14}
+                          testID="lucide-Plus"
+                        />
+                      </View>
                     </View>
-                  </View>
-                </View>
-                <View
-                  style={
-                    {
-                      "flexDirection": "row",
-                      "gap": 4,
-                      "height": 60,
-                      "marginBottom": 4,
-                      "paddingLeft": 84,
-                    }
-                  }
-                >
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
+                    <View
+                      accessibilityState={
                         {
-                          "alignItems": "center",
-                          "height": 60,
-                          "justifyContent": "center",
-                          "padding": 4,
-                          "width": 80,
-                        },
-                        {
-                          "backgroundColor": "#3AA0FF",
-                          "borderRadius": 6,
-                        },
-                      ]
-                    }
-                  >
-                    <View>
-                      <View
-                        color="rgba(0,0,0,0.3)"
-                        size={14}
-                        testID="lucide-Plus"
-                      />
-                    </View>
-                  </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
                       }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
                       }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "height": 60,
-                          "justifyContent": "center",
-                          "padding": 4,
-                          "width": 80,
-                        },
-                        {
-                          "backgroundColor": "#3AA0FF",
-                          "borderRadius": 6,
-                        },
-                      ]
-                    }
-                  >
-                    <View>
-                      <View
-                        color="rgba(0,0,0,0.3)"
-                        size={14}
-                        testID="lucide-Plus"
-                      />
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                      style={
+                        [
+                          {
+                            "alignItems": "center",
+                            "height": 60,
+                            "justifyContent": "center",
+                            "padding": 4,
+                            "width": 80,
+                          },
+                          {
+                            "backgroundColor": "#3AA0FF",
+                            "borderRadius": 6,
+                          },
+                        ]
+                      }
+                    >
+                      <View>
+                        <View
+                          color="rgba(0,0,0,0.3)"
+                          size={14}
+                          testID="lucide-Plus"
+                        />
+                      </View>
                     </View>
                   </View>
                 </View>

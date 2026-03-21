@@ -122,15 +122,17 @@ export const SongView = memo(function SongView({ song, callbacks, mixerCallbacks
                         <Icon icon={Icons.plus} size={14} color={colors.mcBlack5} />
                       </Pressable>
                     </View>
-                    {song.tracks.map(t => (
-                      <View key={t.id} style={s.clipRow}>
-                        {song.sections.map(sec => (
-                          <ClipCell key={sec.id} clip={t.clips.find(c => c.sectionID === sec.id)}
-                            color={INSTRUMENT_COLORS[t.type] || '#fff'}
-                            onPress={() => { const c = t.clips.find(cl => cl.sectionID === sec.id); if (c) callbacks?.onClipSelect?.(c.id, t.id); }} />
-                        ))}
-                      </View>
-                    ))}
+                    <View style={s.clipRows}>
+                      {song.tracks.map(t => (
+                        <View key={t.id} style={s.clipRow}>
+                          {song.sections.map(sec => (
+                            <ClipCell key={sec.id} clip={t.clips.find(c => c.sectionID === sec.id)}
+                              color={INSTRUMENT_COLORS[t.type] || '#fff'}
+                              onPress={() => { const c = t.clips.find(cl => cl.sectionID === sec.id); if (c) callbacks?.onClipSelect?.(c.id, t.id); }} />
+                          ))}
+                        </View>
+                      ))}
+                    </View>
                   </View>
                 </ScrollView>
 
@@ -188,7 +190,8 @@ const s = StyleSheet.create({
   labelTxt: { fontSize: 10 },
   sections: { flexDirection: 'row', gap: GAP, marginBottom: GAP, paddingLeft: CELL_W + GAP },
   secTab: { width: CELL_W, height: SECTION_H, justifyContent: 'center', alignItems: 'center' },
-  clipRow: { flexDirection: 'row', gap: GAP, paddingLeft: CELL_W + GAP, height: CELL_H, marginBottom: GAP },
+  clipRows: { gap: GAP },
+  clipRow: { flexDirection: 'row', gap: GAP, paddingLeft: CELL_W + GAP, height: CELL_H },
   cell: { width: CELL_W, height: CELL_H, justifyContent: 'center', alignItems: 'center', padding: 4 },
   cellContent: { flex: 1, width: '100%', position: 'relative' },
   addTrack: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 12, paddingLeft: 16 },
