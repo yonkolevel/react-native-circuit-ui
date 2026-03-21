@@ -42,10 +42,15 @@ const TRACK_LABELS: Record<string, string> = {
   bass: 'Bass',
   audio: 'Audio',
 };
-const CELL_W = 80;
-const CELL_H = 60;
-const SECTION_H = 50;
-const GAP = 4;
+// Exported for layout alignment tests
+export const GRID = {
+  CELL_W: 80,
+  CELL_H: 60,
+  SECTION_H: 50,
+  GAP: 4,
+} as const;
+
+const { CELL_W, CELL_H, SECTION_H, GAP } = GRID;
 
 // ── Clip Cell ───────────────────────────────────────────────────────────────
 

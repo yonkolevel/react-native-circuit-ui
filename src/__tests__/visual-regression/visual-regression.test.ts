@@ -1,24 +1,21 @@
 /**
  * Visual Regression Tests for react-native-circuit-ui
  *
- * These tests compare screenshots captured from the iOS simulator against
- * baseline images stored in `__image_snapshots__/`. On first run the baselines
- * are created automatically. Subsequent runs diff the current screenshot
- * against the baseline and fail if the difference exceeds the threshold.
+ * Uses jest-image-snapshot to compare simulator screenshots against baselines.
+ * This catches layout shifts, alignment bugs, and visual regressions that
+ * JSON snapshot tests cannot detect.
  *
- * Prerequisites:
- *   1. Run `./scripts/capture-screenshots.sh` to capture fresh screenshots
- *   2. Run `yarn test:visual` to compare against baselines
- *
- * To update baselines after intentional visual changes:
- *   yarn test:visual -- --updateSnapshot
+ * Workflow:
+ *   1. Build example app: cd example && npx expo run:ios --device circuitui-lab --port 8083
+ *   2. Capture screenshots: ./scripts/capture-screenshots.sh
+ *   3. Run visual tests: npx jest --projects visual
+ *   4. Update baselines: npx jest --projects visual -- -u
  */
 
 import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import { toMatchImageSnapshot } from 'jest-image-snapshot';
 
-// Extend Jest with the image snapshot matcher
 expect.extend({ toMatchImageSnapshot });
 
 // ---------------------------------------------------------------------------
@@ -26,17 +23,24 @@ expect.extend({ toMatchImageSnapshot });
 // ---------------------------------------------------------------------------
 const SCREENSHOTS_DIR = resolve(__dirname, '../../../screenshots');
 
-/** Default diff config — allows up to 0.5% pixel difference */
 const DEFAULT_DIFF_CONFIG = {
-  threshold: 0.1, // per-pixel sensitivity (0 = exact, 1 = any difference ignored)
-  includeAA: false, // ignore anti-aliasing differences
+  threshold: 0.1,
+  includeAA: false,
 };
 
 const DEFAULT_SNAPSHOT_CONFIG = {
   customDiffConfig: DEFAULT_DIFF_CONFIG,
   failureThreshold: 0.005, // 0.5% of total pixels
   failureThresholdType: 'percent' as const,
-  blur: 1, // slight blur to smooth over sub-pixel rendering variance
+  blur: 1,
+};
+
+/** Stricter config for layout-critical views (SongView grid, Mixer) */
+const STRICT_SNAPSHOT_CONFIG = {
+  customDiffConfig: { threshold: 0.05, includeAA: false },
+  failureThreshold: 0.001, // 0.1% — catches even small alignment shifts
+  failureThresholdType: 'percent' as const,
+  blur: 0, // no blur — we want pixel-exact alignment checks
 };
 
 // ---------------------------------------------------------------------------
@@ -47,7 +51,7 @@ function loadScreenshot(filename: string): Buffer {
   if (!existsSync(filepath)) {
     throw new Error(
       `Screenshot not found: ${filepath}\n` +
-        'Run `./scripts/capture-screenshots.sh` first to capture screenshots.'
+        'Run `./scripts/capture-screenshots.sh` first.'
     );
   }
   return readFileSync(filepath);
@@ -57,32 +61,45 @@ function screenshotExists(filename: string): boolean {
   return existsSync(resolve(SCREENSHOTS_DIR, filename));
 }
 
+function skipIfMissing(name: string, filename: string): boolean {
+  if (!screenshotExists(filename)) {
+    console.warn(
+      `⚠️  No screenshot for "${name}". Skipping.\n` +
+        `   Capture: ./scripts/capture-screenshots.sh`
+    );
+    return true;
+  }
+  return false;
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
 describe('Visual Regression', () => {
-  describe('Home Screen', () => {
-    it('should match the home screen baseline', () => {
-      if (!screenshotExists('home_current.png')) {
-        console.warn(
-          '⚠️  No screenshot found. Skipping visual regression test.\n' +
-            '   Run ./scripts/capture-screenshots.sh to capture screenshots.'
-        );
-        return;
-      }
+  // ── Full-screen captures ──────────────────────────────────────────────
+  describe('Screen Screenshots', () => {
+    const screens = [
+      { name: 'home', id: 'home-screen' },
+      { name: 'playground-showcase', id: 'playground-showcase', strict: true },
+      { name: 'features-showcase', id: 'features-showcase' },
+    ];
 
-      const screenshot = loadScreenshot('home_current.png');
+    for (const screen of screens) {
+      it(`should match the ${screen.name} baseline`, () => {
+        const filename = `${screen.name}_current.png`;
+        if (skipIfMissing(screen.name, filename)) return;
 
-      expect(screenshot).toMatchImageSnapshot({
-        ...DEFAULT_SNAPSHOT_CONFIG,
-        customSnapshotIdentifier: 'home-screen',
+        const screenshot = loadScreenshot(filename);
+        expect(screenshot).toMatchImageSnapshot({
+          ...(screen.strict ? STRICT_SNAPSHOT_CONFIG : DEFAULT_SNAPSHOT_CONFIG),
+          customSnapshotIdentifier: screen.id,
+        });
       });
-    });
+    }
   });
 
+  // ── Component-level captures ──────────────────────────────────────────
   describe('Component Screenshots', () => {
-    // Each component screenshot follows the naming convention:
-    // `<component-name>_current.png`
     const components = [
       'button',
       'avatar',
@@ -104,18 +121,9 @@ describe('Visual Regression', () => {
     for (const component of components) {
       it(`should match the ${component} baseline`, () => {
         const filename = `${component}_current.png`;
-
-        if (!screenshotExists(filename)) {
-          // Skip gracefully — component screenshot hasn't been captured yet
-          console.warn(
-            `⚠️  No screenshot for "${component}". Skipping.\n` +
-              `   Capture it: xcrun simctl io <UDID> screenshot screenshots/${filename}`
-          );
-          return;
-        }
+        if (skipIfMissing(component, filename)) return;
 
         const screenshot = loadScreenshot(filename);
-
         expect(screenshot).toMatchImageSnapshot({
           ...DEFAULT_SNAPSHOT_CONFIG,
           customSnapshotIdentifier: `${component}-component`,
