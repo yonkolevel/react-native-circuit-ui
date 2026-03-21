@@ -4105,6 +4105,11 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
           <RCTScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={false}
+            style={
+              {
+                "flex": 1,
+              }
+            }
           >
             <View>
               <View>

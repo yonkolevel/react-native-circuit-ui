@@ -124,7 +124,7 @@ export const SongView = memo(function SongView({ song, callbacks, mixerCallbacks
                 </View>
 
                 {/* RIGHT: scrollable sections + clips */}
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flex: 1 }}>
                   <View>
                     <View style={s.sections}>
                       {song.sections.map(sec => (
