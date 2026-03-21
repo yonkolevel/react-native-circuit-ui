@@ -1,119 +1,171 @@
-const palette = {
-  mcOrange1: '#FF5722',
-  mcOrange2: '#FF7043',
-  mcOrange3: '#FF8A65',
-  mcOrange4: '#FFAB91',
-  mcOrange5: '#FFCCBC',
+/**
+ * CircuitUI Color System
+ *
+ * Exact values extracted from MidicircuitKit/Sources/StyleGuide/Resources/Assets.xcassets
+ * to ensure pixel-perfect fidelity with the original SwiftUI design system.
+ *
+ * Key differences from SwiftUI:
+ * - White variants (white2-6) use opacity in SwiftUI. We store both the rgba and a helper.
+ * - mcYellow is defined inline in SwiftUI as rgb(1.0, 0.827, 0.247) = #FFD33F
+ */
 
-  mcGreen1: '#00E676',
-  mcGreen2: '#33EB91',
-  mcGreen3: '#66EFAC',
-  mcGreen4: '#99F4C6',
-  mcGreen5: '#CCF9E1',
+// ─── Raw Palette (from asset catalogs) ──────────────────────────────────────
 
-  mcPink1: '#FF1744',
-  mcPink2: '#FF4D6A',
-  mcPink3: '#FF8390',
-  mcPink4: '#FFB9B7',
-  mcPink5: '#FFDEDC',
+export const palette = {
+  // Orange — signature accent
+  mcOrange: '#FF5C24',
+  mcOrange2: '#FF6C3A',
+  mcOrange3: '#FF8D66',
+  mcOrange4: '#FFAD91',
+  mcOrange5: '#FFCEBD',
 
-  mcBlue1: '#2496FF',
+  // Green — success / mint
+  mcGreen: '#00FF9E',
+  mcGreen2: '#1AFFA8',
+  mcGreen3: '#4DFFBB',
+  mcGreen4: '#80FFCF',
+  mcGreen5: '#B2FFE2',
+
+  // Pink — secondary accent
+  mcPink: '#FF245B',
+  mcPink2: '#FF3A6B',
+  mcPink3: '#FF668C',
+  mcPink4: '#FF91AD',
+  mcPink5: '#FFBDCE',
+
+  // Blue — primary interactive
+  mcBlue: '#2496FF',
   mcBlue2: '#3AA0FF',
   mcBlue3: '#66B6FF',
   mcBlue4: '#91CBFF',
-  mcBlue5: '#BDDFFF',
+  mcBlue5: '#66B6FF', // Note: same as blue3 in asset catalog
 
-  mcPurple1: '#AA00FF',
-  mcPurple2: '#BB33FF',
-  mcPurple3: '#CC66FF',
-  mcPurple4: '#DD99FF',
-  mcPurple5: '#EECCFF',
+  // Purple — accent
+  mcPurple: '#8557FF',
+  mcPurple2: '#9168FF',
+  mcPurple3: '#AA89FF',
+  mcPurple4: '#C2ABFF',
+  mcPurple5: '#DACDFF',
 
-  mcBlack1: '#000000',
-  mcBlack2: '#212121',
-  mcBlack3: '#424242',
-  mcBlack4: '#616161',
-  mcBlack5: '#9E9E9E',
+  // Yellow (inline in SwiftUI — not from asset catalog)
+  mcYellow: '#FFD33F',
 
-  mcBlackOpacity1: 'rgba(0, 0, 0, 0.87)', // mcBlack 2
-  mcBlackOpacity2: 'rgba(0, 0, 0, 0.6)', // mcBlack 3
-  mcBlackOpacity3: 'rgba(0, 0, 0, 0.38)', // mcBlack 4
-  mcBlackOpacity4: 'rgba(0, 0, 0, 0.12)', // mcBlack 5
-  mcBlackOpacity5: 'rgba(0, 0, 0, 0.05)',
+  // Neutrals — Dark
+  mcBlack: '#000000',
+  mcBlack2: '#1A1C20',
+  mcBlack3: '#25272B',
+  mcBlack4: '#313336',
+  mcBlack5: '#D1D1D2',
 
-  mcWhite1: '#FFFFFF',
-  mcWhite2: '#F5F5F5',
-  mcWhite3: '#EEEEEE',
-  mcWhite4: '#E0E0E0',
-  mcWhite5: '#BDBDBD',
-  mcWhite6: '#9E9E9E',
+  // Neutrals — Light (base #F7F7F7 with opacity variants)
+  mcWhite: '#F7F7F7',
+  mcWhite2: 'rgba(247, 247, 247, 0.80)',
+  mcWhite3: 'rgba(247, 247, 247, 0.60)',
+  mcWhite4: 'rgba(247, 247, 247, 0.40)',
+  mcWhite5: 'rgba(247, 247, 247, 0.20)',
+  mcWhite6: 'rgba(247, 247, 247, 0.12)',
 
-  // Window controls (macOS)
+  // Gray
+  mcGray: '#E0E0E0',
+
+  // Window controls (macOS style)
   close: '#FF5F56',
   minimize: '#FFBD2E',
   expand: '#28C941',
-};
+} as const;
+
+// ─── Semantic Color Aliases ─────────────────────────────────────────────────
 
 const colorAliases = {
-  orange: palette.mcOrange1,
+  orange: palette.mcOrange,
   orange2: palette.mcOrange2,
   orange3: palette.mcOrange3,
   orange4: palette.mcOrange4,
   orange5: palette.mcOrange5,
 
-  green: palette.mcGreen1,
+  green: palette.mcGreen,
   green2: palette.mcGreen2,
   green3: palette.mcGreen3,
   green4: palette.mcGreen4,
   green5: palette.mcGreen5,
 
-  pink: palette.mcPink1,
+  pink: palette.mcPink,
   pink2: palette.mcPink2,
   pink3: palette.mcPink3,
   pink4: palette.mcPink4,
   pink5: palette.mcPink5,
 
-  blue: palette.mcBlue1,
+  blue: palette.mcBlue,
   blue2: palette.mcBlue2,
   blue3: palette.mcBlue3,
   blue4: palette.mcBlue4,
   blue5: palette.mcBlue5,
 
-  purple: palette.mcPurple1,
+  purple: palette.mcPurple,
   purple2: palette.mcPurple2,
   purple3: palette.mcPurple3,
   purple4: palette.mcPurple4,
   purple5: palette.mcPurple5,
 
-  black: palette.mcBlack1,
+  black: palette.mcBlack,
   black2: palette.mcBlack2,
   black3: palette.mcBlack3,
   black4: palette.mcBlack4,
   black5: palette.mcBlack5,
 
-  white: palette.mcWhite1,
+  white: palette.mcWhite,
   white2: palette.mcWhite2,
   white3: palette.mcWhite3,
   white4: palette.mcWhite4,
   white5: palette.mcWhite5,
   white6: palette.mcWhite6,
 
-  gray: palette.mcBlack5,
-};
+  gray: palette.mcGray,
+} as const;
 
-const lightTheme = {
-  background: palette.mcWhite1,
-  primaryText: palette.mcBlack1,
-  secondaryText: palette.mcBlack2,
-  tertiaryText: palette.mcBlack3,
+// ─── Theme Color Value Interface ────────────────────────────────────────────
 
-  primary: palette.mcOrange1,
-  secondary: palette.mcPink1,
-  success: palette.mcGreen1,
-  warning: palette.mcOrange1,
+interface SemanticColors {
+  background: string;
+  primaryText: string;
+  secondaryText: string;
+  tertiaryText: string;
+  primary: string;
+  secondary: string;
+  success: string;
+  warning: string;
+  error: string;
+  info: string;
+  border: string;
+  divider: string;
+  card: string;
+  disabled: string;
+  closeButton: string;
+  minimizeButton: string;
+  expandButton: string;
+}
+
+type ThemeColorValues = SemanticColors & typeof palette & typeof colorAliases;
+
+// ─── Theme Tokens ───────────────────────────────────────────────────────────
+// Mirrors SwiftUI: Color.background(for:), Color.primaryText(for:), etc.
+
+const lightTheme: ThemeColorValues = {
+  // Semantic backgrounds & text (match SwiftUI helpers)
+  background: palette.mcWhite, // Color.background(for: .light)
+  primaryText: palette.mcBlack, // Color.primaryText(for: .light)
+  secondaryText: palette.mcBlack2, // Color.secondaryText(for: .light)
+  tertiaryText: palette.mcBlack3, // Color.tertiaryText(for: .light)
+
+  // Intent colors
+  primary: palette.mcOrange,
+  secondary: palette.mcPink,
+  success: palette.mcGreen,
+  warning: palette.mcOrange,
   error: palette.close,
-  info: palette.mcBlue1,
+  info: palette.mcBlue,
 
+  // Surface colors
   border: palette.mcWhite4,
   divider: palette.mcWhite5,
   card: palette.mcWhite2,
@@ -126,21 +178,24 @@ const lightTheme = {
 
   ...palette,
   ...colorAliases,
-};
+} as const;
 
-const darkTheme = {
-  background: palette.mcBlack2,
-  primaryText: palette.mcWhite1,
-  secondaryText: palette.mcWhite2,
-  tertiaryText: palette.mcWhite3,
+const darkTheme: ThemeColorValues = {
+  // Semantic backgrounds & text (match SwiftUI helpers)
+  background: palette.mcBlack2, // Color.background(for: .dark)
+  primaryText: palette.mcWhite, // Color.primaryText(for: .dark)
+  secondaryText: palette.mcWhite2, // Color.secondaryText(for: .dark)
+  tertiaryText: palette.mcWhite3, // Color.tertiaryText(for: .dark)
 
-  primary: palette.mcOrange1,
-  secondary: palette.mcPink1,
-  success: palette.mcGreen1,
-  warning: palette.mcOrange1,
+  // Intent colors
+  primary: palette.mcOrange,
+  secondary: palette.mcPink,
+  success: palette.mcGreen,
+  warning: palette.mcOrange,
   error: palette.close,
-  info: palette.mcBlue1,
+  info: palette.mcBlue,
 
+  // Surface colors
   border: palette.mcBlack4,
   divider: palette.mcBlack3,
   card: palette.mcBlack3,
@@ -153,18 +208,25 @@ const darkTheme = {
 
   ...palette,
   ...colorAliases,
-};
+} as const;
 
 export const colors = {
   light: lightTheme,
   dark: darkTheme,
   palette,
-};
+} as const;
+
+// ─── Utilities ──────────────────────────────────────────────────────────────
 
 /**
- * Utility function to convert hex to rgba
+ * Convert hex to rgba string.
  */
 export const hexToRgba = (hex: string, alpha: number = 1): string => {
+  // If already rgba, adjust alpha
+  if (hex.startsWith('rgba')) {
+    return hex.replace(/[\d.]+\)$/, `${alpha})`);
+  }
+
   const hexValue = hex.replace('#', '');
 
   if (hexValue.length === 3) {
@@ -179,3 +241,9 @@ export const hexToRgba = (hex: string, alpha: number = 1): string => {
   const b = parseInt(hexValue.substring(4, 6), 16);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
+
+// ─── Type exports ───────────────────────────────────────────────────────────
+
+export type Palette = typeof palette;
+export type ThemeColors = ThemeColorValues;
+export type ColorAliases = typeof colorAliases;

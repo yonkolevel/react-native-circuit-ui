@@ -84,3 +84,7 @@ android/generated
 
 # React Native Nitro Modules
 nitrogen/
+
+# Visual regression testing
+screenshots/
+**/__diff_output__/

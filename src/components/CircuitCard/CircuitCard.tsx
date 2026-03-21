@@ -13,7 +13,7 @@ import { useTheme } from '../../theme';
 import { Text } from '../Text';
 import { LevelIndicator } from '../LevelIndicator';
 import { ProgressBar } from '../ProgressBar';
-import { Heart, Check } from 'lucide-react-native';
+import { Icon, Icons } from '../../components/SFSymbol';
 
 export type CircuitCardVariant = 'horizontal' | 'vertical';
 export type CircuitCardSize = 'small' | 'medium' | 'large';
@@ -183,7 +183,7 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
   const shadowStyle = showShadow
     ? Platform.select({
         ios: {
-          shadowColor: colors.mcBlack1,
+          shadowColor: colors.mcBlack,
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: isDark ? 0.4 : 0.1,
           shadowRadius: 6,
@@ -225,6 +225,19 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
     setIsPressed(false);
   };
 
+  // Build accessibility label from card content
+  const cardAccessibilityLabel = [
+    title,
+    description,
+    isCompleted ? 'Completed' : undefined,
+    isStarted && totalModulesCount
+      ? `${completedModulesCount} of ${totalModulesCount} lessons completed`
+      : undefined,
+    level ? `Level: ${level}` : undefined,
+  ]
+    .filter(Boolean)
+    .join('. ');
+
   if (children) {
     if (pressable) {
       return (
@@ -234,13 +247,15 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           android_ripple={{ color: colors.mcBlue3 }}
+          accessibilityRole="button"
+          accessibilityLabel={cardAccessibilityLabel || 'Card'}
         >
           <View style={{ padding }}>{children}</View>
         </Pressable>
       );
     }
     return (
-      <View style={cardStyles}>
+      <View style={cardStyles} accessible accessibilityLabel={cardAccessibilityLabel || 'Card'}>
         <View style={{ padding }}>{children}</View>
       </View>
     );
@@ -334,13 +349,23 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         android_ripple={{ color: colors.mcBlue3 }}
+        accessibilityRole="button"
+        accessibilityLabel={cardAccessibilityLabel || 'Card'}
+        accessibilityHint="Opens this circuit"
+        accessibilityState={{
+          selected: isFavorite,
+        }}
       >
         {cardContent}
       </Pressable>
     );
   }
 
-  return <View style={cardStyles}>{cardContent}</View>;
+  return (
+    <View style={cardStyles} accessible accessibilityLabel={cardAccessibilityLabel || 'Card'}>
+      {cardContent}
+    </View>
+  );
 };
 
 interface CardContentProps {
@@ -382,16 +407,16 @@ const CardContent: React.FC<CardContentProps> = ({
 
   const tintColor = colors.mcBlue2;
   const textColor = isPressed
-    ? colors.mcWhite1
+    ? colors.mcWhite
     : isDark
       ? colors.mcWhite2
       : colors.mcBlack2;
-  const titleColor = colors.mcWhite1;
+  const titleColor = colors.mcWhite;
   const backgroundColor = isPressed
     ? tintColor
     : isDark
       ? colors.mcBlack2
-      : colors.mcWhite1;
+      : colors.mcWhite;
 
   return (
     <View
@@ -411,7 +436,7 @@ const CardContent: React.FC<CardContentProps> = ({
             </Text>
             {isPreview && (
               <View style={styles.previewLabel}>
-                <Text variant="small" color={colors.mcWhite1}>
+                <Text variant="small" color={colors.mcWhite}>
                   PREVIEW
                 </Text>
               </View>
@@ -430,7 +455,7 @@ const CardContent: React.FC<CardContentProps> = ({
                   },
                 ]}
               >
-                <Check size={18} color={colors.mcWhite1} strokeWidth={2.5} />
+                <Icon icon={Icons.checkmark} size={18} color={colors.mcWhite} />
               </View>
             )}
 
@@ -438,12 +463,15 @@ const CardContent: React.FC<CardContentProps> = ({
               <TouchableOpacity
                 onPress={onFavoritePress}
                 style={styles.favoriteButton}
+                accessibilityRole="button"
+                accessibilityLabel={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                accessibilityState={{ selected: isFavorite }}
               >
-                <Heart
+                <Icon icon={Icons.heart}
                   size={20}
-                  color={isFavorite ? colors.mcWhite1 : colors.mcBlack1}
-                  fill={isFavorite ? colors.mcWhite1 : colors.mcBlack2}
-                  strokeWidth={2}
+                  color={isFavorite ? colors.mcWhite : colors.mcBlack}
+                  
+                  
                 />
               </TouchableOpacity>
             )}
@@ -514,9 +542,9 @@ const CardContent: React.FC<CardContentProps> = ({
             {level && (
               <LevelIndicator
                 level={level}
-                tintColor={colors.mcWhite1}
+                tintColor={colors.mcWhite}
                 textColor={colors.mcWhite2}
-                backgroundColor={colors.mcBlack1}
+                backgroundColor={colors.mcBlack}
               />
             )}
           </View>

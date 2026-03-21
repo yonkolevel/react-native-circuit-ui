@@ -1,93 +1,108 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+/**
+ * ProgressBar — Matches ProgressBarView.swift
+ *
+ * SwiftUI implementation uses GeometryReader + Rectangle with frame width.
+ * This RN version uses layout-based width percentage for the fill bar,
+ * animated via react-native-reanimated for optimal performance.
+ */
+import React, { memo, useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  interpolate,
+  Extrapolation,
+} from 'react-native-reanimated';
 import { useTheme } from '../../theme';
 
 export interface ProgressBarProps {
-  /**
-   * Progress value (0-100)
-   * @default 0
-   */
+  /** Progress value 0–100 (clamped). Matches SwiftUI `value` param. */
   value?: number;
-  /**
-   * Color of the progress bar
-   * If not provided, uses white for dark mode and primary color for light mode
-   */
+  /** Fill color. Default: mcWhite (dark) / primary (light). */
   tintColor?: string;
-  /**
-   * Height of the progress bar
-   * @default 4
-   */
+  /** Bar height in pt. Default: 4 (matches SwiftUI minHeight/idealHeight/maxHeight). */
   height?: number;
-  /**
-   * Custom style for the container
-   */
+  /** Container style override. */
   style?: StyleProp<ViewStyle>;
-  /**
-   * Duration of the animation in milliseconds
-   * @default 300
-   */
+  /** Animation duration in ms. Default: 300. */
   animationDuration?: number;
-  /**
-   * Whether to animate the progress change
-   * @default true
-   */
+  /** Animate value changes. Default: true. */
   animated?: boolean;
+  /** Accessibility label. Default: 'Progress'. */
+  accessibilityLabel?: string;
 }
 
-/**
- * ProgressBar component for displaying progress
- */
-export const ProgressBar: React.FC<ProgressBarProps> = ({
-  value = 0,
-  tintColor,
-  height = 4,
-  style,
-  animationDuration = 300,
-  animated = true,
-}) => {
-  const { colors, isDark } = useTheme();
-  const animatedWidth = useRef(new Animated.Value(0)).current;
+export const ProgressBar: React.FC<ProgressBarProps> = memo(
+  function ProgressBar({
+    value = 0,
+    tintColor,
+    height = 4,
+    style,
+    animationDuration = 300,
+    animated = true,
+    accessibilityLabel = 'Progress',
+  }) {
+    const { colors, isDark } = useTheme();
+    const progress = useSharedValue(0);
 
-  const clampedValue = Math.min(Math.max(0, value), 100);
+    const clampedValue = Math.min(Math.max(0, value), 100);
+    const progressColor =
+      tintColor || (isDark ? colors.mcWhite : colors.primary);
 
-  const progressColor =
-    tintColor || (isDark ? colors.mcWhite1 : colors.primary);
+    useEffect(() => {
+      if (animated) {
+        progress.value = withTiming(clampedValue, {
+          duration: animationDuration,
+        });
+      } else {
+        progress.value = clampedValue;
+      }
+    }, [clampedValue, progress, animated, animationDuration]);
 
-  useEffect(() => {
-    if (animated) {
-      Animated.timing(animatedWidth, {
-        toValue: clampedValue,
-        duration: animationDuration,
-        useNativeDriver: false,
-      }).start();
-    } else {
-      animatedWidth.setValue(clampedValue);
-    }
-  }, [clampedValue, animatedWidth, animated, animationDuration]);
+    const fillStyle = useAnimatedStyle(() => {
+      const widthPercent = interpolate(
+        progress.value,
+        [0, 100],
+        [0, 100],
+        Extrapolation.CLAMP
+      );
+      return {
+        width: `${widthPercent}%`,
+      };
+    });
 
-  const widthInterpolated = animatedWidth.interpolate({
-    inputRange: [0, 100],
-    outputRange: ['0%', '100%'],
-    extrapolate: 'clamp',
-  });
-
-  return (
-    <View style={[styles.container, { height }, style]}>
-      <View style={[styles.track, { backgroundColor: colors.mcBlack1 }]} />
-
-      <Animated.View
-        style={[
-          styles.progress,
-          {
-            backgroundColor: progressColor,
-            width: widthInterpolated,
-          },
-        ]}
-      />
-    </View>
-  );
-};
+    return (
+      <View
+        style={[styles.container, { height }, style]}
+        accessibilityRole="progressbar"
+        accessibilityLabel={accessibilityLabel}
+        accessibilityValue={{
+          min: 0,
+          max: 100,
+          now: clampedValue,
+          text: `${clampedValue}%`,
+        }}
+      >
+        {/* Track — matches SwiftUI Rectangle().foregroundColor(.mcBlack) */}
+        <View
+          style={[styles.track, { backgroundColor: colors.mcBlack }]}
+        />
+        {/* Fill — matches SwiftUI Rectangle().foregroundColor(tintColor) */}
+        <Animated.View
+          style={[
+            styles.fill,
+            {
+              backgroundColor: progressColor,
+            },
+            fillStyle,
+          ]}
+        />
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -103,10 +118,12 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
-  progress: {
+  fill: {
     position: 'absolute',
     left: 0,
     top: 0,
     bottom: 0,
   },
 });
+
+export default ProgressBar;

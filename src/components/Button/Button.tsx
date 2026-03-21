@@ -1,15 +1,24 @@
-import React from 'react';
+/**
+ * Button — Matches McButton / ButtonPrimaryStyle / ButtonSecondaryStyle / etc.
+ *
+ * Uses Pressable (not TouchableOpacity) per RN best practices.
+ * Supports all SwiftUI variants: primary, secondary, normal, outline, solid.
+ * Press-state color inversion matches SwiftUI ButtonStyle implementations.
+ */
+import React, { memo, useCallback } from 'react';
 import {
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   ActivityIndicator,
   View,
 } from 'react-native';
-import type { TouchableOpacityProps } from 'react-native';
+import type { PressableProps, StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../Text';
 import { useTheme } from '../../theme';
-import { spacing, borderRadius } from '../../theme/spacing';
 import { hexToRgba } from '../../theme/colors';
+import { borderRadius as br, layout } from '../../theme/spacing';
+
+// ─── Types ──────────────────────────────────────────────────────────────────
 
 export type ButtonVariant =
   | 'primary'
@@ -17,64 +26,35 @@ export type ButtonVariant =
   | 'normal'
   | 'outline'
   | 'solid';
+
 export type ButtonSize = 'medium' | 'large';
 
-export interface ButtonProps extends TouchableOpacityProps {
-  /**
-   * The variant of the button
-   * @default 'primary'
-   */
+export interface ButtonProps extends Omit<PressableProps, 'style' | 'children'> {
+  /** Button variant — matches SwiftUI ButtonPrimaryStyle etc. */
   variant?: ButtonVariant;
-
-  /**
-   * The size of the button
-   * @default 'medium'
-   */
+  /** Size — medium matches standard padding, large matches ButtonPrimaryLargeStyle */
   size?: ButtonSize;
-
-  /**
-   * The text to display inside the button
-   */
+  /** Button label text */
   label: string;
-
-  /**
-   * Icon to display before the label
-   */
+  /** Icon before label */
   leftIcon?: React.ReactNode;
-
-  /**
-   * Icon to display after the label
-   */
+  /** Icon after label */
   rightIcon?: React.ReactNode;
-
-  /**
-   * Whether the button is in a loading state
-   * @default false
-   */
+  /** Show loading spinner */
   loading?: boolean;
-
-  /**
-   * Whether the button is full width
-   * @default false
-   */
+  /** Stretch to fill container width */
   fullWidth?: boolean;
-
-  /**
-   * Whether the button is rounded
-   * @default false
-   */
+  /** Pill-shaped border radius */
   rounded?: boolean;
-
-  /**
-   * Custom color for the button (primary and secondary variants)
-   */
+  /** Custom accent color (overrides orange default) */
   color?: string;
+  /** Custom style for the outer pressable */
+  style?: StyleProp<ViewStyle>;
 }
 
-/**
- * Button component that supports various styles and states
- */
-export const Button: React.FC<ButtonProps> = ({
+// ─── Component ──────────────────────────────────────────────────────────────
+
+export const Button: React.FC<ButtonProps> = memo(function Button({
   variant = 'primary',
   size = 'medium',
   label,
@@ -88,178 +68,167 @@ export const Button: React.FC<ButtonProps> = ({
   style,
   onPress,
   ...rest
-}) => {
+}) {
   const { colors } = useTheme();
-  const [isPressed, setIsPressed] = React.useState(false);
+  const buttonColor = color || colors.orange;
+  const isLarge = size === 'large';
 
-  const handlePressIn = () => {
-    setIsPressed(true);
-  };
+  // ── Derived styles per variant (mirrors SwiftUI ButtonStyle bodies) ──
 
-  const handlePressOut = () => {
-    setIsPressed(false);
-  };
+  const getStyles = useCallback(
+    (pressed: boolean) => {
+      const isDisabled = disabled || loading;
 
-  const getBackgroundColor = () => {
-    if (disabled) return colors.black2;
-
-    const buttonColor = color || colors.orange;
-
-    switch (variant) {
-      case 'primary':
-        return isPressed ? colors.white : buttonColor;
-      case 'secondary':
-        return isPressed ? buttonColor : 'transparent';
-      case 'normal':
-        return isPressed ? hexToRgba(colors.black4, 0.8) : colors.black4;
-      case 'outline':
-        return 'transparent';
-      case 'solid':
-        return isPressed ? colors.white : colors.blue;
-      default:
-        return buttonColor;
-    }
-  };
-
-  const getTextColor = () => {
-    if (disabled) return colors.white4;
-
-    const buttonColor = color || colors.orange;
-
-    switch (variant) {
-      case 'primary':
-        if (buttonColor === colors.green) {
-          return isPressed ? colors.green : colors.black;
+      // Background
+      let bg: string;
+      if (isDisabled) {
+        bg = variant === 'secondary' || variant === 'outline'
+          ? 'transparent'
+          : colors.mcBlack2;
+      } else {
+        switch (variant) {
+          case 'primary':
+            bg = pressed ? colors.mcWhite : buttonColor;
+            break;
+          case 'secondary':
+            bg = pressed ? buttonColor : 'transparent';
+            break;
+          case 'normal':
+            bg = pressed
+              ? hexToRgba(colors.mcBlack4, 0.8)
+              : colors.mcBlack4;
+            break;
+          case 'outline':
+            bg = 'transparent';
+            break;
+          case 'solid':
+            bg = pressed ? colors.mcWhite : colors.mcBlue;
+            break;
+          default:
+            bg = buttonColor;
         }
-        return isPressed ? buttonColor : colors.white;
-      case 'secondary':
-        return isPressed ? colors.white : buttonColor;
-      case 'normal':
-        return colors.white;
-      case 'outline':
-        return buttonColor;
-      case 'solid':
-        return isPressed ? colors.blue : colors.white;
-      default:
-        return colors.white;
-    }
-  };
+      }
 
-  const getBorderColor = () => {
-    if (disabled) return 'transparent';
+      // Text color
+      let text: string;
+      if (isDisabled) {
+        text = colors.mcWhite4;
+      } else {
+        switch (variant) {
+          case 'primary':
+            // Green buttons: black text normally, green text when pressed
+            if (buttonColor === colors.mcGreen) {
+              text = pressed ? colors.mcGreen : colors.mcBlack;
+            } else {
+              text = pressed ? buttonColor : colors.mcWhite;
+            }
+            break;
+          case 'secondary':
+            text = pressed ? colors.mcWhite : buttonColor;
+            break;
+          case 'normal':
+            text = colors.mcWhite;
+            break;
+          case 'outline':
+            text = buttonColor;
+            break;
+          case 'solid':
+            text = pressed ? colors.mcBlue : colors.mcWhite;
+            break;
+          default:
+            text = colors.mcWhite;
+        }
+      }
 
-    const buttonColor = color || colors.orange;
+      // Border
+      let borderColor = 'transparent';
+      let borderWidth = 0;
+      if (variant === 'secondary') {
+        borderColor = isDisabled ? colors.mcWhite4 : buttonColor;
+        borderWidth = 2;
+      } else if (variant === 'outline') {
+        borderColor = isDisabled ? colors.mcWhite4 : buttonColor;
+        borderWidth = 1;
+      }
 
-    switch (variant) {
-      case 'secondary':
-        return buttonColor;
-      case 'outline':
-        return buttonColor;
-      default:
-        return 'transparent';
-    }
-  };
-
-  const getBorderWidth = () => {
-    switch (variant) {
-      case 'secondary':
-        return 2;
-      case 'outline':
-        return 1;
-      default:
-        return 0;
-    }
-  };
-
-  const getPadding = () => {
-    switch (size) {
-      case 'large':
-        return {
-          paddingVertical: 8,
-          paddingHorizontal: 22,
-        };
-      case 'medium':
-      default:
-        return {
-          paddingVertical: spacing.custom(3),
-          paddingHorizontal: spacing.custom(4),
-        };
-    }
-  };
-
-  const getTextVariant = () => {
-    switch (size) {
-      case 'large':
-        return 'h4';
-      case 'medium':
-      default:
-        return 'label';
-    }
-  };
-
-  const getOpacity = () => {
-    if (disabled) {
-      return 0.4;
-    }
-    return 1;
-  };
-
-  const buttonStyles = [
-    styles.button,
-    {
-      backgroundColor: getBackgroundColor(),
-      borderColor: getBorderColor(),
-      borderWidth: getBorderWidth(),
-      borderRadius: rounded ? borderRadius.pill : 6,
-      opacity: getOpacity(),
-      ...getPadding(),
+      return { bg, text, borderColor, borderWidth };
     },
-    fullWidth && styles.fullWidth,
-    style,
-  ];
+    [variant, buttonColor, disabled, loading, colors]
+  );
 
-  const renderContent = () => {
-    if (loading) {
-      return <ActivityIndicator color={getTextColor()} size="small" />;
-    }
+  const padding = isLarge
+    ? {
+        paddingVertical: layout.buttonPaddingVerticalLarge,
+        paddingHorizontal: layout.buttonPaddingHorizontalLarge,
+      }
+    : {
+        paddingVertical: layout.buttonPaddingVertical,
+        paddingHorizontal: layout.buttonPaddingHorizontal,
+      };
 
-    return (
-      <View style={styles.contentContainer}>
-        {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
-        <Text variant={getTextVariant()} color={getTextColor()} uppercase>
-          {label}
-        </Text>
-        {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
-      </View>
-    );
-  };
+  const textVariant = isLarge ? 'h4' : 'label';
 
   return (
-    <TouchableOpacity
-      style={buttonStyles}
-      disabled={disabled || loading}
+    <Pressable
       onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      activeOpacity={0.7}
+      disabled={disabled || loading}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{
+        disabled: disabled || loading,
+        busy: loading,
+      }}
+      style={({ pressed }) => {
+        const s = getStyles(pressed);
+        return [
+          styles.button,
+          padding,
+          {
+            backgroundColor: s.bg,
+            borderColor: s.borderColor,
+            borderWidth: s.borderWidth,
+            borderRadius: rounded ? br.pill : br.md,
+            opacity: disabled ? 0.4 : 1,
+          },
+          fullWidth && styles.fullWidth,
+          style,
+        ];
+      }}
       {...rest}
     >
-      {renderContent()}
-    </TouchableOpacity>
+      {({ pressed }) => {
+        const s = getStyles(pressed);
+
+        if (loading) {
+          return <ActivityIndicator color={s.text} size="small" />;
+        }
+
+        return (
+          <View style={styles.content}>
+            {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
+            <Text variant={textVariant} color={s.text} uppercase>
+              {label}
+            </Text>
+            {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
+          </View>
+        );
+      }}
+    </Pressable>
   );
-};
+});
+
+// ─── Styles ─────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 6,
   },
   fullWidth: {
     width: '100%',
   },
-  contentContainer: {
+  content: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

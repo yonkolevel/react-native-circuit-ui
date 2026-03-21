@@ -26,6 +26,11 @@ export interface AvatarProps {
    * @default true
    */
   showShadow?: boolean;
+  /**
+   * Accessibility label for the avatar
+   * @default 'User avatar'
+   */
+  accessibilityLabel?: string;
 }
 
 /**
@@ -37,6 +42,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   style,
   imageStyle,
   showShadow = true,
+  accessibilityLabel = 'User avatar',
 }) => {
   const { colors, isDark } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
@@ -65,6 +71,9 @@ export const Avatar: React.FC<AvatarProps> = ({
         shadowStyle,
         style,
       ]}
+      accessible
+      accessibilityRole="image"
+      accessibilityLabel={accessibilityLabel}
     >
       {imageUrl && !hasError ? (
         <>
@@ -100,7 +109,7 @@ export const Avatar: React.FC<AvatarProps> = ({
             style={[
               styles.personHead,
               {
-                backgroundColor: isDark ? colors.mcWhite2 : colors.mcWhite1,
+                backgroundColor: isDark ? colors.mcWhite2 : colors.mcWhite,
                 width: size * 0.3,
                 height: size * 0.3,
                 borderRadius: (size * 0.3) / 2,
@@ -112,7 +121,7 @@ export const Avatar: React.FC<AvatarProps> = ({
             style={[
               styles.personBody,
               {
-                backgroundColor: isDark ? colors.mcWhite2 : colors.mcWhite1,
+                backgroundColor: isDark ? colors.mcWhite2 : colors.mcWhite,
                 width: size * 0.5,
                 height: size * 0.35,
                 borderTopLeftRadius: (size * 0.5) / 2,

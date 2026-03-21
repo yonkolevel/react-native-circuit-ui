@@ -1,72 +1,41 @@
-import React from 'react';
+/**
+ * Text — Themed typography component
+ *
+ * Maps directly to SwiftUI Text + .h1() / .label() / .small() modifiers.
+ */
+import React, { memo } from 'react';
 import { Text as RNText, StyleSheet } from 'react-native';
-import type { TextProps as RNTextProps } from 'react-native';
+import type { TextProps as RNTextProps, TextStyle } from 'react-native';
 import { useTheme } from '../../theme';
-
-export type TextVariant =
-  | 'h1'
-  | 'h1Regular'
-  | 'h2'
-  | 'h3'
-  | 'h3Regular'
-  | 'h4'
-  | 'h5'
-  | 'body'
-  | 'label'
-  | 'labelBold'
-  | 'labelRegular'
-  | 'labelRegular2'
-  | 'labelRegular3'
-  | 'quote'
-  | 'quoteBold'
-  | 'small'
-  | 'buttonLabelBold'
-  | 'buttonLabelSemiBold'
-  | 'extraSmall'
-  | 'extraSmallSemiBold'
-  | 'extraSmall10';
+import type { TypographyVariant } from '../../theme';
 
 export interface TextProps extends RNTextProps {
-  /**
-   * The variant of the text, which determines the font size, weight, and other styling
-   */
-  variant?: TextVariant;
-
-  /**
-   * Whether the text should be bold
-   */
-  bold?: boolean;
-
-  /**
-   * The color of the text. If not provided, it will use the primary text color from the theme
-   */
+  /** Typography variant — maps 1:1 to SwiftUI Font.mc* styles */
+  variant?: TypographyVariant;
+  /** Override text color */
   color?: string;
-
-  /**
-   * Whether the text should be centered
-   */
+  /** Force bold weight */
+  bold?: boolean;
+  /** Center-align text */
   center?: boolean;
-
-  /**
-   * Whether the text should be right-aligned
-   */
+  /** Right-align text */
   right?: boolean;
-
-  /**
-   * Whether the text should be uppercase
-   */
+  /** UPPERCASE transform (matches SwiftUI .uppercased()) */
   uppercase?: boolean;
-
-  /**
-   * Children to render
-   */
   children: React.ReactNode;
 }
 
 /**
- * Text component that supports various typography styles from the theme
+ * Themed Text component. Use `variant` to match SwiftUI typography.
+ *
+ * @example
+ * ```tsx
+ * <Text variant="h4">Hello</Text>
+ * <Text variant="label" uppercase>Button</Text>
+ * <Text variant="small" color={colors.mcWhite2}>Caption</Text>
+ * ```
  */
-export const Text: React.FC<TextProps> = ({
+export const Text: React.FC<TextProps> = memo(function Text({
   variant = 'body',
   bold = false,
   color,
@@ -76,40 +45,40 @@ export const Text: React.FC<TextProps> = ({
   style,
   children,
   ...rest
-}) => {
+}) {
   const { colors, typography } = useTheme();
 
   const textColor = color || colors.primaryText;
 
-  const textStyle = [
+  const textStyle: TextStyle[] = [
     typography[variant],
+    { color: textColor },
     bold && styles.bold,
     center && styles.center,
     right && styles.right,
     uppercase && styles.uppercase,
-    { color: textColor },
-    style,
-  ];
+    style as TextStyle,
+  ].filter(Boolean) as TextStyle[];
 
   return (
-    <RNText style={textStyle} {...rest}>
+    <RNText accessibilityRole="text" style={textStyle} {...rest}>
       {children}
     </RNText>
   );
-};
+});
 
 const styles = StyleSheet.create({
   bold: {
-    fontWeight: 'bold',
+    fontWeight: '700' as const,
   },
   center: {
-    textAlign: 'center',
+    textAlign: 'center' as const,
   },
   right: {
-    textAlign: 'right',
+    textAlign: 'right' as const,
   },
   uppercase: {
-    textTransform: 'uppercase',
+    textTransform: 'uppercase' as const,
   },
 });
 
