@@ -12698,6 +12698,7 @@ __metadata:
     react-test-renderer: 18.3.1
     release-it: ^17.10.0
     typescript: ^5.2.2
+    zustand: ^5.0.0
   peerDependencies:
     react: "*"
     react-native: "*"
@@ -15711,5 +15712,26 @@ __metadata:
   version: 2.1.2
   resolution: "yoctocolors-cjs@npm:2.1.2"
   checksum: 1c474d4b30a8c130e679279c5c2c33a0d48eba9684ffa0252cc64846c121fb56c3f25457fef902edbe1e2d7a7872130073a9fc8e795299d75e13fa3f5f548f1b
+  languageName: node
+  linkType: hard
+
+"zustand@npm:^5.0.0":
+  version: 5.0.12
+  resolution: "zustand@npm:5.0.12"
+  peerDependencies:
+    "@types/react": ">=18.0.0"
+    immer: ">=9.0.6"
+    react: ">=18.0.0"
+    use-sync-external-store: ">=1.2.0"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    immer:
+      optional: true
+    react:
+      optional: true
+    use-sync-external-store:
+      optional: true
+  checksum: bf856f2d86912d46439b6e32004b32b77518af49dc23fdc1998457777d860183e0a677498731b61f3d38717b62283e08dd38d1fc3714385e84ba87ef9f5aa4c6
   languageName: node
   linkType: hard

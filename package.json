@@ -195,6 +195,7 @@
   },
   "dependencies": {
     "lucide-react-native": "^0.481.0",
-    "react-native-svg": "^15.11.2"
+    "react-native-svg": "^15.11.2",
+    "zustand": "^5.0.0"
   }
 }
