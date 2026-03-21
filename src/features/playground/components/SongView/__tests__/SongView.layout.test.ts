@@ -88,11 +88,9 @@ describe('SongView grid alignment', () => {
     expect(CELL_H).toBe(60);
   });
 
-  it('labels overlay width matches label padding in clip rows', () => {
-    // clipRow paddingLeft must equal labelsOverlay width + GAP
-    const clipRowPaddingLeft = CELL_W + GAP;
-    const expectedPadding = GRID.CELL_W + GRID.GAP;
-    expect(clipRowPaddingLeft).toBe(expectedPadding);
+  it('labels column width matches CELL_W', () => {
+    // labelsCol width must equal CELL_W so labels match clip cell widths
+    expect(CELL_W).toBe(GRID.CELL_W);
   });
 
   it('would have caught the spacer=54 bug', () => {

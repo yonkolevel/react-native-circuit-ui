@@ -191,117 +191,115 @@ export const SongView = memo(function SongView({
       <View style={s.body}>
         {view === 'song' && (
           <>
-            <ScrollView style={s.scroll}>
-              <View style={s.grid}>
-                {/* Scrollable sections + clips — padded left for labels */}
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <View>
-                    <View style={s.sections}>
-                      {song.sections.map((sec) => {
-                        const isActive = sec.id === song.currentSectionId;
-                        return (
-                          <Pressable
-                            key={sec.id}
-                            onPress={() => callbacks?.onSectionSelect?.(sec.id)}
-                            style={[
-                              s.secTab,
-                              {
-                                backgroundColor: isActive
-                                  ? '#FFFFFF'
-                                  : 'rgba(247,247,247,0.6)',
-                              },
-                            ]}
-                          >
-                            <Text
-                              variant="small"
-                              color={'#000000'}
-                              center
-                              numberOfLines={1}
-                            >
-                              {sec.name}
-                            </Text>
-                          </Pressable>
-                        );
-                      })}
-                      <Pressable
-                        onPress={() => callbacks?.onAddSection?.()}
-                        style={s.addSecBtn}
-                      >
-                        <Icon
-                          icon={Icons.plus}
-                          size={14}
-                          color={colors.mcBlack5}
-                        />
-                      </Pressable>
-                    </View>
-                    <View style={s.clipRows}>
-                      {song.tracks.map((t) => (
-                        <View key={t.id} style={s.clipRow}>
-                          {song.sections.map((sec) => (
-                            <ClipCell
-                              key={sec.id}
-                              clip={t.clips.find((c) => c.sectionID === sec.id)}
-                              color={INSTRUMENT_COLORS[t.type] || '#fff'}
-                              onPress={() => {
-                                const c = t.clips.find(
-                                  (cl) => cl.sectionID === sec.id
-                                );
-                                if (c) callbacks?.onClipSelect?.(c.id, t.id);
-                              }}
-                            />
-                          ))}
-                        </View>
-                      ))}
-                    </View>
-                  </View>
-                </ScrollView>
-
-                {/* Absolute labels column — overlaid on left */}
-                <View style={s.labelsOverlay}>
-                  {/* iOS: .padding(.top, 54). labelsOverlay has gap:4 between children,
-                      so spacer=SECTION_H(50) + gap(4) = 54 total offset */}
-                  <View style={s.labelsSpacer} />
-                  {song.tracks.map((t) => (
-                    <Pressable
-                      key={t.id}
-                      onPress={() => handleTrack(t.id)}
-                      style={[
-                        s.label,
-                        {
-                          backgroundColor:
-                            (INSTRUMENT_COLORS[t.type] || '#fff') + 'CC',
-                        },
-                      ]}
+            {/* Grid: labels column (outside ScrollView for touch) + scrollable clips */}
+            <View style={s.grid}>
+              {/* Fixed labels column — NOT in ScrollView so taps work on Android */}
+              <View style={s.labelsCol}>
+                <View style={s.labelsSpacer} />
+                {song.tracks.map((t) => (
+                  <Pressable
+                    key={t.id}
+                    onPress={() => handleTrack(t.id)}
+                    style={[
+                      s.label,
+                      {
+                        backgroundColor:
+                          (INSTRUMENT_COLORS[t.type] || '#fff') + 'CC',
+                      },
+                    ]}
+                  >
+                    <Icon
+                      icon={TRACK_ICONS[t.type] || Icons.drumTrack}
+                      size={15}
+                      color={colors.mcBlack}
+                    />
+                    <Text
+                      variant="extraSmall10"
+                      color={colors.mcBlack}
+                      style={s.labelTxt}
                     >
-                      <Icon
-                        icon={TRACK_ICONS[t.type] || Icons.drumTrack}
-                        size={15}
-                        color={colors.mcBlack}
-                      />
-                      {/* iOS: .system(size: 10, weight: .medium) */}
-                      <Text
-                        variant="extraSmall10"
-                        color={colors.mcBlack}
-                        style={s.labelTxt}
-                      >
-                        {TRACK_LABELS[t.type] || t.title}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
+                      {TRACK_LABELS[t.type] || t.title}
+                    </Text>
+                  </Pressable>
+                ))}
+                <Pressable
+                  onPress={() => callbacks?.onAddTrack?.('drum')}
+                  style={s.addTrack}
+                >
+                  <Icon icon={Icons.plus} size={12} color={colors.mcBlack5} />
+                  <Text variant="small" color={colors.mcBlack5}>
+                    Add track
+                  </Text>
+                </Pressable>
               </View>
 
-              {/* Add track button — iOS: VStack { plus, "Add track" }, frame(w:80, h:60), mcBlack5 text */}
-              <Pressable
-                onPress={() => callbacks?.onAddTrack?.('drum')}
-                style={s.addTrack}
+              {/* Scrollable sections + clips */}
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={s.clipsScroll}
               >
-                <Icon icon={Icons.plus} size={12} color={colors.mcBlack5} />
-                <Text variant="small" color={colors.mcBlack5}>
-                  Add track
-                </Text>
-              </Pressable>
-            </ScrollView>
+                <View>
+                  <View style={s.sections}>
+                    {song.sections.map((sec) => {
+                      const isActive = sec.id === song.currentSectionId;
+                      return (
+                        <Pressable
+                          key={sec.id}
+                          onPress={() => callbacks?.onSectionSelect?.(sec.id)}
+                          style={[
+                            s.secTab,
+                            {
+                              backgroundColor: isActive
+                                ? '#FFFFFF'
+                                : 'rgba(247,247,247,0.6)',
+                            },
+                          ]}
+                        >
+                          <Text
+                            variant="small"
+                            color={'#000000'}
+                            center
+                            numberOfLines={1}
+                          >
+                            {sec.name}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                    <Pressable
+                      onPress={() => callbacks?.onAddSection?.()}
+                      style={s.addSecBtn}
+                    >
+                      <Icon
+                        icon={Icons.plus}
+                        size={14}
+                        color={colors.mcBlack5}
+                      />
+                    </Pressable>
+                  </View>
+                  <View style={s.clipRows}>
+                    {song.tracks.map((t) => (
+                      <View key={t.id} style={s.clipRow}>
+                        {song.sections.map((sec) => (
+                          <ClipCell
+                            key={sec.id}
+                            clip={t.clips.find((c) => c.sectionID === sec.id)}
+                            color={INSTRUMENT_COLORS[t.type] || '#fff'}
+                            onPress={() => {
+                              const c = t.clips.find(
+                                (cl) => cl.sectionID === sec.id
+                              );
+                              if (c) callbacks?.onClipSelect?.(c.id, t.id);
+                            }}
+                          />
+                        ))}
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
 
             {selTrack && (
               <BottomPanel
@@ -343,16 +341,13 @@ export const SongView = memo(function SongView({
 const s = StyleSheet.create({
   root: { flex: 1 },
   body: { flex: 1 },
-  scroll: { flex: 1 },
-  grid: { position: 'relative' },
-  labelsOverlay: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
+  grid: { flex: 1, flexDirection: 'row' },
+  labelsCol: {
     width: CELL_W,
     gap: GAP,
-    zIndex: 1,
+    marginRight: GAP,
   },
+  clipsScroll: { flex: 1 },
   label: {
     width: CELL_W,
     height: CELL_H,
@@ -366,7 +361,6 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     gap: GAP,
     marginBottom: GAP,
-    paddingLeft: CELL_W + GAP,
   },
   secTab: {
     width: CELL_W,
@@ -387,7 +381,6 @@ const s = StyleSheet.create({
   clipRow: {
     flexDirection: 'row',
     gap: GAP,
-    paddingLeft: CELL_W + GAP,
     height: CELL_H,
   },
   cell: {
