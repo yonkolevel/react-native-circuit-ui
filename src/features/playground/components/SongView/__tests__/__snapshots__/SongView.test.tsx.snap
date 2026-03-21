@@ -4063,6 +4063,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                     {
                       "flexDirection": "row",
                       "gap": 4,
+                      "height": 60,
+                      "marginBottom": 4,
                       "paddingLeft": 84,
                     }
                   }
@@ -4340,6 +4342,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                     {
                       "flexDirection": "row",
                       "gap": 4,
+                      "height": 60,
+                      "marginBottom": 4,
                       "paddingLeft": 84,
                     }
                   }
@@ -4513,6 +4517,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                     {
                       "flexDirection": "row",
                       "gap": 4,
+                      "height": 60,
+                      "marginBottom": 4,
                       "paddingLeft": 84,
                     }
                   }

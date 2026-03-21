@@ -188,7 +188,7 @@ const s = StyleSheet.create({
   labelTxt: { fontSize: 10 },
   sections: { flexDirection: 'row', gap: GAP, marginBottom: GAP, paddingLeft: CELL_W + GAP },
   secTab: { width: CELL_W, height: SECTION_H, justifyContent: 'center', alignItems: 'center' },
-  clipRow: { flexDirection: 'row', gap: GAP, paddingLeft: CELL_W + GAP },
+  clipRow: { flexDirection: 'row', gap: GAP, paddingLeft: CELL_W + GAP, height: CELL_H, marginBottom: GAP },
   cell: { width: CELL_W, height: CELL_H, justifyContent: 'center', alignItems: 'center', padding: 4 },
   cellContent: { flex: 1, width: '100%', position: 'relative' },
   addTrack: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 12, paddingLeft: 16 },
