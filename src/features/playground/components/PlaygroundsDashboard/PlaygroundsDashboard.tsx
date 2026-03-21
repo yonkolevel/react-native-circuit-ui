@@ -11,7 +11,6 @@
 import { memo } from 'react';
 import { View, ScrollView, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { Text } from '../../../../components/Text';
-import { Button } from '../../../../components/Button';
 import { GradientCover } from '../../../../components/GradientCover';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme } from '../../../../theme';
@@ -94,13 +93,16 @@ export const PlaygroundsDashboard = memo(function PlaygroundsDashboard({
     <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
       {/* Header — matches Swift headerView() */}
       <View style={[styles.header, { paddingHorizontal: padding, paddingTop: padding }]}>
-        <Text variant="h4" color={colors.mcWhite}>Playgrounds</Text>
+        <Text variant="h3" color={colors.mcWhite}>Playgrounds</Text>
         {playgrounds.length > 0 && (
-          <Button
-            label="+ New"
-            variant="primary"
+          <Pressable
             onPress={onCreate}
-          />
+            style={[styles.newBtn, { backgroundColor: colors.mcOrange }]}
+            accessibilityRole="button"
+            accessibilityLabel="Create new playground"
+          >
+            <Text variant="label" color={colors.mcWhite}>+ New</Text>
+          </Pressable>
         )}
       </View>
 
@@ -111,7 +113,7 @@ export const PlaygroundsDashboard = memo(function PlaygroundsDashboard({
             You haven't created a Playground yet
           </Text>
           <View style={styles.emptyButton}>
-            <Button label="+ New" variant="primary" onPress={onCreate} />
+            <Pressable onPress={onCreate} style={[styles.newBtn, { backgroundColor: colors.mcOrange }]}><Text variant="label" color={colors.mcWhite}>+ New</Text></Pressable>
           </View>
         </View>
       ) : (
@@ -139,10 +141,11 @@ const styles = StyleSheet.create({
   list: { gap: 0 },
   card: {
     flexDirection: 'row', alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   cardInfo: { flex: 1, gap: 2, marginLeft: 12 },
   menuBtn: { padding: 12 },
   emptyState: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 48 },
   emptyButton: { marginTop: 0 },
+  newBtn: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 6 },
 });

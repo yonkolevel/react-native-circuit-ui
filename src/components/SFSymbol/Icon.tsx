@@ -24,6 +24,7 @@ export const Icon = memo(function Icon({ icon, size = 24, color = '#FFFFFF', wei
     <SFSymbol
       name={icon.sf}
       fallback={icon.fallback}
+      androidIcon={(icon as any).android}
       size={size}
       color={color}
       weight={weight}

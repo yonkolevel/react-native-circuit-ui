@@ -116,7 +116,7 @@ export const TrackView = memo(function TrackView({
         accessibilityRole="button"
         accessibilityLabel={`${TRACK_LABELS[track.type]} track`}
       >
-        <Icon icon={trackIcon} size={24} color={colors.mcBlack} />
+        <Icon icon={trackIcon} size={16} color={colors.mcBlack} />
         <Text variant="extraSmall" color={colors.mcBlack} bold center numberOfLines={1}>
           {TRACK_LABELS[track.type]}
         </Text>
@@ -163,10 +163,10 @@ export const AddTrackRow = memo(function AddTrackRow({ onPress }: AddTrackRowPro
 const styles = StyleSheet.create({
   trackRow: {
     flexDirection: 'row',
-    minHeight: 80,
+    minHeight: 64,
   },
   label: {
-    width: 100,
+    width: 80,
     justifyContent: 'center',
     alignItems: 'center',
     gap: 4,
@@ -174,12 +174,12 @@ const styles = StyleSheet.create({
   },
   clipsRow: { flexDirection: 'row', gap: 2 },
   clipCell: {
-    width: 150, height: 80,
+    width: 80, height: 60,
     borderRadius: 6, padding: 4,
     justifyContent: 'center', alignItems: 'center',
   },
   emptyClipSlot: {
-    width: 150, height: 80,
+    width: 80, height: 60,
     borderWidth: 1, borderStyle: 'dashed',
     justifyContent: 'center', alignItems: 'center',
   },

@@ -44,6 +44,6 @@ export const SongSectionsView = memo(function SongSectionsView({ sections, curre
 
 const styles = StyleSheet.create({
   container: { flexDirection: 'row', gap: 8, paddingHorizontal: 8, paddingVertical: 4, alignItems: 'center' },
-  pill: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, borderWidth: 1 },
-  addBtn: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, borderStyle: 'dashed', justifyContent: 'center', alignItems: 'center' },
+  pill: { width: 80, height: 50, justifyContent: 'center', alignItems: 'center' },
+  addBtn: { width: 36, height: 50, justifyContent: 'center', alignItems: 'center' },
 });

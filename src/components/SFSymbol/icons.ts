@@ -1,9 +1,5 @@
 /**
- * SF Symbol → Lucide icon mapping
- *
- * Centralized map so every component uses consistent icon references.
- * On iOS: native SF Symbols via expo-symbols
- * On other platforms: Lucide fallback
+ * Icon definitions: SF Symbol (iOS) + MaterialCommunityIcons (Android) + Lucide (Web)
  */
 import {
   Play, Pause, ChevronLeft, Settings, Repeat,
@@ -22,73 +18,70 @@ import {
 } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
 
-/**
- * Icon definition: SF Symbol name + Lucide fallback
- */
 export interface IconDef {
   sf: string;
   fallback: LucideIcon;
+  android: string; // MaterialCommunityIcons name
 }
 
-/** All icons used across the app, keyed by semantic name */
 export const Icons = {
   // Transport
-  play: { sf: 'play.fill', fallback: Play },
-  pause: { sf: 'pause.fill', fallback: Pause },
-  record: { sf: 'record.circle', fallback: Circle },
-  stop: { sf: 'stop.fill', fallback: Square },
-  loop: { sf: 'arrow.rectanglepath', fallback: Repeat },
+  play: { sf: 'play.fill', fallback: Play, android: 'play' },
+  pause: { sf: 'pause.fill', fallback: Pause, android: 'pause' },
+  record: { sf: 'record.circle', fallback: Circle, android: 'record-circle-outline' },
+  stop: { sf: 'stop.fill', fallback: Square, android: 'stop' },
+  loop: { sf: 'arrow.rectanglepath', fallback: Repeat, android: 'repeat' },
 
   // Navigation
-  back: { sf: 'chevron.left', fallback: ChevronLeft },
-  close: { sf: 'xmark', fallback: X },
-  settings: { sf: 'gearshape.fill', fallback: Settings },
-  sidebar: { sf: 'sidebar.left', fallback: PanelLeft },
+  back: { sf: 'chevron.left', fallback: ChevronLeft, android: 'chevron-left' },
+  close: { sf: 'xmark', fallback: X, android: 'close' },
+  settings: { sf: 'gearshape.fill', fallback: Settings, android: 'cog' },
+  sidebar: { sf: 'sidebar.left', fallback: PanelLeft, android: 'dock-left' },
 
   // Actions
-  plus: { sf: 'plus', fallback: Plus },
-  minus: { sf: 'minus', fallback: Minus },
-  undo: { sf: 'arrow.uturn.backward', fallback: Undo2 },
-  redo: { sf: 'arrow.uturn.forward', fallback: Redo2 },
-  more: { sf: 'ellipsis', fallback: MoreHorizontal },
+  plus: { sf: 'plus', fallback: Plus, android: 'plus' },
+  minus: { sf: 'minus', fallback: Minus, android: 'minus' },
+  undo: { sf: 'arrow.uturn.backward', fallback: Undo2, android: 'undo' },
+  redo: { sf: 'arrow.uturn.forward', fallback: Redo2, android: 'redo' },
+  more: { sf: 'ellipsis', fallback: MoreHorizontal, android: 'dots-horizontal' },
 
-  // Track types (instruments)
-  drumTrack: { sf: 'square.grid.2x2', fallback: Grid2x2 },
-  melodicTrack: { sf: 'music.quarternote.3', fallback: Music3 },
-  bassTrack: { sf: 'guitars', fallback: Guitar },
-  audioTrack: { sf: 'mic.fill', fallback: Mic },
-  piano: { sf: 'pianokeys', fallback: Piano },
+  // Track types
+  drumTrack: { sf: 'square.grid.2x2', fallback: Grid2x2, android: 'grid' },
+  melodicTrack: { sf: 'music.quarternote.3', fallback: Music3, android: 'music-note' },
+  bassTrack: { sf: 'guitars', fallback: Guitar, android: 'guitar-electric' },
+  audioTrack: { sf: 'mic.fill', fallback: Mic, android: 'microphone' },
+  piano: { sf: 'pianokeys', fallback: Piano, android: 'piano' },
 
   // Dashboard tabs
-  tabCircuits: { sf: 'play.circle', fallback: PlayCircle },
-  tabDiscover: { sf: 'star', fallback: Star },
-  tabProfile: { sf: 'person.crop.circle', fallback: UserCircle },
-  tabPlaygrounds: { sf: 'gamecontroller', fallback: Gamepad2 },
+  tabCircuits: { sf: 'play.circle', fallback: PlayCircle, android: 'play-circle-outline' },
+  tabDiscover: { sf: 'star', fallback: Star, android: 'star-outline' },
+  tabProfile: { sf: 'person.crop.circle', fallback: UserCircle, android: 'account-circle-outline' },
+  tabPlaygrounds: { sf: 'gamecontroller', fallback: Gamepad2, android: 'gamepad-variant-outline' },
 
   // Content
-  star: { sf: 'star', fallback: Star },
-  starFill: { sf: 'star.fill', fallback: Star },
-  heart: { sf: 'heart', fallback: Heart },
-  heartFill: { sf: 'heart.fill', fallback: Heart },
-  checkmark: { sf: 'checkmark.circle.fill', fallback: Check },
-  clock: { sf: 'clock', fallback: Clock },
+  star: { sf: 'star', fallback: Star, android: 'star-outline' },
+  starFill: { sf: 'star.fill', fallback: Star, android: 'star' },
+  heart: { sf: 'heart', fallback: Heart, android: 'heart-outline' },
+  heartFill: { sf: 'heart.fill', fallback: Heart, android: 'heart' },
+  checkmark: { sf: 'checkmark.circle.fill', fallback: Check, android: 'check-circle' },
+  clock: { sf: 'clock', fallback: Clock, android: 'clock-outline' },
 
   // Audio
-  speaker: { sf: 'speaker', fallback: Volume2 },
-  metronomeOn: { sf: 'metronome.fill', fallback: Timer },
-  metronomeOff: { sf: 'metronome', fallback: TimerOff },
+  speaker: { sf: 'speaker', fallback: Volume2, android: 'volume-high' },
+  metronomeOn: { sf: 'metronome.fill', fallback: Timer, android: 'metronome' },
+  metronomeOff: { sf: 'metronome', fallback: TimerOff, android: 'metronome' },
 
   // Placeholder
-  search: { sf: 'magnifyingglass', fallback: Search },
-  refresh: { sf: 'arrow.clockwise', fallback: RefreshCw },
-  noWifi: { sf: 'wifi.slash', fallback: WifiOff },
-  warning: { sf: 'exclamationmark.triangle', fallback: AlertTriangle },
+  search: { sf: 'magnifyingglass', fallback: Search, android: 'magnify' },
+  refresh: { sf: 'arrow.clockwise', fallback: RefreshCw, android: 'refresh' },
+  noWifi: { sf: 'wifi.slash', fallback: WifiOff, android: 'wifi-off' },
+  warning: { sf: 'exclamationmark.triangle', fallback: AlertTriangle, android: 'alert-outline' },
 
   // Zoom
-  zoomIn: { sf: 'plus.magnifyingglass', fallback: ZoomIn },
-  zoomOut: { sf: 'minus.magnifyingglass', fallback: ZoomOut },
-  expand: { sf: 'arrow.up.left.and.arrow.down.right', fallback: Maximize2 },
-  collapse: { sf: 'arrow.down.right.and.arrow.up.left', fallback: Minimize2 },
+  zoomIn: { sf: 'plus.magnifyingglass', fallback: ZoomIn, android: 'magnify-plus-outline' },
+  zoomOut: { sf: 'minus.magnifyingglass', fallback: ZoomOut, android: 'magnify-minus-outline' },
+  expand: { sf: 'arrow.up.left.and.arrow.down.right', fallback: Maximize2, android: 'arrow-expand' },
+  collapse: { sf: 'arrow.down.right.and.arrow.up.left', fallback: Minimize2, android: 'arrow-collapse' },
 } as const satisfies Record<string, IconDef>;
 
 export type IconName = keyof typeof Icons;
