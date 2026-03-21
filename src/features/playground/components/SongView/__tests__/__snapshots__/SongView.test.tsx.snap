@@ -4655,7 +4655,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
             <View
               style={
                 {
-                  "height": 54,
+                  "height": 50,
                 }
               }
             />

@@ -138,7 +138,7 @@ export const SongView = memo(function SongView({ song, callbacks, mixerCallbacks
 
                 {/* Absolute labels column — overlaid on left */}
                 <View style={s.labelsOverlay}>
-                  <View style={{ height: SECTION_H + GAP }} />
+                  <View style={{ height: SECTION_H }} />
                   {song.tracks.map(t => (
                     <Pressable
                       key={t.id}
