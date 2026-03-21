@@ -5,6 +5,7 @@
  * .frame(maxWidth: 800), .padding(), .background(.mcBlack)
  */
 import { memo } from 'react';
+import Slider from '@react-native-community/slider';
 import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
@@ -45,7 +46,7 @@ interface TrackStripProps {
 }
 
 const TrackStrip = memo(function TrackStrip({
-  track, isAudible, onVolumeChange: _onVolumeChange, onPanChange: _onPanChange, onMuteToggle, onSoloToggle,
+  track, isAudible, onVolumeChange, onPanChange, onMuteToggle, onSoloToggle,
 }: TrackStripProps) {
   const trackColor = INSTRUMENT_COLORS[track.type] || '#FFFFFF';
 
@@ -70,12 +71,16 @@ const TrackStrip = memo(function TrackStrip({
         <Text variant="extraSmall" color="#888888">Volume</Text>
         <View style={styles.sliderRow}>
           <Icon icon={Icons.speaker} size={14} color="#666666" />
-          <View style={styles.sliderTrack}>
-            <View style={[styles.sliderFill, {
-              width: `${track.volume}%`,
-              backgroundColor: isAudible ? trackColor : '#333333',
-            }]} />
-          </View>
+          <Slider
+            style={styles.slider}
+            minimumValue={0}
+            maximumValue={100}
+            value={track.volume}
+            minimumTrackTintColor={isAudible ? trackColor : '#333333'}
+            maximumTrackTintColor="#333333"
+            thumbTintColor="#CCCCCC"
+            onSlidingComplete={(v: number) => onVolumeChange?.(v)}
+          />
           <Text variant="buttonLabelSemiBold" color="#FFFFFF" style={styles.sliderValue}>
             {Math.round(track.volume)}%
           </Text>
@@ -87,11 +92,16 @@ const TrackStrip = memo(function TrackStrip({
         <Text variant="extraSmall" color="#888888">Pan</Text>
         <View style={styles.sliderRow}>
           <Text variant="extraSmall" color="#666666">↔</Text>
-          <View style={styles.sliderTrack}>
-            <View style={[styles.panIndicator, {
-              left: `${((track.pan + 1) / 2) * 100}%`,
-            }]} />
-          </View>
+          <Slider
+            style={styles.slider}
+            minimumValue={-1}
+            maximumValue={1}
+            value={track.pan}
+            minimumTrackTintColor="#888888"
+            maximumTrackTintColor="#888888"
+            thumbTintColor="#CCCCCC"
+            onSlidingComplete={(v: number) => onPanChange?.(v)}
+          />
           <Text variant="buttonLabelSemiBold" color="#888888" style={styles.panLabel}>
             {Math.abs(track.pan) < 0.1 ? 'C' : track.pan < 0 ? 'L' : 'R'}
           </Text>
@@ -152,6 +162,7 @@ const styles = StyleSheet.create({
   sliderRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   sliderTrack: { flex: 1, height: 4, backgroundColor: '#333333', borderRadius: 2, position: 'relative' },
   sliderFill: { position: 'absolute', left: 0, top: 0, bottom: 0, borderRadius: 2 },
+  slider: { flex: 1, height: 36 },
   sliderValue: { width: 36, textAlign: 'right' },
 
   panIndicator: { position: 'absolute', top: -4, width: 12, height: 12, borderRadius: 6, backgroundColor: '#888888', marginLeft: -6 },
