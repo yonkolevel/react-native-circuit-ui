@@ -11,7 +11,6 @@ import { SongView } from '../SongView';
 import { SongToolbar } from '../SongToolbar';
 import { SongMixerTabBar } from '../SongMixerTabBar';
 import { createMockSong, resetMockIds } from '../../../mocks';
-import type { SongCallbacks } from '../../../types';
 
 function renderWithTheme(ui: React.ReactElement) {
   return render(<ThemeProvider initialMode="dark">{ui}</ThemeProvider>);
