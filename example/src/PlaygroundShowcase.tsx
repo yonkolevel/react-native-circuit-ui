@@ -29,7 +29,7 @@ import { ClipEditorView } from '../../src/features/playground/components/ClipEdi
 import { BottomPanel } from '../../src/features/playground/components/BottomPanel';
 
 // Mock data
-import { createMockSong, createMockPlaygroundsList, createMockDrumClip } from '../../src/features/playground/mocks';
+import { createMockSong, createMockPlaygroundsList, createMockDrumClip, createDrumSamples } from '../../src/features/playground/mocks';
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => {
   const { colors } = useTheme();
@@ -46,7 +46,7 @@ function ShowcaseContent() {
   const mockSong = createMockSong();
   const mockPlaygrounds = createMockPlaygroundsList(4);
   const drumTrack = mockSong.tracks[0]!;
-  const drumClip = createMockDrumClip({ trackID: drumTrack.id, sectionID: mockSong.currentSection.id });
+  const drumClip = createMockDrumClip({ trackID: drumTrack.id, sectionID: mockSong.currentSectionId });
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.mcBlack2 }]}>
@@ -63,7 +63,7 @@ function ShowcaseContent() {
         </Section>
 
         <Section title="SongSections">
-          <SongSectionsView sections={mockSong.sections} currentSectionId={mockSong.currentSection.id} onSelect={() => {}} onAdd={() => {}} />
+          <SongSectionsView sections={mockSong.sections} currentSectionId={mockSong.currentSectionId} onSelect={() => {}} onAdd={() => {}} />
         </Section>
 
         <Section title="TrackView">
@@ -76,7 +76,7 @@ function ShowcaseContent() {
         </Section>
 
         <Section title="DrumPads">
-          <DrumPadsView samples={drumTrack.soundBank.samples} onPadPress={() => {}} onPadRelease={() => {}} />
+          <DrumPadsView samples={createDrumSamples()} onPadPress={() => {}} onPadRelease={() => {}} />
         </Section>
 
         <Section title="PianoKeyboard (Teenage Engineering style)">
@@ -88,7 +88,7 @@ function ShowcaseContent() {
             <ClipEditorView
               clip={drumClip}
               instrumentType="drum"
-              soundBank={drumTrack.soundBank}
+              samples={createDrumSamples()}
               callbacks={{}}
             />
           </View>
@@ -101,7 +101,7 @@ function ShowcaseContent() {
         </Section>
 
         <Section title="SoundBank">
-          <SoundBankView soundBanks={mockSong.soundBanks} selectedSlug={mockSong.soundBanks[0]?.instrumentSlug} categoryFilter="drum" onSelect={() => {}} />
+          <SoundBankView soundBanks={mockSong.tracks.map(t => t.soundBank)}  categoryFilter="drum" onSelect={() => {}} />
         </Section>
 
         <Section title="AddTrackMenu">

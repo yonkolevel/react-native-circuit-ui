@@ -1,31 +1,28 @@
 /**
- * Playground Mock Data Factories
- *
- * Injectable fixtures for all playground types.
- * Every factory returns realistic data matching SwiftUI defaults.
+ * Mock Data Factories — aligned with midicircuit-rn types
  */
 import type {
-  MIDINoteData,
+  ClipNote,
   Sample,
-  SoundBank,
-  SongSection,
-  ClipState,
-  TrackState,
-  SongState,
+  SoundBankRef,
+  Section,
+  Clip,
+  Track,
+  SongViewState,
   PlaygroundState,
 } from '../types';
-// InstrumentType used in createMockTrack parameter type via overrides
-
 import { INSTRUMENT_COLORS } from '../types';
+import type { InstrumentType } from '../types';
 
 // ─── Atomic Factories ───────────────────────────────────────────────────────
 
-let _noteId = 0;
-export function createMockNote(overrides?: Partial<MIDINoteData>): MIDINoteData {
+let _id = 0;
+
+export function createMockNote(overrides?: Partial<ClipNote>): ClipNote {
   return {
-    noteNumber: 60, // Middle C
+    noteNumber: 60,
     velocity: 100,
-    startBeat: 0,
+    position: 0,
     duration: 1,
     ...overrides,
   };
@@ -34,7 +31,7 @@ export function createMockNote(overrides?: Partial<MIDINoteData>): MIDINoteData 
 export function createMockSample(overrides?: Partial<Sample>): Sample {
   const name = overrides?.name ?? 'Kick';
   return {
-    id: `sample-${++_noteId}`,
+    id: `sample-${++_id}`,
     name,
     fileName: `${name.toLowerCase().replace(/\s+/g, '_')}.wav`,
     noteNumber: 36,
@@ -42,124 +39,90 @@ export function createMockSample(overrides?: Partial<Sample>): Sample {
   };
 }
 
-export function createMockSoundBank(
-  overrides?: Partial<SoundBank>
-): SoundBank {
+export function createMockSoundBank(overrides?: Partial<SoundBankRef>): SoundBankRef {
   return {
-    category: 'drums',
-    color: '#1AFFA8',
-    defaultOctave: 4,
-    defaultPreset: 'default',
-    filters: [],
-    instrumentSlug: 'analog-rytm-808',
-    isDeprecated: false,
+    slug: 'analog-rytm-808',
     name: 'Analog Rytm 808 Drums',
-    release: 0.1,
-    samples: [
-      createMockSample({ name: 'Kick', noteNumber: 36 }),
-      createMockSample({ name: 'Snare', noteNumber: 38 }),
-      createMockSample({ name: 'Closed HH', noteNumber: 42 }),
-      createMockSample({ name: 'Open HH', noteNumber: 46 }),
-      createMockSample({ name: 'Clap', noteNumber: 39 }),
-      createMockSample({ name: 'Tom Low', noteNumber: 41 }),
-      createMockSample({ name: 'Tom Mid', noteNumber: 43 }),
-      createMockSample({ name: 'Tom High', noteNumber: 45 }),
-      createMockSample({ name: 'Cymbal', noteNumber: 49 }),
-      createMockSample({ name: 'Ride', noteNumber: 51 }),
-      createMockSample({ name: 'Rim', noteNumber: 37 }),
-      createMockSample({ name: 'Cowbell', noteNumber: 56 }),
-      createMockSample({ name: 'Shaker', noteNumber: 69 }),
-      createMockSample({ name: 'Perc 1', noteNumber: 60 }),
-      createMockSample({ name: 'Perc 2', noteNumber: 61 }),
-      createMockSample({ name: 'FX', noteNumber: 62 }),
-    ],
     ...overrides,
   };
 }
 
-export function createMockMelodicSoundBank(
-  overrides?: Partial<SoundBank>
-): SoundBank {
-  return createMockSoundBank({
-    category: 'keys',
-    color: '#FF6C3A',
-    instrumentSlug: 'argon8-rhode-keys',
-    name: 'Argon 8 Rhode Keys',
-    samples: [],
-    ...overrides,
-  });
-}
-
-// ─── Section Factory ────────────────────────────────────────────────────────
-
-let _sectionId = 0;
-export function createMockSection(
-  overrides?: Partial<SongSection>
-): SongSection {
-  const id = ++_sectionId;
+export function createMockSection(overrides?: Partial<Section>): Section {
+  const id = overrides?.id ?? ++_id;
   return {
-    id: `section-${id}`,
-    name: id === 1 ? 'Intro' : `Section ${id}`,
-    index: id - 1,
-    lengthInBars: 4,
+    id: typeof id === 'number' ? id : _id,
+    name: `Section ${id}`,
     ...overrides,
   };
+}
+
+// ─── Samples (for DrumPads — UI-only, not in songStore) ─────────────────────
+
+export function createDrumSamples(): Sample[] {
+  return [
+    createMockSample({ name: 'Kick', noteNumber: 36 }),
+    createMockSample({ name: 'Snare', noteNumber: 38 }),
+    createMockSample({ name: 'Closed HH', noteNumber: 42 }),
+    createMockSample({ name: 'Open HH', noteNumber: 46 }),
+    createMockSample({ name: 'Clap', noteNumber: 39 }),
+    createMockSample({ name: 'Tom Low', noteNumber: 41 }),
+    createMockSample({ name: 'Tom Mid', noteNumber: 43 }),
+    createMockSample({ name: 'Tom High', noteNumber: 45 }),
+    createMockSample({ name: 'Cymbal', noteNumber: 49 }),
+    createMockSample({ name: 'Ride', noteNumber: 51 }),
+    createMockSample({ name: 'Rim', noteNumber: 37 }),
+    createMockSample({ name: 'Cowbell', noteNumber: 56 }),
+    createMockSample({ name: 'Shaker', noteNumber: 69 }),
+    createMockSample({ name: 'Perc 1', noteNumber: 60 }),
+    createMockSample({ name: 'Perc 2', noteNumber: 61 }),
+    createMockSample({ name: 'FX', noteNumber: 62 }),
+  ];
 }
 
 // ─── Clip Factory ───────────────────────────────────────────────────────────
 
-let _clipId = 0;
-export function createMockClip(overrides?: Partial<ClipState>): ClipState {
-  const id = ++_clipId;
+export function createMockClip(overrides?: Partial<Clip>): Clip {
+  const id = ++_id;
   return {
     id,
+    trackID: 1,
+    sectionID: 1,
     lengthInBars: 4,
     activeLengthInBars: 4,
-    trackID: 1,
-    sectionID: 'section-1',
-    color: INSTRUMENT_COLORS.drum,
-    midiNoteData: [],
-    soundBank: createMockSoundBank(),
-    isInCurrentSection: true,
-    isRecordingEnabled: false,
+    colorHex: INSTRUMENT_COLORS.drum,
+    notes: [],
     ...overrides,
   };
 }
 
-/** Create a clip with a basic drum pattern */
-export function createMockDrumClip(overrides?: Partial<ClipState>): ClipState {
+export function createMockDrumClip(overrides?: Partial<Clip>): Clip {
   return createMockClip({
-    midiNoteData: [
-      // Kick on 1 and 3
-      createMockNote({ noteNumber: 36, startBeat: 0, duration: 0.25 }),
-      createMockNote({ noteNumber: 36, startBeat: 2, duration: 0.25 }),
-      // Snare on 2 and 4
-      createMockNote({ noteNumber: 38, startBeat: 1, duration: 0.25 }),
-      createMockNote({ noteNumber: 38, startBeat: 3, duration: 0.25 }),
-      // Hi-hat on every beat
-      createMockNote({ noteNumber: 42, startBeat: 0, duration: 0.25, velocity: 80 }),
-      createMockNote({ noteNumber: 42, startBeat: 0.5, duration: 0.25, velocity: 60 }),
-      createMockNote({ noteNumber: 42, startBeat: 1, duration: 0.25, velocity: 80 }),
-      createMockNote({ noteNumber: 42, startBeat: 1.5, duration: 0.25, velocity: 60 }),
-      createMockNote({ noteNumber: 42, startBeat: 2, duration: 0.25, velocity: 80 }),
-      createMockNote({ noteNumber: 42, startBeat: 2.5, duration: 0.25, velocity: 60 }),
-      createMockNote({ noteNumber: 42, startBeat: 3, duration: 0.25, velocity: 80 }),
-      createMockNote({ noteNumber: 42, startBeat: 3.5, duration: 0.25, velocity: 60 }),
+    notes: [
+      createMockNote({ noteNumber: 36, position: 0, duration: 0.25 }),
+      createMockNote({ noteNumber: 36, position: 2, duration: 0.25 }),
+      createMockNote({ noteNumber: 38, position: 1, duration: 0.25 }),
+      createMockNote({ noteNumber: 38, position: 3, duration: 0.25 }),
+      createMockNote({ noteNumber: 42, position: 0, duration: 0.25, velocity: 80 }),
+      createMockNote({ noteNumber: 42, position: 0.5, duration: 0.25, velocity: 60 }),
+      createMockNote({ noteNumber: 42, position: 1, duration: 0.25, velocity: 80 }),
+      createMockNote({ noteNumber: 42, position: 1.5, duration: 0.25, velocity: 60 }),
+      createMockNote({ noteNumber: 42, position: 2, duration: 0.25, velocity: 80 }),
+      createMockNote({ noteNumber: 42, position: 2.5, duration: 0.25, velocity: 60 }),
+      createMockNote({ noteNumber: 42, position: 3, duration: 0.25, velocity: 80 }),
+      createMockNote({ noteNumber: 42, position: 3.5, duration: 0.25, velocity: 60 }),
     ],
     ...overrides,
   });
 }
 
-/** Create a clip with a simple melody */
-export function createMockMelodyClip(overrides?: Partial<ClipState>): ClipState {
+export function createMockMelodyClip(overrides?: Partial<Clip>): Clip {
   return createMockClip({
-    color: INSTRUMENT_COLORS.melodic,
-    soundBank: createMockMelodicSoundBank(),
-    midiNoteData: [
-      createMockNote({ noteNumber: 60, startBeat: 0, duration: 1 }), // C4
-      createMockNote({ noteNumber: 64, startBeat: 1, duration: 1 }), // E4
-      createMockNote({ noteNumber: 67, startBeat: 2, duration: 1 }), // G4
-      createMockNote({ noteNumber: 72, startBeat: 3, duration: 1 }), // C5
+    colorHex: INSTRUMENT_COLORS.melodic,
+    notes: [
+      createMockNote({ noteNumber: 60, position: 0, duration: 1 }),
+      createMockNote({ noteNumber: 64, position: 1, duration: 1 }),
+      createMockNote({ noteNumber: 67, position: 2, duration: 1 }),
+      createMockNote({ noteNumber: 72, position: 3, duration: 1 }),
     ],
     ...overrides,
   });
@@ -167,17 +130,16 @@ export function createMockMelodyClip(overrides?: Partial<ClipState>): ClipState 
 
 // ─── Track Factory ──────────────────────────────────────────────────────────
 
-let _trackId = 0;
-export function createMockTrack(overrides?: Partial<TrackState>): TrackState {
-  const id = ++_trackId;
-  const type = overrides?.type ?? 'drum';
+export function createMockTrack(overrides?: Partial<Track>): Track {
+  const id = ++_id;
+  const type: InstrumentType = overrides?.type ?? 'drum';
   return {
     id,
     type,
     title: type === 'drum' ? 'Drums' : type === 'melodic' ? 'Keys' : type === 'bass' ? 'Bass' : 'Audio',
-    color: INSTRUMENT_COLORS[type],
+    colorHex: INSTRUMENT_COLORS[type],
+    soundBank: createMockSoundBank({ slug: `${type}-default`, name: `Default ${type}` }),
     clips: [],
-    soundBank: type === 'drum' ? createMockSoundBank() : createMockMelodicSoundBank(),
     volume: 90,
     pan: 0,
     isMuted: false,
@@ -188,95 +150,66 @@ export function createMockTrack(overrides?: Partial<TrackState>): TrackState {
 
 // ─── Song Factory ───────────────────────────────────────────────────────────
 
-export function createMockSong(overrides?: Partial<SongState>): SongState {
-  const section = createMockSection({ id: 'section-1', name: 'Intro', index: 0 });
+export function createMockSong(overrides?: Partial<SongViewState>): SongViewState {
+  const section1 = createMockSection({ id: 1, name: 'Intro' });
+  const section2 = createMockSection({ id: 2, name: 'Verse' });
+
   const drumTrack = createMockTrack({
-    id: 1,
-    type: 'drum',
-    title: 'Drums',
-    clips: [createMockDrumClip({ trackID: 1, sectionID: section.id })],
+    id: 1, type: 'drum', title: 'Drums',
+    clips: [createMockDrumClip({ trackID: 1, sectionID: section1.id })],
   });
   const keysTrack = createMockTrack({
-    id: 2,
-    type: 'melodic',
-    title: 'Keys',
-    clips: [createMockMelodyClip({ trackID: 2, sectionID: section.id })],
+    id: 2, type: 'melodic', title: 'Keys',
+    clips: [createMockMelodyClip({ trackID: 2, sectionID: section1.id })],
   });
   const bassTrack = createMockTrack({
-    id: 3,
-    type: 'bass',
-    title: 'Bass',
-    clips: [],
+    id: 3, type: 'bass', title: 'Bass',
   });
 
   return {
     id: 'song-1',
-    sections: [section, createMockSection({ id: 'section-2', name: 'Verse', index: 1 })],
-    currentSection: section,
     isPlaying: false,
     tempo: 120,
-    masterVolume: 90,
-    lengthInBeats: 16,
     isLoopEnabled: true,
     isMetronomeEnabled: false,
     isRecording: false,
-    isRecordingArmed: false,
+    sections: [section1, section2],
+    currentSectionId: section1.id,
     tracks: [drumTrack, keysTrack, bassTrack],
-    soundBanks: [createMockSoundBank(), createMockMelodicSoundBank()],
-    currentView: 'song',
     currentBeatPosition: 0,
+    isDirty: false,
+    masterVolume: 90,
+    // UI-only state
+    currentView: 'song',
     zoomLevel: 1,
     isNewTrackMenuVisible: false,
     isSoundBankViewVisible: false,
+    currentSoundBankCategorySelection: undefined,
     isSectionNameEditViewVisible: false,
     isClipSettingsVisible: false,
+    soundBanks: [createMockSoundBank()],
     ...overrides,
   };
 }
 
 // ─── Playground Factory ─────────────────────────────────────────────────────
 
-export function createMockPlayground(
-  overrides?: Partial<PlaygroundState>
-): PlaygroundState {
+export function createMockPlayground(overrides?: Partial<PlaygroundState>): PlaygroundState {
   return {
-    id: 'playground-1',
+    id: `playground-${++_id}`,
     name: 'My First Beat',
     author: 'Ricardo',
     createdAt: new Date().toISOString(),
-    song: createMockSong(),
     isLoading: false,
     ...overrides,
   };
 }
 
-/** Create a list of playgrounds for the dashboard */
 export function createMockPlaygroundsList(count: number = 4): PlaygroundState[] {
-  const names = [
-    'My First Beat',
-    'Sunset Vibes',
-    'Lo-Fi Chill',
-    'Drum & Bass Experiment',
-    'Ambient Textures',
-    'Pop Progression',
-    'Jazz Chords',
-    'Trap Beat',
-  ];
-
+  const names = ['My First Beat', 'Sunset Vibes', 'Lo-Fi Chill', 'Drum & Bass Experiment'];
   return Array.from({ length: count }, (_, i) =>
-    createMockPlayground({
-      id: `playground-${i + 1}`,
-      name: names[i % names.length]!,
-      song: createMockSong({ id: `song-${i + 1}` }),
-    })
+    createMockPlayground({ id: `playground-${i + 1}`, name: names[i % names.length]! })
   );
 }
 
-// ─── Reset ID counters (for tests) ─────────────────────────────────────────
-
-export function resetMockIds(): void {
-  _noteId = 0;
-  _sectionId = 0;
-  _clipId = 0;
-  _trackId = 0;
-}
+export function resetMockIds(): void { _id = 0; }

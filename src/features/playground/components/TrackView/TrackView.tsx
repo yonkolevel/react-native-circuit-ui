@@ -44,12 +44,12 @@ const ClipMIDIPreview = memo(function ClipMIDIPreview({ notes, width, height }: 
   const minNote = Math.min(...notes.map(n => n.noteNumber));
   const maxNote = Math.max(...notes.map(n => n.noteNumber));
   const pitchRange = Math.max(maxNote - minNote, 1);
-  const maxBeat = Math.max(...notes.map(n => n.startBeat + n.duration), 4);
+  const maxBeat = Math.max(...notes.map(n => n.position + n.duration), 4);
 
   return (
     <View style={{ width, height, position: 'relative' }}>
       {notes.map((note, i) => {
-        const x = (note.startBeat / maxBeat) * width;
+        const x = (note.position / maxBeat) * width;
         const w = Math.max((note.duration / maxBeat) * width * 0.9, 2);
         const noteH = Math.max(height / pitchRange, 3);
         const y = height - ((note.noteNumber - minNote) / pitchRange) * (height - noteH) - noteH;
@@ -85,7 +85,7 @@ const ClipCell = memo(function ClipCell({ clip, trackColor, onPress }: ClipCellP
       accessibilityRole="button"
       accessibilityLabel={`Clip ${clip.id}`}
     >
-      <ClipMIDIPreview notes={clip.midiNoteData} width={142} height={72} />
+      <ClipMIDIPreview notes={clip.notes} width={142} height={72} />
     </Pressable>
   );
 });
@@ -124,7 +124,7 @@ export const TrackView = memo(function TrackView({
 
       {/* Clips — horizontal scroll, flush with label */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.clipsRow}>
-        {track.clips.filter(c => c.isInCurrentSection).map(clip => (
+        {track.clips.map(clip => (
           <ClipCell
             key={clip.id}
             clip={clip}
@@ -133,7 +133,7 @@ export const TrackView = memo(function TrackView({
           />
         ))}
         {/* Always show at least section-worth of clip slots */}
-        {track.clips.filter(c => c.isInCurrentSection).length === 0 && (
+        {track.clips.length === 0 && (
           <View style={[styles.emptyClipSlot, { borderColor: trackColor }]}>
             <Icon icon={Icons.plus} size={16} color={trackColor} />
           </View>

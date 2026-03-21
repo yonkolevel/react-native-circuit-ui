@@ -5,10 +5,10 @@ const Slider = (p: any) => null;
 import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
-import type { SongState } from '../../types';
+import type { SongViewState } from '../../types';
 
 export interface SongSettingsProps {
-  song: SongState;
+  song: SongViewState;
   onTempoChange?: (bpm: number) => void;
   onToggleMetronome?: () => void;
   onToggleLoop?: () => void;

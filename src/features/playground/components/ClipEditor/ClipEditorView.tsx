@@ -23,7 +23,7 @@ import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
-import type { ClipState, MIDINoteData, InstrumentType, ClipEditorCallbacks, SoundBank } from '../../types';
+import type { Clip, ClipNote, InstrumentType, ClipEditorCallbacks, Sample } from '../../types';
 
 // ─── ClipEditorToolbar ──────────────────────────────────────────────────────
 // Matches ClipEditorToolbarView.swift exactly:
@@ -88,8 +88,8 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
 // ─── PianoRoll Grid ─────────────────────────────────────────────────────────
 
 interface PianoRollGridProps {
-  notes: MIDINoteData[];
-  soundBank: SoundBank;
+  notes: ClipNote[];
+  samples?: Sample[];
   trackColor: string;
   lengthInBeats: number;
   rowHeight?: number;
@@ -104,7 +104,7 @@ interface PianoRollGridProps {
 }
 
 const PianoRollGrid = memo(function PianoRollGrid({
-  notes, soundBank, trackColor, lengthInBeats,
+  notes, samples, trackColor, lengthInBeats,
   rowHeight = 34, zoomLevel = 1, playheadPosition = 0,
   isExpanded, onNotePress, onPitchLabelTap,
   onToggleExpand, onZoomIn, onZoomOut,
@@ -112,20 +112,20 @@ const PianoRollGrid = memo(function PianoRollGrid({
   const { colors } = useTheme();
 
   // Calculate pitch range from soundbank
-  const totalPitches = Math.max(soundBank.samples.length, 12);
+  const totalPitches = Math.max((samples ?? []).length, 12);
   const BEAT_WIDTH = 40 * zoomLevel;
   const LABEL_WIDTH = 120;
   const gridHeight = totalPitches * rowHeight;
 
   // Get sample name for a pitch index
   const getPitchLabel = (pitchIdx: number): string => {
-    const sample = soundBank.samples[pitchIdx];
+    const sample = (samples ?? [])[pitchIdx];
     return sample?.fileName?.replace('.wav', '').replace('.aif', '') ?? `Note ${pitchIdx}`;
   };
 
   // Check if pitch has notes
   const pitchHasNotes = (pitchIdx: number): boolean => {
-    const noteNum = soundBank.samples[pitchIdx]?.noteNumber ?? pitchIdx;
+    const noteNum = (samples ?? [])[pitchIdx]?.noteNumber ?? pitchIdx;
     return notes.some(n => n.noteNumber === noteNum);
   };
 
@@ -177,12 +177,12 @@ const PianoRollGrid = memo(function PianoRollGrid({
               ))}
               {/* Notes */}
               {notes.map((note, idx) => {
-                const sampleIdx = soundBank.samples.findIndex(s => s.noteNumber === note.noteNumber);
+                const sampleIdx = (samples ?? []).findIndex(s => s.noteNumber === note.noteNumber);
                 const pitchIdx = sampleIdx >= 0 ? sampleIdx : 0;
                 const y = (totalPitches - 1 - pitchIdx) * rowHeight;
                 return (
                   <Pressable key={idx} onPress={() => onNotePress?.(idx)} style={{
-                    position: 'absolute', left: note.startBeat * BEAT_WIDTH, top: y + 1,
+                    position: 'absolute', left: note.position * BEAT_WIDTH, top: y + 1,
                     width: Math.max(note.duration * BEAT_WIDTH - 2, 4), height: rowHeight - 2,
                     backgroundColor: trackColor, borderRadius: 2,
                     justifyContent: 'center', alignItems: 'center',
@@ -254,7 +254,7 @@ const ClipLengthBar = memo(function ClipLengthBar({ lengthInBars, onDecrease, on
 // velocity values ON TOP of bars in orange, beat markers above notes row
 
 interface VelocityLaneProps {
-  notes: MIDINoteData[];
+  notes: ClipNote[];
   trackColor: string;
   selectedNoteName?: string;
   activeLengthInBars?: number;
@@ -340,9 +340,9 @@ const VelocityLane = memo(function VelocityLane({
 // ─── ClipEditorView (Container) ─────────────────────────────────────────────
 
 export interface ClipEditorViewProps {
-  clip: ClipState;
+  clip: Clip;
   instrumentType: InstrumentType;
-  soundBank?: SoundBank;
+  samples?: Sample[];
   isPlaying?: boolean;
   isRecording?: boolean;
   isMetronomeEnabled?: boolean;
@@ -352,14 +352,14 @@ export interface ClipEditorViewProps {
 }
 
 export const ClipEditorView = memo(function ClipEditorView({
-  clip, instrumentType: _instrumentType, soundBank, isPlaying, isRecording, isMetronomeEnabled,
+  clip, instrumentType: _instrumentType, samples, isPlaying, isRecording, isMetronomeEnabled,
   playheadPosition = 0, callbacks, onBack,
 }: ClipEditorViewProps) {
   const { colors } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   const [zoom, setZoom] = useState(1);
-  const trackColor = clip.color;
-  const sb = soundBank || clip.soundBank;
+  const trackColor = clip.colorHex;
+  const samplesList = samples || [];
 
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
@@ -379,8 +379,8 @@ export const ClipEditorView = memo(function ClipEditorView({
 
       {/* Piano Roll */}
       <PianoRollGrid
-        notes={clip.midiNoteData}
-        soundBank={sb}
+        notes={clip.notes}
+        samples={samplesList}
         trackColor={trackColor}
         lengthInBeats={clip.activeLengthInBars * 4}
         playheadPosition={playheadPosition}
@@ -398,9 +398,9 @@ export const ClipEditorView = memo(function ClipEditorView({
       )}
 
       {/* Velocity Lane */}
-      {!isExpanded && clip.midiNoteData.length > 0 && (
+      {!isExpanded && clip.notes.length > 0 && (
         <VelocityLane
-          notes={clip.midiNoteData}
+          notes={clip.notes}
           trackColor={trackColor}
           onVelocityChange={callbacks?.onVelocityChange}
         />

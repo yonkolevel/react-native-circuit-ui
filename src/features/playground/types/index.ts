@@ -1,16 +1,87 @@
 /**
  * Playground Data Models
  *
- * TypeScript interfaces matching MidicircuitKit Swift state models exactly.
- * These are presentation-only types — no business logic, no reducers.
+ * ALIGNED WITH midicircuit-rn/src/stores/songStore.ts
+ * These types mirror the real app's store types exactly.
+ * When integrating, replace these imports with the app's store types.
  */
 
 // ─── Enums ──────────────────────────────────────────────────────────────────
 
-/** Matches Swift InstrumentType enum */
 export type InstrumentType = 'drum' | 'melodic' | 'bass' | 'audio';
 
-/** Matches Swift Song.State.Destination */
+export type NotePrecision = '1/4' | '1/8' | '1/16' | '1/32' | 'off';
+
+// ─── Core Models (matching midicircuit-rn songStore exactly) ────────────────
+
+/** Matches midicircuit-rn ClipNote */
+export interface ClipNote {
+  noteNumber: number;
+  velocity: number; // 0-127
+  /** Position in beats (e.g., 0, 0.25, 1.5) */
+  position: number;
+  /** Duration in beats */
+  duration: number;
+}
+
+/** Matches midicircuit-rn SoundBankRef */
+export interface SoundBankRef {
+  slug: string;
+  name: string;
+}
+
+/** Matches midicircuit-rn Section */
+export interface Section {
+  id: number;
+  name: string;
+}
+
+/** Matches midicircuit-rn Clip */
+export interface Clip {
+  id: number;
+  trackID: number;
+  sectionID: number;
+  lengthInBars: number;
+  activeLengthInBars: number;
+  colorHex: string;
+  notes: ClipNote[];
+  audioFileReference?: string;
+  audioFileDuration?: number;
+}
+
+/** Matches midicircuit-rn Track */
+export interface Track {
+  id: number;
+  type: InstrumentType;
+  title: string;
+  colorHex: string;
+  soundBank: SoundBankRef;
+  clips: Clip[];
+  volume: number; // 0-100
+  pan: number; // -1 to 1
+  isMuted: boolean;
+  isSoloed: boolean;
+}
+
+/** Matches midicircuit-rn SongState */
+export interface SongState {
+  id: string;
+  isPlaying: boolean;
+  tempo: number;
+  isLoopEnabled: boolean;
+  isMetronomeEnabled: boolean;
+  isRecording: boolean;
+  sections: Section[];
+  currentSectionId: number;
+  tracks: Track[];
+  currentBeatPosition: number;
+  isDirty: boolean;
+  masterVolume: number;
+}
+
+// ─── UI-only state (not in midicircuit-rn songStore) ────────────────────────
+// These exist only for UI presentation and don't need to sync with the app store.
+
 export type SongDestination =
   | 'song'
   | 'mixer'
@@ -18,126 +89,25 @@ export type SongDestination =
   | { kind: 'pianoRoll'; config: ClipEditorConfig }
   | { kind: 'audioClipEditor'; config: AudioClipEditorConfig };
 
-/** Note precision grid values */
-export type NotePrecision = '1/4' | '1/8' | '1/16' | '1/32' | 'off';
-
-// ─── Core Models ────────────────────────────────────────────────────────────
-
-/** Matches Swift MIDINoteData */
-export interface MIDINoteData {
-  noteNumber: number; // MIDI note 0-127
-  velocity: number; // 0-127
-  startBeat: number; // Beat position
-  duration: number; // Duration in beats
-}
-
-/** Matches Swift Sample */
-export interface Sample {
-  id: string;
-  name: string;
-  fileName: string;
-  noteNumber: number;
-}
-
-/** Matches Swift SoundBank */
-export interface SoundBank {
-  category: string;
-  color: string;
-  defaultOctave: number;
-  defaultPreset: string;
-  filters: string[];
-  instrumentSlug: string;
-  isDeprecated: boolean;
-  name: string;
-  release: number;
-  samples: Sample[];
-  presetURL?: string;
-  previewURL?: string;
-}
-
-/** Matches Swift SongSection.State */
-export interface SongSection {
-  id: string;
-  name: string;
-  index: number;
-  lengthInBars: number;
-}
-
-/** Matches Swift Clip.State */
-export interface ClipState {
-  id: number;
-  lengthInBars: number;
-  activeLengthInBars: number;
-  trackID: number;
-  sectionID: string;
-  color: string;
-  midiNoteData: MIDINoteData[];
-  soundBank: SoundBank;
-  isInCurrentSection: boolean;
-  isRecordingEnabled: boolean;
-  // Audio clip fields
-  audioFileReference?: string;
-  audioFileDuration?: number;
-}
-
-/** Matches Swift Track.State */
-export interface TrackState {
-  id: number;
-  type: InstrumentType;
-  title: string;
-  color: string;
-  clips: ClipState[];
-  soundBank: SoundBank;
-  volume: number; // 0-100 (SwiftUI default: 90)
-  pan: number; // -1 to 1
-  isMuted: boolean;
-  isSoloed: boolean;
-}
-
-/** Matches Swift Song.State */
-export interface SongState {
-  id: string;
-  sections: SongSection[];
-  currentSection: SongSection;
-  isPlaying: boolean;
-  tempo: number; // BPM (default: 120)
-  masterVolume: number;
-  lengthInBeats: number;
-  isLoopEnabled: boolean;
-  isMetronomeEnabled: boolean;
-  isRecording: boolean;
-  isRecordingArmed: boolean;
-  tracks: TrackState[];
-  soundBanks: SoundBank[];
+export interface SongViewState extends SongState {
   currentView: SongDestination;
-  currentBeatPosition: number;
   zoomLevel: number;
   isNewTrackMenuVisible: boolean;
   isSoundBankViewVisible: boolean;
   currentSoundBankCategorySelection?: InstrumentType;
   isSectionNameEditViewVisible: boolean;
   isClipSettingsVisible: boolean;
-  editingSection?: SongSection;
+  soundBanks: SoundBankRef[];
 }
 
-/** Matches Swift Playground.State */
 export interface PlaygroundState {
   id: string;
   name: string;
   coverImage?: string;
   author: string;
-  createdAt: string; // ISO date
+  createdAt: string;
   updatedAt?: string;
-  song: SongState;
   isLoading: boolean;
-}
-
-/** Playgrounds dashboard state */
-export interface PlaygroundsDashboardState {
-  playgrounds: PlaygroundState[];
-  currentPlayground?: PlaygroundState;
-  isLoading: boolean;
-  isImportingBundle: boolean;
 }
 
 // ─── Config Types ───────────────────────────────────────────────────────────
@@ -166,7 +136,7 @@ export interface SongCallbacks {
   onClipSelect?: (clipId: number, trackId: number) => void;
   onAddTrack?: (type: InstrumentType) => void;
   onDeleteTrack?: (trackId: number) => void;
-  onSectionSelect?: (sectionId: string) => void;
+  onSectionSelect?: (sectionId: number) => void;
   onNavigate?: (destination: SongDestination) => void;
   onToggleMetronome?: () => void;
   onToggleLoop?: () => void;
@@ -181,9 +151,9 @@ export interface MixerCallbacks {
 }
 
 export interface ClipEditorCallbacks {
-  onNoteAdd?: (note: MIDINoteData) => void;
+  onNoteAdd?: (note: ClipNote) => void;
   onNoteDelete?: (noteIndex: number) => void;
-  onNoteMove?: (noteIndex: number, newStartBeat: number, newNoteNumber: number) => void;
+  onNoteMove?: (noteIndex: number, newPosition: number, newNoteNumber: number) => void;
   onNoteResize?: (noteIndex: number, newDuration: number) => void;
   onVelocityChange?: (noteIndex: number, velocity: number) => void;
   onQuantize?: (precision: NotePrecision) => void;
@@ -204,20 +174,18 @@ export interface PianoKeyCallbacks {
 
 // ─── Instrument Color Map ───────────────────────────────────────────────────
 
-/** Matches Swift InstrumentType.color computed property */
 export const INSTRUMENT_COLORS: Record<InstrumentType, string> = {
-  drum: '#1AFFA8', // mcGreen2
+  drum: '#1AFFA8',   // mcGreen2
   melodic: '#FF6C3A', // mcOrange2
-  bass: '#3AA0FF', // mcBlue2 (NOT orange — confirmed from TrackView.swift)
-  audio: '#FF3A6B', // mcPink2
+  bass: '#3AA0FF',   // mcBlue2
+  audio: '#FF3A6B',  // mcPink2
 };
 
-/** Matches Swift InstrumentType.icon() */
 export const INSTRUMENT_ICONS: Record<InstrumentType, string> = {
-  drum: 'grid-2x2', // square.grid.2x2
-  melodic: 'music-3', // music.quarternote.3
-  bass: 'guitar', // guitars
-  audio: 'disc-3', // recordingtape
+  drum: 'square.grid.2x2',
+  melodic: 'music.quarternote.3',
+  bass: 'guitars',
+  audio: 'mic.fill',
 };
 
 // ─── Constants ──────────────────────────────────────────────────────────────
@@ -225,6 +193,36 @@ export const INSTRUMENT_ICONS: Record<InstrumentType, string> = {
 export const CLIP_CONSTANTS = {
   BEATS_PER_BAR: 4,
   STEPS_PER_BEAT: 4,
-  STEPS_PER_BAR: 16, // 4 * 4
+  STEPS_PER_BAR: 16,
   MAX_BARS: 16,
 } as const;
+
+// ─── Deprecated aliases (for backward compat during migration) ──────────────
+// Remove these once all components are updated
+
+/** @deprecated Use ClipNote */
+export type MIDINoteData = ClipNote;
+/** @deprecated Use Clip */
+export type ClipState = Clip;
+/** @deprecated Use Track */
+export type TrackState = Track;
+/** @deprecated Use Section */
+export type SongSection = Section;
+/** @deprecated Use SoundBankRef */
+export type SoundBank = SoundBankRef;
+/** @deprecated Use SongViewState */
+export type SongStateUI = SongViewState;
+
+// Re-export Sample for DrumPads (not in midicircuit-rn yet — UI-only)
+export interface Sample {
+  id: string;
+  name: string;
+  fileName: string;
+  noteNumber: number;
+}
+
+/** Extended sound bank for UI display (SoundBankView needs category + slug) */
+export interface SoundBankDisplay extends SoundBankRef {
+  category?: string;
+  colorHex?: string;
+}

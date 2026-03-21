@@ -4,7 +4,7 @@ import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
 import type { SongSection } from '../../types';
 
-interface SectionPillProps { section: SongSection; isActive: boolean; onPress?: (id: string) => void; }
+interface SectionPillProps { section: SongSection; isActive: boolean; onPress?: (id: number) => void; }
 
 export const SectionPill = memo(function SectionPill({ section, isActive, onPress }: SectionPillProps) {
   const { colors } = useTheme();
@@ -19,11 +19,11 @@ export const SectionPill = memo(function SectionPill({ section, isActive, onPres
 
 export interface SongSectionsViewProps {
   sections: SongSection[];
-  currentSectionId: string;
-  onSelect?: (id: string) => void;
+  currentSectionId: number;
+  onSelect?: (id: number) => void;
   onAdd?: () => void;
-  onDelete?: (id: string) => void;
-  onEdit?: (id: string) => void;
+  onDelete?: (id: number) => void;
+  onEdit?: (id: number) => void;
 }
 
 export const SongSectionsView = memo(function SongSectionsView({ sections, currentSectionId, onSelect, onAdd }: SongSectionsViewProps) {

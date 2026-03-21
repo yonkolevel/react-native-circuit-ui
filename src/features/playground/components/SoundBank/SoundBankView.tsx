@@ -14,10 +14,10 @@ import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
 import { Icon, Icons } from '../../../../components/SFSymbol';
-import type { SoundBank, InstrumentType } from '../../types';
+import type { SoundBankDisplay, InstrumentType } from '../../types';
 
 export interface SoundBankViewProps {
-  soundBanks: SoundBank[];
+  soundBanks: SoundBankDisplay[];
   selectedSlug?: string;
   categoryFilter?: InstrumentType;
   categoryName?: string;
@@ -36,7 +36,7 @@ export const SoundBankView = memo(function SoundBankView({
     categoryFilter ? soundBanks.filter(sb => sb.category === categoryFilter) : soundBanks,
     [soundBanks, categoryFilter]);
 
-  const selectedBank = filtered.find(sb => sb.instrumentSlug === selectedSlug);
+  const selectedBank = filtered.find(sb => sb.slug === selectedSlug);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack4 }]}>
@@ -56,13 +56,13 @@ export const SoundBankView = memo(function SoundBankView({
       {/* Sound bank list */}
       <ScrollView>
         {filtered.map((sb, idx) => {
-          const isSelected = sb.instrumentSlug === selectedSlug;
-          const isPlaying = playingSlug === sb.instrumentSlug;
+          const isSelected = sb.slug === selectedSlug;
+          const isPlaying = playingSlug === sb.slug;
 
           return (
-            <View key={sb.instrumentSlug}>
+            <View key={sb.slug}>
               <Pressable
-                onPress={() => onSelect?.(sb.instrumentSlug)}
+                onPress={() => onSelect?.(sb.slug)}
                 style={styles.item}
                 accessibilityRole="button"
                 accessibilityState={{ selected: isSelected }}
@@ -84,8 +84,8 @@ export const SoundBankView = memo(function SoundBankView({
                     if (isPlaying) {
                       setPlayingSlug(null);
                     } else {
-                      setPlayingSlug(sb.instrumentSlug);
-                      onPreview?.(sb.instrumentSlug);
+                      setPlayingSlug(sb.slug);
+                      onPreview?.(sb.slug);
                     }
                   }}
                   hitSlop={8}

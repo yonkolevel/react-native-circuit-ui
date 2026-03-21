@@ -80,7 +80,7 @@ export const TrackStrip: React.FC<TrackStripProps> = memo(
         {/* Header row: label + mute/solo buttons */}
         <View style={styles.headerRow}>
           <TrackLabel
-            color={track.color}
+            color={track.colorHex}
             name={track.title}
             testID={`${testID}-label`}
           />
@@ -105,7 +105,7 @@ export const TrackStrip: React.FC<TrackStripProps> = memo(
           </Text>
           <VolumeFader
             value={track.volume}
-            trackColor={track.color}
+            trackColor={track.colorHex}
             isAudible={isAudible}
             onValueChange={handleVolumeChange}
             testID={`${testID}-volume`}

@@ -23,10 +23,10 @@ import { DrumPadsView } from '../DrumPads';
 import { PianoKeyboard } from '../PianoKeyboard';
 import { AddTrackMenu } from '../Toolbar';
 import { SoundBankView } from '../SoundBank';
-import type { SongState, SongCallbacks, SongDestination, MixerCallbacks, ClipEditorCallbacks } from '../../types';
+import type { SongViewState, SongCallbacks, SongDestination, MixerCallbacks, ClipEditorCallbacks } from '../../types';
 
 export interface SongViewProps {
-  song: SongState;
+  song: SongViewState;
   callbacks?: SongCallbacks;
   mixerCallbacks?: MixerCallbacks;
   clipEditorCallbacks?: ClipEditorCallbacks;
@@ -72,7 +72,7 @@ export const SongView = memo(function SongView({
           <ClipEditorView
             clip={clip}
             instrumentType={view.config.instrumentType}
-            soundBank={song.tracks.find(t => t.id === view.config.trackId)?.soundBank}
+            
             isPlaying={song.isPlaying}
             isRecording={song.isRecording}
             isMetronomeEnabled={song.isMetronomeEnabled}
@@ -100,7 +100,7 @@ export const SongView = memo(function SongView({
             {/* Sections bar */}
             <SongSectionsView
               sections={song.sections}
-              currentSectionId={song.currentSection.id}
+              currentSectionId={song.currentSectionId}
               onSelect={(id) => callbacks?.onSectionSelect?.(id)}
               onAdd={() => {}}
             />
@@ -127,15 +127,15 @@ export const SongView = memo(function SongView({
               >
                 {selectedTrack.type === 'drum' ? (
                   <DrumPadsView
-                    samples={selectedTrack.soundBank.samples}
+                    samples={[]}
                     onPadPress={() => {}}
                     onPadRelease={() => {}}
-                    highlightColor={selectedTrack.color}
+                    highlightColor={selectedTrack.colorHex}
                   />
                 ) : (
                   <PianoKeyboard
                     numberOfOctaves={2}
-                    highlightColor={selectedTrack.color}
+                    highlightColor={selectedTrack.colorHex}
                     showNoteNames
                     onNoteOn={() => {}}
                     onNoteOff={() => {}}

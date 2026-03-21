@@ -22,13 +22,13 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
-import type { SongState, SongCallbacks } from '../../types';
+import type { SongViewState, SongCallbacks } from '../../types';
 
 // ─── Props ──────────────────────────────────────────────────────────────────
 
 export interface SongToolbarProps {
   /** Song state — reads isPlaying, isLoopEnabled, isMetronomeEnabled */
-  song: SongState;
+  song: SongViewState;
   /** Callback handlers for transport actions */
   callbacks?: SongCallbacks;
   /** Container style override */
