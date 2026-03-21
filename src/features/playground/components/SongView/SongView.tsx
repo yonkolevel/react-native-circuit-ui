@@ -44,8 +44,8 @@ const ClipCell = memo(function ClipCell({ clip, color, onPress }: { clip?: Clip;
   if (!clip) {
     // Empty clip — plus icon with stroke border
     return (
-      <Pressable onPress={onPress} style={[styles.clipCell, { borderColor: color, borderWidth: 1 }]}>
-        <Icon icon={Icons.plus} size={14} color={color} />
+      <Pressable onPress={onPress} style={[styles.clipCell, { borderColor: color, borderWidth: 0.5 }]}>
+        <Icon icon={Icons.plus} size={12} color={color} />
       </Pressable>
     );
   }
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   sectionTab: {
     width: 80,
-    height: 50,
+    height: 44,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 0,

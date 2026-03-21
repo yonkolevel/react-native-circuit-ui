@@ -71,14 +71,24 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
       <View
         style={[
           styles.container,
-          { backgroundColor: colors.card, borderBottomColor: colors.divider },
+          { backgroundColor: colors.mcBlack, borderBottomColor: 'transparent' },
           style,
         ]}
         accessibilityRole="toolbar"
         accessibilityLabel="Song toolbar"
         testID="song-toolbar"
       >
-        {/* Left spacer for centering */}
+        {/* Back button — matches iOS chevron.left at x=28 */}
+        <Pressable
+          onPress={callbacks?.onBack}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel="Back"
+          style={styles.backButton}
+        >
+          <Icon icon={Icons.back} size={20} color={colors.secondaryText} />
+        </Pressable>
+
         <View style={styles.spacer} />
 
         {/* Transport Controls — centered */}
@@ -171,6 +181,7 @@ const styles = StyleSheet.create({
     paddingVertical: makeSpacing(2), // 8
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
+  backButton: { paddingHorizontal: 8 },
   spacer: {
     flex: 1,
     alignItems: 'flex-end',
