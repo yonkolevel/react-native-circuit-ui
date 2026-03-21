@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		10B05FD9081B5D8AB8B632E6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4C8C9A2A68703134D8D1D097 /* PrivacyInfo.xcprivacy */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -14,8 +15,10 @@
 		96905EF65AED1B983A6B3ABC /* libPods-example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-example.a */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		D459EF0B3835447787AAFBF0 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46EF2C9E3CA64555BC761294 /* noop-file.swift */; };
-		EE44F4D2F79A31225D736656 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 18777BCB6FD2198F57EC53EF /* PrivacyInfo.xcprivacy */; };
+		F29D094898194C0E93D829D0 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D116CD04894EF88DA32729 /* noop-file.swift */; };
+		BDC9A06070042EC0B4E9683F /* RCTMultiTouchOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C0565E427DA55393C6AC75 /* RCTMultiTouchOverlay.swift */; };
+		25FC69227784A8DD034C2F66 /* RCTMultiTouchOverlayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DAF74C30B9E4779DE7F776 /* RCTMultiTouchOverlayManager.swift */; };
+		C4145B71FA328B125D528710 /* RCTMultiTouchOverlayManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E1A2CCA1D928B3A2C18F0634 /* RCTMultiTouchOverlayManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,16 +28,19 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = example/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = example/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = example/main.m; sourceTree = "<group>"; };
-		18777BCB6FD2198F57EC53EF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = example/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		46EF2C9E3CA64555BC761294 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "example/noop-file.swift"; sourceTree = "<group>"; };
+		16D116CD04894EF88DA32729 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "example/noop-file.swift"; sourceTree = "<group>"; };
+		4C8C9A2A68703134D8D1D097 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = example/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2E3173556A471DD304B334 /* Pods-example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-example.debug.xcconfig"; path = "Target Support Files/Pods-example/Pods-example.debug.xcconfig"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-example.release.xcconfig"; path = "Target Support Files/Pods-example/Pods-example.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = example/SplashScreen.storyboard; sourceTree = "<group>"; };
+		B1CCDD95928B48F58D65E52D /* example-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "example-Bridging-Header.h"; path = "example/example-Bridging-Header.h"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-example/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		FCC59A0322954AE2881B53A0 /* example-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "example-Bridging-Header.h"; path = "example/example-Bridging-Header.h"; sourceTree = "<group>"; };
+		74C0565E427DA55393C6AC75 /* RCTMultiTouchOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RCTMultiTouchOverlay.swift; path = example/RCTMultiTouchOverlay.swift; sourceTree = "<group>"; };
+		22DAF74C30B9E4779DE7F776 /* RCTMultiTouchOverlayManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RCTMultiTouchOverlayManager.swift; path = example/RCTMultiTouchOverlayManager.swift; sourceTree = "<group>"; };
+		E1A2CCA1D928B3A2C18F0634 /* RCTMultiTouchOverlayManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RCTMultiTouchOverlayManager.m; path = example/RCTMultiTouchOverlayManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,9 +65,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				46EF2C9E3CA64555BC761294 /* noop-file.swift */,
-				FCC59A0322954AE2881B53A0 /* example-Bridging-Header.h */,
-				18777BCB6FD2198F57EC53EF /* PrivacyInfo.xcprivacy */,
+				16D116CD04894EF88DA32729 /* noop-file.swift */,
+				B1CCDD95928B48F58D65E52D /* example-Bridging-Header.h */,
+				4C8C9A2A68703134D8D1D097 /* PrivacyInfo.xcprivacy */,
 			);
 			name = example;
 			sourceTree = "<group>";
@@ -147,13 +153,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "example" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				426ABB86EC2DC545B3F0F911 /* [Expo] Configure project */,
+				7DE052DC70B9F5C1E4BE14B2 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				A54C5269E48053C3E8564851 /* [CP] Embed Pods Frameworks */,
+				2E539666ACB6834B22655DA7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -203,7 +209,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				EE44F4D2F79A31225D736656 /* PrivacyInfo.xcprivacy in Resources */,
+				10B05FD9081B5D8AB8B632E6 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,7 +253,25 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		426ABB86EC2DC545B3F0F911 /* [Expo] Configure project */ = {
+		2E539666ACB6834B22655DA7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-example/Pods-example-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-example/Pods-example-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7DE052DC70B9F5C1E4BE14B2 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -300,24 +324,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-example/Pods-example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A54C5269E48053C3E8564851 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-example/Pods-example-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-example/Pods-example-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -325,10 +331,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BDC9A06070042EC0B4E9683F /* RCTMultiTouchOverlay.swift in Sources */,
+				25FC69227784A8DD034C2F66 /* RCTMultiTouchOverlayManager.swift in Sources */,
+				C4145B71FA328B125D528710 /* RCTMultiTouchOverlayManager.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
-				D459EF0B3835447787AAFBF0 /* noop-file.swift in Sources */,
+				F29D094898194C0E93D829D0 /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

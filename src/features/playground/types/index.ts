@@ -114,6 +114,7 @@ export interface SongState {
   zoomLevel: number;
   isNewTrackMenuVisible: boolean;
   isSoundBankViewVisible: boolean;
+  currentSoundBankCategorySelection?: InstrumentType;
   isSectionNameEditViewVisible: boolean;
   isClipSettingsVisible: boolean;
   editingSection?: SongSection;
