@@ -252,8 +252,9 @@ export const SongView = memo(function SongView({
 
                 {/* Absolute labels column — overlaid on left */}
                 <View style={s.labelsOverlay}>
-                  {/* iOS uses .padding(.top, 54) for labels below section header */}
-                  <View style={{ height: 54 }} />
+                  {/* iOS: .padding(.top, 54). labelsOverlay has gap:4 between children,
+                      so spacer=SECTION_H(50) + gap(4) = 54 total offset */}
+                  <View style={s.labelsSpacer} />
                   {song.tracks.map((t) => (
                     <Pressable
                       key={t.id}
@@ -353,6 +354,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
   },
+  labelsSpacer: { height: SECTION_H },
   labelTxt: { fontSize: 10, fontWeight: '500' as const },
   sections: {
     flexDirection: 'row',
