@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     paddingVertical: makeSpacing(2), // 8
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  backButton: { paddingHorizontal: 8 },
+  backButton: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#313336', justifyContent: 'center' as const, alignItems: 'center' as const },
   spacer: {
     flex: 1,
     alignItems: 'flex-end',

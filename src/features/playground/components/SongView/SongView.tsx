@@ -31,7 +31,7 @@ const TRACK_LABELS: Record<string, string> = {
 };
 const CELL_W = 80;
 const CELL_H = 60;
-const SECTION_H = 44;
+const SECTION_H = 50;
 const GAP = 4;
 
 // ── Clip Cell ───────────────────────────────────────────────────────────────
@@ -39,8 +39,8 @@ const GAP = 4;
 const ClipCell = memo(function ClipCell({ clip, color, onPress }: { clip?: Clip; color: string; onPress?: () => void }) {
   if (!clip) {
     return (
-      <Pressable onPress={onPress} style={[s.cell, { borderColor: color, borderWidth: 0.5 }]}>
-        <Icon icon={Icons.plus} size={12} color={color} />
+      <Pressable onPress={onPress} style={[s.cell, { backgroundColor: color, borderRadius: 6 }]}>
+        <Icon icon={Icons.plus} size={14} color={'rgba(0,0,0,0.3)'} />
       </Pressable>
     );
   }

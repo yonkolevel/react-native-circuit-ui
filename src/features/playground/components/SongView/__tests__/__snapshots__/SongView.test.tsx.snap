@@ -421,7 +421,12 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
     onStartShouldSetResponder={[Function]}
     style={
       {
-        "paddingHorizontal": 8,
+        "alignItems": "center",
+        "backgroundColor": "#313336",
+        "borderRadius": 18,
+        "height": 36,
+        "justifyContent": "center",
+        "width": 36,
       }
     }
   >
@@ -740,7 +745,12 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
     onStartShouldSetResponder={[Function]}
     style={
       {
-        "paddingHorizontal": 8,
+        "alignItems": "center",
+        "backgroundColor": "#313336",
+        "borderRadius": 18,
+        "height": 36,
+        "justifyContent": "center",
+        "width": 36,
       }
     }
   >
@@ -1072,7 +1082,12 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
       onStartShouldSetResponder={[Function]}
       style={
         {
-          "paddingHorizontal": 8,
+          "alignItems": "center",
+          "backgroundColor": "#313336",
+          "borderRadius": 18,
+          "height": 36,
+          "justifyContent": "center",
+          "width": 36,
         }
       }
     >
@@ -2986,7 +3001,12 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
       onStartShouldSetResponder={[Function]}
       style={
         {
-          "paddingHorizontal": 8,
+          "alignItems": "center",
+          "backgroundColor": "#313336",
+          "borderRadius": 18,
+          "height": 36,
+          "justifyContent": "center",
+          "width": 36,
         }
       }
     >
@@ -3548,7 +3568,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
       onStartShouldSetResponder={[Function]}
       style={
         {
-          "paddingHorizontal": 8,
+          "alignItems": "center",
+          "backgroundColor": "#313336",
+          "borderRadius": 18,
+          "height": 36,
+          "justifyContent": "center",
+          "width": 36,
         }
       }
     >
@@ -3841,7 +3866,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
             <View
               style={
                 {
-                  "height": 48,
+                  "height": 54,
                 }
               }
             />
@@ -4126,7 +4151,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                       [
                         {
                           "alignItems": "center",
-                          "height": 44,
+                          "height": 50,
                           "justifyContent": "center",
                           "width": 80,
                         },
@@ -4192,7 +4217,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                       [
                         {
                           "alignItems": "center",
-                          "height": 44,
+                          "height": 50,
                           "justifyContent": "center",
                           "width": 80,
                         },
@@ -4258,7 +4283,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                       [
                         {
                           "alignItems": "center",
-                          "height": 44,
+                          "height": 50,
                           "justifyContent": "center",
                           "width": 80,
                         },
@@ -4540,16 +4565,16 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           "width": 80,
                         },
                         {
-                          "borderColor": "#1AFFA8",
-                          "borderWidth": 0.5,
+                          "backgroundColor": "#1AFFA8",
+                          "borderRadius": 6,
                         },
                       ]
                     }
                   >
                     <View>
                       <View
-                        color="#1AFFA8"
-                        size={12}
+                        color="rgba(0,0,0,0.3)"
+                        size={14}
                         testID="lucide-Plus"
                       />
                     </View>
@@ -4712,16 +4737,16 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           "width": 80,
                         },
                         {
-                          "borderColor": "#FF6C3A",
-                          "borderWidth": 0.5,
+                          "backgroundColor": "#FF6C3A",
+                          "borderRadius": 6,
                         },
                       ]
                     }
                   >
                     <View>
                       <View
-                        color="#FF6C3A"
-                        size={12}
+                        color="rgba(0,0,0,0.3)"
+                        size={14}
                         testID="lucide-Plus"
                       />
                     </View>
@@ -4775,16 +4800,16 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           "width": 80,
                         },
                         {
-                          "borderColor": "#3AA0FF",
-                          "borderWidth": 0.5,
+                          "backgroundColor": "#3AA0FF",
+                          "borderRadius": 6,
                         },
                       ]
                     }
                   >
                     <View>
                       <View
-                        color="#3AA0FF"
-                        size={12}
+                        color="rgba(0,0,0,0.3)"
+                        size={14}
                         testID="lucide-Plus"
                       />
                     </View>
@@ -4829,16 +4854,16 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           "width": 80,
                         },
                         {
-                          "borderColor": "#3AA0FF",
-                          "borderWidth": 0.5,
+                          "backgroundColor": "#3AA0FF",
+                          "borderRadius": 6,
                         },
                       ]
                     }
                   >
                     <View>
                       <View
-                        color="#3AA0FF"
-                        size={12}
+                        color="rgba(0,0,0,0.3)"
+                        size={14}
                         testID="lucide-Plus"
                       />
                     </View>
