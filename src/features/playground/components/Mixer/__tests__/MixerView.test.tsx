@@ -22,9 +22,7 @@ describe('MixerView snapshots', () => {
   });
 
   it('matches snapshot with muted track', () => {
-    const tracks = [
-      createMockTrack({ id: 1, type: 'drum', isMuted: true }),
-    ];
+    const tracks = [createMockTrack({ id: 1, type: 'drum', isMuted: true })];
     const tree = renderWithTheme(<MixerView tracks={tracks} />);
     expect(tree.toJSON()).toMatchSnapshot();
   });

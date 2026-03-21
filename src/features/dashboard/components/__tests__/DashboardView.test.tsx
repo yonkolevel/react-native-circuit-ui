@@ -13,7 +13,12 @@ import { ThemeProvider } from '../../../../theme';
 import { DashboardView } from '../DashboardView';
 import type { DashboardTab } from '../../types';
 
-const ALL_TABS: DashboardTab[] = ['myCircuits', 'discover', 'profile', 'playgrounds'];
+const ALL_TABS: DashboardTab[] = [
+  'myCircuits',
+  'discover',
+  'profile',
+  'playgrounds',
+];
 
 function renderWithTheme(ui: React.ReactElement) {
   return render(<ThemeProvider initialMode="dark">{ui}</ThemeProvider>);
@@ -24,7 +29,7 @@ describe('DashboardView', () => {
     const { getByText } = renderWithTheme(
       <DashboardView tabs={ALL_TABS} selectedTab="myCircuits">
         <Text>Hello Dashboard</Text>
-      </DashboardView>,
+      </DashboardView>
     );
 
     expect(getByText('Hello Dashboard')).toBeTruthy();
@@ -34,7 +39,7 @@ describe('DashboardView', () => {
     const { getByText } = renderWithTheme(
       <DashboardView tabs={ALL_TABS} selectedTab="myCircuits">
         <Text>Content</Text>
-      </DashboardView>,
+      </DashboardView>
     );
 
     expect(getByText('MY CIRCUITS')).toBeTruthy();
@@ -47,7 +52,7 @@ describe('DashboardView', () => {
     const { getByLabelText } = renderWithTheme(
       <DashboardView tabs={ALL_TABS} selectedTab="profile">
         <Text>Content</Text>
-      </DashboardView>,
+      </DashboardView>
     );
 
     expect(getByLabelText('PROFILE').props.accessibilityState).toEqual({
@@ -61,9 +66,13 @@ describe('DashboardView', () => {
   it('fires onTabChange when a tab is pressed', () => {
     const onTabChange = jest.fn();
     const { getByLabelText } = renderWithTheme(
-      <DashboardView tabs={ALL_TABS} selectedTab="myCircuits" onTabChange={onTabChange}>
+      <DashboardView
+        tabs={ALL_TABS}
+        selectedTab="myCircuits"
+        onTabChange={onTabChange}
+      >
         <Text>Content</Text>
-      </DashboardView>,
+      </DashboardView>
     );
 
     fireEvent.press(getByLabelText('PLAYGROUNDS'));
@@ -75,7 +84,7 @@ describe('DashboardView', () => {
       <DashboardView tabs={ALL_TABS} selectedTab="myCircuits">
         <Text>First Child</Text>
         <Text>Second Child</Text>
-      </DashboardView>,
+      </DashboardView>
     );
 
     expect(getByText('First Child')).toBeTruthy();
@@ -86,7 +95,7 @@ describe('DashboardView', () => {
     const { getByLabelText } = renderWithTheme(
       <DashboardView tabs={ALL_TABS} selectedTab="myCircuits">
         <Text>Content</Text>
-      </DashboardView>,
+      </DashboardView>
     );
 
     // Should not throw

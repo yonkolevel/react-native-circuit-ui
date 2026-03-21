@@ -1,0 +1,1405 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`] = `
+<View
+  accessibilityLabel="Drum pads"
+  style={
+    {
+      "aspectRatio": 1,
+      "position": "relative",
+    }
+  }
+>
+  <View
+    pointerEvents="none"
+    style={
+      {
+        "flex": 1,
+        "gap": 1,
+      }
+    }
+  >
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          shaker.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          perc_1.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          perc_2.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          fx.wav
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          cymbal.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          ride.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          rim.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          cowbell.wav
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          clap.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          tom_low.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          tom_mid.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          tom_high.wav
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          kick.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          snare.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          closed_hh.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          open_hh.wav
+        </Text>
+      </View>
+    </View>
+  </View>
+  <RCTMultiTouchOverlay
+    columns={4}
+    onPadPress={[Function]}
+    onPadRelease={[Function]}
+    rows={4}
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+  />
+</View>
+`;
+
+exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
+<View
+  accessibilityLabel="Drum pads"
+  style={
+    {
+      "aspectRatio": 1,
+      "position": "relative",
+    }
+  }
+>
+  <View
+    pointerEvents="none"
+    style={
+      {
+        "flex": 1,
+        "gap": 1,
+      }
+    }
+  >
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          shaker.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          perc_1.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          perc_2.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          fx.wav
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          cymbal.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          ride.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          rim.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          cowbell.wav
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          clap.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          tom_low.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          tom_mid.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          tom_high.wav
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          kick.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          snare.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          closed_hh.wav
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          open_hh.wav
+        </Text>
+      </View>
+    </View>
+  </View>
+  <RCTMultiTouchOverlay
+    columns={4}
+    onPadPress={[Function]}
+    onPadRelease={[Function]}
+    rows={4}
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+  />
+</View>
+`;

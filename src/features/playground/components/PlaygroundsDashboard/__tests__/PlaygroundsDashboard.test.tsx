@@ -13,7 +13,9 @@ beforeEach(() => resetMockIds());
 describe('PlaygroundsDashboard snapshots', () => {
   it('matches snapshot with playgrounds', () => {
     const playgrounds = createMockPlaygroundsList(3);
-    const tree = renderWithTheme(<PlaygroundsDashboard playgrounds={playgrounds} />);
+    const tree = renderWithTheme(
+      <PlaygroundsDashboard playgrounds={playgrounds} />
+    );
     expect(tree.toJSON()).toMatchSnapshot();
   });
 

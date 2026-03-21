@@ -46,13 +46,15 @@ const trophyWithImage: Trophy = {
   achieved: true,
 };
 
-const allTrophies: Trophy[] = [achievedTrophy, unachievedTrophy, trophyWithImage];
+const allTrophies: Trophy[] = [
+  achievedTrophy,
+  unachievedTrophy,
+  trophyWithImage,
+];
 
 describe('TrophiesView', () => {
   it('renders without crashing', () => {
-    const { toJSON } = renderWithTheme(
-      <TrophiesView trophies={allTrophies} />
-    );
+    const { toJSON } = renderWithTheme(<TrophiesView trophies={allTrophies} />);
     expect(toJSON()).toBeTruthy();
   });
 
@@ -144,9 +146,7 @@ describe('TrophiesView', () => {
   });
 
   it('renders with empty trophies array', () => {
-    const { getByText } = renderWithTheme(
-      <TrophiesView trophies={[]} />
-    );
+    const { getByText } = renderWithTheme(<TrophiesView trophies={[]} />);
     // Header should still render
     expect(getByText(/trophy gallery/i)).toBeTruthy();
   });

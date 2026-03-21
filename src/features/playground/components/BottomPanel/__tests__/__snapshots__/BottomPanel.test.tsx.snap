@@ -1,0 +1,156 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BottomPanel snapshots matches snapshot when collapsed 1`] = `
+<View
+  accessibilityLabel="Bottom panel"
+  style={
+    [
+      {
+        "borderTopWidth": 1,
+      },
+      false,
+      {
+        "backgroundColor": "#1A1C20",
+        "borderTopColor": "#313336",
+      },
+    ]
+  }
+>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "center",
+        "paddingVertical": 8,
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "borderRadius": 2,
+            "height": 4,
+            "width": 36,
+          },
+          {
+            "backgroundColor": "rgba(247, 247, 247, 0.40)",
+          },
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`BottomPanel snapshots matches snapshot when expanded 1`] = `
+<View
+  accessibilityLabel="Bottom panel"
+  style={
+    [
+      {
+        "borderTopWidth": 1,
+      },
+      {
+        "height": 350,
+      },
+      {
+        "backgroundColor": "#1A1C20",
+        "borderTopColor": "#313336",
+      },
+    ]
+  }
+>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "center",
+        "paddingVertical": 8,
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "borderRadius": 2,
+            "height": 4,
+            "width": 36,
+          },
+          {
+            "backgroundColor": "rgba(247, 247, 247, 0.40)",
+          },
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      {
+        "flex": 1,
+      }
+    }
+  >
+    <Text>
+      Panel Content
+    </Text>
+  </View>
+</View>
+`;

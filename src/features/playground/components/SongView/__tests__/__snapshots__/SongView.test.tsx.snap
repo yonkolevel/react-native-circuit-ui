@@ -91,15 +91,19 @@ exports[`SongMixerTabBar snapshots matches snapshot with mixer active 1`] = `
           [
             {
               "fontFamily": "System",
-              "fontSize": 16,
-              "fontWeight": "600",
-              "lineHeight": 24,
+              "fontSize": 14,
+              "fontWeight": "400",
+              "lineHeight": 21,
             },
             {
               "color": "#666666",
             },
             {
               "fontWeight": "700",
+            },
+            {
+              "fontSize": 14,
+              "fontWeight": "600",
             },
           ]
         }
@@ -162,15 +166,19 @@ exports[`SongMixerTabBar snapshots matches snapshot with mixer active 1`] = `
           [
             {
               "fontFamily": "System",
-              "fontSize": 16,
-              "fontWeight": "600",
-              "lineHeight": 24,
+              "fontSize": 14,
+              "fontWeight": "400",
+              "lineHeight": 21,
             },
             {
               "color": "#000000",
             },
             {
               "fontWeight": "700",
+            },
+            {
+              "fontSize": 14,
+              "fontWeight": "600",
             },
           ]
         }
@@ -273,15 +281,19 @@ exports[`SongMixerTabBar snapshots matches snapshot with song active 1`] = `
           [
             {
               "fontFamily": "System",
-              "fontSize": 16,
-              "fontWeight": "600",
-              "lineHeight": 24,
+              "fontSize": 14,
+              "fontWeight": "400",
+              "lineHeight": 21,
             },
             {
               "color": "#000000",
             },
             {
               "fontWeight": "700",
+            },
+            {
+              "fontSize": 14,
+              "fontWeight": "600",
             },
           ]
         }
@@ -344,15 +356,19 @@ exports[`SongMixerTabBar snapshots matches snapshot with song active 1`] = `
           [
             {
               "fontFamily": "System",
-              "fontSize": 16,
-              "fontWeight": "600",
-              "lineHeight": 24,
+              "fontSize": 14,
+              "fontWeight": "400",
+              "lineHeight": 21,
             },
             {
               "color": "#666666",
             },
             {
               "fontWeight": "700",
+            },
+            {
+              "fontSize": 14,
+              "fontWeight": "600",
             },
           ]
         }
@@ -1428,6 +1444,10 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                     {
                       "color": "#888888",
                     },
+                    {
+                      "fontSize": 11,
+                      "fontWeight": "500",
+                    },
                   ]
                 }
               >
@@ -1589,12 +1609,16 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
                     "color": "#888888",
+                  },
+                  {
+                    "fontSize": 11,
+                    "fontWeight": "500",
                   },
                 ]
               }
@@ -1711,12 +1735,16 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
                     "color": "#888888",
+                  },
+                  {
+                    "fontSize": 11,
+                    "fontWeight": "500",
                   },
                 ]
               }
@@ -1732,24 +1760,13 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 }
               }
             >
-              <Text
-                accessibilityRole="text"
-                style={
-                  [
-                    {
-                      "fontFamily": "System",
-                      "fontSize": 8,
-                      "fontWeight": "400",
-                      "lineHeight": 12,
-                    },
-                    {
-                      "color": "#666666",
-                    },
-                  ]
-                }
-              >
-                ↔
-              </Text>
+              <View>
+                <View
+                  color="#666666"
+                  size={14}
+                  testID="lucide-MoveHorizontal"
+                />
+              </View>
               <View
                 onLayout={[Function]}
                 style={
@@ -1886,10 +1903,14 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                     {
                       "color": "#888888",
                     },
+                    {
+                      "fontSize": 11,
+                      "fontWeight": "500",
+                    },
                   ]
                 }
               >
-                Keys
+                Melodic
               </Text>
             </View>
             <View
@@ -2047,12 +2068,16 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
                     "color": "#888888",
+                  },
+                  {
+                    "fontSize": 11,
+                    "fontWeight": "500",
                   },
                 ]
               }
@@ -2169,12 +2194,16 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
                     "color": "#888888",
+                  },
+                  {
+                    "fontSize": 11,
+                    "fontWeight": "500",
                   },
                 ]
               }
@@ -2190,24 +2219,13 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 }
               }
             >
-              <Text
-                accessibilityRole="text"
-                style={
-                  [
-                    {
-                      "fontFamily": "System",
-                      "fontSize": 8,
-                      "fontWeight": "400",
-                      "lineHeight": 12,
-                    },
-                    {
-                      "color": "#666666",
-                    },
-                  ]
-                }
-              >
-                ↔
-              </Text>
+              <View>
+                <View
+                  color="#666666"
+                  size={14}
+                  testID="lucide-MoveHorizontal"
+                />
+              </View>
               <View
                 onLayout={[Function]}
                 style={
@@ -2343,6 +2361,10 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                     },
                     {
                       "color": "#888888",
+                    },
+                    {
+                      "fontSize": 11,
+                      "fontWeight": "500",
                     },
                   ]
                 }
@@ -2505,12 +2527,16 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
                     "color": "#888888",
+                  },
+                  {
+                    "fontSize": 11,
+                    "fontWeight": "500",
                   },
                 ]
               }
@@ -2627,12 +2653,16 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
                     "color": "#888888",
+                  },
+                  {
+                    "fontSize": 11,
+                    "fontWeight": "500",
                   },
                 ]
               }
@@ -2648,24 +2678,13 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 }
               }
             >
-              <Text
-                accessibilityRole="text"
-                style={
-                  [
-                    {
-                      "fontFamily": "System",
-                      "fontSize": 8,
-                      "fontWeight": "400",
-                      "lineHeight": 12,
-                    },
-                    {
-                      "color": "#666666",
-                    },
-                  ]
-                }
-              >
-                ↔
-              </Text>
+              <View>
+                <View
+                  color="#666666"
+                  size={14}
+                  testID="lucide-MoveHorizontal"
+                />
+              </View>
               <View
                 onLayout={[Function]}
                 style={
@@ -2839,15 +2858,19 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 16,
-                "fontWeight": "600",
-                "lineHeight": 24,
+                "fontSize": 14,
+                "fontWeight": "400",
+                "lineHeight": 21,
               },
               {
                 "color": "#666666",
               },
               {
                 "fontWeight": "700",
+              },
+              {
+                "fontSize": 14,
+                "fontWeight": "600",
               },
             ]
           }
@@ -2910,15 +2933,19 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 16,
-                "fontWeight": "600",
-                "lineHeight": 24,
+                "fontSize": 14,
+                "fontWeight": "400",
+                "lineHeight": 21,
               },
               {
                 "color": "#000000",
               },
               {
                 "fontWeight": "700",
+              },
+              {
+                "fontSize": 14,
+                "fontWeight": "600",
               },
             ]
           }
@@ -3906,17 +3933,19 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "alignItems": "center",
                           "height": 50,
-                          "justifyContent": "center",
+                          "justifyContent": "flex-start",
+                          "padding": 4,
                           "width": 80,
                         },
                         {
-                          "backgroundColor": "#FF5C24",
+                          "backgroundColor": "#FFFFFF",
                         },
                       ]
                     }
                   >
                     <Text
                       accessibilityRole="text"
+                      numberOfLines={1}
                       style={
                         [
                           {
@@ -3972,17 +4001,19 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "alignItems": "center",
                           "height": 50,
-                          "justifyContent": "center",
+                          "justifyContent": "flex-start",
+                          "padding": 4,
                           "width": 80,
                         },
                         {
-                          "backgroundColor": "#25272B",
+                          "backgroundColor": "rgba(247,247,247,0.6)",
                         },
                       ]
                     }
                   >
                     <Text
                       accessibilityRole="text"
+                      numberOfLines={1}
                       style={
                         [
                           {
@@ -3992,7 +4023,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                             "lineHeight": 18,
                           },
                           {
-                            "color": "#F7F7F7",
+                            "color": "#000000",
                           },
                           {
                             "textAlign": "center",
@@ -4034,19 +4065,14 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                     onResponderTerminationRequest={[Function]}
                     onStartShouldSetResponder={[Function]}
                     style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "height": 50,
-                          "justifyContent": "center",
-                          "width": 80,
-                        },
-                        {
-                          "borderColor": "#D1D1D2",
-                          "borderStyle": "dashed",
-                          "borderWidth": 1,
-                        },
-                      ]
+                      {
+                        "alignItems": "center",
+                        "borderColor": "rgba(255,255,255,0.2)",
+                        "borderWidth": 1,
+                        "height": 50,
+                        "justifyContent": "center",
+                        "width": 50,
+                      }
                     }
                   >
                     <View>
@@ -4123,23 +4149,28 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                     >
                       <View
                         style={
-                          {
-                            "flex": 1,
-                            "position": "relative",
-                            "width": "100%",
-                          }
+                          [
+                            {
+                              "flex": 1,
+                              "position": "relative",
+                              "width": "100%",
+                            },
+                            {
+                              "padding": 2,
+                            },
+                          ]
                         }
                       >
                         <View
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 6.933333333333334,
+                              "borderRadius": 2,
+                              "bottom": 0,
+                              "height": 7.2,
                               "left": 0,
                               "position": "absolute",
-                              "top": 52,
-                              "width": 4.5,
+                              "width": 2,
                             }
                           }
                         />
@@ -4147,12 +4178,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 6.933333333333334,
-                              "left": 36,
+                              "borderRadius": 2,
+                              "bottom": 0,
+                              "height": 7.2,
+                              "left": 9.5,
                               "position": "absolute",
-                              "top": 52,
-                              "width": 4.5,
+                              "width": 2,
                             }
                           }
                         />
@@ -4160,12 +4191,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 6.933333333333334,
-                              "left": 18,
+                              "borderRadius": 2,
+                              "bottom": 16,
+                              "height": 7.2,
+                              "left": 4.75,
                               "position": "absolute",
-                              "top": 36,
-                              "width": 4.5,
+                              "width": 2,
                             }
                           }
                         />
@@ -4173,12 +4204,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 6.933333333333334,
-                              "left": 54,
+                              "borderRadius": 2,
+                              "bottom": 16,
+                              "height": 7.2,
+                              "left": 14.25,
                               "position": "absolute",
-                              "top": 36,
-                              "width": 4.5,
+                              "width": 2,
                             }
                           }
                         />
@@ -4186,12 +4217,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 6.933333333333334,
+                              "borderRadius": 2,
+                              "bottom": 48,
+                              "height": 7.2,
                               "left": 0,
                               "position": "absolute",
-                              "top": 4,
-                              "width": 4.5,
+                              "width": 2,
                             }
                           }
                         />
@@ -4199,12 +4230,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 6.933333333333334,
-                              "left": 9,
+                              "borderRadius": 2,
+                              "bottom": 48,
+                              "height": 7.2,
+                              "left": 2.375,
                               "position": "absolute",
-                              "top": 4,
-                              "width": 4.5,
+                              "width": 2,
                             }
                           }
                         />
@@ -4212,12 +4243,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 6.933333333333334,
-                              "left": 18,
+                              "borderRadius": 2,
+                              "bottom": 48,
+                              "height": 7.2,
+                              "left": 4.75,
                               "position": "absolute",
-                              "top": 4,
-                              "width": 4.5,
+                              "width": 2,
                             }
                           }
                         />
@@ -4225,12 +4256,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 6.933333333333334,
-                              "left": 27,
+                              "borderRadius": 2,
+                              "bottom": 48,
+                              "height": 7.2,
+                              "left": 7.125,
                               "position": "absolute",
-                              "top": 4,
-                              "width": 4.5,
+                              "width": 2,
                             }
                           }
                         />
@@ -4238,12 +4269,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 6.933333333333334,
-                              "left": 36,
+                              "borderRadius": 2,
+                              "bottom": 48,
+                              "height": 7.2,
+                              "left": 9.5,
                               "position": "absolute",
-                              "top": 4,
-                              "width": 4.5,
+                              "width": 2,
                             }
                           }
                         />
@@ -4251,12 +4282,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 6.933333333333334,
-                              "left": 45,
+                              "borderRadius": 2,
+                              "bottom": 48,
+                              "height": 7.2,
+                              "left": 11.875,
                               "position": "absolute",
-                              "top": 4,
-                              "width": 4.5,
+                              "width": 2,
                             }
                           }
                         />
@@ -4264,12 +4295,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 6.933333333333334,
-                              "left": 54,
+                              "borderRadius": 2,
+                              "bottom": 48,
+                              "height": 7.2,
+                              "left": 14.25,
                               "position": "absolute",
-                              "top": 4,
-                              "width": 4.5,
+                              "width": 2,
                             }
                           }
                         />
@@ -4277,12 +4308,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 6.933333333333334,
-                              "left": 63,
+                              "borderRadius": 2,
+                              "bottom": 48,
+                              "height": 7.2,
+                              "left": 16.625,
                               "position": "absolute",
-                              "top": 4,
-                              "width": 4.5,
+                              "width": 2,
                             }
                           }
                         />
@@ -4401,23 +4432,28 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                     >
                       <View
                         style={
-                          {
-                            "flex": 1,
-                            "position": "relative",
-                            "width": "100%",
-                          }
+                          [
+                            {
+                              "flex": 1,
+                              "position": "relative",
+                              "width": "100%",
+                            },
+                            {
+                              "padding": 2,
+                            },
+                          ]
                         }
                       >
                         <View
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 3.466666666666667,
+                              "borderRadius": 2,
+                              "bottom": 0,
+                              "height": 3.876923076923077,
                               "left": 0,
                               "position": "absolute",
-                              "top": 52,
-                              "width": 18,
+                              "width": 4.75,
                             }
                           }
                         />
@@ -4425,12 +4461,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 3.466666666666667,
-                              "left": 18,
+                              "borderRadius": 2,
+                              "bottom": 17.23076923076923,
+                              "height": 3.876923076923077,
+                              "left": 4.75,
                               "position": "absolute",
-                              "top": 36,
-                              "width": 18,
+                              "width": 4.75,
                             }
                           }
                         />
@@ -4438,12 +4474,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 3.466666666666667,
-                              "left": 36,
+                              "borderRadius": 2,
+                              "bottom": 30.153846153846153,
+                              "height": 3.876923076923077,
+                              "left": 9.5,
                               "position": "absolute",
-                              "top": 24,
-                              "width": 18,
+                              "width": 4.75,
                             }
                           }
                         />
@@ -4451,12 +4487,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           style={
                             {
                               "backgroundColor": "rgba(26,28,32,0.4)",
-                              "borderRadius": 1,
-                              "height": 3.466666666666667,
-                              "left": 54,
+                              "borderRadius": 2,
+                              "bottom": 51.69230769230769,
+                              "height": 3.876923076923077,
+                              "left": 14.25,
                               "position": "absolute",
-                              "top": 4,
-                              "width": 18,
+                              "width": 4.75,
                             }
                           }
                         />
@@ -4655,7 +4691,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
             <View
               style={
                 {
-                  "height": 50,
+                  "height": 54,
                 }
               }
             />
@@ -4717,18 +4753,16 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   [
                     {
                       "fontFamily": "System",
-                      "fontSize": 8,
+                      "fontSize": 10,
                       "fontWeight": "400",
-                      "lineHeight": 12,
+                      "lineHeight": 15,
                     },
                     {
                       "color": "#000000",
                     },
                     {
-                      "fontWeight": "700",
-                    },
-                    {
                       "fontSize": 10,
+                      "fontWeight": "500",
                     },
                   ]
                 }
@@ -4794,18 +4828,16 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   [
                     {
                       "fontFamily": "System",
-                      "fontSize": 8,
+                      "fontSize": 10,
                       "fontWeight": "400",
-                      "lineHeight": 12,
+                      "lineHeight": 15,
                     },
                     {
                       "color": "#000000",
                     },
                     {
-                      "fontWeight": "700",
-                    },
-                    {
                       "fontSize": 10,
+                      "fontWeight": "500",
                     },
                   ]
                 }
@@ -4871,18 +4903,16 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   [
                     {
                       "fontFamily": "System",
-                      "fontSize": 8,
+                      "fontSize": 10,
                       "fontWeight": "400",
-                      "lineHeight": 12,
+                      "lineHeight": 15,
                     },
                     {
                       "color": "#000000",
                     },
                     {
-                      "fontWeight": "700",
-                    },
-                    {
                       "fontSize": 10,
+                      "fontWeight": "500",
                     },
                   ]
                 }
@@ -4925,17 +4955,17 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
           style={
             {
               "alignItems": "center",
-              "flexDirection": "row",
-              "gap": 6,
-              "paddingLeft": 16,
-              "paddingVertical": 12,
+              "gap": 2,
+              "height": 60,
+              "justifyContent": "center",
+              "width": 80,
             }
           }
         >
           <View>
             <View
-              color="rgba(247, 247, 247, 0.60)"
-              size={14}
+              color="#D1D1D2"
+              size={12}
               testID="lucide-Plus"
             />
           </View>
@@ -4950,7 +4980,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "rgba(247, 247, 247, 0.60)",
+                  "color": "#D1D1D2",
                 },
               ]
             }
@@ -5051,15 +5081,19 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 16,
-                "fontWeight": "600",
-                "lineHeight": 24,
+                "fontSize": 14,
+                "fontWeight": "400",
+                "lineHeight": 21,
               },
               {
                 "color": "#000000",
               },
               {
                 "fontWeight": "700",
+              },
+              {
+                "fontSize": 14,
+                "fontWeight": "600",
               },
             ]
           }
@@ -5122,15 +5156,19 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 16,
-                "fontWeight": "600",
-                "lineHeight": 24,
+                "fontSize": 14,
+                "fontWeight": "400",
+                "lineHeight": 21,
               },
               {
                 "color": "#666666",
               },
               {
                 "fontWeight": "700",
+              },
+              {
+                "fontSize": 14,
+                "fontWeight": "600",
               },
             ]
           }

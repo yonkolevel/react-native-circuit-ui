@@ -14,22 +14,54 @@ import { INSTRUMENT_COLORS } from '../../types';
 
 // ── Mute Button (32×32, orange when active) ─────────────────────────────────
 
-const MuteButton = memo(function MuteButton({ isMuted, onToggle }: { isMuted: boolean; onToggle?: () => void }) {
+const MuteButton = memo(function MuteButton({
+  isMuted,
+  onToggle,
+}: {
+  isMuted: boolean;
+  onToggle?: () => void;
+}) {
   return (
-    <Pressable onPress={onToggle} style={[styles.muteBtn, { backgroundColor: isMuted ? '#FF5C24' : '#333333' }]}
-      accessibilityRole="button" accessibilityLabel="Mute" accessibilityState={{ selected: isMuted }}>
-      <Text variant="buttonLabelBold" color={isMuted ? '#FFFFFF' : '#666666'}>M</Text>
+    <Pressable
+      onPress={onToggle}
+      style={[
+        styles.muteBtn,
+        { backgroundColor: isMuted ? '#FF5C24' : '#333333' },
+      ]}
+      accessibilityRole="button"
+      accessibilityLabel="Mute"
+      accessibilityState={{ selected: isMuted }}
+    >
+      <Text variant="buttonLabelBold" color={isMuted ? '#FFFFFF' : '#666666'}>
+        M
+      </Text>
     </Pressable>
   );
 });
 
 // ── Solo Button (32×32, green when active) ──────────────────────────────────
 
-const SoloButton = memo(function SoloButton({ isSoloed, onToggle }: { isSoloed: boolean; onToggle?: () => void }) {
+const SoloButton = memo(function SoloButton({
+  isSoloed,
+  onToggle,
+}: {
+  isSoloed: boolean;
+  onToggle?: () => void;
+}) {
   return (
-    <Pressable onPress={onToggle} style={[styles.soloBtn, { backgroundColor: isSoloed ? '#00FF9E' : '#333333' }]}
-      accessibilityRole="button" accessibilityLabel="Solo" accessibilityState={{ selected: isSoloed }}>
-      <Text variant="buttonLabelBold" color={isSoloed ? '#FFFFFF' : '#666666'}>S</Text>
+    <Pressable
+      onPress={onToggle}
+      style={[
+        styles.soloBtn,
+        { backgroundColor: isSoloed ? '#00FF9E' : '#333333' },
+      ]}
+      accessibilityRole="button"
+      accessibilityLabel="Solo"
+      accessibilityState={{ selected: isSoloed }}
+    >
+      <Text variant="buttonLabelBold" color={isSoloed ? '#FFFFFF' : '#666666'}>
+        S
+      </Text>
     </Pressable>
   );
 });
@@ -39,6 +71,7 @@ const SoloButton = memo(function SoloButton({ isSoloed, onToggle }: { isSoloed: 
 interface TrackStripProps {
   track: Track;
   isAudible: boolean;
+  hasSoloedTracks: boolean;
   onVolumeChange?: (volume: number) => void;
   onPanChange?: (pan: number) => void;
   onMuteToggle?: () => void;
@@ -46,29 +79,56 @@ interface TrackStripProps {
 }
 
 const TrackStrip = memo(function TrackStrip({
-  track, isAudible, onVolumeChange, onPanChange, onMuteToggle, onSoloToggle,
+  track,
+  isAudible,
+  hasSoloedTracks,
+  onVolumeChange,
+  onPanChange,
+  onMuteToggle,
+  onSoloToggle,
 }: TrackStripProps) {
   const trackColor = INSTRUMENT_COLORS[track.type] || '#FFFFFF';
+  // iOS: MuteButtonView isActive = !isAudible (orange when track is muted/silenced)
+  const muteActive = !isAudible;
+  // iOS: SoloButtonView isActive = isSoloed && hasSoloedTracks (green only when actively soloing)
+  const soloActive = track.isSoloed && hasSoloedTracks;
 
   return (
     <View style={styles.strip}>
-      {/* Header: label + M/S buttons */}
+      {/* Header: label + M/S buttons — matches iOS TrackStripView header */}
       <View style={styles.stripHeader}>
         <View style={styles.trackLabel}>
           <View style={[styles.colorDot, { backgroundColor: trackColor }]} />
-          <Text variant="small" color="#888888" numberOfLines={1}>
-            {track.title}
+          <Text
+            variant="small"
+            color="#888888"
+            numberOfLines={1}
+            style={{ fontSize: 11, fontWeight: '500' }}
+          >
+            {track.type === 'drum'
+              ? 'Drums'
+              : track.type === 'melodic'
+                ? 'Melodic'
+                : track.type === 'bass'
+                  ? 'Bass'
+                  : track.title}
           </Text>
         </View>
         <View style={styles.mutesoloRow}>
-          <MuteButton isMuted={track.isMuted} onToggle={onMuteToggle} />
-          <SoloButton isSoloed={track.isSoloed} onToggle={onSoloToggle} />
+          <MuteButton isMuted={muteActive} onToggle={onMuteToggle} />
+          <SoloButton isSoloed={soloActive} onToggle={onSoloToggle} />
         </View>
       </View>
 
-      {/* Volume */}
+      {/* Volume — iOS: "Volume" label 11pt medium #888, speaker icon 14pt #666, slider with track color, value 12pt semibold */}
       <View style={styles.sliderSection}>
-        <Text variant="extraSmall" color="#888888">Volume</Text>
+        <Text
+          variant="small"
+          color="#888888"
+          style={{ fontSize: 11, fontWeight: '500' }}
+        >
+          Volume
+        </Text>
         <View style={styles.sliderRow}>
           <Icon icon={Icons.speaker} size={14} color="#666666" />
           <Slider
@@ -81,17 +141,27 @@ const TrackStrip = memo(function TrackStrip({
             thumbTintColor="#CCCCCC"
             onSlidingComplete={(v: number) => onVolumeChange?.(v)}
           />
-          <Text variant="buttonLabelSemiBold" color="#FFFFFF" style={styles.sliderValue}>
+          <Text
+            variant="buttonLabelSemiBold"
+            color="#FFFFFF"
+            style={styles.sliderValue}
+          >
             {Math.round(track.volume)}%
           </Text>
         </View>
       </View>
 
-      {/* Pan */}
+      {/* Pan — iOS: "Pan" label 11pt medium #888, ↔ icon 14pt #666, slider #888 tint, pan label 12pt medium */}
       <View style={styles.sliderSection}>
-        <Text variant="extraSmall" color="#888888">Pan</Text>
+        <Text
+          variant="small"
+          color="#888888"
+          style={{ fontSize: 11, fontWeight: '500' }}
+        >
+          Pan
+        </Text>
         <View style={styles.sliderRow}>
-          <Text variant="extraSmall" color="#666666">↔</Text>
+          <Icon icon={Icons.panArrows} size={14} color="#666666" />
           <Slider
             style={styles.slider}
             minimumValue={-1}
@@ -102,7 +172,11 @@ const TrackStrip = memo(function TrackStrip({
             thumbTintColor="#CCCCCC"
             onSlidingComplete={(v: number) => onPanChange?.(v)}
           />
-          <Text variant="buttonLabelSemiBold" color="#888888" style={styles.panLabel}>
+          <Text
+            variant="buttonLabelSemiBold"
+            color="#888888"
+            style={styles.panLabel}
+          >
             {Math.abs(track.pan) < 0.1 ? 'C' : track.pan < 0 ? 'L' : 'R'}
           </Text>
         </View>
@@ -118,18 +192,26 @@ export interface MixerViewProps {
   callbacks?: MixerCallbacks;
 }
 
-export const MixerView = memo(function MixerView({ tracks, callbacks }: MixerViewProps) {
-  const hasSoloedTracks = tracks.some(t => t.isSoloed);
+export const MixerView = memo(function MixerView({
+  tracks,
+  callbacks,
+}: MixerViewProps) {
+  const hasSoloedTracks = tracks.some((t) => t.isSoloed);
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
-      {tracks.map(track => {
-        const isAudible = !track.isMuted && (!hasSoloedTracks || track.isSoloed);
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.scrollContent}
+    >
+      {tracks.map((track) => {
+        const isAudible =
+          !track.isMuted && (!hasSoloedTracks || track.isSoloed);
         return (
           <TrackStrip
             key={track.id}
             track={track}
             isAudible={isAudible}
+            hasSoloedTracks={hasSoloedTracks}
             onVolumeChange={(v) => callbacks?.onVolumeChange?.(track.id, v)}
             onPanChange={(p) => callbacks?.onPanChange?.(track.id, p)}
             onMuteToggle={() => callbacks?.onMuteToggle?.(track.id)}
@@ -143,7 +225,13 @@ export const MixerView = memo(function MixerView({ tracks, callbacks }: MixerVie
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000000' },
-  scrollContent: { padding: 16, gap: 8, maxWidth: 800, alignSelf: 'center', width: '100%' },
+  scrollContent: {
+    padding: 16,
+    gap: 8,
+    maxWidth: 800,
+    alignSelf: 'center',
+    width: '100%',
+  },
 
   strip: {
     padding: 16,
@@ -151,20 +239,56 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     gap: 12,
   },
-  stripHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  stripHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   trackLabel: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   colorDot: { width: 12, height: 12, borderRadius: 6 },
   mutesoloRow: { flexDirection: 'row', gap: 8 },
-  muteBtn: { width: 32, height: 32, borderRadius: 4, justifyContent: 'center', alignItems: 'center' },
-  soloBtn: { width: 32, height: 32, borderRadius: 4, justifyContent: 'center', alignItems: 'center' },
+  muteBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  soloBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
   sliderSection: { gap: 4 },
   sliderRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  sliderTrack: { flex: 1, height: 4, backgroundColor: '#333333', borderRadius: 2, position: 'relative' },
-  sliderFill: { position: 'absolute', left: 0, top: 0, bottom: 0, borderRadius: 2 },
+  sliderTrack: {
+    flex: 1,
+    height: 4,
+    backgroundColor: '#333333',
+    borderRadius: 2,
+    position: 'relative',
+  },
+  sliderFill: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    borderRadius: 2,
+  },
   slider: { flex: 1, height: 36 },
   sliderValue: { width: 36, textAlign: 'right' },
 
-  panIndicator: { position: 'absolute', top: -4, width: 12, height: 12, borderRadius: 6, backgroundColor: '#888888', marginLeft: -6 },
+  panIndicator: {
+    position: 'absolute',
+    top: -4,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#888888',
+    marginLeft: -6,
+  },
   panLabel: { width: 20, textAlign: 'right' },
 });

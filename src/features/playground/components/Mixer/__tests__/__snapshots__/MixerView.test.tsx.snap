@@ -75,6 +75,10 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 {
                   "color": "#888888",
                 },
+                {
+                  "fontSize": 11,
+                  "fontWeight": "500",
+                },
               ]
             }
           >
@@ -236,12 +240,16 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 8,
+                "fontSize": 12,
                 "fontWeight": "400",
-                "lineHeight": 12,
+                "lineHeight": 18,
               },
               {
                 "color": "#888888",
+              },
+              {
+                "fontSize": 11,
+                "fontWeight": "500",
               },
             ]
           }
@@ -358,12 +366,16 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 8,
+                "fontSize": 12,
                 "fontWeight": "400",
-                "lineHeight": 12,
+                "lineHeight": 18,
               },
               {
                 "color": "#888888",
+              },
+              {
+                "fontSize": 11,
+                "fontWeight": "500",
               },
             ]
           }
@@ -379,24 +391,13 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             }
           }
         >
-          <Text
-            accessibilityRole="text"
-            style={
-              [
-                {
-                  "fontFamily": "System",
-                  "fontSize": 8,
-                  "fontWeight": "400",
-                  "lineHeight": 12,
-                },
-                {
-                  "color": "#666666",
-                },
-              ]
-            }
-          >
-            ↔
-          </Text>
+          <View>
+            <View
+              color="#666666"
+              size={14}
+              testID="lucide-MoveHorizontal"
+            />
+          </View>
           <View
             onLayout={[Function]}
             style={
@@ -533,10 +534,14 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 {
                   "color": "#888888",
                 },
+                {
+                  "fontSize": 11,
+                  "fontWeight": "500",
+                },
               ]
             }
           >
-            Keys
+            Melodic
           </Text>
         </View>
         <View
@@ -694,12 +699,16 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 8,
+                "fontSize": 12,
                 "fontWeight": "400",
-                "lineHeight": 12,
+                "lineHeight": 18,
               },
               {
                 "color": "#888888",
+              },
+              {
+                "fontSize": 11,
+                "fontWeight": "500",
               },
             ]
           }
@@ -816,12 +825,16 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 8,
+                "fontSize": 12,
                 "fontWeight": "400",
-                "lineHeight": 12,
+                "lineHeight": 18,
               },
               {
                 "color": "#888888",
+              },
+              {
+                "fontSize": 11,
+                "fontWeight": "500",
               },
             ]
           }
@@ -837,24 +850,13 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             }
           }
         >
-          <Text
-            accessibilityRole="text"
-            style={
-              [
-                {
-                  "fontFamily": "System",
-                  "fontSize": 8,
-                  "fontWeight": "400",
-                  "lineHeight": 12,
-                },
-                {
-                  "color": "#666666",
-                },
-              ]
-            }
-          >
-            ↔
-          </Text>
+          <View>
+            <View
+              color="#666666"
+              size={14}
+              testID="lucide-MoveHorizontal"
+            />
+          </View>
           <View
             onLayout={[Function]}
             style={
@@ -990,6 +992,10 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 },
                 {
                   "color": "#888888",
+                },
+                {
+                  "fontSize": 11,
+                  "fontWeight": "500",
                 },
               ]
             }
@@ -1152,12 +1158,16 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 8,
+                "fontSize": 12,
                 "fontWeight": "400",
-                "lineHeight": 12,
+                "lineHeight": 18,
               },
               {
                 "color": "#888888",
+              },
+              {
+                "fontSize": 11,
+                "fontWeight": "500",
               },
             ]
           }
@@ -1274,12 +1284,16 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 8,
+                "fontSize": 12,
                 "fontWeight": "400",
-                "lineHeight": 12,
+                "lineHeight": 18,
               },
               {
                 "color": "#888888",
+              },
+              {
+                "fontSize": 11,
+                "fontWeight": "500",
               },
             ]
           }
@@ -1295,24 +1309,13 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             }
           }
         >
-          <Text
-            accessibilityRole="text"
-            style={
-              [
-                {
-                  "fontFamily": "System",
-                  "fontSize": 8,
-                  "fontWeight": "400",
-                  "lineHeight": 12,
-                },
-                {
-                  "color": "#666666",
-                },
-              ]
-            }
-          >
-            ↔
-          </Text>
+          <View>
+            <View
+              color="#666666"
+              size={14}
+              testID="lucide-MoveHorizontal"
+            />
+          </View>
           <View
             onLayout={[Function]}
             style={
@@ -1471,6 +1474,10 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                 },
                 {
                   "color": "#888888",
+                },
+                {
+                  "fontSize": 11,
+                  "fontWeight": "500",
                 },
               ]
             }
@@ -1633,12 +1640,16 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 8,
+                "fontSize": 12,
                 "fontWeight": "400",
-                "lineHeight": 12,
+                "lineHeight": 18,
               },
               {
                 "color": "#888888",
+              },
+              {
+                "fontSize": 11,
+                "fontWeight": "500",
               },
             ]
           }
@@ -1755,12 +1766,16 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 8,
+                "fontSize": 12,
                 "fontWeight": "400",
-                "lineHeight": 12,
+                "lineHeight": 18,
               },
               {
                 "color": "#888888",
+              },
+              {
+                "fontSize": 11,
+                "fontWeight": "500",
               },
             ]
           }
@@ -1776,24 +1791,13 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
             }
           }
         >
-          <Text
-            accessibilityRole="text"
-            style={
-              [
-                {
-                  "fontFamily": "System",
-                  "fontSize": 8,
-                  "fontWeight": "400",
-                  "lineHeight": 12,
-                },
-                {
-                  "color": "#666666",
-                },
-              ]
-            }
-          >
-            ↔
-          </Text>
+          <View>
+            <View
+              color="#666666"
+              size={14}
+              testID="lucide-MoveHorizontal"
+            />
+          </View>
           <View
             onLayout={[Function]}
             style={
@@ -1952,6 +1956,10 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 },
                 {
                   "color": "#888888",
+                },
+                {
+                  "fontSize": 11,
+                  "fontWeight": "500",
                 },
               ]
             }
@@ -2114,12 +2122,16 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 8,
+                "fontSize": 12,
                 "fontWeight": "400",
-                "lineHeight": 12,
+                "lineHeight": 18,
               },
               {
                 "color": "#888888",
+              },
+              {
+                "fontSize": 11,
+                "fontWeight": "500",
               },
             ]
           }
@@ -2236,12 +2248,16 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 8,
+                "fontSize": 12,
                 "fontWeight": "400",
-                "lineHeight": 12,
+                "lineHeight": 18,
               },
               {
                 "color": "#888888",
+              },
+              {
+                "fontSize": 11,
+                "fontWeight": "500",
               },
             ]
           }
@@ -2257,24 +2273,13 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             }
           }
         >
-          <Text
-            accessibilityRole="text"
-            style={
-              [
-                {
-                  "fontFamily": "System",
-                  "fontSize": 8,
-                  "fontWeight": "400",
-                  "lineHeight": 12,
-                },
-                {
-                  "color": "#666666",
-                },
-              ]
-            }
-          >
-            ↔
-          </Text>
+          <View>
+            <View
+              color="#666666"
+              size={14}
+              testID="lucide-MoveHorizontal"
+            />
+          </View>
           <View
             onLayout={[Function]}
             style={
@@ -2411,10 +2416,14 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 {
                   "color": "#888888",
                 },
+                {
+                  "fontSize": 11,
+                  "fontWeight": "500",
+                },
               ]
             }
           >
-            Keys
+            Melodic
           </Text>
         </View>
         <View
@@ -2434,7 +2443,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 "checked": undefined,
                 "disabled": undefined,
                 "expanded": undefined,
-                "selected": false,
+                "selected": true,
               }
             }
             accessibilityValue={
@@ -2467,7 +2476,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                   "width": 32,
                 },
                 {
-                  "backgroundColor": "#333333",
+                  "backgroundColor": "#FF5C24",
                 },
               ]
             }
@@ -2483,7 +2492,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#666666",
+                    "color": "#FFFFFF",
                   },
                 ]
               }
@@ -2572,12 +2581,16 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 8,
+                "fontSize": 12,
                 "fontWeight": "400",
-                "lineHeight": 12,
+                "lineHeight": 18,
               },
               {
                 "color": "#888888",
+              },
+              {
+                "fontSize": 11,
+                "fontWeight": "500",
               },
             ]
           }
@@ -2694,12 +2707,16 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 8,
+                "fontSize": 12,
                 "fontWeight": "400",
-                "lineHeight": 12,
+                "lineHeight": 18,
               },
               {
                 "color": "#888888",
+              },
+              {
+                "fontSize": 11,
+                "fontWeight": "500",
               },
             ]
           }
@@ -2715,24 +2732,13 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             }
           }
         >
-          <Text
-            accessibilityRole="text"
-            style={
-              [
-                {
-                  "fontFamily": "System",
-                  "fontSize": 8,
-                  "fontWeight": "400",
-                  "lineHeight": 12,
-                },
-                {
-                  "color": "#666666",
-                },
-              ]
-            }
-          >
-            ↔
-          </Text>
+          <View>
+            <View
+              color="#666666"
+              size={14}
+              testID="lucide-MoveHorizontal"
+            />
+          </View>
           <View
             onLayout={[Function]}
             style={

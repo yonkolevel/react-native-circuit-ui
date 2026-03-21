@@ -71,7 +71,10 @@ describe('SongMixerTabBar snapshots', () => {
 describe('SongView behavior', () => {
   it('returns null for editor views', () => {
     const song = createMockSong({
-      currentView: { kind: 'pianoRoll', config: { clipId: 1, trackId: 1, instrumentType: 'drum' } },
+      currentView: {
+        kind: 'pianoRoll',
+        config: { clipId: 1, trackId: 1, instrumentType: 'drum' },
+      },
     });
     const { toJSON } = renderWithTheme(<SongView song={song} />);
     expect(toJSON()).toBeNull();
@@ -122,7 +125,9 @@ describe('SongToolbar behavior', () => {
 
 describe('SongMixerTabBar behavior', () => {
   it('renders both tabs', () => {
-    const { getByTestId } = renderWithTheme(<SongMixerTabBar currentView="song" />);
+    const { getByTestId } = renderWithTheme(
+      <SongMixerTabBar currentView="song" />
+    );
     expect(getByTestId('tab-song')).toBeTruthy();
     expect(getByTestId('tab-mixer')).toBeTruthy();
   });

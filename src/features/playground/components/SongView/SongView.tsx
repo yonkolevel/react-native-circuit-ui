@@ -20,14 +20,27 @@ import { SongSettings } from '../Settings';
 import { BottomPanel } from '../BottomPanel';
 import { DrumPadsView } from '../DrumPads';
 import { PianoKeyboard } from '../PianoKeyboard';
-import type { Clip, SongViewState, SongCallbacks, SongDestination, MixerCallbacks, ClipEditorCallbacks } from '../../types';
+import type {
+  Clip,
+  SongViewState,
+  SongCallbacks,
+  SongDestination,
+  MixerCallbacks,
+  ClipEditorCallbacks,
+} from '../../types';
 import { INSTRUMENT_COLORS } from '../../types';
 
 const TRACK_ICONS: Record<string, any> = {
-  drum: Icons.drumTrack, melodic: Icons.melodicTrack, bass: Icons.bassTrack, audio: Icons.audioTrack,
+  drum: Icons.drumTrack,
+  melodic: Icons.melodicTrack,
+  bass: Icons.bassTrack,
+  audio: Icons.audioTrack,
 };
 const TRACK_LABELS: Record<string, string> = {
-  drum: 'Drums', melodic: 'Melodic', bass: 'Bass', audio: 'Audio',
+  drum: 'Drums',
+  melodic: 'Melodic',
+  bass: 'Bass',
+  audio: 'Audio',
 };
 const CELL_W = 80;
 const CELL_H = 60;
@@ -36,32 +49,89 @@ const GAP = 4;
 
 // ── Clip Cell ───────────────────────────────────────────────────────────────
 
-const ClipCell = memo(function ClipCell({ clip, color, onPress }: { clip?: Clip; color: string; onPress?: () => void }) {
+/**
+ * ClipCell — Renders a single clip in the song grid.
+ *
+ * Matches iOS ClipViewMIDINotesPreview:
+ * - Empty clip: instrument color bg + "+" icon (rgba black overlay)
+ * - Clip with notes: instrument color bg, notes as mcBlack2.opacity(0.4) rounded rects
+ * - Note positioning: quantized to steps (16th notes), vertical by pitch range
+ * - Padding: 2pt on all sides (matching iOS GeometryReader padding)
+ */
+const CLIP_PAD = 2;
+const ClipCell = memo(function ClipCell({
+  clip,
+  color,
+  onPress,
+}: {
+  clip?: Clip;
+  color: string;
+  onPress?: () => void;
+}) {
   if (!clip) {
     return (
-      <Pressable onPress={onPress} style={[s.cell, { backgroundColor: color, borderRadius: 6 }]}>
+      <Pressable
+        onPress={onPress}
+        style={[s.cell, { backgroundColor: color, borderRadius: 6 }]}
+      >
         <Icon icon={Icons.plus} size={14} color={'rgba(0,0,0,0.3)'} />
       </Pressable>
     );
   }
+
+  // Pre-compute note range (outside render loop)
+  const notes = clip.notes;
+  const beatsInClip = Math.max(1, clip.activeLengthInBars) * 4;
+  const stepsPerBeat = 4;
+  const totalSteps = beatsInClip * stepsPerBeat;
+  const w = CELL_W - CLIP_PAD * 2;
+  const h = CELL_H - CLIP_PAD * 2;
+  const stepWidth = w / totalSteps;
+
+  // Pitch range — match iOS soundBank.defaultOctave fallback
+  const noteNumbers = notes.map((n) => n.noteNumber);
+  const minNote = noteNumbers.length > 0 ? Math.min(...noteNumbers) : 0;
+  const maxNote = noteNumbers.length > 0 ? Math.max(...noteNumbers) : 127;
+  const pitchCount = Math.max(maxNote - minNote + 1, 1);
+  const rawNoteHeight = h / pitchCount;
+  const noteHeight = Math.max(rawNoteHeight, 3);
+  const minNoteWidth = Math.max(stepWidth * 0.9, 2);
+
   return (
-    <Pressable onPress={onPress} style={[s.cell, { backgroundColor: color, borderRadius: 6 }]}>
-      <View style={s.cellContent}>
-        {clip.notes.slice(0, 20).map((note: any, i: number) => {
-          const notes = clip.notes;
-          const maxB = Math.max(...notes.map((n: any) => n.position + n.duration), 4);
-          const minN = Math.min(...notes.map((n: any) => n.noteNumber));
-          const maxN = Math.max(...notes.map((n: any) => n.noteNumber));
-          const rng = Math.max(maxN - minN, 1);
+    <Pressable
+      onPress={onPress}
+      style={[s.cell, { backgroundColor: color, borderRadius: 6 }]}
+    >
+      <View style={[s.cellContent, { padding: CLIP_PAD }]}>
+        {notes.slice(0, 30).map((note, i) => {
+          if (note.position >= beatsInClip) return null;
+          const stepPos = note.position * stepsPerBeat;
+          const xRaw = stepPos * stepWidth;
+          const noteIdx = Math.min(
+            Math.max(0, note.noteNumber - minNote),
+            pitchCount - 1
+          );
+          const yRaw = noteIdx * rawNoteHeight;
+          const stepDur = note.duration * stepsPerBeat;
+          const durW = stepDur * stepWidth;
+          const remainW =
+            (beatsInClip - note.position) * stepsPerBeat * stepWidth;
+          const noteW = Math.min(Math.max(minNoteWidth, durW), remainW);
+          const x = Math.min(Math.max(xRaw, 0), Math.max(0, w - noteW));
+          const y = Math.min(Math.max(yRaw, 0), Math.max(0, h - noteHeight));
           return (
-            <View key={i} style={{
-              position: 'absolute',
-              left: (note.position / maxB) * (CELL_W - 8),
-              top: (CELL_H - 8) - ((note.noteNumber - minN) / rng) * (CELL_H - 12),
-              width: Math.max((note.duration / maxB) * (CELL_W - 8), 2),
-              height: Math.max((CELL_H - 8) / rng, 3) * 0.8,
-              backgroundColor: 'rgba(26,28,32,0.4)', borderRadius: 1,
-            }} />
+            <View
+              key={i}
+              style={{
+                position: 'absolute',
+                left: x,
+                bottom: y, // iOS renders bottom-up (low pitch at bottom)
+                width: noteW,
+                height: noteHeight * 0.9,
+                backgroundColor: 'rgba(26,28,32,0.4)',
+                borderRadius: 2,
+              }}
+            />
           );
         })}
       </View>
@@ -79,12 +149,22 @@ export interface SongViewProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export const SongView = memo(function SongView({ song, callbacks, mixerCallbacks, style }: SongViewProps) {
+export const SongView = memo(function SongView({
+  song,
+  callbacks,
+  mixerCallbacks,
+  style,
+}: SongViewProps) {
   const { colors } = useTheme();
   const [bottomOpen, setBottomOpen] = useState(false);
   const [selTrackId, setSelTrackId] = useState<number | null>(null);
 
-  const handleTab = useCallback((d: SongDestination) => { callbacks?.onNavigate?.(d); }, [callbacks]);
+  const handleTab = useCallback(
+    (d: SongDestination) => {
+      callbacks?.onNavigate?.(d);
+    },
+    [callbacks]
+  );
   const handleTrack = useCallback((id: number) => {
     console.log('[SongView] Track pressed:', id);
     setSelTrackId(id);
@@ -95,7 +175,8 @@ export const SongView = memo(function SongView({ song, callbacks, mixerCallbacks
   if (typeof view !== 'string') return null; // editor views handled by parent
 
   const showTab = view === 'song' || view === 'mixer';
-  const selTrack = selTrackId != null ? song.tracks.find(t => t.id === selTrackId) : null;
+  const selTrack =
+    selTrackId != null ? song.tracks.find((t) => t.id === selTrackId) : null;
 
   return (
     <View style={[s.root, { backgroundColor: colors.mcBlack }, style]}>
@@ -110,25 +191,58 @@ export const SongView = memo(function SongView({ song, callbacks, mixerCallbacks
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   <View>
                     <View style={s.sections}>
-                      {song.sections.map(sec => (
-                        <Pressable key={sec.id} onPress={() => callbacks?.onSectionSelect?.(sec.id)}
-                          style={[s.secTab, { backgroundColor: sec.id === song.currentSectionId ? colors.mcOrange : colors.mcBlack3 }]}>
-                          <Text variant="small" color={sec.id === song.currentSectionId ? colors.mcBlack : colors.mcWhite} center>
-                            {sec.name}
-                          </Text>
-                        </Pressable>
-                      ))}
-                      <Pressable style={[s.secTab, { borderWidth: 1, borderColor: colors.mcBlack5, borderStyle: 'dashed' }]}>
-                        <Icon icon={Icons.plus} size={14} color={colors.mcBlack5} />
+                      {song.sections.map((sec) => {
+                        const isActive = sec.id === song.currentSectionId;
+                        return (
+                          <Pressable
+                            key={sec.id}
+                            onPress={() => callbacks?.onSectionSelect?.(sec.id)}
+                            style={[
+                              s.secTab,
+                              {
+                                backgroundColor: isActive
+                                  ? '#FFFFFF'
+                                  : 'rgba(247,247,247,0.6)',
+                              },
+                            ]}
+                          >
+                            <Text
+                              variant="small"
+                              color={'#000000'}
+                              center
+                              numberOfLines={1}
+                            >
+                              {sec.name}
+                            </Text>
+                          </Pressable>
+                        );
+                      })}
+                      <Pressable
+                        onPress={() => callbacks?.onAddSection?.()}
+                        style={s.addSecBtn}
+                      >
+                        <Icon
+                          icon={Icons.plus}
+                          size={14}
+                          color={colors.mcBlack5}
+                        />
                       </Pressable>
                     </View>
                     <View style={s.clipRows}>
-                      {song.tracks.map(t => (
+                      {song.tracks.map((t) => (
                         <View key={t.id} style={s.clipRow}>
-                          {song.sections.map(sec => (
-                            <ClipCell key={sec.id} clip={t.clips.find(c => c.sectionID === sec.id)}
+                          {song.sections.map((sec) => (
+                            <ClipCell
+                              key={sec.id}
+                              clip={t.clips.find((c) => c.sectionID === sec.id)}
                               color={INSTRUMENT_COLORS[t.type] || '#fff'}
-                              onPress={() => { const c = t.clips.find(cl => cl.sectionID === sec.id); if (c) callbacks?.onClipSelect?.(c.id, t.id); }} />
+                              onPress={() => {
+                                const c = t.clips.find(
+                                  (cl) => cl.sectionID === sec.id
+                                );
+                                if (c) callbacks?.onClipSelect?.(c.id, t.id);
+                              }}
+                            />
                           ))}
                         </View>
                       ))}
@@ -138,15 +252,31 @@ export const SongView = memo(function SongView({ song, callbacks, mixerCallbacks
 
                 {/* Absolute labels column — overlaid on left */}
                 <View style={s.labelsOverlay}>
-                  <View style={{ height: SECTION_H }} />
-                  {song.tracks.map(t => (
+                  {/* iOS uses .padding(.top, 54) for labels below section header */}
+                  <View style={{ height: 54 }} />
+                  {song.tracks.map((t) => (
                     <Pressable
                       key={t.id}
                       onPress={() => handleTrack(t.id)}
-                      style={[s.label, { backgroundColor: (INSTRUMENT_COLORS[t.type] || '#fff') + 'CC' }]}
+                      style={[
+                        s.label,
+                        {
+                          backgroundColor:
+                            (INSTRUMENT_COLORS[t.type] || '#fff') + 'CC',
+                        },
+                      ]}
                     >
-                      <Icon icon={TRACK_ICONS[t.type] || Icons.drumTrack} size={15} color={colors.mcBlack} />
-                      <Text variant="extraSmall" color={colors.mcBlack} bold style={s.labelTxt}>
+                      <Icon
+                        icon={TRACK_ICONS[t.type] || Icons.drumTrack}
+                        size={15}
+                        color={colors.mcBlack}
+                      />
+                      {/* iOS: .system(size: 10, weight: .medium) */}
+                      <Text
+                        variant="extraSmall10"
+                        color={colors.mcBlack}
+                        style={s.labelTxt}
+                      >
                         {TRACK_LABELS[t.type] || t.title}
                       </Text>
                     </Pressable>
@@ -154,28 +284,51 @@ export const SongView = memo(function SongView({ song, callbacks, mixerCallbacks
                 </View>
               </View>
 
-              <Pressable onPress={() => callbacks?.onAddTrack?.('drum')} style={s.addTrack}>
-                <Icon icon={Icons.plus} size={14} color={colors.mcWhite3} />
-                <Text variant="small" color={colors.mcWhite3}>Add track</Text>
+              {/* Add track button — iOS: VStack { plus, "Add track" }, frame(w:80, h:60), mcBlack5 text */}
+              <Pressable
+                onPress={() => callbacks?.onAddTrack?.('drum')}
+                style={s.addTrack}
+              >
+                <Icon icon={Icons.plus} size={12} color={colors.mcBlack5} />
+                <Text variant="small" color={colors.mcBlack5}>
+                  Add track
+                </Text>
               </Pressable>
             </ScrollView>
 
             {selTrack && (
-              <BottomPanel isExpanded={bottomOpen} onToggle={() => setBottomOpen(!bottomOpen)}>
+              <BottomPanel
+                isExpanded={bottomOpen}
+                onToggle={() => setBottomOpen(!bottomOpen)}
+              >
                 {selTrack.type === 'drum' ? (
-                  <DrumPadsView samples={createDrumSamples()} highlightColor={selTrack.colorHex} />
+                  <DrumPadsView
+                    samples={createDrumSamples()}
+                    highlightColor={selTrack.colorHex}
+                  />
                 ) : (
-                  <PianoKeyboard numberOfOctaves={2} highlightColor={selTrack.colorHex} showNoteNames />
+                  <PianoKeyboard
+                    numberOfOctaves={2}
+                    highlightColor={selTrack.colorHex}
+                    showNoteNames
+                  />
                 )}
               </BottomPanel>
             )}
           </>
         )}
-        {view === 'mixer' && <MixerView tracks={song.tracks} callbacks={mixerCallbacks} />}
+        {view === 'mixer' && (
+          <MixerView tracks={song.tracks} callbacks={mixerCallbacks} />
+        )}
         {view === 'settings' && <SongSettings song={song} />}
       </View>
 
-      {showTab && <SongMixerTabBar currentView={song.currentView} onTabPress={handleTab} />}
+      {showTab && (
+        <SongMixerTabBar
+          currentView={song.currentView}
+          onTabPress={handleTab}
+        />
+      )}
     </View>
   );
 });
@@ -185,16 +338,65 @@ const s = StyleSheet.create({
   body: { flex: 1 },
   scroll: { flex: 1 },
   grid: { position: 'relative' },
-  labelsOverlay: { position: 'absolute', left: 0, top: 0, width: CELL_W, gap: GAP, zIndex: 1 },
-  label: { width: CELL_W, height: CELL_H, justifyContent: 'center', alignItems: 'center', gap: 4 },
-  labelTxt: { fontSize: 10 },
-  sections: { flexDirection: 'row', gap: GAP, marginBottom: GAP, paddingLeft: CELL_W + GAP },
-  secTab: { width: CELL_W, height: SECTION_H, justifyContent: 'center', alignItems: 'center' },
+  labelsOverlay: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: CELL_W,
+    gap: GAP,
+    zIndex: 1,
+  },
+  label: {
+    width: CELL_W,
+    height: CELL_H,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 4,
+  },
+  labelTxt: { fontSize: 10, fontWeight: '500' as const },
+  sections: {
+    flexDirection: 'row',
+    gap: GAP,
+    marginBottom: GAP,
+    paddingLeft: CELL_W + GAP,
+  },
+  secTab: {
+    width: CELL_W,
+    height: SECTION_H,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    padding: 4,
+  },
+  addSecBtn: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+  },
   clipRows: { gap: GAP },
-  clipRow: { flexDirection: 'row', gap: GAP, paddingLeft: CELL_W + GAP, height: CELL_H },
-  cell: { width: CELL_W, height: CELL_H, justifyContent: 'center', alignItems: 'center', padding: 4 },
+  clipRow: {
+    flexDirection: 'row',
+    gap: GAP,
+    paddingLeft: CELL_W + GAP,
+    height: CELL_H,
+  },
+  cell: {
+    width: CELL_W,
+    height: CELL_H,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 4,
+  },
   cellContent: { flex: 1, width: '100%', position: 'relative' },
-  addTrack: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 12, paddingLeft: 16 },
+  addTrack: {
+    width: CELL_W,
+    height: CELL_H,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 2,
+  },
 });
 
 export default SongView;

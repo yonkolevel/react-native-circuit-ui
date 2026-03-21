@@ -137,6 +137,7 @@ export interface SongCallbacks {
   onAddTrack?: (type: InstrumentType) => void;
   onDeleteTrack?: (trackId: number) => void;
   onSectionSelect?: (sectionId: number) => void;
+  onAddSection?: () => void;
   onNavigate?: (destination: SongDestination) => void;
   onToggleMetronome?: () => void;
   onToggleLoop?: () => void;
@@ -153,7 +154,11 @@ export interface MixerCallbacks {
 export interface ClipEditorCallbacks {
   onNoteAdd?: (note: ClipNote) => void;
   onNoteDelete?: (noteIndex: number) => void;
-  onNoteMove?: (noteIndex: number, newPosition: number, newNoteNumber: number) => void;
+  onNoteMove?: (
+    noteIndex: number,
+    newPosition: number,
+    newNoteNumber: number
+  ) => void;
   onNoteResize?: (noteIndex: number, newDuration: number) => void;
   onVelocityChange?: (noteIndex: number, velocity: number) => void;
   onQuantize?: (precision: NotePrecision) => void;
@@ -175,10 +180,10 @@ export interface PianoKeyCallbacks {
 // ─── Instrument Color Map ───────────────────────────────────────────────────
 
 export const INSTRUMENT_COLORS: Record<InstrumentType, string> = {
-  drum: '#1AFFA8',   // mcGreen2
+  drum: '#1AFFA8', // mcGreen2
   melodic: '#FF6C3A', // mcOrange2
-  bass: '#3AA0FF',   // mcBlue2
-  audio: '#FF3A6B',  // mcPink2
+  bass: '#3AA0FF', // mcBlue2
+  audio: '#FF3A6B', // mcPink2
 };
 
 export const INSTRUMENT_ICONS: Record<InstrumentType, string> = {
