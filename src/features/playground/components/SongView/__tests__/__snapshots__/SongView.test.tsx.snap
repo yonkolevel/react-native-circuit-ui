@@ -4353,21 +4353,21 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         [
                           {
                             "alignItems": "center",
+                            "borderWidth": 1,
                             "height": 60,
                             "justifyContent": "center",
                             "padding": 4,
                             "width": 80,
                           },
                           {
-                            "backgroundColor": "#1AFFA8",
-                            "borderRadius": 6,
+                            "borderColor": "#1AFFA8",
                           },
                         ]
                       }
                     >
                       <View>
                         <View
-                          color="rgba(0,0,0,0.3)"
+                          color="#1AFFA8"
                           size={14}
                           testID="lucide-Plus"
                         />
@@ -4532,21 +4532,21 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         [
                           {
                             "alignItems": "center",
+                            "borderWidth": 1,
                             "height": 60,
                             "justifyContent": "center",
                             "padding": 4,
                             "width": 80,
                           },
                           {
-                            "backgroundColor": "#FF6C3A",
-                            "borderRadius": 6,
+                            "borderColor": "#FF6C3A",
                           },
                         ]
                       }
                     >
                       <View>
                         <View
-                          color="rgba(0,0,0,0.3)"
+                          color="#FF6C3A"
                           size={14}
                           testID="lucide-Plus"
                         />
@@ -4597,21 +4597,21 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         [
                           {
                             "alignItems": "center",
+                            "borderWidth": 1,
                             "height": 60,
                             "justifyContent": "center",
                             "padding": 4,
                             "width": 80,
                           },
                           {
-                            "backgroundColor": "#3AA0FF",
-                            "borderRadius": 6,
+                            "borderColor": "#3AA0FF",
                           },
                         ]
                       }
                     >
                       <View>
                         <View
-                          color="rgba(0,0,0,0.3)"
+                          color="#3AA0FF"
                           size={14}
                           testID="lucide-Plus"
                         />
@@ -4651,21 +4651,21 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         [
                           {
                             "alignItems": "center",
+                            "borderWidth": 1,
                             "height": 60,
                             "justifyContent": "center",
                             "padding": 4,
                             "width": 80,
                           },
                           {
-                            "backgroundColor": "#3AA0FF",
-                            "borderRadius": 6,
+                            "borderColor": "#3AA0FF",
                           },
                         ]
                       }
                     >
                       <View>
                         <View
-                          color="rgba(0,0,0,0.3)"
+                          color="#3AA0FF"
                           size={14}
                           testID="lucide-Plus"
                         />

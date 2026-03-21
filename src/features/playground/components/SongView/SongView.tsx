@@ -74,12 +74,13 @@ const ClipCell = memo(function ClipCell({
   onPress?: () => void;
 }) {
   if (!clip) {
+    // iOS EmptyClipView: transparent bg, stroke border in track color, "+" in track color
     return (
       <Pressable
         onPress={onPress}
-        style={[s.cell, { backgroundColor: color, borderRadius: 6 }]}
+        style={[s.emptyCell, { borderColor: color }]}
       >
-        <Icon icon={Icons.plus} size={14} color={'rgba(0,0,0,0.3)'} />
+        <Icon icon={Icons.plus} size={14} color={color} />
       </Pressable>
     );
   }
@@ -395,6 +396,15 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 4,
+  },
+  // iOS EmptyClipView: .overlay(Rectangle().stroke(color, lineWidth: 1))
+  emptyCell: {
+    width: CELL_W,
+    height: CELL_H,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 4,
+    borderWidth: 1,
   },
   cellContent: { flex: 1, width: '100%', position: 'relative' },
   addTrack: {
