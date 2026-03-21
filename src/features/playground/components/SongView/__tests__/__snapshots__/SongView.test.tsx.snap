@@ -3851,265 +3851,13 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
         <View
           style={
             {
-              "flexDirection": "row",
+              "position": "relative",
             }
           }
         >
-          <View
-            style={
-              {
-                "gap": 4,
-                "width": 80,
-              }
-            }
-          >
-            <View
-              style={
-                {
-                  "height": 54,
-                }
-              }
-            />
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                [
-                  {
-                    "alignItems": "center",
-                    "gap": 4,
-                    "height": 60,
-                    "justifyContent": "center",
-                    "width": 80,
-                  },
-                  {
-                    "backgroundColor": "#1AFFA8CC",
-                  },
-                ]
-              }
-            >
-              <View>
-                <View
-                  color="#000000"
-                  size={15}
-                  testID="lucide-Grid2x2"
-                />
-              </View>
-              <Text
-                accessibilityRole="text"
-                style={
-                  [
-                    {
-                      "fontFamily": "System",
-                      "fontSize": 8,
-                      "fontWeight": "400",
-                      "lineHeight": 12,
-                    },
-                    {
-                      "color": "#000000",
-                    },
-                    {
-                      "fontWeight": "700",
-                    },
-                    {
-                      "fontSize": 10,
-                    },
-                  ]
-                }
-              >
-                Drums
-              </Text>
-            </View>
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                [
-                  {
-                    "alignItems": "center",
-                    "gap": 4,
-                    "height": 60,
-                    "justifyContent": "center",
-                    "width": 80,
-                  },
-                  {
-                    "backgroundColor": "#FF6C3ACC",
-                  },
-                ]
-              }
-            >
-              <View>
-                <View
-                  color="#000000"
-                  size={15}
-                  testID="lucide-Music3"
-                />
-              </View>
-              <Text
-                accessibilityRole="text"
-                style={
-                  [
-                    {
-                      "fontFamily": "System",
-                      "fontSize": 8,
-                      "fontWeight": "400",
-                      "lineHeight": 12,
-                    },
-                    {
-                      "color": "#000000",
-                    },
-                    {
-                      "fontWeight": "700",
-                    },
-                    {
-                      "fontSize": 10,
-                    },
-                  ]
-                }
-              >
-                Melodic
-              </Text>
-            </View>
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                [
-                  {
-                    "alignItems": "center",
-                    "gap": 4,
-                    "height": 60,
-                    "justifyContent": "center",
-                    "width": 80,
-                  },
-                  {
-                    "backgroundColor": "#3AA0FFCC",
-                  },
-                ]
-              }
-            >
-              <View>
-                <View
-                  color="#000000"
-                  size={15}
-                  testID="lucide-Guitar"
-                />
-              </View>
-              <Text
-                accessibilityRole="text"
-                style={
-                  [
-                    {
-                      "fontFamily": "System",
-                      "fontSize": 8,
-                      "fontWeight": "400",
-                      "lineHeight": 12,
-                    },
-                    {
-                      "color": "#000000",
-                    },
-                    {
-                      "fontWeight": "700",
-                    },
-                    {
-                      "fontSize": 10,
-                    },
-                  ]
-                }
-              >
-                Bass
-              </Text>
-            </View>
-          </View>
           <RCTScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={false}
-            style={
-              {
-                "flex": 1,
-              }
-            }
           >
             <View>
               <View>
@@ -4119,6 +3867,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                       "flexDirection": "row",
                       "gap": 4,
                       "marginBottom": 4,
+                      "paddingLeft": 84,
                     }
                   }
                 >
@@ -4314,6 +4063,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                     {
                       "flexDirection": "row",
                       "gap": 4,
+                      "paddingLeft": 84,
                     }
                   }
                 >
@@ -4590,6 +4340,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                     {
                       "flexDirection": "row",
                       "gap": 4,
+                      "paddingLeft": 84,
                     }
                   }
                 >
@@ -4762,6 +4513,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                     {
                       "flexDirection": "row",
                       "gap": 4,
+                      "paddingLeft": 84,
                     }
                   }
                 >
@@ -4877,6 +4629,257 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
               </View>
             </View>
           </RCTScrollView>
+          <View
+            style={
+              {
+                "gap": 4,
+                "left": 0,
+                "position": "absolute",
+                "top": 0,
+                "width": 80,
+                "zIndex": 1,
+              }
+            }
+          >
+            <View
+              style={
+                {
+                  "height": 54,
+                }
+              }
+            />
+            <View
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                [
+                  {
+                    "alignItems": "center",
+                    "gap": 4,
+                    "height": 60,
+                    "justifyContent": "center",
+                    "width": 80,
+                  },
+                  {
+                    "backgroundColor": "#1AFFA8CC",
+                  },
+                ]
+              }
+            >
+              <View>
+                <View
+                  color="#000000"
+                  size={15}
+                  testID="lucide-Grid2x2"
+                />
+              </View>
+              <Text
+                accessibilityRole="text"
+                style={
+                  [
+                    {
+                      "fontFamily": "System",
+                      "fontSize": 8,
+                      "fontWeight": "400",
+                      "lineHeight": 12,
+                    },
+                    {
+                      "color": "#000000",
+                    },
+                    {
+                      "fontWeight": "700",
+                    },
+                    {
+                      "fontSize": 10,
+                    },
+                  ]
+                }
+              >
+                Drums
+              </Text>
+            </View>
+            <View
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                [
+                  {
+                    "alignItems": "center",
+                    "gap": 4,
+                    "height": 60,
+                    "justifyContent": "center",
+                    "width": 80,
+                  },
+                  {
+                    "backgroundColor": "#FF6C3ACC",
+                  },
+                ]
+              }
+            >
+              <View>
+                <View
+                  color="#000000"
+                  size={15}
+                  testID="lucide-Music3"
+                />
+              </View>
+              <Text
+                accessibilityRole="text"
+                style={
+                  [
+                    {
+                      "fontFamily": "System",
+                      "fontSize": 8,
+                      "fontWeight": "400",
+                      "lineHeight": 12,
+                    },
+                    {
+                      "color": "#000000",
+                    },
+                    {
+                      "fontWeight": "700",
+                    },
+                    {
+                      "fontSize": 10,
+                    },
+                  ]
+                }
+              >
+                Melodic
+              </Text>
+            </View>
+            <View
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                [
+                  {
+                    "alignItems": "center",
+                    "gap": 4,
+                    "height": 60,
+                    "justifyContent": "center",
+                    "width": 80,
+                  },
+                  {
+                    "backgroundColor": "#3AA0FFCC",
+                  },
+                ]
+              }
+            >
+              <View>
+                <View
+                  color="#000000"
+                  size={15}
+                  testID="lucide-Guitar"
+                />
+              </View>
+              <Text
+                accessibilityRole="text"
+                style={
+                  [
+                    {
+                      "fontFamily": "System",
+                      "fontSize": 8,
+                      "fontWeight": "400",
+                      "lineHeight": 12,
+                    },
+                    {
+                      "color": "#000000",
+                    },
+                    {
+                      "fontWeight": "700",
+                    },
+                    {
+                      "fontSize": 10,
+                    },
+                  ]
+                }
+              >
+                Bass
+              </Text>
+            </View>
+          </View>
         </View>
         <View
           accessibilityState={

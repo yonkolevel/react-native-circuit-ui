@@ -106,25 +106,8 @@ export const SongView = memo(function SongView({ song, callbacks, mixerCallbacks
           <>
             <ScrollView style={s.scroll}>
               <View style={s.grid}>
-                {/* LEFT: fixed track labels */}
-                <View style={s.labels}>
-                  <View style={{ height: SECTION_H + GAP }} />
-                  {song.tracks.map(t => (
-                    <Pressable
-                      key={t.id}
-                      onPress={() => handleTrack(t.id)}
-                      style={[s.label, { backgroundColor: (INSTRUMENT_COLORS[t.type] || '#fff') + 'CC' }]}
-                    >
-                      <Icon icon={TRACK_ICONS[t.type] || Icons.drumTrack} size={15} color={colors.mcBlack} />
-                      <Text variant="extraSmall" color={colors.mcBlack} bold style={s.labelTxt}>
-                        {TRACK_LABELS[t.type] || t.title}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
-
-                {/* RIGHT: scrollable sections + clips */}
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flex: 1 }}>
+                {/* Scrollable sections + clips — padded left for labels */}
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   <View>
                     <View style={s.sections}>
                       {song.sections.map(sec => (
@@ -150,6 +133,23 @@ export const SongView = memo(function SongView({ song, callbacks, mixerCallbacks
                     ))}
                   </View>
                 </ScrollView>
+
+                {/* Absolute labels column — overlaid on left */}
+                <View style={s.labelsOverlay}>
+                  <View style={{ height: SECTION_H + GAP }} />
+                  {song.tracks.map(t => (
+                    <Pressable
+                      key={t.id}
+                      onPress={() => handleTrack(t.id)}
+                      style={[s.label, { backgroundColor: (INSTRUMENT_COLORS[t.type] || '#fff') + 'CC' }]}
+                    >
+                      <Icon icon={TRACK_ICONS[t.type] || Icons.drumTrack} size={15} color={colors.mcBlack} />
+                      <Text variant="extraSmall" color={colors.mcBlack} bold style={s.labelTxt}>
+                        {TRACK_LABELS[t.type] || t.title}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
               </View>
 
               <Pressable onPress={() => callbacks?.onAddTrack?.('drum')} style={s.addTrack}>
@@ -182,13 +182,13 @@ const s = StyleSheet.create({
   root: { flex: 1 },
   body: { flex: 1 },
   scroll: { flex: 1 },
-  grid: { flexDirection: 'row' },
-  labels: { width: CELL_W, gap: GAP },
+  grid: { position: 'relative' },
+  labelsOverlay: { position: 'absolute', left: 0, top: 0, width: CELL_W, gap: GAP, zIndex: 1 },
   label: { width: CELL_W, height: CELL_H, justifyContent: 'center', alignItems: 'center', gap: 4 },
   labelTxt: { fontSize: 10 },
-  sections: { flexDirection: 'row', gap: GAP, marginBottom: GAP },
+  sections: { flexDirection: 'row', gap: GAP, marginBottom: GAP, paddingLeft: CELL_W + GAP },
   secTab: { width: CELL_W, height: SECTION_H, justifyContent: 'center', alignItems: 'center' },
-  clipRow: { flexDirection: 'row', gap: GAP },
+  clipRow: { flexDirection: 'row', gap: GAP, paddingLeft: CELL_W + GAP },
   cell: { width: CELL_W, height: CELL_H, justifyContent: 'center', alignItems: 'center', padding: 4 },
   cellContent: { flex: 1, width: '100%', position: 'relative' },
   addTrack: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 12, paddingLeft: 16 },
