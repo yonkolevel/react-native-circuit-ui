@@ -64,7 +64,7 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
             ]
           }
         >
-          shaker.wav
+          Shaker
         </Text>
       </View>
       <View
@@ -103,7 +103,7 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
             ]
           }
         >
-          perc_1.wav
+          Perc 1
         </Text>
       </View>
       <View
@@ -142,7 +142,7 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
             ]
           }
         >
-          perc_2.wav
+          Perc 2
         </Text>
       </View>
       <View
@@ -181,173 +181,7 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
             ]
           }
         >
-          fx.wav
-        </Text>
-      </View>
-    </View>
-    <View
-      style={
-        {
-          "flex": 1,
-          "flexDirection": "row",
-          "gap": 1,
-        }
-      }
-    >
-      <View
-        style={
-          [
-            {
-              "alignItems": "center",
-              "flex": 1,
-              "justifyContent": "center",
-              "padding": 4,
-            },
-            {
-              "backgroundColor": "#25272B",
-            },
-          ]
-        }
-      >
-        <Text
-          accessibilityRole="text"
-          numberOfLines={2}
-          style={
-            [
-              {
-                "fontFamily": "System",
-                "fontSize": 8,
-                "fontWeight": "400",
-                "lineHeight": 12,
-              },
-              {
-                "color": "rgba(255,255,255,0.5)",
-              },
-              {
-                "fontSize": 8,
-                "textAlign": "center",
-              },
-            ]
-          }
-        >
-          cymbal.wav
-        </Text>
-      </View>
-      <View
-        style={
-          [
-            {
-              "alignItems": "center",
-              "flex": 1,
-              "justifyContent": "center",
-              "padding": 4,
-            },
-            {
-              "backgroundColor": "#25272B",
-            },
-          ]
-        }
-      >
-        <Text
-          accessibilityRole="text"
-          numberOfLines={2}
-          style={
-            [
-              {
-                "fontFamily": "System",
-                "fontSize": 8,
-                "fontWeight": "400",
-                "lineHeight": 12,
-              },
-              {
-                "color": "rgba(255,255,255,0.5)",
-              },
-              {
-                "fontSize": 8,
-                "textAlign": "center",
-              },
-            ]
-          }
-        >
-          ride.wav
-        </Text>
-      </View>
-      <View
-        style={
-          [
-            {
-              "alignItems": "center",
-              "flex": 1,
-              "justifyContent": "center",
-              "padding": 4,
-            },
-            {
-              "backgroundColor": "#25272B",
-            },
-          ]
-        }
-      >
-        <Text
-          accessibilityRole="text"
-          numberOfLines={2}
-          style={
-            [
-              {
-                "fontFamily": "System",
-                "fontSize": 8,
-                "fontWeight": "400",
-                "lineHeight": 12,
-              },
-              {
-                "color": "rgba(255,255,255,0.5)",
-              },
-              {
-                "fontSize": 8,
-                "textAlign": "center",
-              },
-            ]
-          }
-        >
-          rim.wav
-        </Text>
-      </View>
-      <View
-        style={
-          [
-            {
-              "alignItems": "center",
-              "flex": 1,
-              "justifyContent": "center",
-              "padding": 4,
-            },
-            {
-              "backgroundColor": "#25272B",
-            },
-          ]
-        }
-      >
-        <Text
-          accessibilityRole="text"
-          numberOfLines={2}
-          style={
-            [
-              {
-                "fontFamily": "System",
-                "fontSize": 8,
-                "fontWeight": "400",
-                "lineHeight": 12,
-              },
-              {
-                "color": "rgba(255,255,255,0.5)",
-              },
-              {
-                "fontSize": 8,
-                "textAlign": "center",
-              },
-            ]
-          }
-        >
-          cowbell.wav
+          FX
         </Text>
       </View>
     </View>
@@ -396,7 +230,7 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
             ]
           }
         >
-          clap.wav
+          Cymbal
         </Text>
       </View>
       <View
@@ -435,7 +269,7 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
             ]
           }
         >
-          tom_low.wav
+          Ride
         </Text>
       </View>
       <View
@@ -474,7 +308,7 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
             ]
           }
         >
-          tom_mid.wav
+          Rim
         </Text>
       </View>
       <View
@@ -513,7 +347,7 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
             ]
           }
         >
-          tom_high.wav
+          Cowbell
         </Text>
       </View>
     </View>
@@ -562,7 +396,7 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
             ]
           }
         >
-          kick.wav
+          Clap
         </Text>
       </View>
       <View
@@ -601,7 +435,7 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
             ]
           }
         >
-          snare.wav
+          Tom Low
         </Text>
       </View>
       <View
@@ -640,7 +474,7 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
             ]
           }
         >
-          closed_hh.wav
+          Tom Mid
         </Text>
       </View>
       <View
@@ -679,7 +513,173 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
             ]
           }
         >
-          open_hh.wav
+          Tom High
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Kick
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Snare
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Closed HH
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Open HH
         </Text>
       </View>
     </View>
@@ -767,7 +767,7 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
             ]
           }
         >
-          shaker.wav
+          Shaker
         </Text>
       </View>
       <View
@@ -806,7 +806,7 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
             ]
           }
         >
-          perc_1.wav
+          Perc 1
         </Text>
       </View>
       <View
@@ -845,7 +845,7 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
             ]
           }
         >
-          perc_2.wav
+          Perc 2
         </Text>
       </View>
       <View
@@ -884,173 +884,7 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
             ]
           }
         >
-          fx.wav
-        </Text>
-      </View>
-    </View>
-    <View
-      style={
-        {
-          "flex": 1,
-          "flexDirection": "row",
-          "gap": 1,
-        }
-      }
-    >
-      <View
-        style={
-          [
-            {
-              "alignItems": "center",
-              "flex": 1,
-              "justifyContent": "center",
-              "padding": 4,
-            },
-            {
-              "backgroundColor": "#25272B",
-            },
-          ]
-        }
-      >
-        <Text
-          accessibilityRole="text"
-          numberOfLines={2}
-          style={
-            [
-              {
-                "fontFamily": "System",
-                "fontSize": 8,
-                "fontWeight": "400",
-                "lineHeight": 12,
-              },
-              {
-                "color": "rgba(255,255,255,0.5)",
-              },
-              {
-                "fontSize": 8,
-                "textAlign": "center",
-              },
-            ]
-          }
-        >
-          cymbal.wav
-        </Text>
-      </View>
-      <View
-        style={
-          [
-            {
-              "alignItems": "center",
-              "flex": 1,
-              "justifyContent": "center",
-              "padding": 4,
-            },
-            {
-              "backgroundColor": "#25272B",
-            },
-          ]
-        }
-      >
-        <Text
-          accessibilityRole="text"
-          numberOfLines={2}
-          style={
-            [
-              {
-                "fontFamily": "System",
-                "fontSize": 8,
-                "fontWeight": "400",
-                "lineHeight": 12,
-              },
-              {
-                "color": "rgba(255,255,255,0.5)",
-              },
-              {
-                "fontSize": 8,
-                "textAlign": "center",
-              },
-            ]
-          }
-        >
-          ride.wav
-        </Text>
-      </View>
-      <View
-        style={
-          [
-            {
-              "alignItems": "center",
-              "flex": 1,
-              "justifyContent": "center",
-              "padding": 4,
-            },
-            {
-              "backgroundColor": "#25272B",
-            },
-          ]
-        }
-      >
-        <Text
-          accessibilityRole="text"
-          numberOfLines={2}
-          style={
-            [
-              {
-                "fontFamily": "System",
-                "fontSize": 8,
-                "fontWeight": "400",
-                "lineHeight": 12,
-              },
-              {
-                "color": "rgba(255,255,255,0.5)",
-              },
-              {
-                "fontSize": 8,
-                "textAlign": "center",
-              },
-            ]
-          }
-        >
-          rim.wav
-        </Text>
-      </View>
-      <View
-        style={
-          [
-            {
-              "alignItems": "center",
-              "flex": 1,
-              "justifyContent": "center",
-              "padding": 4,
-            },
-            {
-              "backgroundColor": "#25272B",
-            },
-          ]
-        }
-      >
-        <Text
-          accessibilityRole="text"
-          numberOfLines={2}
-          style={
-            [
-              {
-                "fontFamily": "System",
-                "fontSize": 8,
-                "fontWeight": "400",
-                "lineHeight": 12,
-              },
-              {
-                "color": "rgba(255,255,255,0.5)",
-              },
-              {
-                "fontSize": 8,
-                "textAlign": "center",
-              },
-            ]
-          }
-        >
-          cowbell.wav
+          FX
         </Text>
       </View>
     </View>
@@ -1099,7 +933,7 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
             ]
           }
         >
-          clap.wav
+          Cymbal
         </Text>
       </View>
       <View
@@ -1138,7 +972,7 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
             ]
           }
         >
-          tom_low.wav
+          Ride
         </Text>
       </View>
       <View
@@ -1177,7 +1011,7 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
             ]
           }
         >
-          tom_mid.wav
+          Rim
         </Text>
       </View>
       <View
@@ -1216,7 +1050,7 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
             ]
           }
         >
-          tom_high.wav
+          Cowbell
         </Text>
       </View>
     </View>
@@ -1265,7 +1099,7 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
             ]
           }
         >
-          kick.wav
+          Clap
         </Text>
       </View>
       <View
@@ -1304,7 +1138,7 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
             ]
           }
         >
-          snare.wav
+          Tom Low
         </Text>
       </View>
       <View
@@ -1343,7 +1177,7 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
             ]
           }
         >
-          closed_hh.wav
+          Tom Mid
         </Text>
       </View>
       <View
@@ -1382,7 +1216,173 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
             ]
           }
         >
-          open_hh.wav
+          Tom High
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Kick
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Snare
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Closed HH
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Open HH
         </Text>
       </View>
     </View>

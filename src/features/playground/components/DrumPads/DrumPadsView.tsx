@@ -130,7 +130,7 @@ export const DrumPadsView = memo(function DrumPadsView({
                       numberOfLines={2}
                       style={styles.label}
                     >
-                      {sample.fileName}
+                      {sample.name}
                     </Text>
                   </Pressable>
                 );
@@ -154,7 +154,7 @@ export const DrumPadsView = memo(function DrumPadsView({
                     numberOfLines={2}
                     style={styles.label}
                   >
-                    {sample.fileName}
+                    {sample.name}
                   </Text>
                 </View>
               );

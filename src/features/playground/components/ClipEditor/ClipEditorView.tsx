@@ -216,23 +216,19 @@ const PianoRollGrid = memo(function PianoRollGrid({
     ? Math.max((samples ?? []).length, 12)
     : MELODIC_PITCH_COUNT;
   const BEAT_WIDTH = 40 * zoomLevel;
-  const LABEL_WIDTH = 60; // iOS: labelColumnWidth = 60
+  const LABEL_WIDTH = 90; // iOS uses wider labels to fit names like "Hi-Hat Closed 2"
   const gridHeight = totalPitches * rowHeight;
 
   /**
    * Get label for a pitch row.
-   * - Drum: sample fileName (e.g. "kick", "snare")
+   * - Drum: sample.name (human readable, e.g. "Kick", "Hi-Hat Closed")
    * - Melodic/Bass: note name (e.g. "C4", "D#5")
    */
   const getPitchLabel = (pitchIdx: number): string => {
     if (isDrum) {
       const sample = (samples ?? [])[pitchIdx];
-      return (
-        sample?.fileName?.replace('.wav', '').replace('.aif', '') ??
-        `Note ${pitchIdx}`
-      );
+      return sample?.name ?? `Note ${pitchIdx}`;
     }
-    // Melodic/bass: pitchIdx 0 = MELODIC_MIN_PITCH
     return getNoteName(MELODIC_MIN_PITCH + pitchIdx);
   };
 
@@ -314,21 +310,28 @@ const PianoRollGrid = memo(function PianoRollGrid({
                   }}
                 />
               ))}
-              {/* Beat lines */}
-              {Array.from({ length: lengthInBeats + 1 }, (_, i) => (
-                <View
-                  key={`b${i}`}
-                  style={{
-                    position: 'absolute',
-                    left: i * BEAT_WIDTH,
-                    top: 0,
-                    bottom: 0,
-                    width: i % 4 === 0 ? 1 : 0.5,
-                    backgroundColor:
-                      i % 4 === 0 ? colors.mcWhite4 : colors.mcBlack4,
-                  }}
-                />
-              ))}
+              {/* Step lines — 16th note subdivisions matching iOS grid */}
+              {Array.from({ length: lengthInBeats * 4 + 1 }, (_, i) => {
+                const isBar = i % 16 === 0;
+                const isBeat = i % 4 === 0;
+                return (
+                  <View
+                    key={`s${i}`}
+                    style={{
+                      position: 'absolute',
+                      left: (i / 4) * BEAT_WIDTH,
+                      top: 0,
+                      bottom: 0,
+                      width: isBar ? 1.5 : isBeat ? 1 : 0.5,
+                      backgroundColor: isBar
+                        ? 'rgba(255,255,255,0.25)'
+                        : isBeat
+                          ? 'rgba(255,255,255,0.12)'
+                          : 'rgba(255,255,255,0.04)',
+                    }}
+                  />
+                );
+              })}
               {/* Notes */}
               {notes.map((note, idx) => {
                 let pitchIdx: number;
@@ -349,21 +352,40 @@ const PianoRollGrid = memo(function PianoRollGrid({
                     style={{
                       position: 'absolute',
                       left: note.position * BEAT_WIDTH,
-                      top: y + 1,
-                      width: Math.max(note.duration * BEAT_WIDTH - 2, 4),
-                      height: rowHeight - 2,
+                      top: y + 2,
+                      width: Math.max(note.duration * BEAT_WIDTH - 2, 6),
+                      height: rowHeight - 4,
                       backgroundColor: trackColor,
                       borderRadius: 2,
                       justifyContent: 'center',
                       alignItems: 'center',
+                      flexDirection: 'row',
                     }}
                   >
-                    {/* Dark center line (matches SwiftUI) */}
+                    {/* iOS note pattern: two dots + center line */}
+                    <View
+                      style={{
+                        width: 2,
+                        height: 2,
+                        borderRadius: 1,
+                        backgroundColor: 'rgba(255,255,255,0.5)',
+                        marginRight: 1,
+                      }}
+                    />
                     <View
                       style={{
                         width: 1,
                         height: '60%',
-                        backgroundColor: 'rgba(0,0,0,0.3)',
+                        backgroundColor: 'rgba(255,255,255,0.6)',
+                      }}
+                    />
+                    <View
+                      style={{
+                        width: 2,
+                        height: 2,
+                        borderRadius: 1,
+                        backgroundColor: 'rgba(255,255,255,0.5)',
+                        marginLeft: 1,
                       }}
                     />
                   </Pressable>
@@ -849,14 +871,19 @@ const styles = StyleSheet.create({
   pianoRollContainer: { flex: 1, position: 'relative' },
   pianoRollContent: { flex: 1, flexDirection: 'row' },
   pitchLabels: { borderRightWidth: 1, borderRightColor: '#313336' },
-  // iOS: padding(2), .mcExtraSmall10, .border(Color.black, width: 0.5)
+  // iOS: padding(2), centered text, border(Color.black, width: 0.5)
   pitchLabel: {
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 2,
     borderWidth: 0.5,
     borderColor: 'rgba(0,0,0,0.5)',
   },
-  pitchLabelText: { fontSize: 10 },
+  pitchLabelText: {
+    fontSize: 11,
+    fontWeight: '500' as const,
+    textAlign: 'center' as const,
+  },
 
   // Zoom controls — iOS: individual rounded buttons, black.opacity(0.6) bg
   zoomControls: {

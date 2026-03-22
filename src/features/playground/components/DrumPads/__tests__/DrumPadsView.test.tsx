@@ -30,10 +30,10 @@ describe('DrumPadsView interactions', () => {
   it('renders all 16 pad labels', () => {
     const samples = createDrumSamples();
     const { getByText } = renderWithTheme(<DrumPadsView samples={samples} />);
-    // Verify the grid renders sample file names
-    expect(getByText('kick.wav')).toBeTruthy();
-    expect(getByText('snare.wav')).toBeTruthy();
-    expect(getByText('closed_hh.wav')).toBeTruthy();
+    // Verify the grid renders sample names (human readable)
+    expect(getByText('Kick')).toBeTruthy();
+    expect(getByText('Snare')).toBeTruthy();
+    expect(getByText('Closed HH')).toBeTruthy();
   });
 
   it('renders with external pressed notes', () => {
