@@ -8,6 +8,7 @@
  */
 import { memo, useCallback } from 'react';
 import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
+import * as ContextMenu from 'zeego/context-menu';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
@@ -184,30 +185,42 @@ export const SongView = memo(function SongView({
               <View style={s.labelsCol}>
                 <View style={s.labelsSpacer} />
                 {song.tracks.map((t) => (
-                  <Pressable
-                    key={t.id}
-                    onPress={() => callbacks?.onTrackSelect?.(t.id)}
-                    style={[
-                      s.label,
-                      {
-                        backgroundColor:
-                          (INSTRUMENT_COLORS[t.type] || '#fff') + 'CC',
-                      },
-                    ]}
-                  >
-                    <Icon
-                      icon={TRACK_ICONS[t.type] || Icons.drumTrack}
-                      size={15}
-                      color={colors.mcBlack}
-                    />
-                    <Text
-                      variant="extraSmall10"
-                      color={colors.mcBlack}
-                      style={s.labelTxt}
-                    >
-                      {TRACK_LABELS[t.type] || t.title}
-                    </Text>
-                  </Pressable>
+                  <ContextMenu.Root key={t.id}>
+                    <ContextMenu.Trigger>
+                      <Pressable
+                        onPress={() => callbacks?.onTrackSelect?.(t.id)}
+                        style={[
+                          s.label,
+                          {
+                            backgroundColor:
+                              (INSTRUMENT_COLORS[t.type] || '#fff') + 'CC',
+                          },
+                        ]}
+                      >
+                        <Icon
+                          icon={TRACK_ICONS[t.type] || Icons.drumTrack}
+                          size={15}
+                          color={colors.mcBlack}
+                        />
+                        <Text
+                          variant="extraSmall10"
+                          color={colors.mcBlack}
+                          style={s.labelTxt}
+                        >
+                          {TRACK_LABELS[t.type] || t.title}
+                        </Text>
+                      </Pressable>
+                    </ContextMenu.Trigger>
+                    <ContextMenu.Content>
+                      <ContextMenu.Item
+                        key="delete"
+                        onSelect={() => callbacks?.onDeleteTrack?.(t.id)}
+                        destructive
+                      >
+                        <ContextMenu.ItemTitle>Delete Track</ContextMenu.ItemTitle>
+                      </ContextMenu.Item>
+                    </ContextMenu.Content>
+                  </ContextMenu.Root>
                 ))}
                 <Pressable
                   onPress={() => callbacks?.onAddTrack?.('drum')}

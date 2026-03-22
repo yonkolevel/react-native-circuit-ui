@@ -22,8 +22,6 @@ import type {
   SongState,
   ClipNote,
   InstrumentType,
-  NotePrecision,
-  Sample,
   Track,
   Clip,
 } from '../types';
@@ -32,16 +30,19 @@ import type {
 // Actions — everything the UI can dispatch
 // ---------------------------------------------------------------------------
 
+/**
+ * Action names match useSongStore in midicircuit-rn exactly.
+ * No adapters, no renaming — circuit-ui components call the same actions as the app.
+ */
 export interface SongActions {
   // Transport
-  play: () => void;
-  pause: () => void;
+  setPlaying: (playing: boolean) => void;
+  setTempo: (bpm: number) => void;
   toggleMetronome: () => void;
   toggleLoop: () => void;
-  setTempo: (bpm: number) => void;
 
   // Sections
-  selectSection: (sectionId: number) => void;
+  setCurrentSection: (sectionId: number) => void;
   addSection: () => void;
   renameSection: (sectionId: number, name: string) => void;
 
@@ -51,32 +52,25 @@ export interface SongActions {
   toggleTrackMute: (trackId: number) => void;
   toggleTrackSolo: (trackId: number) => void;
 
-  // Notes (clip editing)
+  // Notes
   addNote: (trackId: number, clipId: number, note: ClipNote) => void;
   removeNote: (trackId: number, clipId: number, noteIndex: number) => void;
-  moveNote: (trackId: number, clipId: number, noteIndex: number, position: number, noteNumber: number) => void;
-  resizeNote: (trackId: number, clipId: number, noteIndex: number, duration: number) => void;
-  setVelocity: (trackId: number, clipId: number, noteIndex: number, velocity: number) => void;
+  updateNote: (trackId: number, clipId: number, noteIndex: number, updates: Partial<ClipNote>) => void;
+  setClipNotes: (trackId: number, clipId: number, notes: ClipNote[]) => void;
 
   // Clip
+  createClip: (trackId: number, sectionId: number) => void;
   setClipLength: (trackId: number, clipId: number, bars: number) => void;
 
   // Track management
-  addTrack: (type: InstrumentType) => void;
+  addNewTrack: (type: InstrumentType, soundBank: { slug: string; name: string }) => void;
   removeTrack: (trackId: number) => void;
 
-  // Audition (live sound trigger)
-  triggerPad: (trackId: number, sampleIndex: number) => void;
-  pressKey: (trackId: number, noteNumber: number) => void;
-  releaseKey: (trackId: number, noteNumber: number) => void;
-
   // Navigation
-  navigateBack: () => void;
-  openClipEditor: (clipId: number, trackId: number) => void;
-  closeClipEditor: () => void;
-
-  // Soundbank data
-  getSamplesForTrack: (trackId: number) => Sample[];
+  showSongView: () => void;
+  showAddTrackMenu: () => void;
+  openClipEditor: (trackId: number, clipId: number) => void;
+  setCurrentTab: (tab: string) => void;
 }
 
 // ---------------------------------------------------------------------------

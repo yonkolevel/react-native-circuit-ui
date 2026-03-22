@@ -30,10 +30,11 @@ module.exports = {
       ],
       testPathIgnorePatterns: [
         '<rootDir>/src/__tests__/visual-regression',
+        '<rootDir>/src/__tests__/visual-comparison',
       ],
     },
     {
-      // Visual regression test project — runs separately
+      // Visual regression + cross-platform comparison tests — runs separately
       displayName: 'visual',
       preset: 'react-native',
       setupFiles: ['./jest.setup.js'],
@@ -49,6 +50,7 @@ module.exports = {
       ],
       testMatch: [
         '<rootDir>/src/__tests__/visual-regression/**/*.test.ts',
+        '<rootDir>/src/__tests__/visual-comparison/**/*.test.ts',
       ],
     },
   ],

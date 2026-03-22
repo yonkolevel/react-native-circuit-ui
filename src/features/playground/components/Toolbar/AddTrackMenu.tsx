@@ -25,8 +25,6 @@ export const AddTrackMenu = memo(function AddTrackMenu({ onSelect, onClose: _onC
       accessibilityLabel="Add track">
       <Text variant="h5" uppercase color={colors.mcWhite3} style={styles.title}>Add Track</Text>
 
-      <View style={styles.spacer} />
-
       {TRACK_OPTIONS.map(opt => (
         <Pressable key={opt.type} onPress={() => onSelect?.(opt.type)}
           style={[styles.option, { backgroundColor: colors.mcWhite4 }]}
@@ -35,16 +33,13 @@ export const AddTrackMenu = memo(function AddTrackMenu({ onSelect, onClose: _onC
           <Text variant="label" color={colors.mcWhite}>{opt.label}</Text>
         </Pressable>
       ))}
-
-      <View style={styles.spacer} />
     </View>
   );
 });
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, gap: 16 },
+  container: { padding: 24, gap: 16 },
   title: { textAlign: 'center', paddingTop: 8 },
-  spacer: { flex: 1 },
   option: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
     padding: 12, borderRadius: 6,

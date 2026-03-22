@@ -41,7 +41,7 @@ export const SongSettings = memo(function SongSettings({ song, onTempoChange, on
   );
 });
 
-const SettingRow = memo(function SettingRow({ label, children }: { label: string; children: React.ReactNode }) {
+const SettingRow = memo(function SettingRow({ label, children }: { label: string; children?: any }) {
   const { colors } = useTheme();
   return (
     <View style={[styles.row, { borderBottomColor: colors.mcBlack4 }]}>
