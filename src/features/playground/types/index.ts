@@ -134,6 +134,7 @@ export interface SongCallbacks {
   onTempoChange?: (bpm: number) => void;
   onTrackSelect?: (trackId: number) => void;
   onClipSelect?: (clipId: number, trackId: number) => void;
+  onEmptyClipPress?: (trackId: number, sectionId: number) => void;
   onAddTrack?: (type: InstrumentType) => void;
   onDeleteTrack?: (trackId: number) => void;
   onSectionSelect?: (sectionId: number) => void;

@@ -277,7 +277,11 @@ export const SongView = memo(function SongView({
                               const c = t.clips.find(
                                 (cl) => cl.sectionID === sec.id
                               );
-                              if (c) callbacks?.onClipSelect?.(c.id, t.id);
+                              if (c) {
+                                callbacks?.onClipSelect?.(c.id, t.id);
+                              } else {
+                                callbacks?.onEmptyClipPress?.(t.id, sec.id);
+                              }
                             }}
                           />
                         ))}
