@@ -112,8 +112,7 @@ jest.mock('react-native-reanimated', () => {
       const i = input.findIndex((v) => v >= value);
       if (i <= 0) return output[0];
       if (i >= output.length) return output[output.length - 1];
-      const ratio =
-        (value - input[i - 1]) / (input[i] - input[i - 1]);
+      const ratio = (value - input[i - 1]) / (input[i] - input[i - 1]);
       return output[i - 1] + ratio * (output[i] - output[i - 1]);
     },
     Extrapolation: { CLAMP: 'clamp', EXTEND: 'extend', IDENTITY: 'identity' },
@@ -124,6 +123,33 @@ jest.mock('react-native-reanimated', () => {
     Layout: { duration: () => ({}) },
     createAnimatedComponent: (Component) => Component,
     enableLayoutAnimations: () => {},
+  };
+});
+
+// ---------------------------------------------------------------------------
+// Mock: MultiTouchOverlay (native iOS multi-touch component)
+// ---------------------------------------------------------------------------
+// The real module calls requireNativeComponent('RCTMultiTouchOverlay') at
+// import time on iOS. Since Jest defaults Platform.OS to 'ios', that native
+// registration doesn't exist and would throw. We replace the entire module
+// with a plain View wrapper so DrumPadsView / PianoKeyboard can render in
+// tests without crashing.
+jest.mock('./src/components/MultiTouchOverlay/MultiTouchOverlay', () => {
+  const mockReact = require('react');
+  const { View } = require('react-native');
+
+  const MockOverlay = mockReact.forwardRef((props, ref) =>
+    mockReact.createElement(View, {
+      ...props,
+      ref,
+      testID: props.testID || 'MultiTouchOverlay',
+    })
+  );
+  MockOverlay.displayName = 'MultiTouchOverlay';
+
+  return {
+    __esModule: true,
+    MultiTouchOverlay: mockReact.memo(MockOverlay),
   };
 });
 

@@ -21,13 +21,17 @@ import { memo, useState } from 'react';
 import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
-import { useTheme } from '../../../../theme';
+import { useTheme, hexToRgba } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
+import { DrumPadsView } from '../DrumPads/DrumPadsView';
+import { PianoKeyboard } from '../PianoKeyboard/PianoKeyboard';
 import type {
   Clip,
   ClipNote,
   InstrumentType,
   ClipEditorCallbacks,
+  DrumPadCallbacks,
+  PianoKeyCallbacks,
   Sample,
 } from '../../types';
 
@@ -144,12 +148,14 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
 interface PianoRollGridProps {
   notes: ClipNote[];
   samples?: Sample[];
+  instrumentType?: InstrumentType;
   trackColor: string;
   lengthInBeats: number;
   rowHeight?: number;
   zoomLevel?: number;
   playheadPosition?: number;
   isExpanded?: boolean;
+  selectedPitchIndex?: number | null;
   onNotePress?: (index: number) => void;
   onPitchLabelTap?: (pitch: number) => void;
   onToggleExpand?: () => void;
@@ -157,15 +163,44 @@ interface PianoRollGridProps {
   onZoomOut?: () => void;
 }
 
+// Note name lookup for melodic/bass pitch labels — matches iOS getNoteName
+const NOTE_NAMES = [
+  'C',
+  'C#',
+  'D',
+  'D#',
+  'E',
+  'F',
+  'F#',
+  'G',
+  'G#',
+  'A',
+  'A#',
+  'B',
+] as const;
+
+/** Returns a human-readable note name like "C4" or "D#5" for a MIDI pitch value. */
+const getNoteName = (pitch: number): string => {
+  const noteName = NOTE_NAMES[pitch % 12];
+  const octave = Math.floor(pitch / 12) + 1;
+  return `${noteName}${octave}`;
+};
+
+/** Default MIDI pitch range for melodic/bass tracks (2 octaves starting at C3 = MIDI 48). */
+const MELODIC_MIN_PITCH = 48;
+const MELODIC_PITCH_COUNT = 24;
+
 const PianoRollGrid = memo(function PianoRollGrid({
   notes,
   samples,
+  instrumentType = 'drum',
   trackColor,
   lengthInBeats,
   rowHeight = 34,
   zoomLevel = 1,
   playheadPosition = 0,
   isExpanded,
+  selectedPitchIndex,
   onNotePress,
   onPitchLabelTap,
   onToggleExpand,
@@ -174,24 +209,42 @@ const PianoRollGrid = memo(function PianoRollGrid({
 }: PianoRollGridProps) {
   const { colors } = useTheme();
 
-  // Calculate pitch range from soundbank
-  const totalPitches = Math.max((samples ?? []).length, 12);
+  const isDrum = instrumentType === 'drum';
+
+  // Calculate pitch range: drums use sample count, melodic/bass use fixed 2-octave range
+  const totalPitches = isDrum
+    ? Math.max((samples ?? []).length, 12)
+    : MELODIC_PITCH_COUNT;
   const BEAT_WIDTH = 40 * zoomLevel;
   const LABEL_WIDTH = 60; // iOS: labelColumnWidth = 60
   const gridHeight = totalPitches * rowHeight;
 
-  // Get sample name for a pitch index
+  /**
+   * Get label for a pitch row.
+   * - Drum: sample fileName (e.g. "kick", "snare")
+   * - Melodic/Bass: note name (e.g. "C4", "D#5")
+   */
   const getPitchLabel = (pitchIdx: number): string => {
-    const sample = (samples ?? [])[pitchIdx];
-    return (
-      sample?.fileName?.replace('.wav', '').replace('.aif', '') ??
-      `Note ${pitchIdx}`
-    );
+    if (isDrum) {
+      const sample = (samples ?? [])[pitchIdx];
+      return (
+        sample?.fileName?.replace('.wav', '').replace('.aif', '') ??
+        `Note ${pitchIdx}`
+      );
+    }
+    // Melodic/bass: pitchIdx 0 = MELODIC_MIN_PITCH
+    return getNoteName(MELODIC_MIN_PITCH + pitchIdx);
   };
 
-  // Check if pitch has notes
+  /**
+   * Check if a pitch row contains any notes.
+   * - Drum: map pitchIdx → sample.noteNumber, then search notes
+   * - Melodic/Bass: pitchIdx maps directly to MIDI note number
+   */
   const pitchHasNotes = (pitchIdx: number): boolean => {
-    const noteNum = (samples ?? [])[pitchIdx]?.noteNumber ?? pitchIdx;
+    const noteNum = isDrum
+      ? ((samples ?? [])[pitchIdx]?.noteNumber ?? pitchIdx)
+      : MELODIC_MIN_PITCH + pitchIdx;
     return notes.some((n) => n.noteNumber === noteNum);
   };
 
@@ -212,7 +265,12 @@ const PianoRollGrid = memo(function PianoRollGrid({
                   styles.pitchLabel,
                   {
                     height: rowHeight,
-                    backgroundColor: hasNotes ? trackColor : `${trackColor}40`,
+                    backgroundColor:
+                      selectedPitchIndex === pitchIdx
+                        ? colors.mcOrange // iOS: selected pitch → mcOrange.opacity(0.8)
+                        : hasNotes
+                          ? trackColor
+                          : hexToRgba(trackColor, 0.6),
                   },
                 ]}
               >
@@ -273,10 +331,16 @@ const PianoRollGrid = memo(function PianoRollGrid({
               ))}
               {/* Notes */}
               {notes.map((note, idx) => {
-                const sampleIdx = (samples ?? []).findIndex(
-                  (s) => s.noteNumber === note.noteNumber
-                );
-                const pitchIdx = sampleIdx >= 0 ? sampleIdx : 0;
+                let pitchIdx: number;
+                if (isDrum) {
+                  const sampleIdx = (samples ?? []).findIndex(
+                    (s) => s.noteNumber === note.noteNumber
+                  );
+                  pitchIdx = sampleIdx >= 0 ? sampleIdx : 0;
+                } else {
+                  // Melodic/bass: noteNumber maps directly to pitch row offset
+                  pitchIdx = note.noteNumber - MELODIC_MIN_PITCH;
+                }
                 const y = (totalPitches - 1 - pitchIdx) * rowHeight;
                 return (
                   <Pressable
@@ -428,7 +492,14 @@ const ClipLengthBar = memo(function ClipLengthBar({
               >
                 {barIndex}
               </Text>
-              {isCurrent && <View style={styles.clipLengthAccent} />}
+              {isCurrent && (
+                <View
+                  style={[
+                    styles.clipLengthAccent,
+                    { backgroundColor: colors.mcOrange5 },
+                  ]}
+                />
+              )}
             </Pressable>
           );
         })}
@@ -602,72 +673,148 @@ export interface ClipEditorViewProps {
   isMetronomeEnabled?: boolean;
   playheadPosition?: number;
   callbacks?: ClipEditorCallbacks;
+  /** Show DrumPadsView or PianoKeyboard in the bottom half (default: true). Hidden when expanded. */
+  showPerformanceControls?: boolean;
+  /** Callbacks for drum pad press/release (used when instrumentType === 'drum') */
+  drumPadCallbacks?: DrumPadCallbacks;
+  /** Callbacks for piano key press/release (used when instrumentType === 'melodic' | 'bass') */
+  pianoKeyCallbacks?: PianoKeyCallbacks;
+  /** Notes currently pressed externally (e.g. MIDI input), highlighted on pads/keyboard */
+  externalPressedNotes?: Set<number>;
   onBack?: () => void;
 }
 
 export const ClipEditorView = memo(function ClipEditorView({
   clip,
-  instrumentType: _instrumentType,
+  instrumentType,
   samples,
   isPlaying,
   isRecording,
   isMetronomeEnabled,
   playheadPosition = 0,
   callbacks,
+  showPerformanceControls = true,
+  drumPadCallbacks,
+  pianoKeyCallbacks,
+  externalPressedNotes,
   onBack,
 }: ClipEditorViewProps) {
   const { colors } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [selectedPitchIndex, setSelectedPitchIndex] = useState<number | null>(
+    null
+  );
   const trackColor = clip.colorHex;
   const samplesList = samples || [];
 
+  // iOS: PerformanceControlsView visible when config.isPerformanceControlsVisible && !isExpanded
+  const shouldShowPerformanceControls =
+    showPerformanceControls && !isExpanded && instrumentType !== 'audio';
+
+  // iOS: velocity lane only shows when a pitch label is tapped (selectedPitchForEditing)
+  const showVelocityLane = selectedPitchIndex != null && !isExpanded;
+
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
-      {/* Toolbar */}
-      <ClipEditorToolbar
-        isPlaying={isPlaying}
-        isRecording={isRecording}
-        isMetronomeEnabled={isMetronomeEnabled}
-        onBack={onBack || callbacks?.onClose}
-        onPlayPause={() => {}}
-        onRecord={() => {}}
-        onMetronome={() => {}}
-        onUndo={callbacks?.onUndo}
-        onRedo={callbacks?.onRedo}
-        onSettings={() => {}}
-      />
-
-      {/* Piano Roll */}
-      <PianoRollGrid
-        notes={clip.notes}
-        samples={samplesList}
-        trackColor={trackColor}
-        lengthInBeats={clip.activeLengthInBars * 4}
-        playheadPosition={playheadPosition}
-        zoomLevel={zoom}
-        isExpanded={isExpanded}
-        onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
-        onToggleExpand={() => setIsExpanded(!isExpanded)}
-        onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
-        onZoomOut={() => setZoom(Math.max(zoom - 0.25, 0.5))}
-      />
-
-      {/* Clip Length Bar */}
-      {!isExpanded && (
-        <ClipLengthBar
-          lengthInBars={clip.lengthInBars}
-          activeLengthInBars={clip.activeLengthInBars}
+      {/* Top half: toolbar + piano roll + clip length bar
+       * iOS uses splitHeight = availableHeight * 0.5 for each half */}
+      <View
+        style={
+          shouldShowPerformanceControls ? styles.splitHalf : styles.fullContent
+        }
+      >
+        {/* Toolbar */}
+        <ClipEditorToolbar
+          isPlaying={isPlaying}
+          isRecording={isRecording}
+          isMetronomeEnabled={isMetronomeEnabled}
+          onBack={onBack || callbacks?.onClose}
+          onPlayPause={() => {}}
+          onRecord={() => {}}
+          onMetronome={() => {}}
+          onUndo={callbacks?.onUndo}
+          onRedo={callbacks?.onRedo}
+          onSettings={() => {}}
         />
-      )}
 
-      {/* Velocity Lane */}
-      {!isExpanded && clip.notes.length > 0 && (
-        <VelocityLane
+        {/* Piano Roll */}
+        <PianoRollGrid
           notes={clip.notes}
+          samples={samplesList}
+          instrumentType={instrumentType}
           trackColor={trackColor}
-          onVelocityChange={callbacks?.onVelocityChange}
+          lengthInBeats={clip.activeLengthInBars * 4}
+          playheadPosition={playheadPosition}
+          zoomLevel={zoom}
+          isExpanded={isExpanded}
+          selectedPitchIndex={selectedPitchIndex}
+          onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
+          onPitchLabelTap={(pitch) => {
+            // Toggle velocity lane for this pitch (matching iOS selectedPitchForEditing)
+            setSelectedPitchIndex(selectedPitchIndex === pitch ? null : pitch);
+          }}
+          onToggleExpand={() => setIsExpanded(!isExpanded)}
+          onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
+          onZoomOut={() => setZoom(Math.max(zoom - 0.25, 0.5))}
         />
+
+        {/* Clip Length Bar */}
+        {!isExpanded && (
+          <ClipLengthBar
+            lengthInBars={clip.lengthInBars}
+            activeLengthInBars={clip.activeLengthInBars}
+          />
+        )}
+      </View>
+
+      {/* Bottom half: either NotePrecisionPanel (velocity editing) or PerformanceControls (pads/piano)
+       * iOS: when selectedPitchForEditing != nil → NotePrecisionPanel replaces performance controls
+       *       when nil → PerformanceControlsView (drum→PadsView, melodic/bass→TeenagePianoView) */}
+      {!isExpanded && (
+        <View style={styles.splitHalf}>
+          {showVelocityLane && clip.notes.length > 0 ? (
+            <VelocityLane
+              notes={clip.notes}
+              trackColor={trackColor}
+              onClose={() => setSelectedPitchIndex(null)}
+              onVelocityChange={callbacks?.onVelocityChange}
+            />
+          ) : shouldShowPerformanceControls ? (
+            instrumentType === 'drum' ? (
+              <DrumPadsView
+                samples={samplesList}
+                onPadPress={drumPadCallbacks?.onPadPress}
+                onPadRelease={drumPadCallbacks?.onPadRelease}
+                externalPressedNotes={externalPressedNotes}
+                highlightColor={trackColor}
+              />
+            ) : (
+              <PianoKeyboard
+                numberOfOctaves={2}
+                onNoteOn={
+                  pianoKeyCallbacks?.onKeyPress
+                    ? (noteIndex: number) =>
+                        pianoKeyCallbacks.onKeyPress?.(
+                          noteIndex + MELODIC_MIN_PITCH,
+                          100
+                        )
+                    : undefined
+                }
+                onNoteOff={
+                  pianoKeyCallbacks?.onKeyRelease
+                    ? (noteIndex: number) =>
+                        pianoKeyCallbacks.onKeyRelease?.(
+                          noteIndex + MELODIC_MIN_PITCH
+                        )
+                    : undefined
+                }
+                externalPressedNotes={externalPressedNotes}
+                highlightColor={trackColor}
+              />
+            )
+          ) : null}
+        </View>
       )}
     </View>
   );
@@ -677,6 +824,10 @@ export const ClipEditorView = memo(function ClipEditorView({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  /** iOS: splitHeight = availableHeight * 0.5 — each half gets equal flex */
+  splitHalf: { flex: 1 },
+  /** Full content when performance controls are hidden */
+  fullContent: { flex: 1 },
 
   // Toolbar
   toolbar: {
@@ -757,7 +908,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 2,
-    backgroundColor: '#FF5C24', // mcOrange5
+    backgroundColor: '#FF5C24', // fallback; overridden inline with colors.mcOrange5
   },
 
   // Velocity lane

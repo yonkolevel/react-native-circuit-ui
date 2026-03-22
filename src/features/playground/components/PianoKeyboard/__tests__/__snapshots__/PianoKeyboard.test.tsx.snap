@@ -772,7 +772,7 @@ exports[`PianoKeyboard snapshots matches snapshot with 2 octaves 1`] = `
       />
     </View>
   </View>
-  <RCTMultiTouchOverlay
+  <View
     columns={7}
     onPadPress={[Function]}
     onPadRelease={[Function]}
@@ -786,6 +786,7 @@ exports[`PianoKeyboard snapshots matches snapshot with 2 octaves 1`] = `
         "top": 0,
       }
     }
+    testID="MultiTouchOverlay"
   />
 </View>
 `;
@@ -2150,7 +2151,7 @@ exports[`PianoKeyboard snapshots matches snapshot with custom highlight color 1`
       </View>
     </View>
   </View>
-  <RCTMultiTouchOverlay
+  <View
     columns={7}
     onPadPress={[Function]}
     onPadRelease={[Function]}
@@ -2164,6 +2165,7 @@ exports[`PianoKeyboard snapshots matches snapshot with custom highlight color 1`
         "top": 0,
       }
     }
+    testID="MultiTouchOverlay"
   />
 </View>
 `;
@@ -2855,7 +2857,7 @@ exports[`PianoKeyboard snapshots matches snapshot with note names shown 1`] = `
       </View>
     </View>
   </View>
-  <RCTMultiTouchOverlay
+  <View
     columns={7}
     onPadPress={[Function]}
     onPadRelease={[Function]}
@@ -2869,6 +2871,7 @@ exports[`PianoKeyboard snapshots matches snapshot with note names shown 1`] = `
         "top": 0,
       }
     }
+    testID="MultiTouchOverlay"
   />
 </View>
 `;
