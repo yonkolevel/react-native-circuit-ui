@@ -18,7 +18,13 @@
  * └──────────────────────────────────────────────────┘
  */
 import { memo, useState } from 'react';
-import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Pressable,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme, hexToRgba } from '../../../../theme';
@@ -208,6 +214,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
   onZoomOut,
 }: PianoRollGridProps) {
   const { colors } = useTheme();
+  const { width: screenWidth } = useWindowDimensions();
 
   const isDrum = instrumentType === 'drum';
 
@@ -215,8 +222,15 @@ const PianoRollGrid = memo(function PianoRollGrid({
   const totalPitches = isDrum
     ? Math.max((samples ?? []).length, 12)
     : MELODIC_PITCH_COUNT;
-  const BEAT_WIDTH = 40 * zoomLevel;
-  const LABEL_WIDTH = 60; // iOS: labelColumnWidth = 60
+
+  // iOS: baseWidth = availableGridWidth / 16 (steps per bar)
+  // At zoom 1.0, one bar fills the available width exactly.
+  const LABEL_WIDTH = 60;
+  const availableGridWidth = screenWidth - LABEL_WIDTH;
+  const STEPS_PER_BAR = 16;
+  const baseStepWidth = availableGridWidth / STEPS_PER_BAR;
+  const stepWidth = baseStepWidth * zoomLevel;
+  const BEAT_WIDTH = stepWidth * 4; // 4 steps per beat
   const gridHeight = totalPitches * rowHeight;
 
   /**
@@ -327,7 +341,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
                     key={`s${i}`}
                     style={{
                       position: 'absolute',
-                      left: (i / 4) * BEAT_WIDTH,
+                      left: i * stepWidth,
                       top: 0,
                       bottom: 0,
                       width: isBar ? 1.5 : isBeat ? 1 : 0.5,

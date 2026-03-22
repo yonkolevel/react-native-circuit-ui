@@ -1,6 +1,25 @@
 // Types
 export * from './types';
 
+// Store (contract + provider + selectors)
+export {
+  SongStoreProvider,
+  useSongContext,
+  useSongActions,
+  useTrack,
+  useClip,
+  useActiveClip,
+  useTransport,
+  useTrackMixer,
+  TrackScope,
+  ClipScope,
+  useTrackId,
+  useClipId,
+  type SongStore,
+  type SongActions,
+  type UseSongStoreHook,
+} from './stores/playgroundStore';
+
 // Mocks
 export * from './mocks';
 

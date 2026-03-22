@@ -1,10 +1,11 @@
 /**
- * PlaygroundsDashboardScreen — connected to playgroundStore
+ * PlaygroundsDashboardScreen — example screen for circuit-ui storybook/demo.
+ * The real app (midicircuit-rn) has its own dashboard screen.
  */
 import { memo, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { PlaygroundsDashboard } from '../components/PlaygroundsDashboard';
-import { usePlaygroundStore } from '../stores/playgroundStore';
+import { createMockPlaygroundsList } from '../mocks';
 import { useTheme } from '../../../theme';
 
 interface Props {
@@ -13,21 +14,18 @@ interface Props {
 
 export const PlaygroundsDashboardScreen = memo(function PlaygroundsDashboardScreen({ onNavigateToPlayground }: Props) {
   const { colors } = useTheme();
-  const { playgrounds, isLoading, selectPlayground, createPlayground, deletePlayground } = usePlaygroundStore();
 
   const handleSelect = useCallback((id: string) => {
-    selectPlayground(id);
     onNavigateToPlayground?.(id);
-  }, [selectPlayground, onNavigateToPlayground]);
+  }, [onNavigateToPlayground]);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
       <PlaygroundsDashboard
-        playgrounds={playgrounds}
-        isLoading={isLoading}
+        playgrounds={createMockPlaygroundsList(4)}
         onSelect={handleSelect}
-        onCreate={createPlayground}
-        onMenuPress={deletePlayground}
+        onCreate={() => {}}
+        onMenuPress={() => {}}
       />
     </View>
   );
