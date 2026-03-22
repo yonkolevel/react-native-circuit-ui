@@ -199,7 +199,6 @@
   "dependencies": {
     "lucide-react-native": "^0.481.0",
     "react-native-svg": "^15.11.2",
-    "zeego": "^3.0.0",
     "zustand": "^5.0.0"
   }
 }
