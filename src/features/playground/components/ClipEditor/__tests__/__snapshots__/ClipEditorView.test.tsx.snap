@@ -366,7 +366,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
               "borderRightWidth": 1,
             },
             {
-              "width": 120,
+              "width": 60,
             },
           ]
         }
@@ -405,10 +405,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -432,7 +432,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -473,10 +473,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -500,7 +500,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -541,10 +541,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -568,7 +568,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -609,10 +609,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -636,7 +636,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -677,10 +677,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -704,7 +704,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -745,10 +745,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -772,7 +772,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -813,10 +813,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -840,7 +840,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -881,10 +881,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -908,7 +908,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -949,10 +949,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -976,7 +976,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -1017,10 +1017,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -1044,7 +1044,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -1085,10 +1085,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -1112,7 +1112,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -1153,10 +1153,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -1180,7 +1180,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -2248,10 +2248,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
       style={
         {
           "alignItems": "center",
-          "backgroundColor": "rgba(49,51,54,0.9)",
-          "borderRadius": 8,
-          "gap": 4,
-          "padding": 6,
+          "gap": 6,
           "position": "absolute",
           "right": 8,
           "top": 8,
@@ -2290,14 +2287,19 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
         onStartShouldSetResponder={[Function]}
         style={
           {
-            "padding": 6,
+            "alignItems": "center",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "height": 36,
+            "justifyContent": "center",
+            "width": 36,
           }
         }
       >
         <View>
           <View
             color="#F7F7F7"
-            size={16}
+            size={14}
             testID="lucide-Maximize2"
           />
         </View>
@@ -2334,40 +2336,56 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
         onStartShouldSetResponder={[Function]}
         style={
           {
-            "padding": 6,
+            "alignItems": "center",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "height": 36,
+            "justifyContent": "center",
+            "width": 36,
           }
         }
       >
         <View>
           <View
             color="#F7F7F7"
-            size={16}
+            size={14}
             testID="lucide-ZoomIn"
           />
         </View>
       </View>
-      <Text
-        accessibilityRole="text"
+      <View
         style={
-          [
-            {
-              "fontFamily": "System",
-              "fontSize": 8,
-              "fontWeight": "400",
-              "lineHeight": 12,
-            },
-            {
-              "color": "#F7F7F7",
-            },
-            {
-              "textAlign": "center",
-            },
-          ]
+          {
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "paddingHorizontal": 6,
+            "paddingVertical": 4,
+          }
         }
       >
-        100
-        %
-      </Text>
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 10,
+                "fontWeight": "400",
+                "lineHeight": 15,
+              },
+              {
+                "color": "#F7F7F7",
+              },
+              {
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          100
+          %
+        </Text>
+      </View>
       <View
         accessibilityState={
           {
@@ -2400,14 +2418,19 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
         onStartShouldSetResponder={[Function]}
         style={
           {
-            "padding": 6,
+            "alignItems": "center",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "height": 36,
+            "justifyContent": "center",
+            "width": 36,
           }
         }
       >
         <View>
           <View
             color="#F7F7F7"
-            size={16}
+            size={14}
             testID="lucide-ZoomOut"
           />
         </View>
@@ -2416,25 +2439,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
   </View>
   <View
     style={
-      [
-        {
-          "alignItems": "center",
-          "flexDirection": "row",
-          "height": 32,
-        },
-        {
-          "backgroundColor": "#FF5C24",
-        },
-      ]
+      {
+        "alignItems": "center",
+        "backgroundColor": "#000000",
+        "flexDirection": "row",
+        "height": 34,
+      }
     }
   >
     <View
-      accessibilityLabel="Decrease bars"
+      accessibilityLabel="Remove bar"
       accessibilityState={
         {
           "busy": undefined,
           "checked": undefined,
-          "disabled": undefined,
+          "disabled": false,
           "expanded": undefined,
           "selected": undefined,
         }
@@ -2460,17 +2479,24 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
       onResponderTerminationRequest={[Function]}
       onStartShouldSetResponder={[Function]}
       style={
-        {
-          "height": "100%",
-          "justifyContent": "center",
-          "paddingHorizontal": 12,
-        }
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "#000000",
+            "height": 34,
+            "justifyContent": "center",
+            "width": 34,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
       }
     >
       <View>
         <View
-          color="#000000"
-          size={14}
+          color="#FF5C24"
+          size={12}
           testID="lucide-Minus"
         />
       </View>
@@ -2480,126 +2506,310 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
         {
           "flex": 1,
           "flexDirection": "row",
-          "justifyContent": "space-around",
+          "height": 34,
         }
       }
     >
-      <Text
-        accessibilityRole="text"
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        1
-      </Text>
-      <Text
-        accessibilityRole="text"
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          1
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        2
-      </Text>
-      <Text
-        accessibilityRole="text"
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          2
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        3
-      </Text>
-      <Text
-        accessibilityRole="text"
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          3
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        4
-      </Text>
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          4
+        </Text>
+      </View>
     </View>
     <View
-      accessibilityLabel="Increase bars"
+      accessibilityLabel="Add bar"
       accessibilityState={
         {
           "busy": undefined,
           "checked": undefined,
-          "disabled": undefined,
+          "disabled": false,
           "expanded": undefined,
           "selected": undefined,
         }
@@ -2625,17 +2835,24 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
       onResponderTerminationRequest={[Function]}
       onStartShouldSetResponder={[Function]}
       style={
-        {
-          "height": "100%",
-          "justifyContent": "center",
-          "paddingHorizontal": 12,
-        }
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "#000000",
+            "height": 34,
+            "justifyContent": "center",
+            "width": 34,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
       }
     >
       <View>
         <View
-          color="#000000"
-          size={14}
+          color="#FF5C24"
+          size={12}
           testID="lucide-Plus"
         />
       </View>
@@ -4598,7 +4815,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
               "borderRightWidth": 1,
             },
             {
-              "width": 120,
+              "width": 60,
             },
           ]
         }
@@ -4637,10 +4854,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -4664,7 +4881,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -4705,10 +4922,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -4732,7 +4949,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -4773,10 +4990,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -4800,7 +5017,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -4841,10 +5058,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -4868,7 +5085,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -4909,10 +5126,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -4936,7 +5153,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -4977,10 +5194,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -5004,7 +5221,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -5045,10 +5262,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -5072,7 +5289,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -5113,10 +5330,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -5140,7 +5357,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -5181,10 +5398,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -5208,7 +5425,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -5249,10 +5466,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -5276,7 +5493,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -5317,10 +5534,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -5344,7 +5561,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -5385,10 +5602,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -5412,7 +5629,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -5453,10 +5670,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -5480,7 +5697,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -5521,10 +5738,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA8",
@@ -5548,7 +5765,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -5589,10 +5806,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA8",
@@ -5616,7 +5833,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -5657,10 +5874,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA8",
@@ -5684,7 +5901,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -6808,10 +7025,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
       style={
         {
           "alignItems": "center",
-          "backgroundColor": "rgba(49,51,54,0.9)",
-          "borderRadius": 8,
-          "gap": 4,
-          "padding": 6,
+          "gap": 6,
           "position": "absolute",
           "right": 8,
           "top": 8,
@@ -6850,14 +7064,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
         onStartShouldSetResponder={[Function]}
         style={
           {
-            "padding": 6,
+            "alignItems": "center",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "height": 36,
+            "justifyContent": "center",
+            "width": 36,
           }
         }
       >
         <View>
           <View
             color="#F7F7F7"
-            size={16}
+            size={14}
             testID="lucide-Maximize2"
           />
         </View>
@@ -6894,40 +7113,56 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
         onStartShouldSetResponder={[Function]}
         style={
           {
-            "padding": 6,
+            "alignItems": "center",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "height": 36,
+            "justifyContent": "center",
+            "width": 36,
           }
         }
       >
         <View>
           <View
             color="#F7F7F7"
-            size={16}
+            size={14}
             testID="lucide-ZoomIn"
           />
         </View>
       </View>
-      <Text
-        accessibilityRole="text"
+      <View
         style={
-          [
-            {
-              "fontFamily": "System",
-              "fontSize": 8,
-              "fontWeight": "400",
-              "lineHeight": 12,
-            },
-            {
-              "color": "#F7F7F7",
-            },
-            {
-              "textAlign": "center",
-            },
-          ]
+          {
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "paddingHorizontal": 6,
+            "paddingVertical": 4,
+          }
         }
       >
-        100
-        %
-      </Text>
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 10,
+                "fontWeight": "400",
+                "lineHeight": 15,
+              },
+              {
+                "color": "#F7F7F7",
+              },
+              {
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          100
+          %
+        </Text>
+      </View>
       <View
         accessibilityState={
           {
@@ -6960,14 +7195,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
         onStartShouldSetResponder={[Function]}
         style={
           {
-            "padding": 6,
+            "alignItems": "center",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "height": 36,
+            "justifyContent": "center",
+            "width": 36,
           }
         }
       >
         <View>
           <View
             color="#F7F7F7"
-            size={16}
+            size={14}
             testID="lucide-ZoomOut"
           />
         </View>
@@ -6976,25 +7216,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
   </View>
   <View
     style={
-      [
-        {
-          "alignItems": "center",
-          "flexDirection": "row",
-          "height": 32,
-        },
-        {
-          "backgroundColor": "#FF5C24",
-        },
-      ]
+      {
+        "alignItems": "center",
+        "backgroundColor": "#000000",
+        "flexDirection": "row",
+        "height": 34,
+      }
     }
   >
     <View
-      accessibilityLabel="Decrease bars"
+      accessibilityLabel="Remove bar"
       accessibilityState={
         {
           "busy": undefined,
           "checked": undefined,
-          "disabled": undefined,
+          "disabled": false,
           "expanded": undefined,
           "selected": undefined,
         }
@@ -7020,17 +7256,24 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
       onResponderTerminationRequest={[Function]}
       onStartShouldSetResponder={[Function]}
       style={
-        {
-          "height": "100%",
-          "justifyContent": "center",
-          "paddingHorizontal": 12,
-        }
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "#000000",
+            "height": 34,
+            "justifyContent": "center",
+            "width": 34,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
       }
     >
       <View>
         <View
-          color="#000000"
-          size={14}
+          color="#FF5C24"
+          size={12}
           testID="lucide-Minus"
         />
       </View>
@@ -7040,126 +7283,310 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
         {
           "flex": 1,
           "flexDirection": "row",
-          "justifyContent": "space-around",
+          "height": 34,
         }
       }
     >
-      <Text
-        accessibilityRole="text"
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        1
-      </Text>
-      <Text
-        accessibilityRole="text"
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          1
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        2
-      </Text>
-      <Text
-        accessibilityRole="text"
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          2
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        3
-      </Text>
-      <Text
-        accessibilityRole="text"
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          3
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        4
-      </Text>
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          4
+        </Text>
+      </View>
     </View>
     <View
-      accessibilityLabel="Increase bars"
+      accessibilityLabel="Add bar"
       accessibilityState={
         {
           "busy": undefined,
           "checked": undefined,
-          "disabled": undefined,
+          "disabled": false,
           "expanded": undefined,
           "selected": undefined,
         }
@@ -7185,17 +7612,24 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
       onResponderTerminationRequest={[Function]}
       onStartShouldSetResponder={[Function]}
       style={
-        {
-          "height": "100%",
-          "justifyContent": "center",
-          "paddingHorizontal": 12,
-        }
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "#000000",
+            "height": 34,
+            "justifyContent": "center",
+            "width": 34,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
       }
     >
       <View>
         <View
-          color="#000000"
-          size={14}
+          color="#FF5C24"
+          size={12}
           testID="lucide-Plus"
         />
       </View>
@@ -9158,7 +9592,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               "borderRightWidth": 1,
             },
             {
-              "width": 120,
+              "width": 60,
             },
           ]
         }
@@ -9197,10 +9631,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#FF6C3A40",
@@ -9224,7 +9658,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -9265,10 +9699,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#FF6C3A40",
@@ -9292,7 +9726,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -9333,10 +9767,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#FF6C3A40",
@@ -9360,7 +9794,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -9401,10 +9835,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#FF6C3A40",
@@ -9428,7 +9862,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -9469,10 +9903,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#FF6C3A40",
@@ -9496,7 +9930,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -9537,10 +9971,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#FF6C3A40",
@@ -9564,7 +9998,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -9605,10 +10039,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#FF6C3A40",
@@ -9632,7 +10066,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -9673,10 +10107,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#FF6C3A40",
@@ -9700,7 +10134,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -9741,10 +10175,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#FF6C3A40",
@@ -9768,7 +10202,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -9809,10 +10243,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#FF6C3A40",
@@ -9836,7 +10270,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -9877,10 +10311,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#FF6C3A40",
@@ -9904,7 +10338,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -9945,10 +10379,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#FF6C3A40",
@@ -9972,7 +10406,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -10608,10 +11042,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
       style={
         {
           "alignItems": "center",
-          "backgroundColor": "rgba(49,51,54,0.9)",
-          "borderRadius": 8,
-          "gap": 4,
-          "padding": 6,
+          "gap": 6,
           "position": "absolute",
           "right": 8,
           "top": 8,
@@ -10650,14 +11081,19 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
         onStartShouldSetResponder={[Function]}
         style={
           {
-            "padding": 6,
+            "alignItems": "center",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "height": 36,
+            "justifyContent": "center",
+            "width": 36,
           }
         }
       >
         <View>
           <View
             color="#F7F7F7"
-            size={16}
+            size={14}
             testID="lucide-Maximize2"
           />
         </View>
@@ -10694,40 +11130,56 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
         onStartShouldSetResponder={[Function]}
         style={
           {
-            "padding": 6,
+            "alignItems": "center",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "height": 36,
+            "justifyContent": "center",
+            "width": 36,
           }
         }
       >
         <View>
           <View
             color="#F7F7F7"
-            size={16}
+            size={14}
             testID="lucide-ZoomIn"
           />
         </View>
       </View>
-      <Text
-        accessibilityRole="text"
+      <View
         style={
-          [
-            {
-              "fontFamily": "System",
-              "fontSize": 8,
-              "fontWeight": "400",
-              "lineHeight": 12,
-            },
-            {
-              "color": "#F7F7F7",
-            },
-            {
-              "textAlign": "center",
-            },
-          ]
+          {
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "paddingHorizontal": 6,
+            "paddingVertical": 4,
+          }
         }
       >
-        100
-        %
-      </Text>
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 10,
+                "fontWeight": "400",
+                "lineHeight": 15,
+              },
+              {
+                "color": "#F7F7F7",
+              },
+              {
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          100
+          %
+        </Text>
+      </View>
       <View
         accessibilityState={
           {
@@ -10760,14 +11212,19 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
         onStartShouldSetResponder={[Function]}
         style={
           {
-            "padding": 6,
+            "alignItems": "center",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "height": 36,
+            "justifyContent": "center",
+            "width": 36,
           }
         }
       >
         <View>
           <View
             color="#F7F7F7"
-            size={16}
+            size={14}
             testID="lucide-ZoomOut"
           />
         </View>
@@ -10776,25 +11233,21 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
   </View>
   <View
     style={
-      [
-        {
-          "alignItems": "center",
-          "flexDirection": "row",
-          "height": 32,
-        },
-        {
-          "backgroundColor": "#FF5C24",
-        },
-      ]
+      {
+        "alignItems": "center",
+        "backgroundColor": "#000000",
+        "flexDirection": "row",
+        "height": 34,
+      }
     }
   >
     <View
-      accessibilityLabel="Decrease bars"
+      accessibilityLabel="Remove bar"
       accessibilityState={
         {
           "busy": undefined,
           "checked": undefined,
-          "disabled": undefined,
+          "disabled": false,
           "expanded": undefined,
           "selected": undefined,
         }
@@ -10820,17 +11273,24 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
       onResponderTerminationRequest={[Function]}
       onStartShouldSetResponder={[Function]}
       style={
-        {
-          "height": "100%",
-          "justifyContent": "center",
-          "paddingHorizontal": 12,
-        }
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "#000000",
+            "height": 34,
+            "justifyContent": "center",
+            "width": 34,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
       }
     >
       <View>
         <View
-          color="#000000"
-          size={14}
+          color="#FF5C24"
+          size={12}
           testID="lucide-Minus"
         />
       </View>
@@ -10840,126 +11300,310 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
         {
           "flex": 1,
           "flexDirection": "row",
-          "justifyContent": "space-around",
+          "height": 34,
         }
       }
     >
-      <Text
-        accessibilityRole="text"
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        1
-      </Text>
-      <Text
-        accessibilityRole="text"
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          1
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        2
-      </Text>
-      <Text
-        accessibilityRole="text"
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          2
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        3
-      </Text>
-      <Text
-        accessibilityRole="text"
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          3
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        4
-      </Text>
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          4
+        </Text>
+      </View>
     </View>
     <View
-      accessibilityLabel="Increase bars"
+      accessibilityLabel="Add bar"
       accessibilityState={
         {
           "busy": undefined,
           "checked": undefined,
-          "disabled": undefined,
+          "disabled": false,
           "expanded": undefined,
           "selected": undefined,
         }
@@ -10985,17 +11629,24 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
       onResponderTerminationRequest={[Function]}
       onStartShouldSetResponder={[Function]}
       style={
-        {
-          "height": "100%",
-          "justifyContent": "center",
-          "paddingHorizontal": 12,
-        }
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "#000000",
+            "height": 34,
+            "justifyContent": "center",
+            "width": 34,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
       }
     >
       <View>
         <View
-          color="#000000"
-          size={14}
+          color="#FF5C24"
+          size={12}
           testID="lucide-Plus"
         />
       </View>
@@ -12134,7 +12785,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
               "borderRightWidth": 1,
             },
             {
-              "width": 120,
+              "width": 60,
             },
           ]
         }
@@ -12173,10 +12824,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -12200,7 +12851,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -12241,10 +12892,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -12268,7 +12919,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -12309,10 +12960,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -12336,7 +12987,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -12377,10 +13028,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -12404,7 +13055,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -12445,10 +13096,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -12472,7 +13123,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -12513,10 +13164,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -12540,7 +13191,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -12581,10 +13232,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -12608,7 +13259,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -12649,10 +13300,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -12676,7 +13327,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -12717,10 +13368,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -12744,7 +13395,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -12785,10 +13436,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -12812,7 +13463,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -12853,10 +13504,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -12880,7 +13531,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -12921,10 +13572,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderBottomColor": "rgba(0,0,0,0.2)",
-                  "borderBottomWidth": 0.5,
+                  "borderColor": "rgba(0,0,0,0.5)",
+                  "borderWidth": 0.5,
                   "justifyContent": "center",
-                  "paddingHorizontal": 4,
+                  "padding": 2,
                 },
                 {
                   "backgroundColor": "#1AFFA840",
@@ -12948,7 +13599,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                     "color": "#000000",
                   },
                   {
-                    "fontSize": 7,
+                    "fontSize": 10,
                   },
                 ]
               }
@@ -14016,10 +14667,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
       style={
         {
           "alignItems": "center",
-          "backgroundColor": "rgba(49,51,54,0.9)",
-          "borderRadius": 8,
-          "gap": 4,
-          "padding": 6,
+          "gap": 6,
           "position": "absolute",
           "right": 8,
           "top": 8,
@@ -14058,14 +14706,19 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
         onStartShouldSetResponder={[Function]}
         style={
           {
-            "padding": 6,
+            "alignItems": "center",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "height": 36,
+            "justifyContent": "center",
+            "width": 36,
           }
         }
       >
         <View>
           <View
             color="#F7F7F7"
-            size={16}
+            size={14}
             testID="lucide-Maximize2"
           />
         </View>
@@ -14102,40 +14755,56 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
         onStartShouldSetResponder={[Function]}
         style={
           {
-            "padding": 6,
+            "alignItems": "center",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "height": 36,
+            "justifyContent": "center",
+            "width": 36,
           }
         }
       >
         <View>
           <View
             color="#F7F7F7"
-            size={16}
+            size={14}
             testID="lucide-ZoomIn"
           />
         </View>
       </View>
-      <Text
-        accessibilityRole="text"
+      <View
         style={
-          [
-            {
-              "fontFamily": "System",
-              "fontSize": 8,
-              "fontWeight": "400",
-              "lineHeight": 12,
-            },
-            {
-              "color": "#F7F7F7",
-            },
-            {
-              "textAlign": "center",
-            },
-          ]
+          {
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "paddingHorizontal": 6,
+            "paddingVertical": 4,
+          }
         }
       >
-        100
-        %
-      </Text>
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 10,
+                "fontWeight": "400",
+                "lineHeight": 15,
+              },
+              {
+                "color": "#F7F7F7",
+              },
+              {
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          100
+          %
+        </Text>
+      </View>
       <View
         accessibilityState={
           {
@@ -14168,14 +14837,19 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
         onStartShouldSetResponder={[Function]}
         style={
           {
-            "padding": 6,
+            "alignItems": "center",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "borderRadius": 8,
+            "height": 36,
+            "justifyContent": "center",
+            "width": 36,
           }
         }
       >
         <View>
           <View
             color="#F7F7F7"
-            size={16}
+            size={14}
             testID="lucide-ZoomOut"
           />
         </View>
@@ -14184,25 +14858,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
   </View>
   <View
     style={
-      [
-        {
-          "alignItems": "center",
-          "flexDirection": "row",
-          "height": 32,
-        },
-        {
-          "backgroundColor": "#FF5C24",
-        },
-      ]
+      {
+        "alignItems": "center",
+        "backgroundColor": "#000000",
+        "flexDirection": "row",
+        "height": 34,
+      }
     }
   >
     <View
-      accessibilityLabel="Decrease bars"
+      accessibilityLabel="Remove bar"
       accessibilityState={
         {
           "busy": undefined,
           "checked": undefined,
-          "disabled": undefined,
+          "disabled": false,
           "expanded": undefined,
           "selected": undefined,
         }
@@ -14228,17 +14898,24 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
       onResponderTerminationRequest={[Function]}
       onStartShouldSetResponder={[Function]}
       style={
-        {
-          "height": "100%",
-          "justifyContent": "center",
-          "paddingHorizontal": 12,
-        }
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "#000000",
+            "height": 34,
+            "justifyContent": "center",
+            "width": 34,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
       }
     >
       <View>
         <View
-          color="#000000"
-          size={14}
+          color="#FF5C24"
+          size={12}
           testID="lucide-Minus"
         />
       </View>
@@ -14248,126 +14925,310 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
         {
           "flex": 1,
           "flexDirection": "row",
-          "justifyContent": "space-around",
+          "height": 34,
         }
       }
     >
-      <Text
-        accessibilityRole="text"
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        1
-      </Text>
-      <Text
-        accessibilityRole="text"
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          1
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        2
-      </Text>
-      <Text
-        accessibilityRole="text"
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          2
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        3
-      </Text>
-      <Text
-        accessibilityRole="text"
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          3
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "fontFamily": "System",
-              "fontSize": 12,
-              "fontWeight": "400",
-              "lineHeight": 18,
-            },
-            {
-              "color": "#000000",
-            },
-            {
-              "fontWeight": "700",
-            },
-            {
-              "textAlign": "center",
-            },
-            {
+              "alignItems": "center",
               "flex": 1,
+              "justifyContent": "center",
+              "position": "relative",
+            },
+            {
+              "backgroundColor": "#FF5C24",
             },
           ]
         }
       >
-        4
-      </Text>
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "#000000",
+              },
+              {
+                "fontWeight": "700",
+              },
+              {
+                "textAlign": "center",
+              },
+              {
+                "fontSize": 10,
+                "fontWeight": "600",
+              },
+            ]
+          }
+        >
+          4
+        </Text>
+      </View>
     </View>
     <View
-      accessibilityLabel="Increase bars"
+      accessibilityLabel="Add bar"
       accessibilityState={
         {
           "busy": undefined,
           "checked": undefined,
-          "disabled": undefined,
+          "disabled": false,
           "expanded": undefined,
           "selected": undefined,
         }
@@ -14393,17 +15254,24 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
       onResponderTerminationRequest={[Function]}
       onStartShouldSetResponder={[Function]}
       style={
-        {
-          "height": "100%",
-          "justifyContent": "center",
-          "paddingHorizontal": 12,
-        }
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "#000000",
+            "height": 34,
+            "justifyContent": "center",
+            "width": 34,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
       }
     >
       <View>
         <View
-          color="#000000"
-          size={14}
+          color="#FF5C24"
+          size={12}
           testID="lucide-Plus"
         />
       </View>

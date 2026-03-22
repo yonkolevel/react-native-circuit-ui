@@ -23,7 +23,13 @@ import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
-import type { Clip, ClipNote, InstrumentType, ClipEditorCallbacks, Sample } from '../../types';
+import type {
+  Clip,
+  ClipNote,
+  InstrumentType,
+  ClipEditorCallbacks,
+  Sample,
+} from '../../types';
 
 // ─── ClipEditorToolbar ──────────────────────────────────────────────────────
 // Matches ClipEditorToolbarView.swift exactly:
@@ -46,8 +52,18 @@ interface ClipEditorToolbarProps {
 }
 
 const ClipEditorToolbar = memo(function ClipEditorToolbar({
-  isPlaying, isRecording, isMetronomeEnabled, canUndo = true, canRedo = true,
-  onBack, onPlayPause, onRecord, onMetronome, onUndo, onRedo, onSettings,
+  isPlaying,
+  isRecording,
+  isMetronomeEnabled,
+  canUndo = true,
+  canRedo = true,
+  onBack,
+  onPlayPause,
+  onRecord,
+  onMetronome,
+  onUndo,
+  onRedo,
+  onSettings,
 }: ClipEditorToolbarProps) {
   const { colors } = useTheme();
   return (
@@ -59,20 +75,58 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
       <View style={styles.toolbarSpacer} />
 
       <View style={styles.toolbarCenter}>
-        <Pressable onPress={onPlayPause} hitSlop={8} accessibilityLabel={isPlaying ? 'Pause' : 'Play'}>
-          <Icon icon={isPlaying ? Icons.pause : Icons.play} size={20} color={colors.mcWhite} />
+        <Pressable
+          onPress={onPlayPause}
+          hitSlop={8}
+          accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
+        >
+          <Icon
+            icon={isPlaying ? Icons.pause : Icons.play}
+            size={20}
+            color={colors.mcWhite}
+          />
         </Pressable>
         <Pressable onPress={onRecord} hitSlop={8} accessibilityLabel="Record">
-          <Icon icon={Icons.record} size={20} color={isRecording ? '#FF0000' : colors.mcWhite} />
+          <Icon
+            icon={Icons.record}
+            size={20}
+            color={isRecording ? '#FF0000' : colors.mcWhite}
+          />
         </Pressable>
-        <Pressable onPress={onMetronome} hitSlop={8} accessibilityLabel="Metronome">
-          <Icon icon={isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff} size={20} color={colors.mcWhite} />
+        <Pressable
+          onPress={onMetronome}
+          hitSlop={8}
+          accessibilityLabel="Metronome"
+        >
+          <Icon
+            icon={isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff}
+            size={20}
+            color={colors.mcWhite}
+          />
         </Pressable>
-        <Pressable onPress={onUndo} hitSlop={8} disabled={!canUndo} accessibilityLabel="Undo">
-          <Icon icon={Icons.undo} size={20} color={canUndo ? colors.mcWhite : colors.mcGray} />
+        <Pressable
+          onPress={onUndo}
+          hitSlop={8}
+          disabled={!canUndo}
+          accessibilityLabel="Undo"
+        >
+          <Icon
+            icon={Icons.undo}
+            size={20}
+            color={canUndo ? colors.mcWhite : colors.mcGray}
+          />
         </Pressable>
-        <Pressable onPress={onRedo} hitSlop={8} disabled={!canRedo} accessibilityLabel="Redo">
-          <Icon icon={Icons.redo} size={20} color={canRedo ? colors.mcWhite : colors.mcGray} />
+        <Pressable
+          onPress={onRedo}
+          hitSlop={8}
+          disabled={!canRedo}
+          accessibilityLabel="Redo"
+        >
+          <Icon
+            icon={Icons.redo}
+            size={20}
+            color={canRedo ? colors.mcWhite : colors.mcGray}
+          />
         </Pressable>
       </View>
 
@@ -104,29 +158,41 @@ interface PianoRollGridProps {
 }
 
 const PianoRollGrid = memo(function PianoRollGrid({
-  notes, samples, trackColor, lengthInBeats,
-  rowHeight = 34, zoomLevel = 1, playheadPosition = 0,
-  isExpanded, onNotePress, onPitchLabelTap,
-  onToggleExpand, onZoomIn, onZoomOut,
+  notes,
+  samples,
+  trackColor,
+  lengthInBeats,
+  rowHeight = 34,
+  zoomLevel = 1,
+  playheadPosition = 0,
+  isExpanded,
+  onNotePress,
+  onPitchLabelTap,
+  onToggleExpand,
+  onZoomIn,
+  onZoomOut,
 }: PianoRollGridProps) {
   const { colors } = useTheme();
 
   // Calculate pitch range from soundbank
   const totalPitches = Math.max((samples ?? []).length, 12);
   const BEAT_WIDTH = 40 * zoomLevel;
-  const LABEL_WIDTH = 120;
+  const LABEL_WIDTH = 60; // iOS: labelColumnWidth = 60
   const gridHeight = totalPitches * rowHeight;
 
   // Get sample name for a pitch index
   const getPitchLabel = (pitchIdx: number): string => {
     const sample = (samples ?? [])[pitchIdx];
-    return sample?.fileName?.replace('.wav', '').replace('.aif', '') ?? `Note ${pitchIdx}`;
+    return (
+      sample?.fileName?.replace('.wav', '').replace('.aif', '') ??
+      `Note ${pitchIdx}`
+    );
   };
 
   // Check if pitch has notes
   const pitchHasNotes = (pitchIdx: number): boolean => {
     const noteNum = (samples ?? [])[pitchIdx]?.noteNumber ?? pitchIdx;
-    return notes.some(n => n.noteNumber === noteNum);
+    return notes.some((n) => n.noteNumber === noteNum);
   };
 
   return (
@@ -144,10 +210,18 @@ const PianoRollGrid = memo(function PianoRollGrid({
                 onPress={() => onPitchLabelTap?.(pitchIdx)}
                 style={[
                   styles.pitchLabel,
-                  { height: rowHeight, backgroundColor: hasNotes ? trackColor : `${trackColor}40` },
+                  {
+                    height: rowHeight,
+                    backgroundColor: hasNotes ? trackColor : `${trackColor}40`,
+                  },
                 ]}
               >
-                <Text variant="extraSmall" color={colors.mcBlack} numberOfLines={2} style={styles.pitchLabelText}>
+                <Text
+                  variant="extraSmall"
+                  color={colors.mcBlack}
+                  numberOfLines={2}
+                  style={styles.pitchLabelText}
+                >
                   {getPitchLabel(pitchIdx)}
                 </Text>
               </Pressable>
@@ -158,61 +232,115 @@ const PianoRollGrid = memo(function PianoRollGrid({
         {/* Grid + notes */}
         <ScrollView horizontal>
           <ScrollView>
-            <View style={{ width: lengthInBeats * BEAT_WIDTH, height: gridHeight, position: 'relative' }}>
+            <View
+              style={{
+                width: lengthInBeats * BEAT_WIDTH,
+                height: gridHeight,
+                position: 'relative',
+              }}
+            >
               {/* Grid rows */}
               {Array.from({ length: totalPitches }, (_, i) => (
-                <View key={`r${i}`} style={{
-                  position: 'absolute', top: i * rowHeight, left: 0, right: 0, height: rowHeight,
-                  borderBottomWidth: 0.5, borderBottomColor: colors.mcBlack4,
-                  backgroundColor: i % 2 === 0 ? colors.mcBlack : colors.mcBlack2,
-                }} />
+                <View
+                  key={`r${i}`}
+                  style={{
+                    position: 'absolute',
+                    top: i * rowHeight,
+                    left: 0,
+                    right: 0,
+                    height: rowHeight,
+                    borderBottomWidth: 0.5,
+                    borderBottomColor: colors.mcBlack4,
+                    backgroundColor:
+                      i % 2 === 0 ? colors.mcBlack : colors.mcBlack2,
+                  }}
+                />
               ))}
               {/* Beat lines */}
               {Array.from({ length: lengthInBeats + 1 }, (_, i) => (
-                <View key={`b${i}`} style={{
-                  position: 'absolute', left: i * BEAT_WIDTH, top: 0, bottom: 0,
-                  width: i % 4 === 0 ? 1 : 0.5,
-                  backgroundColor: i % 4 === 0 ? colors.mcWhite4 : colors.mcBlack4,
-                }} />
+                <View
+                  key={`b${i}`}
+                  style={{
+                    position: 'absolute',
+                    left: i * BEAT_WIDTH,
+                    top: 0,
+                    bottom: 0,
+                    width: i % 4 === 0 ? 1 : 0.5,
+                    backgroundColor:
+                      i % 4 === 0 ? colors.mcWhite4 : colors.mcBlack4,
+                  }}
+                />
               ))}
               {/* Notes */}
               {notes.map((note, idx) => {
-                const sampleIdx = (samples ?? []).findIndex(s => s.noteNumber === note.noteNumber);
+                const sampleIdx = (samples ?? []).findIndex(
+                  (s) => s.noteNumber === note.noteNumber
+                );
                 const pitchIdx = sampleIdx >= 0 ? sampleIdx : 0;
                 const y = (totalPitches - 1 - pitchIdx) * rowHeight;
                 return (
-                  <Pressable key={idx} onPress={() => onNotePress?.(idx)} style={{
-                    position: 'absolute', left: note.position * BEAT_WIDTH, top: y + 1,
-                    width: Math.max(note.duration * BEAT_WIDTH - 2, 4), height: rowHeight - 2,
-                    backgroundColor: trackColor, borderRadius: 2,
-                    justifyContent: 'center', alignItems: 'center',
-                  }}>
+                  <Pressable
+                    key={idx}
+                    onPress={() => onNotePress?.(idx)}
+                    style={{
+                      position: 'absolute',
+                      left: note.position * BEAT_WIDTH,
+                      top: y + 1,
+                      width: Math.max(note.duration * BEAT_WIDTH - 2, 4),
+                      height: rowHeight - 2,
+                      backgroundColor: trackColor,
+                      borderRadius: 2,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
                     {/* Dark center line (matches SwiftUI) */}
-                    <View style={{ width: 1, height: '60%', backgroundColor: 'rgba(0,0,0,0.3)' }} />
+                    <View
+                      style={{
+                        width: 1,
+                        height: '60%',
+                        backgroundColor: 'rgba(0,0,0,0.3)',
+                      }}
+                    />
                   </Pressable>
                 );
               })}
               {/* Playhead */}
-              <View style={{
-                position: 'absolute', left: playheadPosition * BEAT_WIDTH, top: 0, bottom: 0,
-                width: 2, backgroundColor: colors.mcWhite, zIndex: 10,
-              }} />
+              <View
+                style={{
+                  position: 'absolute',
+                  left: playheadPosition * BEAT_WIDTH,
+                  top: 0,
+                  bottom: 0,
+                  width: 2,
+                  backgroundColor: colors.mcWhite,
+                  zIndex: 10,
+                }}
+              />
             </View>
           </ScrollView>
         </ScrollView>
       </View>
 
-      {/* Zoom controls — floating right */}
+      {/* Zoom controls — iOS: individual buttons with black.opacity(0.6) bg, rounded, 36x36 */}
       <View style={styles.zoomControls}>
         <Pressable onPress={onToggleExpand} style={styles.zoomBtn}>
-          <Icon icon={isExpanded ? Icons.collapse : Icons.expand} size={16} color={colors.mcWhite} />
+          <Icon
+            icon={isExpanded ? Icons.collapse : Icons.expand}
+            size={14}
+            color={colors.mcWhite}
+          />
         </Pressable>
         <Pressable onPress={onZoomIn} style={styles.zoomBtn}>
-          <Icon icon={Icons.zoomIn} size={16} color={colors.mcWhite} />
+          <Icon icon={Icons.zoomIn} size={14} color={colors.mcWhite} />
         </Pressable>
-        <Text variant="extraSmall" color={colors.mcWhite} center>{Math.round(zoomLevel * 100)}%</Text>
+        <View style={styles.zoomLabel}>
+          <Text variant="extraSmall10" color={colors.mcWhite} center>
+            {Math.round(zoomLevel * 100)}%
+          </Text>
+        </View>
         <Pressable onPress={onZoomOut} style={styles.zoomBtn}>
-          <Icon icon={Icons.zoomOut} size={16} color={colors.mcWhite} />
+          <Icon icon={Icons.zoomOut} size={14} color={colors.mcWhite} />
         </Pressable>
       </View>
     </View>
@@ -222,28 +350,98 @@ const PianoRollGrid = memo(function PianoRollGrid({
 // ─── Clip Length Bar ─────────────────────────────────────────────────────────
 // Orange bar: "— | 1  2  3  4 | +"
 
+/**
+ * ClipLengthBar — Matches iOS ClipLengthBar exactly.
+ *
+ * iOS layout: HStack(spacing:0) { minus | ForEach bars { barButton } | plus }
+ * - Minus/Plus: mcOrange icon on mcBlack bg, 34x34
+ * - Active bars: mcOrange bg, mcBlack text (mcExtraSmallSemiBold)
+ * - Inactive bars: mcBlack3 bg, mcWhite3 text
+ * - Current playing bar: mcOrange2 bg with bottom accent line
+ * - Height: 34
+ */
 interface ClipLengthBarProps {
   lengthInBars: number;
+  activeLengthInBars: number;
+  currentBarIndex?: number;
+  onSetActiveLength?: (barIndex: number) => void;
   onDecrease?: () => void;
   onIncrease?: () => void;
 }
 
-const ClipLengthBar = memo(function ClipLengthBar({ lengthInBars, onDecrease, onIncrease }: ClipLengthBarProps) {
+const BAR_HEIGHT = 34;
+const BAR_BTN_W = 34;
+
+const ClipLengthBar = memo(function ClipLengthBar({
+  lengthInBars,
+  activeLengthInBars,
+  currentBarIndex,
+  onSetActiveLength,
+  onDecrease,
+  onIncrease,
+}: ClipLengthBarProps) {
   const { colors } = useTheme();
+  const barCount = Math.max(1, lengthInBars);
+  const activeCount = Math.min(Math.max(1, activeLengthInBars), barCount);
+  const canAdd = barCount < 16;
+  const canRemove = barCount > 1;
+
   return (
-    <View style={[styles.clipLengthBar, { backgroundColor: colors.mcOrange }]}>
-      <Pressable onPress={onDecrease} style={styles.clipLengthBtn} accessibilityLabel="Decrease bars">
-        <Icon icon={Icons.minus} size={14} color={colors.mcBlack} />
+    <View style={styles.clipLengthBar}>
+      {/* Minus button */}
+      <Pressable
+        onPress={onDecrease}
+        disabled={!canRemove}
+        style={[styles.clipLengthEndBtn, { opacity: canRemove ? 1 : 0.4 }]}
+        accessibilityLabel="Remove bar"
+      >
+        <Icon icon={Icons.minus} size={12} color={colors.mcOrange} />
       </Pressable>
+
+      {/* Bar buttons */}
       <View style={styles.clipLengthNumbers}>
-        {Array.from({ length: lengthInBars }, (_, i) => (
-          <Text key={i} variant="small" color={colors.mcBlack} bold center style={styles.clipLengthNum}>
-            {i + 1}
-          </Text>
-        ))}
+        {Array.from({ length: barCount }, (_, i) => {
+          const barIndex = i + 1;
+          const isActive = barIndex <= activeCount;
+          const isCurrent = currentBarIndex === barIndex;
+          return (
+            <Pressable
+              key={barIndex}
+              onPress={() => onSetActiveLength?.(barIndex)}
+              style={[
+                styles.clipLengthNum,
+                {
+                  backgroundColor: isCurrent
+                    ? colors.mcOrange2
+                    : isActive
+                      ? colors.mcOrange
+                      : colors.mcBlack3,
+                },
+              ]}
+            >
+              <Text
+                variant="extraSmall"
+                color={isActive ? colors.mcBlack : colors.mcWhite3}
+                bold
+                center
+                style={{ fontSize: 10, fontWeight: '600' }}
+              >
+                {barIndex}
+              </Text>
+              {isCurrent && <View style={styles.clipLengthAccent} />}
+            </Pressable>
+          );
+        })}
       </View>
-      <Pressable onPress={onIncrease} style={styles.clipLengthBtn} accessibilityLabel="Increase bars">
-        <Icon icon={Icons.plus} size={14} color={colors.mcBlack} />
+
+      {/* Plus button */}
+      <Pressable
+        onPress={onIncrease}
+        disabled={!canAdd}
+        style={[styles.clipLengthEndBtn, { opacity: canAdd ? 1 : 0.4 }]}
+        accessibilityLabel="Add bar"
+      >
+        <Icon icon={Icons.plus} size={12} color={colors.mcOrange} />
       </Pressable>
     </View>
   );
@@ -263,7 +461,12 @@ interface VelocityLaneProps {
 }
 
 const VelocityLane = memo(function VelocityLane({
-  notes, trackColor, selectedNoteName, activeLengthInBars = 1, onClose, onVelocityChange,
+  notes,
+  trackColor,
+  selectedNoteName,
+  activeLengthInBars = 1,
+  onClose,
+  onVelocityChange,
 }: VelocityLaneProps) {
   const { colors } = useTheme();
   const BAR_HEIGHT = 200;
@@ -274,9 +477,16 @@ const VelocityLane = memo(function VelocityLane({
     <View style={[styles.velocityLane, { backgroundColor: colors.mcBlack }]}>
       {/* Header — selected note name + close X */}
       <View style={styles.velocityHeader}>
-        <Text variant="label" bold>{selectedNoteName || 'Velocity'}</Text>
+        <Text variant="label" bold>
+          {selectedNoteName || 'Velocity'}
+        </Text>
         {onClose && (
-          <Pressable onPress={onClose} hitSlop={8} style={styles.velCloseBtn} accessibilityLabel="Close velocity">
+          <Pressable
+            onPress={onClose}
+            hitSlop={8}
+            style={styles.velCloseBtn}
+            accessibilityLabel="Close velocity"
+          >
             <Icon icon={Icons.close} size={18} color={colors.mcWhite3} />
           </Pressable>
         )}
@@ -288,7 +498,13 @@ const VelocityLane = memo(function VelocityLane({
           <View style={styles.velBeatMarkers}>
             <View style={{ width: 50 }} />
             {Array.from({ length: totalBeats }, (_, i) => (
-              <Text key={i} variant="extraSmall" color={colors.mcWhite3} center style={styles.velBeatLabel}>
+              <Text
+                key={i}
+                variant="extraSmall"
+                color={colors.mcWhite3}
+                center
+                style={styles.velBeatLabel}
+              >
                 {Math.floor(i / 4) + 1}.{(i % 4) + 1}
               </Text>
             ))}
@@ -296,11 +512,26 @@ const VelocityLane = memo(function VelocityLane({
 
           {/* NOTES row — colored blocks matching piano roll */}
           <View style={styles.velNotesRow}>
-            <Text variant="extraSmall" color={colors.mcWhite3} style={styles.velLabel}>NOTES</Text>
+            <Text
+              variant="extraSmall"
+              color={colors.mcWhite3}
+              style={styles.velLabel}
+            >
+              NOTES
+            </Text>
             <View style={styles.velNoteBlocksRow}>
               {notes.map((_note, i) => (
-                <View key={i} style={[styles.velNoteBlock, { backgroundColor: trackColor }]}>
-                  <View style={{ width: 1, height: '60%', backgroundColor: 'rgba(0,0,0,0.3)' }} />
+                <View
+                  key={i}
+                  style={[styles.velNoteBlock, { backgroundColor: trackColor }]}
+                >
+                  <View
+                    style={{
+                      width: 1,
+                      height: '60%',
+                      backgroundColor: 'rgba(0,0,0,0.3)',
+                    }}
+                  />
                 </View>
               ))}
             </View>
@@ -309,9 +540,18 @@ const VelocityLane = memo(function VelocityLane({
           {/* Velocity bars — values ON TOP in orange, bars below */}
           <View style={styles.velBarsArea}>
             <View style={styles.velYAxisCol}>
-              <Text variant="extraSmall" color={colors.mcWhite3}>VEL</Text>
-              {Y_LABELS.map(v => (
-                <Text key={v} variant="extraSmall" color={colors.mcWhite3} style={styles.velYLabel}>{v}</Text>
+              <Text variant="extraSmall" color={colors.mcWhite3}>
+                VEL
+              </Text>
+              {Y_LABELS.map((v) => (
+                <Text
+                  key={v}
+                  variant="extraSmall"
+                  color={colors.mcWhite3}
+                  style={styles.velYLabel}
+                >
+                  {v}
+                </Text>
               ))}
             </View>
             <View style={[styles.velBarsRow, { height: BAR_HEIGHT }]}>
@@ -319,13 +559,27 @@ const VelocityLane = memo(function VelocityLane({
                 const vel = notes[i]!.velocity;
                 const barH = (vel / 127) * BAR_HEIGHT;
                 return (
-                  <Pressable key={i} onPress={() => onVelocityChange?.(i, vel)} style={styles.velBarCol}>
+                  <Pressable
+                    key={i}
+                    onPress={() => onVelocityChange?.(i, vel)}
+                    style={styles.velBarCol}
+                  >
                     {/* Value label ON TOP of bar */}
-                    <Text variant="extraSmall" color={colors.mcOrange} bold style={styles.velValueLabel}>
+                    <Text
+                      variant="extraSmall"
+                      color={colors.mcOrange}
+                      bold
+                      style={styles.velValueLabel}
+                    >
                       {vel}
                     </Text>
                     {/* Bar stem */}
-                    <View style={[styles.velBar, { height: barH, backgroundColor: trackColor }]} />
+                    <View
+                      style={[
+                        styles.velBar,
+                        { height: barH, backgroundColor: trackColor },
+                      ]}
+                    />
                   </Pressable>
                 );
               })}
@@ -352,8 +606,15 @@ export interface ClipEditorViewProps {
 }
 
 export const ClipEditorView = memo(function ClipEditorView({
-  clip, instrumentType: _instrumentType, samples, isPlaying, isRecording, isMetronomeEnabled,
-  playheadPosition = 0, callbacks, onBack,
+  clip,
+  instrumentType: _instrumentType,
+  samples,
+  isPlaying,
+  isRecording,
+  isMetronomeEnabled,
+  playheadPosition = 0,
+  callbacks,
+  onBack,
 }: ClipEditorViewProps) {
   const { colors } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -394,7 +655,10 @@ export const ClipEditorView = memo(function ClipEditorView({
 
       {/* Clip Length Bar */}
       {!isExpanded && (
-        <ClipLengthBar lengthInBars={clip.activeLengthInBars} />
+        <ClipLengthBar
+          lengthInBars={clip.lengthInBars}
+          activeLengthInBars={clip.activeLengthInBars}
+        />
       )}
 
       {/* Velocity Lane */}
@@ -416,52 +680,121 @@ const styles = StyleSheet.create({
 
   // Toolbar
   toolbar: {
-    flexDirection: 'row', alignItems: 'center',
-    paddingHorizontal: 24, paddingBottom: 16, paddingTop: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingBottom: 16,
+    paddingTop: 8,
     gap: makeSpacing(4),
   },
   toolbarSpacer: { flex: 1 },
-  toolbarCenter: { flexDirection: 'row', alignItems: 'center', gap: makeSpacing(4) },
+  toolbarCenter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: makeSpacing(4),
+  },
 
   // Piano Roll
   pianoRollContainer: { flex: 1, position: 'relative' },
   pianoRollContent: { flex: 1, flexDirection: 'row' },
   pitchLabels: { borderRightWidth: 1, borderRightColor: '#313336' },
-  pitchLabel: { justifyContent: 'center', paddingHorizontal: 4, borderBottomWidth: 0.5, borderBottomColor: 'rgba(0,0,0,0.2)' },
-  pitchLabelText: { fontSize: 7 },
+  // iOS: padding(2), .mcExtraSmall10, .border(Color.black, width: 0.5)
+  pitchLabel: {
+    justifyContent: 'center',
+    padding: 2,
+    borderWidth: 0.5,
+    borderColor: 'rgba(0,0,0,0.5)',
+  },
+  pitchLabelText: { fontSize: 10 },
 
-  // Zoom controls
+  // Zoom controls — iOS: individual rounded buttons, black.opacity(0.6) bg
   zoomControls: {
-    position: 'absolute', right: 8, top: 8,
-    backgroundColor: 'rgba(49,51,54,0.9)', borderRadius: 8,
-    padding: 6, gap: 4, alignItems: 'center',
+    position: 'absolute',
+    right: 8,
+    top: 8,
+    gap: 6,
+    alignItems: 'center',
   },
-  zoomBtn: { padding: 6 },
+  zoomBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  zoomLabel: {
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 8,
+  },
 
-  // Clip length bar
+  // Clip length bar — iOS: height 34, mcBlack bg, individual bar buttons
   clipLengthBar: {
-    flexDirection: 'row', alignItems: 'center', height: 32,
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: BAR_HEIGHT,
+    backgroundColor: '#000000',
   },
-  clipLengthBtn: { paddingHorizontal: 12, height: '100%', justifyContent: 'center' },
-  clipLengthNumbers: { flex: 1, flexDirection: 'row', justifyContent: 'space-around' },
-  clipLengthNum: { flex: 1 },
+  clipLengthEndBtn: {
+    width: BAR_BTN_W,
+    height: BAR_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000000',
+  },
+  clipLengthNumbers: { flex: 1, flexDirection: 'row', height: BAR_HEIGHT },
+  clipLengthNum: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  clipLengthAccent: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 2,
+    backgroundColor: '#FF5C24', // mcOrange5
+  },
 
   // Velocity lane
   velocityLane: { borderTopWidth: 1, borderTopColor: '#313336' },
   velocityHeader: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    paddingHorizontal: 12, paddingVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
   },
   velCloseBtn: { padding: 4 },
   velContent: {},
   velBeatMarkers: { flexDirection: 'row', paddingBottom: 4 },
   velBeatLabel: { width: 28, marginHorizontal: 1 },
-  velNotesRow: { flexDirection: 'row', alignItems: 'center', height: 32, paddingBottom: 4 },
+  velNotesRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 32,
+    paddingBottom: 4,
+  },
   velLabel: { width: 50, paddingLeft: 4 },
   velNoteBlocksRow: { flexDirection: 'row', gap: 2 },
-  velNoteBlock: { width: 28, height: 24, borderRadius: 2, justifyContent: 'center', alignItems: 'center' },
+  velNoteBlock: {
+    width: 28,
+    height: 24,
+    borderRadius: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   velBarsArea: { flexDirection: 'row' },
-  velYAxisCol: { width: 50, justifyContent: 'space-between', paddingLeft: 4, paddingVertical: 4 },
+  velYAxisCol: {
+    width: 50,
+    justifyContent: 'space-between',
+    paddingLeft: 4,
+    paddingVertical: 4,
+  },
   velYLabel: {},
   velBarsRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 2 },
   velBarCol: { alignItems: 'center', justifyContent: 'flex-end', width: 28 },
