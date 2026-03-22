@@ -373,7 +373,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                 "borderRightWidth": 1,
               },
               {
-                "width": 90,
+                "width": 60,
               },
             ]
           }
@@ -440,8 +440,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -511,8 +510,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -582,8 +580,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -653,8 +650,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -724,8 +720,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -795,8 +790,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -866,8 +860,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -937,8 +930,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -1008,8 +1000,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -1079,8 +1070,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -1150,8 +1140,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -1221,8 +1210,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -4454,7 +4442,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 "borderRightWidth": 1,
               },
               {
-                "width": 90,
+                "width": 60,
               },
             ]
           }
@@ -4521,8 +4509,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -4592,8 +4579,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -4663,8 +4649,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -4734,8 +4719,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -4805,8 +4789,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -4876,8 +4859,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -4947,8 +4929,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -5018,8 +4999,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -5089,8 +5069,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -5160,8 +5139,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -5231,8 +5209,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -5302,8 +5279,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -5373,8 +5349,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -5444,8 +5419,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -5515,8 +5489,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -5586,8 +5559,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -9259,7 +9231,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                 "borderRightWidth": 1,
               },
               {
-                "width": 90,
+                "width": 60,
               },
             ]
           }
@@ -9326,8 +9298,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -9397,8 +9368,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -9468,8 +9438,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -9539,8 +9508,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -9610,8 +9578,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -9681,8 +9648,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -9752,8 +9718,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -9823,8 +9788,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -9894,8 +9858,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -9965,8 +9928,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10036,8 +9998,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10107,8 +10068,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10178,8 +10138,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10249,8 +10208,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10320,8 +10278,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10391,8 +10348,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10462,8 +10418,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10533,8 +10488,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10604,8 +10558,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10675,8 +10628,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10746,8 +10698,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10817,8 +10768,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10888,8 +10838,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -10959,8 +10908,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -14216,7 +14164,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                 "borderRightWidth": 1,
               },
               {
-                "width": 90,
+                "width": 60,
               },
             ]
           }
@@ -14283,8 +14231,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -14354,8 +14301,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -14425,8 +14371,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -14496,8 +14441,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -14567,8 +14511,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -14638,8 +14581,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -14709,8 +14651,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -14780,8 +14721,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -14851,8 +14791,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -14922,8 +14861,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -14993,8 +14931,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]
@@ -15064,8 +15001,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                       "color": "#000000",
                     },
                     {
-                      "fontSize": 11,
-                      "fontWeight": "500",
+                      "fontSize": 10,
                       "textAlign": "center",
                     },
                   ]

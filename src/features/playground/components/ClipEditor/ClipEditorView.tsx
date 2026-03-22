@@ -216,7 +216,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
     ? Math.max((samples ?? []).length, 12)
     : MELODIC_PITCH_COUNT;
   const BEAT_WIDTH = 40 * zoomLevel;
-  const LABEL_WIDTH = 90; // iOS uses wider labels to fit names like "Hi-Hat Closed 2"
+  const LABEL_WIDTH = 60; // iOS: labelColumnWidth = 60
   const gridHeight = totalPitches * rowHeight;
 
   /**
@@ -880,8 +880,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.5)',
   },
   pitchLabelText: {
-    fontSize: 11,
-    fontWeight: '500' as const,
+    fontSize: 10, // iOS: .mcExtraSmall10
     textAlign: 'center' as const,
   },
 
