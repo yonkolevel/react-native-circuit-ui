@@ -5,7 +5,7 @@ exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`]
   accessibilityLabel="Drum pads"
   style={
     {
-      "aspectRatio": 1,
+      "flex": 1,
       "position": "relative",
     }
   }
@@ -708,7 +708,7 @@ exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
   accessibilityLabel="Drum pads"
   style={
     {
-      "aspectRatio": 1,
+      "flex": 1,
       "position": "relative",
     }
   }

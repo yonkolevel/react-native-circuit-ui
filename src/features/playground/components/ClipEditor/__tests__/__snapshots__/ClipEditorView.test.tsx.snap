@@ -2877,7 +2877,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
       accessibilityLabel="Drum pads"
       style={
         {
-          "aspectRatio": 1,
+          "flex": 1,
           "position": "relative",
         }
       }
@@ -6398,7 +6398,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
       accessibilityLabel="Drum pads"
       style={
         {
-          "aspectRatio": 1,
+          "flex": 1,
           "position": "relative",
         }
       }
@@ -10528,7 +10528,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
       style={
         [
           {
-            "minHeight": 330,
+            "flex": 1,
           },
           {
             "position": "relative",
@@ -14192,7 +14192,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
       accessibilityLabel="Drum pads"
       style={
         {
-          "aspectRatio": 1,
+          "flex": 1,
           "position": "relative",
         }
       }

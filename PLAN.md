@@ -101,16 +101,25 @@ Compare Android Mixer against iOS Mixer:
 
 ## Priority 4: ClipEditor / Piano Roll
 
-The most complex view. Currently a basic implementation. Needs:
-1. **Pitch labels** — left column with sample names on colored bg
-2. **Grid** — dark alternating rows, subtle grid lines
-3. **Notes** — colored rectangles with center line + dots
-4. **Zoom controls** — floating right panel (expand, zoom+, 100%, zoom-)
-5. **Section bar** — orange bar with "— 1 2 +"
-6. **Velocity lane** — bars with values on top in orange
-7. **Toolbar** — back, play, record, metronome, undo, redo, settings
+Core layout and flow complete. Remaining polish:
 
-Compare against iOS ClipEditor screenshots from earlier session.
+### Done
+- ✅ Toolbar with all transport icons
+- ✅ Piano roll with pitch labels (sample names for drums, note names for melodic/bass)
+- ✅ ClipLengthBar with active/inactive bar buttons
+- ✅ Zoom controls (expand, zoom+/-, percentage label)
+- ✅ Performance controls: DrumPads for drum tracks, PianoKeyboard for melodic/bass
+- ✅ VelocityLane replaces performance controls when pitch label tapped (iOS behavior)
+- ✅ Selected pitch highlighted in mcOrange
+
+### Remaining
+1. **NotePrecisionPanel fidelity** — iOS has draggable velocity stems with handle+stem pattern, position/duration editing per note. Current VelocityLane is read-only. Needs `react-native-gesture-handler` for drag interactions.
+2. **Animations & micro-interactions** — iOS uses `withAnimation(.easeInOut(duration: 0.25))` for velocity panel show/hide, pitch label selection, expand/collapse transitions. Needs `react-native-reanimated` layout animations.
+3. **Pitch labels UPPERCASE** — iOS drum track shows sample file names in uppercase (PERC_07_C, SHAKER_07_TRAP_B)
+4. **Note name inside notes** — iOS melodic/bass tracks show note name (e.g. "A5", "D5") rendered inside the note rectangle on the piano roll
+5. **Grid step lines** — 16th note subdivisions should be subtler than beat lines
+6. **Pinch-to-zoom** — iOS supports MagnificationGesture on the piano roll grid
+7. **Piano keyboard sizing** — iOS TeenagePianoView fills available height exactly. RN version needs to stretch properly.
 
 ---
 

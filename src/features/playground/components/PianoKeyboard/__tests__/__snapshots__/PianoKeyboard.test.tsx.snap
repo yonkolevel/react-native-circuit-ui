@@ -6,7 +6,7 @@ exports[`PianoKeyboard snapshots matches snapshot with 2 octaves 1`] = `
   style={
     [
       {
-        "minHeight": 330,
+        "flex": 1,
       },
       {
         "position": "relative",
@@ -797,7 +797,7 @@ exports[`PianoKeyboard snapshots matches snapshot with custom highlight color 1`
   style={
     [
       {
-        "minHeight": 330,
+        "flex": 1,
       },
       {
         "position": "relative",
@@ -2176,7 +2176,7 @@ exports[`PianoKeyboard snapshots matches snapshot with note names shown 1`] = `
   style={
     [
       {
-        "minHeight": 330,
+        "flex": 1,
       },
       {
         "position": "relative",

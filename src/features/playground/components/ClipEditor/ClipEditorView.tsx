@@ -912,7 +912,7 @@ const styles = StyleSheet.create({
   },
 
   // Velocity lane
-  velocityLane: { borderTopWidth: 1, borderTopColor: '#313336' },
+  velocityLane: { flex: 1, borderTopWidth: 1, borderTopColor: '#313336' },
   velocityHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
