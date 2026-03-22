@@ -6,20 +6,16 @@
  * - Horizontally scrollable section headers + clips (right side)
  * - Labels and clips aligned vertically
  */
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback } from 'react';
 import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme } from '../../../../theme';
-import { createDrumSamples } from '../../mocks';
 import { SongToolbar } from './SongToolbar';
 import { SongMixerTabBar } from './SongMixerTabBar';
 import { MixerView } from '../Mixer';
 import { SongSettings } from '../Settings';
-import { BottomPanel } from '../BottomPanel';
-import { DrumPadsView } from '../DrumPads';
-import { PianoKeyboard } from '../PianoKeyboard';
 import type {
   Clip,
   SongViewState,
@@ -162,8 +158,6 @@ export const SongView = memo(function SongView({
   style,
 }: SongViewProps) {
   const { colors } = useTheme();
-  const [bottomOpen, setBottomOpen] = useState(false);
-  const [selTrackId, setSelTrackId] = useState<number | null>(null);
 
   const handleTab = useCallback(
     (d: SongDestination) => {
@@ -171,18 +165,11 @@ export const SongView = memo(function SongView({
     },
     [callbacks]
   );
-  const handleTrack = useCallback((id: number) => {
-    console.log('[SongView] Track pressed:', id);
-    setSelTrackId(id);
-    setBottomOpen(true);
-  }, []);
 
   const view = song.currentView;
   if (typeof view !== 'string') return null; // editor views handled by parent
 
   const showTab = view === 'song' || view === 'mixer';
-  const selTrack =
-    selTrackId != null ? song.tracks.find((t) => t.id === selTrackId) : null;
 
   return (
     <View style={[s.root, { backgroundColor: colors.mcBlack }, style]}>
@@ -199,7 +186,7 @@ export const SongView = memo(function SongView({
                 {song.tracks.map((t) => (
                   <Pressable
                     key={t.id}
-                    onPress={() => handleTrack(t.id)}
+                    onPress={() => callbacks?.onTrackSelect?.(t.id)}
                     style={[
                       s.label,
                       {
@@ -300,26 +287,6 @@ export const SongView = memo(function SongView({
                 </View>
               </ScrollView>
             </View>
-
-            {selTrack && (
-              <BottomPanel
-                isExpanded={bottomOpen}
-                onToggle={() => setBottomOpen(!bottomOpen)}
-              >
-                {selTrack.type === 'drum' ? (
-                  <DrumPadsView
-                    samples={createDrumSamples()}
-                    highlightColor={selTrack.colorHex}
-                  />
-                ) : (
-                  <PianoKeyboard
-                    numberOfOctaves={2}
-                    highlightColor={selTrack.colorHex}
-                    showNoteNames
-                  />
-                )}
-              </BottomPanel>
-            )}
           </>
         )}
         {view === 'mixer' && (
