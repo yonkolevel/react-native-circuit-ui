@@ -4488,7 +4488,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -4558,7 +4558,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -4628,7 +4628,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -4698,7 +4698,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -4768,7 +4768,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -4838,7 +4838,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -4908,7 +4908,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -4978,7 +4978,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -5048,7 +5048,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -5118,7 +5118,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -5188,7 +5188,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -5258,7 +5258,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -5328,7 +5328,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(26, 255, 168, 0.6)",
+                    "backgroundColor": "#1AFFA8",
                     "height": 34,
                   },
                 ]
@@ -9277,7 +9277,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -9347,7 +9347,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -9417,7 +9417,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -9487,7 +9487,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -9627,7 +9627,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -9697,7 +9697,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -9837,7 +9837,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -9907,7 +9907,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -9977,7 +9977,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -10117,7 +10117,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -10187,7 +10187,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -10257,7 +10257,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -10327,7 +10327,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -10397,7 +10397,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -10467,7 +10467,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -10537,7 +10537,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -10607,7 +10607,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -10677,7 +10677,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -10747,7 +10747,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -10817,7 +10817,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]
@@ -10887,7 +10887,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     "padding": 2,
                   },
                   {
-                    "backgroundColor": "rgba(255, 108, 58, 0.6)",
+                    "backgroundColor": "#FF6C3A",
                     "height": 34,
                   },
                 ]

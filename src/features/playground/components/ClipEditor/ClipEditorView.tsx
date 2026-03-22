@@ -237,11 +237,13 @@ const PianoRollGrid = memo(function PianoRollGrid({
    * - Drum: map pitchIdx → sample.noteNumber, then search notes
    * - Melodic/Bass: pitchIdx maps directly to MIDI note number
    */
-  const pitchHasNotes = (pitchIdx: number): boolean => {
-    const noteNum = isDrum
-      ? ((samples ?? [])[pitchIdx]?.noteNumber ?? pitchIdx)
-      : MELODIC_MIN_PITCH + pitchIdx;
-    return notes.some((n) => n.noteNumber === noteNum);
+  /**
+   * iOS: defaultRowColor = title.isNotEmpty ? color : color.opacity(0.6)
+   * Pitch "has a name" if the label text is a real name (not a fallback).
+   */
+  const pitchHasName = (pitchIdx: number): boolean => {
+    const label = getPitchLabel(pitchIdx);
+    return !label.startsWith('Note ');
   };
 
   return (
@@ -252,7 +254,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
         <ScrollView style={[styles.pitchLabels, { width: LABEL_WIDTH }]}>
           {Array.from({ length: totalPitches }, (_, i) => {
             const pitchIdx = totalPitches - 1 - i;
-            const hasNotes = pitchHasNotes(pitchIdx);
+            const hasName = pitchHasName(pitchIdx);
             return (
               <Pressable
                 key={pitchIdx}
@@ -264,7 +266,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
                     backgroundColor:
                       selectedPitchIndex === pitchIdx
                         ? colors.mcOrange // iOS: selected pitch → mcOrange.opacity(0.8)
-                        : hasNotes
+                        : hasName
                           ? trackColor
                           : hexToRgba(trackColor, 0.6),
                   },
