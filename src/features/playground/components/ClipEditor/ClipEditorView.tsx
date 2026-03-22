@@ -248,46 +248,52 @@ const PianoRollGrid = memo(function PianoRollGrid({
 
   return (
     <View style={styles.pianoRollContainer}>
-      {/* Main content: labels + grid */}
-      <View style={styles.pianoRollContent}>
-        {/* Pitch labels column */}
-        <ScrollView style={[styles.pitchLabels, { width: LABEL_WIDTH }]}>
-          {Array.from({ length: totalPitches }, (_, i) => {
-            const pitchIdx = totalPitches - 1 - i;
-            const hasName = pitchHasName(pitchIdx);
-            return (
-              <Pressable
-                key={pitchIdx}
-                onPress={() => onPitchLabelTap?.(pitchIdx)}
-                style={[
-                  styles.pitchLabel,
-                  {
-                    height: rowHeight,
-                    backgroundColor:
-                      selectedPitchIndex === pitchIdx
-                        ? colors.mcOrange // iOS: selected pitch → mcOrange.opacity(0.8)
-                        : hasName
-                          ? trackColor
-                          : hexToRgba(trackColor, 0.6),
-                  },
-                ]}
-              >
-                <Text
-                  variant="extraSmall"
-                  color={colors.mcBlack}
-                  numberOfLines={2}
-                  style={styles.pitchLabelText}
+      {/* iOS layout: single vertical ScrollView wrapping HStack(labels, horizontalScrollGrid)
+       * Labels and grid scroll vertically TOGETHER.
+       * Grid also scrolls horizontally inside a nested horizontal ScrollView. */}
+      <ScrollView style={styles.pianoRollContent}>
+        <View style={styles.pianoRollRow}>
+          {/* Fixed-width pitch labels column — scrolls vertically with grid */}
+          <View style={[styles.pitchLabels, { width: LABEL_WIDTH }]}>
+            {Array.from({ length: totalPitches }, (_, i) => {
+              const pitchIdx = totalPitches - 1 - i;
+              const hasName = pitchHasName(pitchIdx);
+              return (
+                <Pressable
+                  key={pitchIdx}
+                  onPress={() => onPitchLabelTap?.(pitchIdx)}
+                  style={[
+                    styles.pitchLabel,
+                    {
+                      height: rowHeight,
+                      backgroundColor:
+                        selectedPitchIndex === pitchIdx
+                          ? colors.mcOrange
+                          : hasName
+                            ? trackColor
+                            : hexToRgba(trackColor, 0.6),
+                    },
+                  ]}
                 >
-                  {getPitchLabel(pitchIdx)}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+                  <Text
+                    variant="extraSmall"
+                    color={colors.mcBlack}
+                    numberOfLines={2}
+                    style={styles.pitchLabelText}
+                  >
+                    {getPitchLabel(pitchIdx)}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
 
-        {/* Grid + notes */}
-        <ScrollView horizontal>
-          <ScrollView>
+          {/* Grid — scrolls horizontally, fills remaining width */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.gridScroll}
+          >
             <View
               style={{
                 width: lengthInBeats * BEAT_WIDTH,
@@ -407,8 +413,8 @@ const PianoRollGrid = memo(function PianoRollGrid({
               />
             </View>
           </ScrollView>
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
 
       {/* Zoom controls — iOS: individual buttons with black.opacity(0.6) bg, rounded, 36x36 */}
       <View style={styles.zoomControls}>
@@ -871,8 +877,12 @@ const styles = StyleSheet.create({
 
   // Piano Roll
   pianoRollContainer: { flex: 1, position: 'relative' },
-  pianoRollContent: { flex: 1, flexDirection: 'row' },
-  pitchLabels: { borderRightWidth: 1, borderRightColor: '#313336' },
+  // iOS: single vertical ScrollView
+  pianoRollContent: { flex: 1 },
+  // iOS: HStack(alignment: .bottom, spacing: 0) { labels, horizontalGrid }
+  pianoRollRow: { flexDirection: 'row' },
+  pitchLabels: {},
+  gridScroll: { flex: 1 },
   // iOS: padding(2), centered text, border(Color.black, width: 0.5)
   pitchLabel: {
     justifyContent: 'center',
