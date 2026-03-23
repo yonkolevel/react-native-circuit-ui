@@ -9,7 +9,13 @@
  * Background: mcBlack
  */
 import { memo } from 'react';
-import { View, ScrollView, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Pressable,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
 import { Text } from '../../../../components/Text';
 import { GradientCover } from '../../../../components/GradientCover';
 import { Icon, Icons } from '../../../../components/SFSymbol';
@@ -24,7 +30,11 @@ interface PlaygroundCardProps {
   onMenuPress?: (id: string) => void;
 }
 
-const PlaygroundCard = memo(function PlaygroundCard({ playground, onPress, onMenuPress }: PlaygroundCardProps) {
+const PlaygroundCard = memo(function PlaygroundCard({
+  playground,
+  onPress,
+  onMenuPress,
+}: PlaygroundCardProps) {
   const { colors } = useTheme();
 
   // Format date matching Swift .formatted()
@@ -82,7 +92,11 @@ export interface PlaygroundsDashboardProps {
 }
 
 export const PlaygroundsDashboard = memo(function PlaygroundsDashboard({
-  playgrounds, isLoading, onSelect, onCreate, onMenuPress,
+  playgrounds,
+  isLoading,
+  onSelect,
+  onCreate,
+  onMenuPress,
 }: PlaygroundsDashboardProps) {
   const { colors } = useTheme();
   const { width } = useWindowDimensions();
@@ -92,8 +106,15 @@ export const PlaygroundsDashboard = memo(function PlaygroundsDashboard({
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
       {/* Header — matches Swift headerView() */}
-      <View style={[styles.header, { paddingHorizontal: padding, paddingTop: padding }]}>
-        <Text variant="h3" color={colors.mcWhite}>Playgrounds</Text>
+      <View
+        style={[
+          styles.header,
+          { paddingHorizontal: padding, paddingTop: padding },
+        ]}
+      >
+        <Text variant="h3" color={colors.mcWhite}>
+          Playgrounds
+        </Text>
         {playgrounds.length > 0 && (
           <Pressable
             onPress={onCreate}
@@ -101,7 +122,9 @@ export const PlaygroundsDashboard = memo(function PlaygroundsDashboard({
             accessibilityRole="button"
             accessibilityLabel="Create new playground"
           >
-            <Text variant="label" color={colors.mcWhite}>+ New</Text>
+            <Text variant="label" color={colors.mcWhite}>
+              + New
+            </Text>
           </Pressable>
         )}
       </View>
@@ -113,12 +136,21 @@ export const PlaygroundsDashboard = memo(function PlaygroundsDashboard({
             You haven't created a Playground yet
           </Text>
           <View style={styles.emptyButton}>
-            <Pressable onPress={onCreate} style={[styles.newBtn, { backgroundColor: colors.mcOrange }]}><Text variant="label" color={colors.mcWhite}>+ New</Text></Pressable>
+            <Pressable
+              onPress={onCreate}
+              style={[styles.newBtn, { backgroundColor: colors.mcOrange }]}
+            >
+              <Text variant="label" color={colors.mcWhite}>
+                + New
+              </Text>
+            </Pressable>
           </View>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={[styles.list, { paddingHorizontal: padding }]}>
-          {playgrounds.map(p => (
+        <ScrollView
+          contentContainerStyle={[styles.list, { paddingHorizontal: padding }]}
+        >
+          {playgrounds.map((p) => (
             <PlaygroundCard
               key={p.id}
               playground={p}
@@ -135,17 +167,25 @@ export const PlaygroundsDashboard = memo(function PlaygroundsDashboard({
 const styles = StyleSheet.create({
   container: { flex: 1 },
   header: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingBottom: 8,
   },
   list: { gap: 0 },
   card: {
-    flexDirection: 'row', alignItems: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 12,
   },
   cardInfo: { flex: 1, gap: 2, marginLeft: 12 },
   menuBtn: { padding: 12 },
-  emptyState: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 48 },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 48,
+  },
   emptyButton: { marginTop: 0 },
   newBtn: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 6 },
 });

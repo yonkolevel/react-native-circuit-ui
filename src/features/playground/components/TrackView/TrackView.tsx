@@ -12,7 +12,12 @@ import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
 import { Icon, Icons } from '../../../../components/SFSymbol';
-import type { TrackState, ClipState, MIDINoteData, InstrumentType } from '../../types';
+import type {
+  TrackState,
+  ClipState,
+  MIDINoteData,
+  InstrumentType,
+} from '../../types';
 import { INSTRUMENT_COLORS } from '../../types';
 
 // ── Icon mapping ────────────────────────────────────────────────────────────
@@ -39,12 +44,16 @@ interface ClipMIDIPreviewProps {
   height: number;
 }
 
-const ClipMIDIPreview = memo(function ClipMIDIPreview({ notes, width, height }: ClipMIDIPreviewProps) {
+const ClipMIDIPreview = memo(function ClipMIDIPreview({
+  notes,
+  width,
+  height,
+}: ClipMIDIPreviewProps) {
   if (notes.length === 0) return null;
-  const minNote = Math.min(...notes.map(n => n.noteNumber));
-  const maxNote = Math.max(...notes.map(n => n.noteNumber));
+  const minNote = Math.min(...notes.map((n) => n.noteNumber));
+  const maxNote = Math.max(...notes.map((n) => n.noteNumber));
   const pitchRange = Math.max(maxNote - minNote, 1);
-  const maxBeat = Math.max(...notes.map(n => n.position + n.duration), 4);
+  const maxBeat = Math.max(...notes.map((n) => n.position + n.duration), 4);
 
   return (
     <View style={{ width, height, position: 'relative' }}>
@@ -52,14 +61,23 @@ const ClipMIDIPreview = memo(function ClipMIDIPreview({ notes, width, height }: 
         const x = (note.position / maxBeat) * width;
         const w = Math.max((note.duration / maxBeat) * width * 0.9, 2);
         const noteH = Math.max(height / pitchRange, 3);
-        const y = height - ((note.noteNumber - minNote) / pitchRange) * (height - noteH) - noteH;
+        const y =
+          height -
+          ((note.noteNumber - minNote) / pitchRange) * (height - noteH) -
+          noteH;
         return (
-          <View key={i} style={{
-            position: 'absolute', left: x, top: y,
-            width: w, height: noteH * 0.9,
-            backgroundColor: 'rgba(26, 28, 32, 0.4)',
-            borderRadius: 2,
-          }} />
+          <View
+            key={i}
+            style={{
+              position: 'absolute',
+              left: x,
+              top: y,
+              width: w,
+              height: noteH * 0.9,
+              backgroundColor: 'rgba(26, 28, 32, 0.4)',
+              borderRadius: 2,
+            }}
+          />
         );
       })}
     </View>
@@ -74,7 +92,11 @@ interface ClipCellProps {
   onPress?: () => void;
 }
 
-const ClipCell = memo(function ClipCell({ clip, trackColor, onPress }: ClipCellProps) {
+const ClipCell = memo(function ClipCell({
+  clip,
+  trackColor,
+  onPress,
+}: ClipCellProps) {
   return (
     <Pressable
       onPress={onPress}
@@ -101,14 +123,22 @@ export interface TrackViewProps {
 }
 
 export const TrackView = memo(function TrackView({
-  track, isSelected, onClipPress, onTrackPress,
+  track,
+  isSelected,
+  onClipPress,
+  onTrackPress,
 }: TrackViewProps) {
   const { colors } = useTheme();
   const trackColor = INSTRUMENT_COLORS[track.type] || colors.mcWhite;
   const trackIcon = TRACK_ICON_DEFS[track.type];
 
   return (
-    <View style={[styles.trackRow, isSelected && { borderColor: colors.mcWhite3, borderWidth: 1 }]}>
+    <View
+      style={[
+        styles.trackRow,
+        isSelected && { borderColor: colors.mcWhite3, borderWidth: 1 },
+      ]}
+    >
       {/* Full-height colored label strip */}
       <Pressable
         onPress={() => onTrackPress?.(track.id)}
@@ -117,14 +147,24 @@ export const TrackView = memo(function TrackView({
         accessibilityLabel={`${TRACK_LABELS[track.type]} track`}
       >
         <Icon icon={trackIcon} size={16} color={colors.mcBlack} />
-        <Text variant="extraSmall" color={colors.mcBlack} bold center numberOfLines={1}>
+        <Text
+          variant="extraSmall"
+          color={colors.mcBlack}
+          bold
+          center
+          numberOfLines={1}
+        >
           {TRACK_LABELS[track.type]}
         </Text>
       </Pressable>
 
       {/* Clips — horizontal scroll, flush with label */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.clipsRow}>
-        {track.clips.map(clip => (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.clipsRow}
+      >
+        {track.clips.map((clip) => (
           <ClipCell
             key={clip.id}
             clip={clip}
@@ -149,13 +189,21 @@ export interface AddTrackRowProps {
   onPress?: () => void;
 }
 
-export const AddTrackRow = memo(function AddTrackRow({ onPress }: AddTrackRowProps) {
+export const AddTrackRow = memo(function AddTrackRow({
+  onPress,
+}: AddTrackRowProps) {
   const { colors } = useTheme();
   return (
-    <Pressable onPress={onPress} style={styles.addTrackRow}
-      accessibilityRole="button" accessibilityLabel="Add track">
+    <Pressable
+      onPress={onPress}
+      style={styles.addTrackRow}
+      accessibilityRole="button"
+      accessibilityLabel="Add track"
+    >
       <Icon icon={Icons.plus} size={16} color={colors.mcWhite3} />
-      <Text variant="small" color={colors.mcWhite3}>Add track</Text>
+      <Text variant="small" color={colors.mcWhite3}>
+        Add track
+      </Text>
     </Pressable>
   );
 });
@@ -174,18 +222,27 @@ const styles = StyleSheet.create({
   },
   clipsRow: { flexDirection: 'row', gap: 2 },
   clipCell: {
-    width: 80, height: 60,
-    borderRadius: 6, padding: 4,
-    justifyContent: 'center', alignItems: 'center',
+    width: 80,
+    height: 60,
+    borderRadius: 6,
+    padding: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyClipSlot: {
-    width: 80, height: 60,
-    borderWidth: 1, borderStyle: 'dashed',
-    justifyContent: 'center', alignItems: 'center',
+    width: 80,
+    height: 60,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   addTrackRow: {
-    flexDirection: 'row', alignItems: 'center', gap: 6,
-    paddingVertical: 12, paddingLeft: 28,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 12,
+    paddingLeft: 28,
   },
 });
 

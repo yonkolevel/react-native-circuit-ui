@@ -35,83 +35,83 @@ function getPanLabel(val: number): string {
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
-export const PanControl: React.FC<PanControlProps> = memo(
-  function PanControl({
-    value,
-    onValueChange,
-    testID = 'pan-control',
-  }) {
-    const { colors } = useTheme();
-    const trackWidth = useRef(0);
+export const PanControl: React.FC<PanControlProps> = memo(function PanControl({
+  value,
+  onValueChange,
+  testID = 'pan-control',
+}) {
+  const { colors } = useTheme();
+  const trackWidth = useRef(0);
 
-    const label = getPanLabel(value);
+  const label = getPanLabel(value);
 
-    const updateValue = useCallback(
-      (locationX: number) => {
-        if (trackWidth.current <= 0) return;
-        const ratio = clamp(locationX / trackWidth.current, 0, 1);
-        // Map 0–1 to −1…+1
-        const newValue = Math.round((ratio * 2 - 1) * 100) / 100;
-        onValueChange?.(clamp(newValue, -1, 1));
+  const updateValue = useCallback(
+    (locationX: number) => {
+      if (trackWidth.current <= 0) return;
+      const ratio = clamp(locationX / trackWidth.current, 0, 1);
+      // Map 0–1 to −1…+1
+      const newValue = Math.round((ratio * 2 - 1) * 100) / 100;
+      onValueChange?.(clamp(newValue, -1, 1));
+    },
+    [onValueChange]
+  );
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: (evt) => {
+        updateValue(evt.nativeEvent.locationX);
       },
-      [onValueChange]
-    );
+      onPanResponderMove: (evt) => {
+        updateValue(evt.nativeEvent.locationX);
+      },
+    })
+  ).current;
 
-    const panResponder = useRef(
-      PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onMoveShouldSetPanResponder: () => true,
-        onPanResponderGrant: (evt) => {
-          updateValue(evt.nativeEvent.locationX);
-        },
-        onPanResponderMove: (evt) => {
-          updateValue(evt.nativeEvent.locationX);
-        },
-      })
-    ).current;
+  const handleLayout = useCallback((e: LayoutChangeEvent) => {
+    trackWidth.current = e.nativeEvent.layout.width;
+  }, []);
 
-    const handleLayout = useCallback((e: LayoutChangeEvent) => {
-      trackWidth.current = e.nativeEvent.layout.width;
-    }, []);
+  // Convert −1…+1 to 0–100% for positioning
+  const fillPercent = ((clamp(value, -1, 1) + 1) / 2) * 100;
 
-    // Convert −1…+1 to 0–100% for positioning
-    const fillPercent = ((clamp(value, -1, 1) + 1) / 2) * 100;
-
-    return (
-      <View testID={testID} style={styles.container}>
-        <Text variant="small" color={colors.mcWhite2}>
-          ↔
-        </Text>
+  return (
+    <View testID={testID} style={styles.container}>
+      <Text variant="small" color={colors.mcWhite2}>
+        ↔
+      </Text>
+      <View
+        testID={`${testID}-track`}
+        style={styles.track}
+        onLayout={handleLayout}
+        {...panResponder.panHandlers}
+      >
+        {/* Center marker */}
         <View
-          testID={`${testID}-track`}
-          style={styles.track}
-          onLayout={handleLayout}
-          {...panResponder.panHandlers}
-        >
-          {/* Center marker */}
-          <View style={[styles.centerMarker, { backgroundColor: '#555555' }]} />
-          <View
-            style={[
-              styles.thumb,
-              {
-                left: `${fillPercent}%`,
-                backgroundColor: colors.mcWhite,
-              },
-            ]}
-          />
-        </View>
-        <Text
-          testID={`${testID}-label`}
-          variant="small"
-          color={colors.mcWhite2}
-          style={styles.label}
-        >
-          {label}
-        </Text>
+          style={[styles.centerMarker, { backgroundColor: colors.mcBlack4 }]}
+        />
+        <View
+          style={[
+            styles.thumb,
+            {
+              left: `${fillPercent}%`,
+              backgroundColor: colors.mcWhite,
+            },
+          ]}
+        />
       </View>
-    );
-  }
-);
+      <Text
+        testID={`${testID}-label`}
+        variant="small"
+        color={colors.mcWhite2}
+        style={styles.label}
+      >
+        {label}
+      </Text>
+    </View>
+  );
+});
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   track: {
     flex: 1,
     height: 6,
-    backgroundColor: '#333333',
+    backgroundColor: colors.mcBlack3,
     borderRadius: 3,
     justifyContent: 'center',
     position: 'relative',

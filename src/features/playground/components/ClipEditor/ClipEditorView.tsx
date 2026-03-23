@@ -100,7 +100,7 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
           <Icon
             icon={Icons.record}
             size={20}
-            color={isRecording ? '#FF0000' : colors.mcWhite}
+            color={isRecording ? colors.mcPink : colors.mcWhite}
           />
         </Pressable>
         <Pressable
@@ -505,12 +505,15 @@ const ClipLengthBar = memo(function ClipLengthBar({
   const canRemove = barCount > 1;
 
   return (
-    <View style={styles.clipLengthBar}>
+    <View style={[styles.clipLengthBar, { backgroundColor: colors.mcBlack }]}>
       {/* Minus button */}
       <Pressable
         onPress={onDecrease}
         disabled={!canRemove}
-        style={[styles.clipLengthEndBtn, { opacity: canRemove ? 1 : 0.4 }]}
+        style={[
+          styles.clipLengthEndBtn,
+          { backgroundColor: colors.mcBlack, opacity: canRemove ? 1 : 0.4 },
+        ]}
         accessibilityLabel="Remove bar"
       >
         <Icon icon={Icons.minus} size={12} color={colors.mcOrange} />
@@ -563,7 +566,10 @@ const ClipLengthBar = memo(function ClipLengthBar({
       <Pressable
         onPress={onIncrease}
         disabled={!canAdd}
-        style={[styles.clipLengthEndBtn, { opacity: canAdd ? 1 : 0.4 }]}
+        style={[
+          styles.clipLengthEndBtn,
+          { backgroundColor: colors.mcBlack, opacity: canAdd ? 1 : 0.4 },
+        ]}
         accessibilityLabel="Add bar"
       >
         <Icon icon={Icons.plus} size={12} color={colors.mcOrange} />
@@ -599,7 +605,12 @@ const VelocityLane = memo(function VelocityLane({
   const totalBeats = activeLengthInBars * 4;
 
   return (
-    <View style={[styles.velocityLane, { backgroundColor: colors.mcBlack }]}>
+    <View
+      style={[
+        styles.velocityLane,
+        { backgroundColor: colors.mcBlack, borderTopColor: colors.mcBlack4 },
+      ]}
+    >
       {/* Header — selected note name + close X */}
       <View style={styles.velocityHeader}>
         <Text variant="label" bold>
@@ -948,14 +959,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: BAR_HEIGHT,
-    backgroundColor: '#000000',
   },
   clipLengthEndBtn: {
     width: BAR_BTN_W,
     height: BAR_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000000',
   },
   clipLengthNumbers: { flex: 1, flexDirection: 'row', height: BAR_HEIGHT },
   clipLengthNum: {
@@ -970,11 +979,10 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 2,
-    backgroundColor: '#FF5C24', // fallback; overridden inline with colors.mcOrange5
   },
 
   // Velocity lane
-  velocityLane: { flex: 1, borderTopWidth: 1, borderTopColor: '#313336' },
+  velocityLane: { flex: 1, borderTopWidth: 1 },
   velocityHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',

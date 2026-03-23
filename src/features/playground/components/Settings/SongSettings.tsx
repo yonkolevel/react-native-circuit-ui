@@ -56,14 +56,19 @@ export const SongSettings = memo(function SongSettings({
             value={song.tempo}
             step={1}
             onValueChange={setTempoDisplay}
-            onSlidingComplete={(v: number) => { setTempoDisplay(null); onTempoChange?.(v); }}
+            onSlidingComplete={(v: number) => {
+              setTempoDisplay(null);
+              onTempoChange?.(v);
+            }}
             minimumTrackTintColor={colors.mcWhite}
             maximumTrackTintColor={colors.mcBlack4}
             thumbTintColor={colors.mcWhite}
             accessibilityLabel="Tempo"
           />
         ) : (
-          <Text variant="label" color={colors.mcWhite}>{Math.round(tempoValue)} BPM</Text>
+          <Text variant="label" color={colors.mcWhite}>
+            {Math.round(tempoValue)} BPM
+          </Text>
         )}
       </SettingRow>
 
@@ -77,14 +82,19 @@ export const SongSettings = memo(function SongSettings({
             value={song.masterVolume}
             step={1}
             onValueChange={setVolumeDisplay}
-            onSlidingComplete={(v: number) => { setVolumeDisplay(null); onMasterVolumeChange?.(v); }}
+            onSlidingComplete={(v: number) => {
+              setVolumeDisplay(null);
+              onMasterVolumeChange?.(v);
+            }}
             minimumTrackTintColor={colors.mcWhite}
             maximumTrackTintColor={colors.mcBlack4}
             thumbTintColor={colors.mcWhite}
             accessibilityLabel="Master volume"
           />
         ) : (
-          <Text variant="label" color={colors.mcWhite}>{Math.round(volumeValue)}%</Text>
+          <Text variant="label" color={colors.mcWhite}>
+            {Math.round(volumeValue)}%
+          </Text>
         )}
       </SettingRow>
 
@@ -119,7 +129,15 @@ export const SongSettings = memo(function SongSettings({
 // Sub-components
 // ---------------------------------------------------------------------------
 
-function SettingRow({ label, value, children }: { label: string; value?: string; children?: any }) {
+function SettingRow({
+  label,
+  value,
+  children,
+}: {
+  label: string;
+  value?: string;
+  children?: any;
+}) {
   const { colors } = useTheme();
   return (
     <View style={[styles.row, { borderBottomColor: colors.mcBlack4 }]}>
@@ -136,7 +154,15 @@ function SettingRow({ label, value, children }: { label: string; value?: string;
   );
 }
 
-function ActionButton({ icon, label, onPress }: { icon: any; label: string; onPress?: () => void }) {
+function ActionButton({
+  icon,
+  label,
+  onPress,
+}: {
+  icon: any;
+  label: string;
+  onPress?: () => void;
+}) {
   const { colors } = useTheme();
   return (
     <Pressable
@@ -146,7 +172,9 @@ function ActionButton({ icon, label, onPress }: { icon: any; label: string; onPr
       accessibilityLabel={label}
     >
       <Icon icon={icon} size={16} color={colors.mcWhite} />
-      <Text variant="label" color={colors.mcWhite}>{label}</Text>
+      <Text variant="label" color={colors.mcWhite}>
+        {label}
+      </Text>
     </Pressable>
   );
 }

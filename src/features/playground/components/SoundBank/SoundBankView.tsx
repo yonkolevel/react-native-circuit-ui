@@ -27,28 +27,50 @@ export interface SoundBankViewProps {
 }
 
 export const SoundBankView = memo(function SoundBankView({
-  soundBanks, selectedSlug, categoryFilter, categoryName, onSelect, onDone, onPreview,
+  soundBanks,
+  selectedSlug,
+  categoryFilter,
+  categoryName,
+  onSelect,
+  onDone,
+  onPreview,
 }: SoundBankViewProps) {
   const { colors } = useTheme();
   const [playingSlug, setPlayingSlug] = useState<string | null>(null);
 
-  const filtered = useMemo(() =>
-    categoryFilter ? soundBanks.filter(sb => sb.category === categoryFilter) : soundBanks,
-    [soundBanks, categoryFilter]);
+  const filtered = useMemo(
+    () =>
+      categoryFilter
+        ? soundBanks.filter((sb) => sb.category === categoryFilter)
+        : soundBanks,
+    [soundBanks, categoryFilter]
+  );
 
-  const selectedBank = filtered.find(sb => sb.slug === selectedSlug);
+  const selectedBank = filtered.find((sb) => sb.slug === selectedSlug);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack4 }]}>
       {/* Header — matches Swift headerView() */}
       <View style={[styles.header, { backgroundColor: colors.mcBlack2 }]}>
-        <Text variant="buttonLabelBold" uppercase color={colors.mcWhite} center style={styles.headerTitle}>
+        <Text
+          variant="buttonLabelBold"
+          uppercase
+          color={colors.mcWhite}
+          center
+          style={styles.headerTitle}
+        >
           {categoryName || categoryFilter?.toUpperCase() || 'SOUNDS'}
         </Text>
         {selectedBank && (
-          <Pressable onPress={() => onDone?.(selectedBank.name)} style={styles.doneButton}
-            accessibilityRole="button" accessibilityLabel="Done">
-            <Text variant="label" color={colors.mcWhite}>Done</Text>
+          <Pressable
+            onPress={() => onDone?.(selectedBank.name)}
+            style={styles.doneButton}
+            accessibilityRole="button"
+            accessibilityLabel="Done"
+          >
+            <Text variant="label" color={colors.mcWhite}>
+              Done
+            </Text>
           </Pressable>
         )}
       </View>
@@ -90,19 +112,31 @@ export const SoundBankView = memo(function SoundBankView({
                   }}
                   hitSlop={8}
                   accessibilityRole="button"
-                  accessibilityLabel={isPlaying ? 'Stop preview' : 'Preview sound'}
+                  accessibilityLabel={
+                    isPlaying ? 'Stop preview' : 'Preview sound'
+                  }
                 >
                   {isPlaying ? (
-                    <Icon icon={Icons.stop} size={16} color={isSelected ? colors.mcOrange : colors.mcWhite} />
+                    <Icon
+                      icon={Icons.stop}
+                      size={16}
+                      color={isSelected ? colors.mcOrange : colors.mcWhite}
+                    />
                   ) : (
-                    <Icon icon={Icons.speaker} size={16} color={isSelected ? colors.mcOrange : colors.mcWhite} />
+                    <Icon
+                      icon={Icons.speaker}
+                      size={16}
+                      color={isSelected ? colors.mcOrange : colors.mcWhite}
+                    />
                   )}
                 </Pressable>
               </Pressable>
 
               {/* Divider — matches Swift Divider().background(Color.mcWhite6) */}
               {idx < filtered.length - 1 && (
-                <View style={[styles.divider, { backgroundColor: colors.mcWhite6 }]} />
+                <View
+                  style={[styles.divider, { backgroundColor: colors.mcWhite6 }]}
+                />
               )}
             </View>
           );
@@ -115,15 +149,21 @@ export const SoundBankView = memo(function SoundBankView({
 const styles = StyleSheet.create({
   container: { flex: 1 },
   header: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    paddingTop: 16, paddingBottom: 16, paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 16,
+    paddingBottom: 16,
+    paddingHorizontal: 16,
     position: 'relative',
   },
   headerTitle: { flex: 1, textAlign: 'center' },
   doneButton: { position: 'absolute', right: 16 },
   item: {
-    flexDirection: 'row', alignItems: 'center',
-    paddingVertical: 16, paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
   },
   itemName: { flex: 1 },
   divider: { height: 0.5, marginHorizontal: 0 },

@@ -24,33 +24,35 @@ export interface MuteButtonProps {
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
-export const MuteButton: React.FC<MuteButtonProps> = memo(
-  function MuteButton({ isMuted, onPress, testID = 'mute-button' }) {
-    const { colors } = useTheme();
+export const MuteButton: React.FC<MuteButtonProps> = memo(function MuteButton({
+  isMuted,
+  onPress,
+  testID = 'mute-button',
+}) {
+  const { colors } = useTheme();
 
-    const handlePress = useCallback(() => {
-      onPress?.();
-    }, [onPress]);
+  const handlePress = useCallback(() => {
+    onPress?.();
+  }, [onPress]);
 
-    const backgroundColor = isMuted ? colors.mcOrange : '#333333';
-    const textColor = isMuted ? colors.mcWhite : '#666666';
+  const backgroundColor = isMuted ? colors.mcOrange : '#333333';
+  const textColor = isMuted ? colors.mcWhite : '#666666';
 
-    return (
-      <Pressable
-        testID={testID}
-        onPress={handlePress}
-        accessibilityRole="button"
-        accessibilityLabel="Mute"
-        accessibilityState={{ selected: isMuted }}
-        style={[styles.button, { backgroundColor }]}
-      >
-        <Text variant="label" color={textColor} bold>
-          M
-        </Text>
-      </Pressable>
-    );
-  }
-);
+  return (
+    <Pressable
+      testID={testID}
+      onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityLabel="Mute"
+      accessibilityState={{ selected: isMuted }}
+      style={[styles.button, { backgroundColor }]}
+    >
+      <Text variant="label" color={textColor} bold>
+        M
+      </Text>
+    </Pressable>
+  );
+});
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 

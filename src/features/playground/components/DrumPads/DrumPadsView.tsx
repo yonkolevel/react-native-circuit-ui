@@ -12,6 +12,7 @@ import { View, Pressable, StyleSheet, Platform } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { MultiTouchOverlay } from '../../../../components/MultiTouchOverlay';
 import { useTheme } from '../../../../theme';
+import { palette } from '../../../../theme/colors';
 import type { Sample } from '../../types';
 
 function visualToSample(visualIndex: number): number {
@@ -33,7 +34,7 @@ export const DrumPadsView = memo(function DrumPadsView({
   onPadPress,
   onPadRelease,
   externalPressedNotes = new Set(),
-  highlightColor = '#00FF9E',
+  highlightColor = palette.mcGreen,
 }: DrumPadsViewProps) {
   const { colors } = useTheme();
   const [pressedPads, setPressedPads] = useState<Set<number>>(new Set());

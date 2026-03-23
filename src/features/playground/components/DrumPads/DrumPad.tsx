@@ -24,7 +24,12 @@ export interface DrumPadProps {
 }
 
 export const DrumPad = memo(function DrumPad({
-  sample, index, isExternallyPressed, highlightColor, onPress, onRelease,
+  sample,
+  index,
+  isExternallyPressed,
+  highlightColor,
+  onPress,
+  onRelease,
 }: DrumPadProps) {
   const { colors } = useTheme();
   const [isDown, setIsDown] = useState(false);
@@ -43,7 +48,9 @@ export const DrumPad = memo(function DrumPad({
 
   // Empty pad — mcBlack2
   if (!sample) {
-    return <Pressable style={[styles.pad, { backgroundColor: colors.mcBlack2 }]} />;
+    return (
+      <Pressable style={[styles.pad, { backgroundColor: colors.mcBlack2 }]} />
+    );
   }
 
   return (
@@ -72,6 +79,12 @@ export const DrumPad = memo(function DrumPad({
 });
 
 const styles = StyleSheet.create({
-  pad: { flex: 1, aspectRatio: 1, justifyContent: 'center', alignItems: 'center', padding: 4 },
+  pad: {
+    flex: 1,
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 4,
+  },
   label: { fontSize: 8, textAlign: 'center' },
 });

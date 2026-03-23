@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { MultiTouchOverlay } from '../../../../components/MultiTouchOverlay';
+import { palette } from '../../../../theme/colors';
 
 const ALL_SHARP = new Set([1, 3, 6, 8, 10, 13, 15, 18, 20, 22]);
 const SQUARE_SHARPS = new Set([8, 20]);
@@ -35,13 +36,13 @@ const NOTE_NAMES: Record<number, string> = {
   11: 'B',
 };
 const NOTE_COLORS: Record<number, string> = {
-  0: '#FF5C24',
-  2: '#2496FF',
-  4: '#00FF9E',
-  5: '#FF245B',
-  7: '#8557FF',
-  9: '#FFD33F',
-  11: '#2496FF',
+  0: palette.mcOrange,
+  2: palette.mcBlue,
+  4: palette.mcGreen,
+  5: palette.mcPink,
+  7: palette.mcPurple,
+  9: palette.mcYellow,
+  11: palette.mcBlue,
 };
 const SHARP_H = 56;
 const S_MAP = [1, 3, 6, 8, 10]; // sharp indices within octave
@@ -61,7 +62,7 @@ export const PianoKeyboard = memo(function PianoKeyboard({
   onNoteOn,
   onNoteOff,
   externalPressedNotes = new Set(),
-  highlightColor = '#00FF9E',
+  highlightColor = palette.mcGreen,
   showNoteNames = false,
 }: PianoKeyboardProps) {
   const { width: screenW } = useWindowDimensions();
@@ -272,7 +273,7 @@ const styles = StyleSheet.create({
   hCont: { flex: 1, flexDirection: 'row' },
   octave: { flex: 1 },
   sharpRow: { flexDirection: 'row', height: SHARP_H },
-  sharpKey: { borderWidth: 1, borderColor: '#000' },
+  sharpKey: { borderWidth: 1, borderColor: palette.mcBlack },
   sharpRect: {
     flex: 1,
     justifyContent: 'center',
@@ -286,13 +287,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  circle: { width: 34, height: 34, borderRadius: 17, backgroundColor: '#000' },
+  circle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: palette.mcBlack,
+  },
   spacer: { flex: 1 },
   natRow: { flexDirection: 'row', flex: 1 },
   natKey: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#000',
+    borderColor: palette.mcBlack,
     justifyContent: 'flex-end',
     alignItems: 'center',
     paddingBottom: 4,

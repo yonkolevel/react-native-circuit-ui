@@ -22,23 +22,25 @@ export interface TrackLabelProps {
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
-export const TrackLabel: React.FC<TrackLabelProps> = memo(
-  function TrackLabel({ color, name, testID = 'track-label' }) {
-    const { colors } = useTheme();
+export const TrackLabel: React.FC<TrackLabelProps> = memo(function TrackLabel({
+  color,
+  name,
+  testID = 'track-label',
+}) {
+  const { colors } = useTheme();
 
-    return (
-      <View testID={testID} style={styles.container}>
-        <View
-          testID={`${testID}-dot`}
-          style={[styles.dot, { backgroundColor: color }]}
-        />
-        <Text variant="label" color={colors.mcWhite}>
-          {name}
-        </Text>
-      </View>
-    );
-  }
-);
+  return (
+    <View testID={testID} style={styles.container}>
+      <View
+        testID={`${testID}-dot`}
+        style={[styles.dot, { backgroundColor: color }]}
+      />
+      <Text variant="label" color={colors.mcWhite}>
+        {name}
+      </Text>
+    </View>
+  );
+});
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 

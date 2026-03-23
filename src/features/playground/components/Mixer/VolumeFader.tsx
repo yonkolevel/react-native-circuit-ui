@@ -48,7 +48,7 @@ export const VolumeFader: React.FC<VolumeFaderProps> = memo(
     const { colors } = useTheme();
     const trackWidth = useRef(0);
 
-    const tintColor = isAudible ? trackColor : '#666666';
+    const tintColor = isAudible ? trackColor : colors.mcWhite3;
     const label = `${Math.round(value)}%`;
 
     const updateValue = useCallback(
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   track: {
     flex: 1,
     height: 6,
-    backgroundColor: '#333333',
+    backgroundColor: colors.mcBlack3,
     borderRadius: 3,
     justifyContent: 'center',
     position: 'relative',

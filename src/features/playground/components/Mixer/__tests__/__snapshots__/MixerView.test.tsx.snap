@@ -12,21 +12,29 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
     }
   }
   style={
-    {
-      "backgroundColor": "#000000",
-      "flex": 1,
-    }
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#000000",
+      },
+    ]
   }
 >
   <View>
     <View
       style={
-        {
-          "backgroundColor": "#1A1A1A",
-          "borderRadius": 8,
-          "gap": 12,
-          "padding": 16,
-        }
+        [
+          {
+            "borderRadius": 8,
+            "gap": 12,
+            "padding": 16,
+          },
+          {
+            "backgroundColor": "#1A1C20",
+          },
+        ]
       }
     >
       <View
@@ -73,7 +81,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#888888",
+                  "color": "rgba(247, 247, 247, 0.80)",
                 },
                 {
                   "fontSize": 11,
@@ -135,7 +143,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "width": 32,
                 },
                 {
-                  "backgroundColor": "#333333",
+                  "backgroundColor": "#25272B",
                 },
               ]
             }
@@ -151,7 +159,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#666666",
+                    "color": "rgba(247, 247, 247, 0.60)",
                   },
                 ]
               }
@@ -201,7 +209,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "width": 32,
                 },
                 {
-                  "backgroundColor": "#333333",
+                  "backgroundColor": "#25272B",
                 },
               ]
             }
@@ -217,7 +225,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#666666",
+                    "color": "rgba(247, 247, 247, 0.60)",
                   },
                 ]
               }
@@ -245,7 +253,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 "lineHeight": 18,
               },
               {
-                "color": "#888888",
+                "color": "rgba(247, 247, 247, 0.80)",
               },
               {
                 "fontSize": 11,
@@ -267,7 +275,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
         >
           <View>
             <View
-              color="#666666"
+              color="rgba(247, 247, 247, 0.60)"
               size={14}
               testID="lucide-Volume2"
             />
@@ -295,7 +303,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
-              maximumTrackTintColor="#333333"
+              maximumTrackTintColor="#25272B"
               maximumValue={100}
               minimumTrackTintColor="#1AFFA8"
               minimumValue={0}
@@ -323,7 +331,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 ]
               }
               tapToSeek={false}
-              thumbTintColor="#CCCCCC"
+              thumbTintColor="#F7F7F7"
               upperLimit={9007199254740991}
               value={90}
             />
@@ -339,7 +347,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#FFFFFF",
+                  "color": "#F7F7F7",
                 },
                 {
                   "textAlign": "right",
@@ -371,7 +379,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 "lineHeight": 18,
               },
               {
-                "color": "#888888",
+                "color": "rgba(247, 247, 247, 0.80)",
               },
               {
                 "fontSize": 11,
@@ -393,7 +401,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
         >
           <View>
             <View
-              color="#666666"
+              color="rgba(247, 247, 247, 0.60)"
               size={14}
               testID="lucide-MoveHorizontal"
             />
@@ -421,9 +429,9 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
-              maximumTrackTintColor="#888888"
+              maximumTrackTintColor="rgba(247, 247, 247, 0.80)"
               maximumValue={1}
-              minimumTrackTintColor="#888888"
+              minimumTrackTintColor="rgba(247, 247, 247, 0.80)"
               minimumValue={-1}
               onChange={[Function]}
               onRNCSliderAccessibilityAction={null}
@@ -449,7 +457,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 ]
               }
               tapToSeek={false}
-              thumbTintColor="#CCCCCC"
+              thumbTintColor="#F7F7F7"
               upperLimit={9007199254740991}
             />
           </View>
@@ -464,7 +472,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#888888",
+                  "color": "rgba(247, 247, 247, 0.80)",
                 },
                 {
                   "textAlign": "right",
@@ -480,12 +488,16 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
     </View>
     <View
       style={
-        {
-          "backgroundColor": "#1A1A1A",
-          "borderRadius": 8,
-          "gap": 12,
-          "padding": 16,
-        }
+        [
+          {
+            "borderRadius": 8,
+            "gap": 12,
+            "padding": 16,
+          },
+          {
+            "backgroundColor": "#1A1C20",
+          },
+        ]
       }
     >
       <View
@@ -532,7 +544,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#888888",
+                  "color": "rgba(247, 247, 247, 0.80)",
                 },
                 {
                   "fontSize": 11,
@@ -594,7 +606,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "width": 32,
                 },
                 {
-                  "backgroundColor": "#333333",
+                  "backgroundColor": "#25272B",
                 },
               ]
             }
@@ -610,7 +622,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#666666",
+                    "color": "rgba(247, 247, 247, 0.60)",
                   },
                 ]
               }
@@ -660,7 +672,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "width": 32,
                 },
                 {
-                  "backgroundColor": "#333333",
+                  "backgroundColor": "#25272B",
                 },
               ]
             }
@@ -676,7 +688,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#666666",
+                    "color": "rgba(247, 247, 247, 0.60)",
                   },
                 ]
               }
@@ -704,7 +716,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 "lineHeight": 18,
               },
               {
-                "color": "#888888",
+                "color": "rgba(247, 247, 247, 0.80)",
               },
               {
                 "fontSize": 11,
@@ -726,7 +738,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
         >
           <View>
             <View
-              color="#666666"
+              color="rgba(247, 247, 247, 0.60)"
               size={14}
               testID="lucide-Volume2"
             />
@@ -754,7 +766,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
-              maximumTrackTintColor="#333333"
+              maximumTrackTintColor="#25272B"
               maximumValue={100}
               minimumTrackTintColor="#FF6C3A"
               minimumValue={0}
@@ -782,7 +794,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 ]
               }
               tapToSeek={false}
-              thumbTintColor="#CCCCCC"
+              thumbTintColor="#F7F7F7"
               upperLimit={9007199254740991}
               value={90}
             />
@@ -798,7 +810,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#FFFFFF",
+                  "color": "#F7F7F7",
                 },
                 {
                   "textAlign": "right",
@@ -830,7 +842,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 "lineHeight": 18,
               },
               {
-                "color": "#888888",
+                "color": "rgba(247, 247, 247, 0.80)",
               },
               {
                 "fontSize": 11,
@@ -852,7 +864,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
         >
           <View>
             <View
-              color="#666666"
+              color="rgba(247, 247, 247, 0.60)"
               size={14}
               testID="lucide-MoveHorizontal"
             />
@@ -880,9 +892,9 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
-              maximumTrackTintColor="#888888"
+              maximumTrackTintColor="rgba(247, 247, 247, 0.80)"
               maximumValue={1}
-              minimumTrackTintColor="#888888"
+              minimumTrackTintColor="rgba(247, 247, 247, 0.80)"
               minimumValue={-1}
               onChange={[Function]}
               onRNCSliderAccessibilityAction={null}
@@ -908,7 +920,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 ]
               }
               tapToSeek={false}
-              thumbTintColor="#CCCCCC"
+              thumbTintColor="#F7F7F7"
               upperLimit={9007199254740991}
             />
           </View>
@@ -923,7 +935,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#888888",
+                  "color": "rgba(247, 247, 247, 0.80)",
                 },
                 {
                   "textAlign": "right",
@@ -939,12 +951,16 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
     </View>
     <View
       style={
-        {
-          "backgroundColor": "#1A1A1A",
-          "borderRadius": 8,
-          "gap": 12,
-          "padding": 16,
-        }
+        [
+          {
+            "borderRadius": 8,
+            "gap": 12,
+            "padding": 16,
+          },
+          {
+            "backgroundColor": "#1A1C20",
+          },
+        ]
       }
     >
       <View
@@ -991,7 +1007,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#888888",
+                  "color": "rgba(247, 247, 247, 0.80)",
                 },
                 {
                   "fontSize": 11,
@@ -1053,7 +1069,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "width": 32,
                 },
                 {
-                  "backgroundColor": "#333333",
+                  "backgroundColor": "#25272B",
                 },
               ]
             }
@@ -1069,7 +1085,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#666666",
+                    "color": "rgba(247, 247, 247, 0.60)",
                   },
                 ]
               }
@@ -1119,7 +1135,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "width": 32,
                 },
                 {
-                  "backgroundColor": "#333333",
+                  "backgroundColor": "#25272B",
                 },
               ]
             }
@@ -1135,7 +1151,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#666666",
+                    "color": "rgba(247, 247, 247, 0.60)",
                   },
                 ]
               }
@@ -1163,7 +1179,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 "lineHeight": 18,
               },
               {
-                "color": "#888888",
+                "color": "rgba(247, 247, 247, 0.80)",
               },
               {
                 "fontSize": 11,
@@ -1185,7 +1201,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
         >
           <View>
             <View
-              color="#666666"
+              color="rgba(247, 247, 247, 0.60)"
               size={14}
               testID="lucide-Volume2"
             />
@@ -1213,7 +1229,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
-              maximumTrackTintColor="#333333"
+              maximumTrackTintColor="#25272B"
               maximumValue={100}
               minimumTrackTintColor="#3AA0FF"
               minimumValue={0}
@@ -1241,7 +1257,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 ]
               }
               tapToSeek={false}
-              thumbTintColor="#CCCCCC"
+              thumbTintColor="#F7F7F7"
               upperLimit={9007199254740991}
               value={90}
             />
@@ -1257,7 +1273,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#FFFFFF",
+                  "color": "#F7F7F7",
                 },
                 {
                   "textAlign": "right",
@@ -1289,7 +1305,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 "lineHeight": 18,
               },
               {
-                "color": "#888888",
+                "color": "rgba(247, 247, 247, 0.80)",
               },
               {
                 "fontSize": 11,
@@ -1311,7 +1327,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
         >
           <View>
             <View
-              color="#666666"
+              color="rgba(247, 247, 247, 0.60)"
               size={14}
               testID="lucide-MoveHorizontal"
             />
@@ -1339,9 +1355,9 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
-              maximumTrackTintColor="#888888"
+              maximumTrackTintColor="rgba(247, 247, 247, 0.80)"
               maximumValue={1}
-              minimumTrackTintColor="#888888"
+              minimumTrackTintColor="rgba(247, 247, 247, 0.80)"
               minimumValue={-1}
               onChange={[Function]}
               onRNCSliderAccessibilityAction={null}
@@ -1367,7 +1383,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 ]
               }
               tapToSeek={false}
-              thumbTintColor="#CCCCCC"
+              thumbTintColor="#F7F7F7"
               upperLimit={9007199254740991}
             />
           </View>
@@ -1382,7 +1398,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#888888",
+                  "color": "rgba(247, 247, 247, 0.80)",
                 },
                 {
                   "textAlign": "right",
@@ -1412,21 +1428,29 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
     }
   }
   style={
-    {
-      "backgroundColor": "#000000",
-      "flex": 1,
-    }
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#000000",
+      },
+    ]
   }
 >
   <View>
     <View
       style={
-        {
-          "backgroundColor": "#1A1A1A",
-          "borderRadius": 8,
-          "gap": 12,
-          "padding": 16,
-        }
+        [
+          {
+            "borderRadius": 8,
+            "gap": 12,
+            "padding": 16,
+          },
+          {
+            "backgroundColor": "#1A1C20",
+          },
+        ]
       }
     >
       <View
@@ -1473,7 +1497,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#888888",
+                  "color": "rgba(247, 247, 247, 0.80)",
                 },
                 {
                   "fontSize": 11,
@@ -1551,7 +1575,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#FFFFFF",
+                    "color": "#F7F7F7",
                   },
                 ]
               }
@@ -1601,7 +1625,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                   "width": 32,
                 },
                 {
-                  "backgroundColor": "#333333",
+                  "backgroundColor": "#25272B",
                 },
               ]
             }
@@ -1617,7 +1641,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#666666",
+                    "color": "rgba(247, 247, 247, 0.60)",
                   },
                 ]
               }
@@ -1645,7 +1669,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                 "lineHeight": 18,
               },
               {
-                "color": "#888888",
+                "color": "rgba(247, 247, 247, 0.80)",
               },
               {
                 "fontSize": 11,
@@ -1667,7 +1691,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
         >
           <View>
             <View
-              color="#666666"
+              color="rgba(247, 247, 247, 0.60)"
               size={14}
               testID="lucide-Volume2"
             />
@@ -1695,9 +1719,9 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
-              maximumTrackTintColor="#333333"
+              maximumTrackTintColor="#25272B"
               maximumValue={100}
-              minimumTrackTintColor="#333333"
+              minimumTrackTintColor="#25272B"
               minimumValue={0}
               onChange={[Function]}
               onRNCSliderAccessibilityAction={null}
@@ -1723,7 +1747,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                 ]
               }
               tapToSeek={false}
-              thumbTintColor="#CCCCCC"
+              thumbTintColor="#F7F7F7"
               upperLimit={9007199254740991}
               value={90}
             />
@@ -1739,7 +1763,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#FFFFFF",
+                  "color": "#F7F7F7",
                 },
                 {
                   "textAlign": "right",
@@ -1771,7 +1795,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                 "lineHeight": 18,
               },
               {
-                "color": "#888888",
+                "color": "rgba(247, 247, 247, 0.80)",
               },
               {
                 "fontSize": 11,
@@ -1793,7 +1817,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
         >
           <View>
             <View
-              color="#666666"
+              color="rgba(247, 247, 247, 0.60)"
               size={14}
               testID="lucide-MoveHorizontal"
             />
@@ -1821,9 +1845,9 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
-              maximumTrackTintColor="#888888"
+              maximumTrackTintColor="rgba(247, 247, 247, 0.80)"
               maximumValue={1}
-              minimumTrackTintColor="#888888"
+              minimumTrackTintColor="rgba(247, 247, 247, 0.80)"
               minimumValue={-1}
               onChange={[Function]}
               onRNCSliderAccessibilityAction={null}
@@ -1849,7 +1873,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                 ]
               }
               tapToSeek={false}
-              thumbTintColor="#CCCCCC"
+              thumbTintColor="#F7F7F7"
               upperLimit={9007199254740991}
             />
           </View>
@@ -1864,7 +1888,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#888888",
+                  "color": "rgba(247, 247, 247, 0.80)",
                 },
                 {
                   "textAlign": "right",
@@ -1894,21 +1918,29 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
     }
   }
   style={
-    {
-      "backgroundColor": "#000000",
-      "flex": 1,
-    }
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#000000",
+      },
+    ]
   }
 >
   <View>
     <View
       style={
-        {
-          "backgroundColor": "#1A1A1A",
-          "borderRadius": 8,
-          "gap": 12,
-          "padding": 16,
-        }
+        [
+          {
+            "borderRadius": 8,
+            "gap": 12,
+            "padding": 16,
+          },
+          {
+            "backgroundColor": "#1A1C20",
+          },
+        ]
       }
     >
       <View
@@ -1955,7 +1987,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#888888",
+                  "color": "rgba(247, 247, 247, 0.80)",
                 },
                 {
                   "fontSize": 11,
@@ -2017,7 +2049,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                   "width": 32,
                 },
                 {
-                  "backgroundColor": "#333333",
+                  "backgroundColor": "#25272B",
                 },
               ]
             }
@@ -2033,7 +2065,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#666666",
+                    "color": "rgba(247, 247, 247, 0.60)",
                   },
                 ]
               }
@@ -2099,7 +2131,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#FFFFFF",
+                    "color": "#F7F7F7",
                   },
                 ]
               }
@@ -2127,7 +2159,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 "lineHeight": 18,
               },
               {
-                "color": "#888888",
+                "color": "rgba(247, 247, 247, 0.80)",
               },
               {
                 "fontSize": 11,
@@ -2149,7 +2181,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
         >
           <View>
             <View
-              color="#666666"
+              color="rgba(247, 247, 247, 0.60)"
               size={14}
               testID="lucide-Volume2"
             />
@@ -2177,7 +2209,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
-              maximumTrackTintColor="#333333"
+              maximumTrackTintColor="#25272B"
               maximumValue={100}
               minimumTrackTintColor="#1AFFA8"
               minimumValue={0}
@@ -2205,7 +2237,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 ]
               }
               tapToSeek={false}
-              thumbTintColor="#CCCCCC"
+              thumbTintColor="#F7F7F7"
               upperLimit={9007199254740991}
               value={90}
             />
@@ -2221,7 +2253,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#FFFFFF",
+                  "color": "#F7F7F7",
                 },
                 {
                   "textAlign": "right",
@@ -2253,7 +2285,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 "lineHeight": 18,
               },
               {
-                "color": "#888888",
+                "color": "rgba(247, 247, 247, 0.80)",
               },
               {
                 "fontSize": 11,
@@ -2275,7 +2307,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
         >
           <View>
             <View
-              color="#666666"
+              color="rgba(247, 247, 247, 0.60)"
               size={14}
               testID="lucide-MoveHorizontal"
             />
@@ -2303,9 +2335,9 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
-              maximumTrackTintColor="#888888"
+              maximumTrackTintColor="rgba(247, 247, 247, 0.80)"
               maximumValue={1}
-              minimumTrackTintColor="#888888"
+              minimumTrackTintColor="rgba(247, 247, 247, 0.80)"
               minimumValue={-1}
               onChange={[Function]}
               onRNCSliderAccessibilityAction={null}
@@ -2331,7 +2363,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 ]
               }
               tapToSeek={false}
-              thumbTintColor="#CCCCCC"
+              thumbTintColor="#F7F7F7"
               upperLimit={9007199254740991}
             />
           </View>
@@ -2346,7 +2378,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#888888",
+                  "color": "rgba(247, 247, 247, 0.80)",
                 },
                 {
                   "textAlign": "right",
@@ -2362,12 +2394,16 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
     </View>
     <View
       style={
-        {
-          "backgroundColor": "#1A1A1A",
-          "borderRadius": 8,
-          "gap": 12,
-          "padding": 16,
-        }
+        [
+          {
+            "borderRadius": 8,
+            "gap": 12,
+            "padding": 16,
+          },
+          {
+            "backgroundColor": "#1A1C20",
+          },
+        ]
       }
     >
       <View
@@ -2414,7 +2450,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#888888",
+                  "color": "rgba(247, 247, 247, 0.80)",
                 },
                 {
                   "fontSize": 11,
@@ -2492,7 +2528,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#FFFFFF",
+                    "color": "#F7F7F7",
                   },
                 ]
               }
@@ -2542,7 +2578,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                   "width": 32,
                 },
                 {
-                  "backgroundColor": "#333333",
+                  "backgroundColor": "#25272B",
                 },
               ]
             }
@@ -2558,7 +2594,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                     "lineHeight": 18,
                   },
                   {
-                    "color": "#666666",
+                    "color": "rgba(247, 247, 247, 0.60)",
                   },
                 ]
               }
@@ -2586,7 +2622,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 "lineHeight": 18,
               },
               {
-                "color": "#888888",
+                "color": "rgba(247, 247, 247, 0.80)",
               },
               {
                 "fontSize": 11,
@@ -2608,7 +2644,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
         >
           <View>
             <View
-              color="#666666"
+              color="rgba(247, 247, 247, 0.60)"
               size={14}
               testID="lucide-Volume2"
             />
@@ -2636,9 +2672,9 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
-              maximumTrackTintColor="#333333"
+              maximumTrackTintColor="#25272B"
               maximumValue={100}
-              minimumTrackTintColor="#333333"
+              minimumTrackTintColor="#25272B"
               minimumValue={0}
               onChange={[Function]}
               onRNCSliderAccessibilityAction={null}
@@ -2664,7 +2700,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 ]
               }
               tapToSeek={false}
-              thumbTintColor="#CCCCCC"
+              thumbTintColor="#F7F7F7"
               upperLimit={9007199254740991}
               value={90}
             />
@@ -2680,7 +2716,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#FFFFFF",
+                  "color": "#F7F7F7",
                 },
                 {
                   "textAlign": "right",
@@ -2712,7 +2748,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 "lineHeight": 18,
               },
               {
-                "color": "#888888",
+                "color": "rgba(247, 247, 247, 0.80)",
               },
               {
                 "fontSize": 11,
@@ -2734,7 +2770,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
         >
           <View>
             <View
-              color="#666666"
+              color="rgba(247, 247, 247, 0.60)"
               size={14}
               testID="lucide-MoveHorizontal"
             />
@@ -2762,9 +2798,9 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
-              maximumTrackTintColor="#888888"
+              maximumTrackTintColor="rgba(247, 247, 247, 0.80)"
               maximumValue={1}
-              minimumTrackTintColor="#888888"
+              minimumTrackTintColor="rgba(247, 247, 247, 0.80)"
               minimumValue={-1}
               onChange={[Function]}
               onRNCSliderAccessibilityAction={null}
@@ -2790,7 +2826,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 ]
               }
               tapToSeek={false}
-              thumbTintColor="#CCCCCC"
+              thumbTintColor="#F7F7F7"
               upperLimit={9007199254740991}
             />
           </View>
@@ -2805,7 +2841,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                   "lineHeight": 18,
                 },
                 {
-                  "color": "#888888",
+                  "color": "rgba(247, 247, 247, 0.80)",
                 },
                 {
                   "textAlign": "right",

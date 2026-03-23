@@ -9,6 +9,7 @@ import Slider from '@react-native-community/slider';
 import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
+import { useTheme } from '../../../../theme';
 import type { Track, MixerCallbacks } from '../../types';
 import { INSTRUMENT_COLORS } from '../../types';
 
@@ -21,18 +22,22 @@ const MuteButton = memo(function MuteButton({
   isMuted: boolean;
   onToggle?: () => void;
 }) {
+  const { colors } = useTheme();
   return (
     <Pressable
       onPress={onToggle}
       style={[
         styles.muteBtn,
-        { backgroundColor: isMuted ? '#FF5C24' : '#333333' },
+        { backgroundColor: isMuted ? colors.mcOrange : colors.mcBlack3 },
       ]}
       accessibilityRole="button"
       accessibilityLabel="Mute"
       accessibilityState={{ selected: isMuted }}
     >
-      <Text variant="buttonLabelBold" color={isMuted ? '#FFFFFF' : '#666666'}>
+      <Text
+        variant="buttonLabelBold"
+        color={isMuted ? colors.mcWhite : colors.mcWhite3}
+      >
         M
       </Text>
     </Pressable>
@@ -48,18 +53,22 @@ const SoloButton = memo(function SoloButton({
   isSoloed: boolean;
   onToggle?: () => void;
 }) {
+  const { colors } = useTheme();
   return (
     <Pressable
       onPress={onToggle}
       style={[
         styles.soloBtn,
-        { backgroundColor: isSoloed ? '#00FF9E' : '#333333' },
+        { backgroundColor: isSoloed ? colors.mcGreen : colors.mcBlack3 },
       ]}
       accessibilityRole="button"
       accessibilityLabel="Solo"
       accessibilityState={{ selected: isSoloed }}
     >
-      <Text variant="buttonLabelBold" color={isSoloed ? '#FFFFFF' : '#666666'}>
+      <Text
+        variant="buttonLabelBold"
+        color={isSoloed ? colors.mcWhite : colors.mcWhite3}
+      >
         S
       </Text>
     </Pressable>
@@ -87,21 +96,19 @@ const TrackStrip = memo(function TrackStrip({
   onMuteToggle,
   onSoloToggle,
 }: TrackStripProps) {
-  const trackColor = INSTRUMENT_COLORS[track.type] || '#FFFFFF';
-  // iOS: MuteButtonView isActive = !isAudible (orange when track is muted/silenced)
+  const { colors } = useTheme();
+  const trackColor = INSTRUMENT_COLORS[track.type] || colors.mcWhite;
   const muteActive = !isAudible;
-  // iOS: SoloButtonView isActive = isSoloed && hasSoloedTracks (green only when actively soloing)
   const soloActive = track.isSoloed && hasSoloedTracks;
 
   return (
-    <View style={styles.strip}>
-      {/* Header: label + M/S buttons — matches iOS TrackStripView header */}
+    <View style={[styles.strip, { backgroundColor: colors.mcBlack2 }]}>
       <View style={styles.stripHeader}>
         <View style={styles.trackLabel}>
           <View style={[styles.colorDot, { backgroundColor: trackColor }]} />
           <Text
             variant="small"
-            color="#888888"
+            color={colors.mcWhite2}
             numberOfLines={1}
             style={{ fontSize: 11, fontWeight: '500' }}
           >
@@ -120,30 +127,29 @@ const TrackStrip = memo(function TrackStrip({
         </View>
       </View>
 
-      {/* Volume — iOS: "Volume" label 11pt medium #888, speaker icon 14pt #666, slider with track color, value 12pt semibold */}
       <View style={styles.sliderSection}>
         <Text
           variant="small"
-          color="#888888"
+          color={colors.mcWhite2}
           style={{ fontSize: 11, fontWeight: '500' }}
         >
           Volume
         </Text>
         <View style={styles.sliderRow}>
-          <Icon icon={Icons.speaker} size={14} color="#666666" />
+          <Icon icon={Icons.speaker} size={14} color={colors.mcWhite3} />
           <Slider
             style={styles.slider}
             minimumValue={0}
             maximumValue={100}
             value={track.volume}
-            minimumTrackTintColor={isAudible ? trackColor : '#333333'}
-            maximumTrackTintColor="#333333"
-            thumbTintColor="#CCCCCC"
+            minimumTrackTintColor={isAudible ? trackColor : colors.mcBlack3}
+            maximumTrackTintColor={colors.mcBlack3}
+            thumbTintColor={colors.mcWhite}
             onSlidingComplete={(v: number) => onVolumeChange?.(v)}
           />
           <Text
             variant="buttonLabelSemiBold"
-            color="#FFFFFF"
+            color={colors.mcWhite}
             style={styles.sliderValue}
           >
             {Math.round(track.volume)}%
@@ -151,30 +157,29 @@ const TrackStrip = memo(function TrackStrip({
         </View>
       </View>
 
-      {/* Pan — iOS: "Pan" label 11pt medium #888, ↔ icon 14pt #666, slider #888 tint, pan label 12pt medium */}
       <View style={styles.sliderSection}>
         <Text
           variant="small"
-          color="#888888"
+          color={colors.mcWhite2}
           style={{ fontSize: 11, fontWeight: '500' }}
         >
           Pan
         </Text>
         <View style={styles.sliderRow}>
-          <Icon icon={Icons.panArrows} size={14} color="#666666" />
+          <Icon icon={Icons.panArrows} size={14} color={colors.mcWhite3} />
           <Slider
             style={styles.slider}
             minimumValue={-1}
             maximumValue={1}
             value={track.pan}
-            minimumTrackTintColor="#888888"
-            maximumTrackTintColor="#888888"
-            thumbTintColor="#CCCCCC"
+            minimumTrackTintColor={colors.mcWhite2}
+            maximumTrackTintColor={colors.mcWhite2}
+            thumbTintColor={colors.mcWhite}
             onSlidingComplete={(v: number) => onPanChange?.(v)}
           />
           <Text
             variant="buttonLabelSemiBold"
-            color="#888888"
+            color={colors.mcWhite2}
             style={styles.panLabel}
           >
             {Math.abs(track.pan) < 0.1 ? 'C' : track.pan < 0 ? 'L' : 'R'}
@@ -196,11 +201,12 @@ export const MixerView = memo(function MixerView({
   tracks,
   callbacks,
 }: MixerViewProps) {
+  const { colors } = useTheme();
   const hasSoloedTracks = tracks.some((t) => t.isSoloed);
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.mcBlack }]}
       contentContainerStyle={styles.scrollContent}
     >
       {tracks.map((track) => {
@@ -224,7 +230,7 @@ export const MixerView = memo(function MixerView({
 });
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000000' },
+  container: { flex: 1 },
   scrollContent: {
     padding: 16,
     gap: 8,
@@ -235,7 +241,6 @@ const styles = StyleSheet.create({
 
   strip: {
     padding: 16,
-    backgroundColor: '#1A1A1A',
     borderRadius: 8,
     gap: 12,
   },
@@ -267,7 +272,6 @@ const styles = StyleSheet.create({
   sliderTrack: {
     flex: 1,
     height: 4,
-    backgroundColor: '#333333',
     borderRadius: 2,
     position: 'relative',
   },
@@ -287,7 +291,6 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#888888',
     marginLeft: -6,
   },
   panLabel: { width: 20, textAlign: 'right' },

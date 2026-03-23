@@ -14,13 +14,25 @@ export interface BottomPanelProps {
   children: React.ReactNode;
 }
 
-export const BottomPanel = memo(function BottomPanel({ isExpanded, onToggle, children }: BottomPanelProps) {
+export const BottomPanel = memo(function BottomPanel({
+  isExpanded,
+  onToggle,
+  children,
+}: BottomPanelProps) {
   const { colors } = useTheme();
   return (
-    <View style={[styles.container, isExpanded && styles.expanded, { backgroundColor: colors.mcBlack2, borderTopColor: colors.mcBlack4 }]}
-      accessibilityLabel="Bottom panel">
+    <View
+      style={[
+        styles.container,
+        isExpanded && styles.expanded,
+        { backgroundColor: colors.mcBlack2, borderTopColor: colors.mcBlack4 },
+      ]}
+      accessibilityLabel="Bottom panel"
+    >
       <Pressable onPress={onToggle} style={styles.handle}>
-        <View style={[styles.handleBar, { backgroundColor: colors.mcWhite4 }]} />
+        <View
+          style={[styles.handleBar, { backgroundColor: colors.mcWhite4 }]}
+        />
       </Pressable>
       {isExpanded && <View style={styles.content}>{children}</View>}
     </View>

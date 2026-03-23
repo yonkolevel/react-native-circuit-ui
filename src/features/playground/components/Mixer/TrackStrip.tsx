@@ -41,99 +41,97 @@ export interface TrackStripProps {
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
-export const TrackStrip: React.FC<TrackStripProps> = memo(
-  function TrackStrip({
-    track,
-    isAudible,
-    onVolumeChange,
-    onPanChange,
-    onMuteToggle,
-    onSoloToggle,
-    testID = 'track-strip',
-  }) {
-    const { colors } = useTheme();
+export const TrackStrip: React.FC<TrackStripProps> = memo(function TrackStrip({
+  track,
+  isAudible,
+  onVolumeChange,
+  onPanChange,
+  onMuteToggle,
+  onSoloToggle,
+  testID = 'track-strip',
+}) {
+  const { colors } = useTheme();
 
-    const handleVolumeChange = useCallback(
-      (volume: number) => {
-        onVolumeChange?.(track.id, volume);
-      },
-      [track.id, onVolumeChange]
-    );
+  const handleVolumeChange = useCallback(
+    (volume: number) => {
+      onVolumeChange?.(track.id, volume);
+    },
+    [track.id, onVolumeChange]
+  );
 
-    const handlePanChange = useCallback(
-      (pan: number) => {
-        onPanChange?.(track.id, pan);
-      },
-      [track.id, onPanChange]
-    );
+  const handlePanChange = useCallback(
+    (pan: number) => {
+      onPanChange?.(track.id, pan);
+    },
+    [track.id, onPanChange]
+  );
 
-    const handleMuteToggle = useCallback(() => {
-      onMuteToggle?.(track.id);
-    }, [track.id, onMuteToggle]);
+  const handleMuteToggle = useCallback(() => {
+    onMuteToggle?.(track.id);
+  }, [track.id, onMuteToggle]);
 
-    const handleSoloToggle = useCallback(() => {
-      onSoloToggle?.(track.id);
-    }, [track.id, onSoloToggle]);
+  const handleSoloToggle = useCallback(() => {
+    onSoloToggle?.(track.id);
+  }, [track.id, onSoloToggle]);
 
-    return (
-      <View testID={testID} style={styles.container}>
-        {/* Header row: label + mute/solo buttons */}
-        <View style={styles.headerRow}>
-          <TrackLabel
-            color={track.colorHex}
-            name={track.title}
-            testID={`${testID}-label`}
+  return (
+    <View testID={testID} style={styles.container}>
+      {/* Header row: label + mute/solo buttons */}
+      <View style={styles.headerRow}>
+        <TrackLabel
+          color={track.colorHex}
+          name={track.title}
+          testID={`${testID}-label`}
+        />
+        <View style={styles.buttonGroup}>
+          <MuteButton
+            isMuted={track.isMuted}
+            onPress={handleMuteToggle}
+            testID={`${testID}-mute`}
           />
-          <View style={styles.buttonGroup}>
-            <MuteButton
-              isMuted={track.isMuted}
-              onPress={handleMuteToggle}
-              testID={`${testID}-mute`}
-            />
-            <SoloButton
-              isSoloed={track.isSoloed}
-              onPress={handleSoloToggle}
-              testID={`${testID}-solo`}
-            />
-          </View>
-        </View>
-
-        {/* Volume section */}
-        <View style={styles.section}>
-          <Text variant="small" color={colors.mcWhite2}>
-            Volume
-          </Text>
-          <VolumeFader
-            value={track.volume}
-            trackColor={track.colorHex}
-            isAudible={isAudible}
-            onValueChange={handleVolumeChange}
-            testID={`${testID}-volume`}
-          />
-        </View>
-
-        {/* Pan section */}
-        <View style={styles.section}>
-          <Text variant="small" color={colors.mcWhite2}>
-            Pan
-          </Text>
-          <PanControl
-            value={track.pan}
-            onValueChange={handlePanChange}
-            testID={`${testID}-pan`}
+          <SoloButton
+            isSoloed={track.isSoloed}
+            onPress={handleSoloToggle}
+            testID={`${testID}-solo`}
           />
         </View>
       </View>
-    );
-  }
-);
+
+      {/* Volume section */}
+      <View style={styles.section}>
+        <Text variant="small" color={colors.mcWhite2}>
+          Volume
+        </Text>
+        <VolumeFader
+          value={track.volume}
+          trackColor={track.colorHex}
+          isAudible={isAudible}
+          onValueChange={handleVolumeChange}
+          testID={`${testID}-volume`}
+        />
+      </View>
+
+      {/* Pan section */}
+      <View style={styles.section}>
+        <Text variant="small" color={colors.mcWhite2}>
+          Pan
+        </Text>
+        <PanControl
+          value={track.pan}
+          onValueChange={handlePanChange}
+          testID={`${testID}-pan`}
+        />
+      </View>
+    </View>
+  );
+});
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#1A1A1A',
+    backgroundColor: colors.mcBlack2,
     borderRadius: 8,
     gap: 12,
   },

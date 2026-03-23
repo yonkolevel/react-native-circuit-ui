@@ -3328,12 +3328,16 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
     </View>
     <View
       style={
-        {
-          "alignItems": "center",
-          "backgroundColor": "#000000",
-          "flexDirection": "row",
-          "height": 34,
-        }
+        [
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "height": 34,
+          },
+          {
+            "backgroundColor": "#000000",
+          },
+        ]
       }
     >
       <View
@@ -3371,12 +3375,12 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
           [
             {
               "alignItems": "center",
-              "backgroundColor": "#000000",
               "height": 34,
               "justifyContent": "center",
               "width": 34,
             },
             {
+              "backgroundColor": "#000000",
               "opacity": 1,
             },
           ]
@@ -3727,12 +3731,12 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
           [
             {
               "alignItems": "center",
-              "backgroundColor": "#000000",
               "height": 34,
               "justifyContent": "center",
               "width": 34,
             },
             {
+              "backgroundColor": "#000000",
               "opacity": 1,
             },
           ]
@@ -7739,12 +7743,16 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
     </View>
     <View
       style={
-        {
-          "alignItems": "center",
-          "backgroundColor": "#000000",
-          "flexDirection": "row",
-          "height": 34,
-        }
+        [
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "height": 34,
+          },
+          {
+            "backgroundColor": "#000000",
+          },
+        ]
       }
     >
       <View
@@ -7782,12 +7790,12 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           [
             {
               "alignItems": "center",
-              "backgroundColor": "#000000",
               "height": 34,
               "justifyContent": "center",
               "width": 34,
             },
             {
+              "backgroundColor": "#000000",
               "opacity": 1,
             },
           ]
@@ -8138,12 +8146,12 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           [
             {
               "alignItems": "center",
-              "backgroundColor": "#000000",
               "height": 34,
               "justifyContent": "center",
               "width": 34,
             },
             {
+              "backgroundColor": "#000000",
               "opacity": 1,
             },
           ]
@@ -12682,12 +12690,16 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
     </View>
     <View
       style={
-        {
-          "alignItems": "center",
-          "backgroundColor": "#000000",
-          "flexDirection": "row",
-          "height": 34,
-        }
+        [
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "height": 34,
+          },
+          {
+            "backgroundColor": "#000000",
+          },
+        ]
       }
     >
       <View
@@ -12725,12 +12737,12 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
           [
             {
               "alignItems": "center",
-              "backgroundColor": "#000000",
               "height": 34,
               "justifyContent": "center",
               "width": 34,
             },
             {
+              "backgroundColor": "#000000",
               "opacity": 1,
             },
           ]
@@ -13081,12 +13093,12 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
           [
             {
               "alignItems": "center",
-              "backgroundColor": "#000000",
               "height": 34,
               "justifyContent": "center",
               "width": 34,
             },
             {
+              "backgroundColor": "#000000",
               "opacity": 1,
             },
           ]
@@ -13142,7 +13154,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                 },
                 {
@@ -13177,7 +13189,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               <View
                 style={
                   {
-                    "backgroundColor": "#000",
+                    "backgroundColor": "#000000",
                     "borderRadius": 17,
                     "height": 34,
                     "width": 34,
@@ -13190,7 +13202,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                 },
                 {
@@ -13218,7 +13230,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               <View
                 style={
                   {
-                    "backgroundColor": "#000",
+                    "backgroundColor": "#000000",
                     "borderRadius": 17,
                     "height": 34,
                     "width": 34,
@@ -13238,7 +13250,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                 },
                 {
@@ -13273,7 +13285,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               <View
                 style={
                   {
-                    "backgroundColor": "#000",
+                    "backgroundColor": "#000000",
                     "borderRadius": 17,
                     "height": 34,
                     "width": 34,
@@ -13286,7 +13298,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                 },
                 {
@@ -13313,7 +13325,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               <View
                 style={
                   {
-                    "backgroundColor": "#000",
+                    "backgroundColor": "#000000",
                     "borderRadius": 17,
                     "height": 34,
                     "width": 34,
@@ -13326,7 +13338,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                 },
                 {
@@ -13354,7 +13366,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               <View
                 style={
                   {
-                    "backgroundColor": "#000",
+                    "backgroundColor": "#000000",
                     "borderRadius": 17,
                     "height": 34,
                     "width": 34,
@@ -13385,7 +13397,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13402,7 +13414,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13419,7 +13431,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13436,7 +13448,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13453,7 +13465,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13470,7 +13482,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13487,7 +13499,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13521,7 +13533,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                 },
                 {
@@ -13556,7 +13568,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               <View
                 style={
                   {
-                    "backgroundColor": "#000",
+                    "backgroundColor": "#000000",
                     "borderRadius": 17,
                     "height": 34,
                     "width": 34,
@@ -13569,7 +13581,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                 },
                 {
@@ -13597,7 +13609,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               <View
                 style={
                   {
-                    "backgroundColor": "#000",
+                    "backgroundColor": "#000000",
                     "borderRadius": 17,
                     "height": 34,
                     "width": 34,
@@ -13617,7 +13629,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                 },
                 {
@@ -13652,7 +13664,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               <View
                 style={
                   {
-                    "backgroundColor": "#000",
+                    "backgroundColor": "#000000",
                     "borderRadius": 17,
                     "height": 34,
                     "width": 34,
@@ -13665,7 +13677,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                 },
                 {
@@ -13692,7 +13704,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               <View
                 style={
                   {
-                    "backgroundColor": "#000",
+                    "backgroundColor": "#000000",
                     "borderRadius": 17,
                     "height": 34,
                     "width": 34,
@@ -13705,7 +13717,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                 },
                 {
@@ -13733,7 +13745,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               <View
                 style={
                   {
-                    "backgroundColor": "#000",
+                    "backgroundColor": "#000000",
                     "borderRadius": 17,
                     "height": 34,
                     "width": 34,
@@ -13764,7 +13776,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13781,7 +13793,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13798,7 +13810,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13815,7 +13827,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13832,7 +13844,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13849,7 +13861,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -13866,7 +13878,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               [
                 {
                   "alignItems": "center",
-                  "borderColor": "#000",
+                  "borderColor": "#000000",
                   "borderWidth": 1,
                   "flex": 1,
                   "justifyContent": "flex-end",
@@ -14071,7 +14083,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
         >
           <View>
             <View
-              color="#FF0000"
+              color="#FF245B"
               size={20}
               testID="lucide-Circle"
             />
@@ -17229,12 +17241,16 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
     </View>
     <View
       style={
-        {
-          "alignItems": "center",
-          "backgroundColor": "#000000",
-          "flexDirection": "row",
-          "height": 34,
-        }
+        [
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "height": 34,
+          },
+          {
+            "backgroundColor": "#000000",
+          },
+        ]
       }
     >
       <View
@@ -17272,12 +17288,12 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
           [
             {
               "alignItems": "center",
-              "backgroundColor": "#000000",
               "height": 34,
               "justifyContent": "center",
               "width": 34,
             },
             {
+              "backgroundColor": "#000000",
               "opacity": 1,
             },
           ]
@@ -17628,12 +17644,12 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
           [
             {
               "alignItems": "center",
-              "backgroundColor": "#000000",
               "height": 34,
               "justifyContent": "center",
               "width": 34,
             },
             {
+              "backgroundColor": "#000000",
               "opacity": 1,
             },
           ]

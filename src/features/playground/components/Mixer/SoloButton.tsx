@@ -24,33 +24,35 @@ export interface SoloButtonProps {
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
-export const SoloButton: React.FC<SoloButtonProps> = memo(
-  function SoloButton({ isSoloed, onPress, testID = 'solo-button' }) {
-    const { colors } = useTheme();
+export const SoloButton: React.FC<SoloButtonProps> = memo(function SoloButton({
+  isSoloed,
+  onPress,
+  testID = 'solo-button',
+}) {
+  const { colors } = useTheme();
 
-    const handlePress = useCallback(() => {
-      onPress?.();
-    }, [onPress]);
+  const handlePress = useCallback(() => {
+    onPress?.();
+  }, [onPress]);
 
-    const backgroundColor = isSoloed ? colors.mcGreen : '#333333';
-    const textColor = isSoloed ? colors.mcWhite : '#666666';
+  const backgroundColor = isSoloed ? colors.mcGreen : '#333333';
+  const textColor = isSoloed ? colors.mcWhite : '#666666';
 
-    return (
-      <Pressable
-        testID={testID}
-        onPress={handlePress}
-        accessibilityRole="button"
-        accessibilityLabel="Solo"
-        accessibilityState={{ selected: isSoloed }}
-        style={[styles.button, { backgroundColor }]}
-      >
-        <Text variant="label" color={textColor} bold>
-          S
-        </Text>
-      </Pressable>
-    );
-  }
-);
+  return (
+    <Pressable
+      testID={testID}
+      onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityLabel="Solo"
+      accessibilityState={{ selected: isSoloed }}
+      style={[styles.button, { backgroundColor }]}
+    >
+      <Text variant="label" color={textColor} bold>
+        S
+      </Text>
+    </Pressable>
+  );
+});
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 
