@@ -384,7 +384,17 @@ const PianoRollGrid = memo(function PianoRollGrid({
                       flexDirection: 'row',
                     }}
                   >
-                    {/* iOS note pattern: two dots + center line */}
+                    {/* Note content: melodic/bass shows note name, drums show dots+line pattern */}
+                    {!isDrum && note.duration * BEAT_WIDTH > 24 ? (
+                      <Text
+                        variant="extraSmall"
+                        color="rgba(0,0,0,0.6)"
+                        numberOfLines={1}
+                        style={{ fontSize: 9, fontWeight: '600' }}
+                      >
+                        {getNoteName(note.noteNumber)}
+                      </Text>
+                    ) : null}
                     <View
                       style={{
                         width: 2,

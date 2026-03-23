@@ -12113,6 +12113,29 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       }
                     }
                   >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={1}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "rgba(0,0,0,0.6)",
+                          },
+                          {
+                            "fontSize": 9,
+                            "fontWeight": "600",
+                          },
+                        ]
+                      }
+                    >
+                      C6
+                    </Text>
                     <View
                       style={
                         {
@@ -12190,6 +12213,29 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       }
                     }
                   >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={1}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "rgba(0,0,0,0.6)",
+                          },
+                          {
+                            "fontSize": 9,
+                            "fontWeight": "600",
+                          },
+                        ]
+                      }
+                    >
+                      E6
+                    </Text>
                     <View
                       style={
                         {
@@ -12267,6 +12313,29 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       }
                     }
                   >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={1}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "rgba(0,0,0,0.6)",
+                          },
+                          {
+                            "fontSize": 9,
+                            "fontWeight": "600",
+                          },
+                        ]
+                      }
+                    >
+                      G6
+                    </Text>
                     <View
                       style={
                         {
@@ -12344,6 +12413,29 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       }
                     }
                   >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={1}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "rgba(0,0,0,0.6)",
+                          },
+                          {
+                            "fontSize": 9,
+                            "fontWeight": "600",
+                          },
+                        ]
+                      }
+                    >
+                      C7
+                    </Text>
                     <View
                       style={
                         {
