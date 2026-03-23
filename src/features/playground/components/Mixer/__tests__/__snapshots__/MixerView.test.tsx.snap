@@ -76,16 +76,12 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
               [
                 {
                   "fontFamily": "System",
-                  "fontSize": 12,
-                  "fontWeight": "400",
-                  "lineHeight": 18,
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "lineHeight": 17,
                 },
                 {
                   "color": "rgba(247, 247, 247, 0.80)",
-                },
-                {
-                  "fontSize": 11,
-                  "fontWeight": "500",
                 },
               ]
             }
@@ -248,16 +244,12 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 12,
-                "fontWeight": "400",
-                "lineHeight": 18,
+                "fontSize": 11,
+                "fontWeight": "600",
+                "lineHeight": 17,
               },
               {
                 "color": "rgba(247, 247, 247, 0.80)",
-              },
-              {
-                "fontSize": 11,
-                "fontWeight": "500",
               },
             ]
           }
@@ -374,16 +366,12 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 12,
-                "fontWeight": "400",
-                "lineHeight": 18,
+                "fontSize": 11,
+                "fontWeight": "600",
+                "lineHeight": 17,
               },
               {
                 "color": "rgba(247, 247, 247, 0.80)",
-              },
-              {
-                "fontSize": 11,
-                "fontWeight": "500",
               },
             ]
           }
@@ -539,16 +527,12 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
               [
                 {
                   "fontFamily": "System",
-                  "fontSize": 12,
-                  "fontWeight": "400",
-                  "lineHeight": 18,
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "lineHeight": 17,
                 },
                 {
                   "color": "rgba(247, 247, 247, 0.80)",
-                },
-                {
-                  "fontSize": 11,
-                  "fontWeight": "500",
                 },
               ]
             }
@@ -711,16 +695,12 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 12,
-                "fontWeight": "400",
-                "lineHeight": 18,
+                "fontSize": 11,
+                "fontWeight": "600",
+                "lineHeight": 17,
               },
               {
                 "color": "rgba(247, 247, 247, 0.80)",
-              },
-              {
-                "fontSize": 11,
-                "fontWeight": "500",
               },
             ]
           }
@@ -837,16 +817,12 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 12,
-                "fontWeight": "400",
-                "lineHeight": 18,
+                "fontSize": 11,
+                "fontWeight": "600",
+                "lineHeight": 17,
               },
               {
                 "color": "rgba(247, 247, 247, 0.80)",
-              },
-              {
-                "fontSize": 11,
-                "fontWeight": "500",
               },
             ]
           }
@@ -1002,16 +978,12 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
               [
                 {
                   "fontFamily": "System",
-                  "fontSize": 12,
-                  "fontWeight": "400",
-                  "lineHeight": 18,
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "lineHeight": 17,
                 },
                 {
                   "color": "rgba(247, 247, 247, 0.80)",
-                },
-                {
-                  "fontSize": 11,
-                  "fontWeight": "500",
                 },
               ]
             }
@@ -1174,16 +1146,12 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 12,
-                "fontWeight": "400",
-                "lineHeight": 18,
+                "fontSize": 11,
+                "fontWeight": "600",
+                "lineHeight": 17,
               },
               {
                 "color": "rgba(247, 247, 247, 0.80)",
-              },
-              {
-                "fontSize": 11,
-                "fontWeight": "500",
               },
             ]
           }
@@ -1300,16 +1268,12 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 12,
-                "fontWeight": "400",
-                "lineHeight": 18,
+                "fontSize": 11,
+                "fontWeight": "600",
+                "lineHeight": 17,
               },
               {
                 "color": "rgba(247, 247, 247, 0.80)",
-              },
-              {
-                "fontSize": 11,
-                "fontWeight": "500",
               },
             ]
           }
@@ -1492,16 +1456,12 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
               [
                 {
                   "fontFamily": "System",
-                  "fontSize": 12,
-                  "fontWeight": "400",
-                  "lineHeight": 18,
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "lineHeight": 17,
                 },
                 {
                   "color": "rgba(247, 247, 247, 0.80)",
-                },
-                {
-                  "fontSize": 11,
-                  "fontWeight": "500",
                 },
               ]
             }
@@ -1664,16 +1624,12 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 12,
-                "fontWeight": "400",
-                "lineHeight": 18,
+                "fontSize": 11,
+                "fontWeight": "600",
+                "lineHeight": 17,
               },
               {
                 "color": "rgba(247, 247, 247, 0.80)",
-              },
-              {
-                "fontSize": 11,
-                "fontWeight": "500",
               },
             ]
           }
@@ -1790,16 +1746,12 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 12,
-                "fontWeight": "400",
-                "lineHeight": 18,
+                "fontSize": 11,
+                "fontWeight": "600",
+                "lineHeight": 17,
               },
               {
                 "color": "rgba(247, 247, 247, 0.80)",
-              },
-              {
-                "fontSize": 11,
-                "fontWeight": "500",
               },
             ]
           }
@@ -1982,16 +1934,12 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
               [
                 {
                   "fontFamily": "System",
-                  "fontSize": 12,
-                  "fontWeight": "400",
-                  "lineHeight": 18,
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "lineHeight": 17,
                 },
                 {
                   "color": "rgba(247, 247, 247, 0.80)",
-                },
-                {
-                  "fontSize": 11,
-                  "fontWeight": "500",
                 },
               ]
             }
@@ -2154,16 +2102,12 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 12,
-                "fontWeight": "400",
-                "lineHeight": 18,
+                "fontSize": 11,
+                "fontWeight": "600",
+                "lineHeight": 17,
               },
               {
                 "color": "rgba(247, 247, 247, 0.80)",
-              },
-              {
-                "fontSize": 11,
-                "fontWeight": "500",
               },
             ]
           }
@@ -2280,16 +2224,12 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 12,
-                "fontWeight": "400",
-                "lineHeight": 18,
+                "fontSize": 11,
+                "fontWeight": "600",
+                "lineHeight": 17,
               },
               {
                 "color": "rgba(247, 247, 247, 0.80)",
-              },
-              {
-                "fontSize": 11,
-                "fontWeight": "500",
               },
             ]
           }
@@ -2445,16 +2385,12 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
               [
                 {
                   "fontFamily": "System",
-                  "fontSize": 12,
-                  "fontWeight": "400",
-                  "lineHeight": 18,
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "lineHeight": 17,
                 },
                 {
                   "color": "rgba(247, 247, 247, 0.80)",
-                },
-                {
-                  "fontSize": 11,
-                  "fontWeight": "500",
                 },
               ]
             }
@@ -2617,16 +2553,12 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 12,
-                "fontWeight": "400",
-                "lineHeight": 18,
+                "fontSize": 11,
+                "fontWeight": "600",
+                "lineHeight": 17,
               },
               {
                 "color": "rgba(247, 247, 247, 0.80)",
-              },
-              {
-                "fontSize": 11,
-                "fontWeight": "500",
               },
             ]
           }
@@ -2743,16 +2675,12 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 12,
-                "fontWeight": "400",
-                "lineHeight": 18,
+                "fontSize": 11,
+                "fontWeight": "600",
+                "lineHeight": 17,
               },
               {
                 "color": "rgba(247, 247, 247, 0.80)",
-              },
-              {
-                "fontSize": 11,
-                "fontWeight": "500",
               },
             ]
           }

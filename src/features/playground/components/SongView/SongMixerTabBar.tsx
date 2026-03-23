@@ -145,12 +145,10 @@ const TabButton: React.FC<TabButtonProps> = memo(function TabButton({
       ]}
       testID={`tab-${tab.key}`}
     >
-      {/* iOS: .system(size: 14, weight: .semibold), uppercased */}
       <Text
-        variant="body"
+        variant="label"
         color={isActive ? colors.mcBlack : colors.mcWhite3}
-        bold
-        style={{ fontWeight: '600', fontSize: 14 }}
+        style={{ fontSize: 14 }}
       >
         {tab.label}
       </Text>

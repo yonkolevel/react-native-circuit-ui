@@ -29,6 +29,7 @@ import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme, hexToRgba } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
+import { MidiNoteView } from './MidiNoteView';
 import { DrumPadsView } from '../DrumPads/DrumPadsView';
 import { PianoKeyboard } from '../PianoKeyboard/PianoKeyboard';
 import type {
@@ -163,6 +164,12 @@ interface PianoRollGridProps {
   isExpanded?: boolean;
   selectedPitchIndex?: number | null;
   onNotePress?: (index: number) => void;
+  onNoteResize?: (index: number, newDuration: number) => void;
+  onNoteMove?: (
+    index: number,
+    newPosition: number,
+    newNoteNumber: number
+  ) => void;
   onGridTap?: (noteNumber: number, position: number) => void;
   onPitchLabelTap?: (pitch: number) => void;
   onToggleExpand?: () => void;
@@ -209,6 +216,8 @@ const PianoRollGrid = memo(function PianoRollGrid({
   isExpanded,
   selectedPitchIndex,
   onNotePress,
+  onNoteResize,
+  onNoteMove,
   onGridTap,
   onPitchLabelTap,
   onToggleExpand,
@@ -376,7 +385,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
                   />
                 );
               })}
-              {/* Notes */}
+              {/* Notes — gesture-driven MidiNoteView (native thread) */}
               {notes.map((note, idx) => {
                 let pitchIdx: number;
                 if (isDrum) {
@@ -385,64 +394,28 @@ const PianoRollGrid = memo(function PianoRollGrid({
                   );
                   pitchIdx = sampleIdx >= 0 ? sampleIdx : 0;
                 } else {
-                  // Melodic/bass: noteNumber maps directly to pitch row offset
                   pitchIdx = note.noteNumber - MELODIC_MIN_PITCH;
                 }
-                const y = (totalPitches - 1 - pitchIdx) * rowHeight;
+                const rowIdx = totalPitches - 1 - pitchIdx;
                 return (
-                  <Pressable
-                    key={idx}
-                    onPress={() => onNotePress?.(idx)}
-                    style={{
-                      position: 'absolute',
-                      left: note.position * BEAT_WIDTH,
-                      top: y + 2,
-                      width: Math.max(note.duration * BEAT_WIDTH - 2, 6),
-                      height: rowHeight - 4,
-                      backgroundColor: trackColor,
-                      borderRadius: 2,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                    }}
-                  >
-                    {/* Note content: melodic/bass shows note name, drums show dots+line pattern */}
-                    {!isDrum && note.duration * BEAT_WIDTH > 24 ? (
-                      <Text
-                        variant="extraSmall"
-                        color="rgba(0,0,0,0.6)"
-                        numberOfLines={1}
-                        style={{ fontSize: 9, fontWeight: '600' }}
-                      >
-                        {getNoteName(note.noteNumber)}
-                      </Text>
-                    ) : null}
-                    <View
-                      style={{
-                        width: 2,
-                        height: 2,
-                        borderRadius: 1,
-                        backgroundColor: 'rgba(255,255,255,0.5)',
-                        marginRight: 1,
-                      }}
-                    />
-                    <View
-                      style={{
-                        width: 1,
-                        height: '60%',
-                        backgroundColor: 'rgba(255,255,255,0.6)',
-                      }}
-                    />
-                    <View
-                      style={{
-                        width: 2,
-                        height: 2,
-                        borderRadius: 1,
-                        backgroundColor: 'rgba(255,255,255,0.5)',
-                        marginLeft: 1,
-                      }}
-                    />
-                  </Pressable>
+                  <MidiNoteView
+                    key={`${note.noteNumber}-${note.position}-${idx}`}
+                    position={note.position}
+                    duration={note.duration}
+                    noteNumber={note.noteNumber}
+                    rowIndex={rowIdx}
+                    beatWidth={BEAT_WIDTH}
+                    rowHeight={rowHeight}
+                    stepWidth={stepWidth}
+                    color={trackColor}
+                    label={!isDrum ? getNoteName(note.noteNumber) : undefined}
+                    noteIndex={idx}
+                    onDelete={onNotePress}
+                    onResize={onNoteResize}
+                    onMove={onNoteMove}
+                    totalPitches={totalPitches}
+                    minPitch={isDrum ? 0 : MELODIC_MIN_PITCH}
+                  />
                 );
               })}
               {/* Playhead */}
@@ -563,11 +536,9 @@ const ClipLengthBar = memo(function ClipLengthBar({
               ]}
             >
               <Text
-                variant="extraSmall"
+                variant="extraSmall10SemiBold"
                 color={isActive ? colors.mcBlack : colors.mcWhite3}
-                bold
                 center
-                style={{ fontSize: 10, fontWeight: '600' }}
               >
                 {barIndex}
               </Text>
@@ -837,6 +808,12 @@ export const ClipEditorView = memo(function ClipEditorView({
           isExpanded={isExpanded}
           selectedPitchIndex={selectedPitchIndex}
           onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
+          onNoteResize={(idx, newDuration) =>
+            callbacks?.onNoteResize?.(idx, newDuration)
+          }
+          onNoteMove={(idx, newPos, newNote) =>
+            callbacks?.onNoteMove?.(idx, newPos, newNote)
+          }
           onGridTap={(noteNumber, position) => {
             callbacks?.onNoteAdd?.({
               noteNumber,

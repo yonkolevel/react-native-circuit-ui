@@ -10,6 +10,7 @@ import { View, StyleSheet, PanResponder } from 'react-native';
 import type { LayoutChangeEvent } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
+import { palette } from '../../../../theme/colors';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
   track: {
     flex: 1,
     height: 6,
-    backgroundColor: colors.mcBlack3,
+    backgroundColor: palette.mcBlack3,
     borderRadius: 3,
     justifyContent: 'center',
     position: 'relative',

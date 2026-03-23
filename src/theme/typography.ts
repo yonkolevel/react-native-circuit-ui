@@ -70,6 +70,7 @@ export function getFontFamily(): Readonly<FontFamilyConfig> {
 export const fontSize = {
   extraSmall: 8,
   extraSmall10: 10,
+  caption: 11, // .system(size: 11) — mixer labels, track labels
   small: 12, // buttonLabelBold / buttonLabelSemiBold
   body: 14, // mcLabelRegular3
   label: 16, // mcLabel / mcLabelRegular / mcLabelBold
@@ -118,13 +119,48 @@ const createTextStyle = (
 
 export const typography = {
   // Headings
-  h1: createTextStyle(fontSize.h1, 'semiBold', fontWeight.semiBold, lineHeight.tight),
-  h1Regular: createTextStyle(fontSize.h1, 'regular', fontWeight.regular, lineHeight.tight),
-  h2: createTextStyle(fontSize.h2, 'semiBold', fontWeight.semiBold, lineHeight.tight),
-  h3: createTextStyle(fontSize.h3, 'semiBold', fontWeight.semiBold, lineHeight.tight),
-  h3Regular: createTextStyle(fontSize.h3, 'regular', fontWeight.regular, lineHeight.tight),
-  h4: createTextStyle(fontSize.h4, 'semiBold', fontWeight.semiBold, lineHeight.tight),
-  h5: createTextStyle(fontSize.h5, 'semiBold', fontWeight.semiBold, lineHeight.normal),
+  h1: createTextStyle(
+    fontSize.h1,
+    'semiBold',
+    fontWeight.semiBold,
+    lineHeight.tight
+  ),
+  h1Regular: createTextStyle(
+    fontSize.h1,
+    'regular',
+    fontWeight.regular,
+    lineHeight.tight
+  ),
+  h2: createTextStyle(
+    fontSize.h2,
+    'semiBold',
+    fontWeight.semiBold,
+    lineHeight.tight
+  ),
+  h3: createTextStyle(
+    fontSize.h3,
+    'semiBold',
+    fontWeight.semiBold,
+    lineHeight.tight
+  ),
+  h3Regular: createTextStyle(
+    fontSize.h3,
+    'regular',
+    fontWeight.regular,
+    lineHeight.tight
+  ),
+  h4: createTextStyle(
+    fontSize.h4,
+    'semiBold',
+    fontWeight.semiBold,
+    lineHeight.tight
+  ),
+  h5: createTextStyle(
+    fontSize.h5,
+    'semiBold',
+    fontWeight.semiBold,
+    lineHeight.normal
+  ),
 
   // Body / Labels
   body: createTextStyle(fontSize.body, 'regular', fontWeight.regular),
@@ -138,17 +174,46 @@ export const typography = {
   quote: createTextStyle(fontSize.quote, 'semiBold', fontWeight.semiBold),
   quoteBold: createTextStyle(fontSize.quote, 'bold', fontWeight.bold),
 
+  // Caption (11pt) — iOS .system(size: 11, weight: .medium)
+  caption: createTextStyle(fontSize.caption, 'semiBold', fontWeight.semiBold),
+  captionRegular: createTextStyle(
+    fontSize.caption,
+    'regular',
+    fontWeight.regular
+  ),
+
   // Small / Caption
   small: createTextStyle(fontSize.small, 'regular', fontWeight.regular),
 
   // Button labels
   buttonLabelBold: createTextStyle(fontSize.small, 'bold', fontWeight.bold),
-  buttonLabelSemiBold: createTextStyle(fontSize.small, 'semiBold', fontWeight.semiBold),
+  buttonLabelSemiBold: createTextStyle(
+    fontSize.small,
+    'semiBold',
+    fontWeight.semiBold
+  ),
 
   // Extra small
-  extraSmall: createTextStyle(fontSize.extraSmall, 'regular', fontWeight.regular),
-  extraSmallSemiBold: createTextStyle(fontSize.extraSmall, 'semiBold', fontWeight.semiBold),
-  extraSmall10: createTextStyle(fontSize.extraSmall10, 'regular', fontWeight.regular),
+  extraSmall: createTextStyle(
+    fontSize.extraSmall,
+    'regular',
+    fontWeight.regular
+  ),
+  extraSmallSemiBold: createTextStyle(
+    fontSize.extraSmall,
+    'semiBold',
+    fontWeight.semiBold
+  ),
+  extraSmall10: createTextStyle(
+    fontSize.extraSmall10,
+    'regular',
+    fontWeight.regular
+  ),
+  extraSmall10SemiBold: createTextStyle(
+    fontSize.extraSmall10,
+    'semiBold',
+    fontWeight.semiBold
+  ),
 } as const;
 
 // ─── Type exports ───────────────────────────────────────────────────────────

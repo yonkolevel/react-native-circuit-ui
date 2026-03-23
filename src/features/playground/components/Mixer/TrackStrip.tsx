@@ -14,6 +14,7 @@ import { View, StyleSheet } from 'react-native';
 import type { TrackState } from '../../types';
 import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
+import { palette } from '../../../../theme/colors';
 import { MuteButton } from './MuteButton';
 import { SoloButton } from './SoloButton';
 import { TrackLabel } from './TrackLabel';
@@ -131,7 +132,7 @@ export const TrackStrip: React.FC<TrackStripProps> = memo(function TrackStrip({
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: colors.mcBlack2,
+    backgroundColor: palette.mcBlack2,
     borderRadius: 8,
     gap: 12,
   },

@@ -106,12 +106,7 @@ const TrackStrip = memo(function TrackStrip({
       <View style={styles.stripHeader}>
         <View style={styles.trackLabel}>
           <View style={[styles.colorDot, { backgroundColor: trackColor }]} />
-          <Text
-            variant="small"
-            color={colors.mcWhite2}
-            numberOfLines={1}
-            style={{ fontSize: 11, fontWeight: '500' }}
-          >
+          <Text variant="caption" color={colors.mcWhite2} numberOfLines={1}>
             {track.type === 'drum'
               ? 'Drums'
               : track.type === 'melodic'
@@ -128,11 +123,7 @@ const TrackStrip = memo(function TrackStrip({
       </View>
 
       <View style={styles.sliderSection}>
-        <Text
-          variant="small"
-          color={colors.mcWhite2}
-          style={{ fontSize: 11, fontWeight: '500' }}
-        >
+        <Text variant="caption" color={colors.mcWhite2}>
           Volume
         </Text>
         <View style={styles.sliderRow}>
@@ -158,11 +149,7 @@ const TrackStrip = memo(function TrackStrip({
       </View>
 
       <View style={styles.sliderSection}>
-        <Text
-          variant="small"
-          color={colors.mcWhite2}
-          style={{ fontSize: 11, fontWeight: '500' }}
-        >
+        <Text variant="caption" color={colors.mcWhite2}>
           Pan
         </Text>
         <View style={styles.sliderRow}>
