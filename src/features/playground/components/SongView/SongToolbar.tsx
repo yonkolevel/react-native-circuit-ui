@@ -65,7 +65,8 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
 
     // ─── Colors ─────────────────────────────────────────────────────
 
-    const loopColor = song.isLoopEnabled ? colors.mcGreen : colors.mcWhite3;
+    // iOS: loop = mcGreen when enabled, mcWhite when disabled
+    const loopColor = song.isLoopEnabled ? colors.mcGreen : colors.mcWhite;
 
     return (
       <View
@@ -86,7 +87,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
           accessibilityLabel="Back"
           style={styles.backButton}
         >
-          <Icon icon={Icons.back} size={20} color={colors.mcWhite2} />
+          <Icon icon={Icons.back} size={20} color={colors.mcWhite} />
         </Pressable>
 
         <View style={styles.spacer} />
@@ -143,9 +144,11 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
             testID="transport-metronome"
           >
             <Icon
-              icon={song.isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff}
+              icon={
+                song.isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff
+              }
               size={18}
-              color={song.isMetronomeEnabled ? colors.mcGreen : colors.mcWhite3}
+              color={colors.mcWhite}
             />
           </Pressable>
         </View>
@@ -181,7 +184,14 @@ const styles = StyleSheet.create({
     paddingVertical: makeSpacing(2), // 8
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  backButton: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#313336', justifyContent: 'center' as const, alignItems: 'center' as const },
+  backButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#2C2C2E',
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
+  },
   spacer: {
     flex: 1,
     alignItems: 'flex-end',

@@ -76,7 +76,7 @@ const ClipCell = memo(function ClipCell({
         onPress={onPress}
         style={[s.emptyCell, { borderColor: color }]}
       >
-        <Icon icon={Icons.plus} size={14} color={color} />
+        <Icon icon={Icons.plus} size={17} color={color} />
       </Pressable>
     );
   }
@@ -188,14 +188,14 @@ export const SongView = memo(function SongView({
                     key={t.id}
                     onPress={() => callbacks?.onTrackSelect?.(t.id)}
                     onLongPress={() => {
-                      Alert.alert(
-                        'Delete Track',
-                        `Delete "${t.title}"?`,
-                        [
-                          { text: 'Cancel', style: 'cancel' },
-                          { text: 'Delete', style: 'destructive', onPress: () => callbacks?.onDeleteTrack?.(t.id) },
-                        ]
-                      );
+                      Alert.alert('Delete Track', `Delete "${t.title}"?`, [
+                        { text: 'Cancel', style: 'cancel' },
+                        {
+                          text: 'Delete',
+                          style: 'destructive',
+                          onPress: () => callbacks?.onDeleteTrack?.(t.id),
+                        },
+                      ]);
                     }}
                     style={[
                       s.label,

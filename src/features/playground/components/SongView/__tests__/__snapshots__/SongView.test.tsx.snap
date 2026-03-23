@@ -438,17 +438,17 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
     style={
       {
         "alignItems": "center",
-        "backgroundColor": "#313336",
-        "borderRadius": 18,
-        "height": 36,
+        "backgroundColor": "#2C2C2E",
+        "borderRadius": 22,
+        "height": 44,
         "justifyContent": "center",
-        "width": 36,
+        "width": 44,
       }
     }
   >
     <View>
       <View
-        color="rgba(247, 247, 247, 0.80)"
+        color="#F7F7F7"
         size={20}
         testID="lucide-ChevronLeft"
       />
@@ -630,7 +630,7 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
     >
       <View>
         <View
-          color="rgba(247, 247, 247, 0.60)"
+          color="#F7F7F7"
           size={18}
           testID="lucide-TimerOff"
         />
@@ -762,17 +762,17 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
     style={
       {
         "alignItems": "center",
-        "backgroundColor": "#313336",
-        "borderRadius": 18,
-        "height": 36,
+        "backgroundColor": "#2C2C2E",
+        "borderRadius": 22,
+        "height": 44,
         "justifyContent": "center",
-        "width": 36,
+        "width": 44,
       }
     }
   >
     <View>
       <View
-        color="rgba(247, 247, 247, 0.80)"
+        color="#F7F7F7"
         size={20}
         testID="lucide-ChevronLeft"
       />
@@ -954,7 +954,7 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
     >
       <View>
         <View
-          color="rgba(247, 247, 247, 0.60)"
+          color="#F7F7F7"
           size={18}
           testID="lucide-TimerOff"
         />
@@ -1099,17 +1099,17 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
       style={
         {
           "alignItems": "center",
-          "backgroundColor": "#313336",
-          "borderRadius": 18,
-          "height": 36,
+          "backgroundColor": "#2C2C2E",
+          "borderRadius": 22,
+          "height": 44,
           "justifyContent": "center",
-          "width": 36,
+          "width": 44,
         }
       }
     >
       <View>
         <View
-          color="rgba(247, 247, 247, 0.80)"
+          color="#F7F7F7"
           size={20}
           testID="lucide-ChevronLeft"
         />
@@ -1291,7 +1291,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
       >
         <View>
           <View
-            color="rgba(247, 247, 247, 0.60)"
+            color="#F7F7F7"
             size={18}
             testID="lucide-TimerOff"
           />
@@ -3029,17 +3029,17 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
       style={
         {
           "alignItems": "center",
-          "backgroundColor": "#313336",
-          "borderRadius": 18,
-          "height": 36,
+          "backgroundColor": "#2C2C2E",
+          "borderRadius": 22,
+          "height": 44,
           "justifyContent": "center",
-          "width": 36,
+          "width": 44,
         }
       }
     >
       <View>
         <View
-          color="rgba(247, 247, 247, 0.80)"
+          color="#F7F7F7"
           size={20}
           testID="lucide-ChevronLeft"
         />
@@ -3221,7 +3221,7 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
       >
         <View>
           <View
-            color="rgba(247, 247, 247, 0.60)"
+            color="#F7F7F7"
             size={18}
             testID="lucide-TimerOff"
           />
@@ -3851,17 +3851,17 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
       style={
         {
           "alignItems": "center",
-          "backgroundColor": "#313336",
-          "borderRadius": 18,
-          "height": 36,
+          "backgroundColor": "#2C2C2E",
+          "borderRadius": 22,
+          "height": 44,
           "justifyContent": "center",
-          "width": 36,
+          "width": 44,
         }
       }
     >
       <View>
         <View
-          color="rgba(247, 247, 247, 0.80)"
+          color="#F7F7F7"
           size={20}
           testID="lucide-ChevronLeft"
         />
@@ -4043,7 +4043,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
       >
         <View>
           <View
-            color="rgba(247, 247, 247, 0.60)"
+            color="#F7F7F7"
             size={18}
             testID="lucide-TimerOff"
           />
@@ -4927,7 +4927,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   <View>
                     <View
                       color="#1AFFA8"
-                      size={14}
+                      size={17}
                       testID="lucide-Plus"
                     />
                   </View>
@@ -5105,7 +5105,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   <View>
                     <View
                       color="#FF6C3A"
-                      size={14}
+                      size={17}
                       testID="lucide-Plus"
                     />
                   </View>
@@ -5169,7 +5169,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   <View>
                     <View
                       color="#3AA0FF"
-                      size={14}
+                      size={17}
                       testID="lucide-Plus"
                     />
                   </View>
@@ -5223,7 +5223,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   <View>
                     <View
                       color="#3AA0FF"
-                      size={14}
+                      size={17}
                       testID="lucide-Plus"
                     />
                   </View>
