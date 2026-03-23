@@ -4627,7 +4627,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                 style={
                   {
                     "alignItems": "center",
-                    "borderColor": "rgba(255,255,255,0.2)",
+                    "borderColor": "#D1D1D2",
                     "borderWidth": 1,
                     "height": 50,
                     "justifyContent": "center",

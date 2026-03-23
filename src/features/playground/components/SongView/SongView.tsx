@@ -363,7 +363,7 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
+    borderColor: '#D1D1D2', // mcBlack5
   },
   clipRows: { gap: GAP },
   clipRow: {
