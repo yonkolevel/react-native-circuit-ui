@@ -79,7 +79,7 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
   return (
     <View style={[styles.toolbar, { backgroundColor: colors.mcBlack2 }]}>
       <Pressable onPress={onBack} hitSlop={8} accessibilityLabel="Back">
-        <Icon icon={Icons.back} size={20} color={colors.mcGray} />
+        <Icon icon={Icons.back} size={22} color={colors.mcGray} />
       </Pressable>
 
       <View style={styles.toolbarSpacer} />
@@ -92,14 +92,14 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
         >
           <Icon
             icon={isPlaying ? Icons.pause : Icons.play}
-            size={20}
+            size={22}
             color={colors.mcWhite}
           />
         </Pressable>
         <Pressable onPress={onRecord} hitSlop={8} accessibilityLabel="Record">
           <Icon
             icon={Icons.record}
-            size={20}
+            size={22}
             color={isRecording ? colors.mcPink : colors.mcWhite}
           />
         </Pressable>
@@ -110,7 +110,7 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
         >
           <Icon
             icon={isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff}
-            size={20}
+            size={22}
             color={colors.mcWhite}
           />
         </Pressable>
@@ -122,7 +122,7 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
         >
           <Icon
             icon={Icons.undo}
-            size={20}
+            size={22}
             color={canUndo ? colors.mcWhite : colors.mcGray}
           />
         </Pressable>
@@ -134,7 +134,7 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
         >
           <Icon
             icon={Icons.redo}
-            size={20}
+            size={22}
             color={canRedo ? colors.mcWhite : colors.mcGray}
           />
         </Pressable>
@@ -143,7 +143,7 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
       <View style={styles.toolbarSpacer} />
 
       <Pressable onPress={onSettings} hitSlop={8} accessibilityLabel="Settings">
-        <Icon icon={Icons.settings} size={20} color={colors.mcWhite} />
+        <Icon icon={Icons.settings} size={22} color={colors.mcWhite} />
       </Pressable>
     </View>
   );
@@ -163,6 +163,7 @@ interface PianoRollGridProps {
   isExpanded?: boolean;
   selectedPitchIndex?: number | null;
   onNotePress?: (index: number) => void;
+  onGridTap?: (noteNumber: number, position: number) => void;
   onPitchLabelTap?: (pitch: number) => void;
   onToggleExpand?: () => void;
   onZoomIn?: () => void;
@@ -208,6 +209,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
   isExpanded,
   selectedPitchIndex,
   onNotePress,
+  onGridTap,
   onPitchLabelTap,
   onToggleExpand,
   onZoomIn,
@@ -315,23 +317,43 @@ const PianoRollGrid = memo(function PianoRollGrid({
                 position: 'relative',
               }}
             >
-              {/* Grid rows */}
-              {Array.from({ length: totalPitches }, (_, i) => (
-                <View
-                  key={`r${i}`}
-                  style={{
-                    position: 'absolute',
-                    top: i * rowHeight,
-                    left: 0,
-                    right: 0,
-                    height: rowHeight,
-                    borderBottomWidth: 0.5,
-                    borderBottomColor: colors.mcBlack4,
-                    backgroundColor:
-                      i % 2 === 0 ? colors.mcBlack : colors.mcBlack2,
-                  }}
-                />
-              ))}
+              {/* Grid rows — tappable to add notes */}
+              {Array.from({ length: totalPitches }, (_, i) => {
+                const pitchIdx = totalPitches - 1 - i;
+                return (
+                  <Pressable
+                    key={`r${i}`}
+                    onPress={(e) => {
+                      if (!onGridTap) return;
+                      // Compute which step was tapped from touch X
+                      const tapX = e.nativeEvent.locationX;
+                      const step = Math.floor(tapX / stepWidth);
+                      const position = step * 0.25; // 16th note = 0.25 beats
+
+                      // Map pitchIdx → MIDI note number
+                      let noteNumber: number;
+                      if (isDrum) {
+                        const sample = (samples ?? [])[pitchIdx];
+                        noteNumber = sample?.noteNumber ?? pitchIdx;
+                      } else {
+                        noteNumber = MELODIC_MIN_PITCH + pitchIdx;
+                      }
+                      onGridTap(noteNumber, position);
+                    }}
+                    style={{
+                      position: 'absolute',
+                      top: i * rowHeight,
+                      left: 0,
+                      right: 0,
+                      height: rowHeight,
+                      borderBottomWidth: 0.5,
+                      borderBottomColor: colors.mcBlack4,
+                      backgroundColor:
+                        i % 2 === 0 ? colors.mcBlack : colors.mcBlack2,
+                    }}
+                  />
+                );
+              })}
               {/* Step lines — 16th note subdivisions matching iOS grid */}
               {Array.from({ length: lengthInBeats * 4 + 1 }, (_, i) => {
                 const isBar = i % 16 === 0;
@@ -815,6 +837,14 @@ export const ClipEditorView = memo(function ClipEditorView({
           isExpanded={isExpanded}
           selectedPitchIndex={selectedPitchIndex}
           onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
+          onGridTap={(noteNumber, position) => {
+            callbacks?.onNoteAdd?.({
+              noteNumber,
+              velocity: 100,
+              position,
+              duration: 0.25, // 16th note default
+            });
+          }}
           onPitchLabelTap={(pitch) => {
             // Toggle velocity lane for this pitch (matching iOS selectedPitchForEditing)
             setSelectedPitchIndex(selectedPitchIndex === pitch ? null : pitch);

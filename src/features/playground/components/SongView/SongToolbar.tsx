@@ -87,7 +87,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
           accessibilityLabel="Back"
           style={[styles.backButton, { backgroundColor: colors.mcBlack3 }]}
         >
-          <Icon icon={Icons.back} size={20} color={colors.mcWhite} />
+          <Icon icon={Icons.back} size={22} color={colors.mcWhite} />
         </Pressable>
 
         <View style={styles.spacer} />
@@ -108,9 +108,9 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
             testID="transport-play-pause"
           >
             {song.isPlaying ? (
-              <Icon icon={Icons.pause} size={20} color={colors.mcWhite} />
+              <Icon icon={Icons.pause} size={22} color={colors.mcWhite} />
             ) : (
-              <Icon icon={Icons.play} size={20} color={colors.mcWhite} />
+              <Icon icon={Icons.play} size={22} color={colors.mcWhite} />
             )}
           </Pressable>
 
@@ -127,7 +127,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
             ]}
             testID="transport-loop"
           >
-            <Icon icon={Icons.loop} size={18} color={loopColor} />
+            <Icon icon={Icons.loop} size={22} color={loopColor} />
           </Pressable>
 
           {/* Metronome */}
@@ -147,7 +147,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
               icon={
                 song.isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff
               }
-              size={18}
+              size={22}
               color={colors.mcWhite}
             />
           </Pressable>
@@ -166,7 +166,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
             ]}
             testID="transport-settings"
           >
-            <Icon icon={Icons.settings} size={20} color={colors.mcWhite} />
+            <Icon icon={Icons.settings} size={22} color={colors.mcWhite} />
           </Pressable>
         </View>
       </View>

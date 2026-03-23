@@ -207,7 +207,7 @@ export const SongView = memo(function SongView({
                   >
                     <Icon
                       icon={TRACK_ICONS[t.type] || Icons.drumTrack}
-                      size={15}
+                      size={20}
                       color={colors.mcBlack}
                     />
                     <Text
@@ -270,7 +270,7 @@ export const SongView = memo(function SongView({
                     >
                       <Icon
                         icon={Icons.plus}
-                        size={14}
+                        size={16}
                         color={colors.mcBlack5}
                       />
                     </Pressable>
