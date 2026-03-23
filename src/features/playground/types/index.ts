@@ -28,6 +28,10 @@ export interface ClipNote {
 export interface SoundBankRef {
   slug: string;
   name: string;
+  /** Number of samples (for pitch count in clip preview) */
+  samples?: { noteNumber: number; name?: string; fileName?: string }[];
+  /** Base MIDI note (for pitch positioning in clip preview) */
+  defaultOctave?: number;
 }
 
 /** Matches midicircuit-rn Section */

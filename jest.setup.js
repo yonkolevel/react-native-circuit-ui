@@ -186,3 +186,30 @@ jest.mock('lucide-react-native', () => {
     }
   );
 });
+
+// Mock react-native-gesture-handler
+jest.mock('react-native-gesture-handler', () => {
+  const { ScrollView, View } = require('react-native');
+  // Chainable gesture mock — every method returns `this`
+  const chainable = () => {
+    const g = new Proxy({}, { get: () => () => g });
+    return g;
+  };
+  return {
+    ScrollView,
+    GestureHandlerRootView: View,
+    GestureDetector: ({ children }) => children,
+    Gesture: {
+      Pan: chainable,
+      Tap: chainable,
+      LongPress: chainable,
+      Simultaneous: (...args) => args[0] || chainable(),
+      Exclusive: (...args) => args[0] || chainable(),
+      Race: (...args) => args[0] || chainable(),
+    },
+    PanGestureHandler: View,
+    TapGestureHandler: View,
+    State: {},
+    Directions: {},
+  };
+});

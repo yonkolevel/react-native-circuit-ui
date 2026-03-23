@@ -20,11 +20,12 @@
 import { memo, useState } from 'react';
 import {
   View,
-  ScrollView,
+  ScrollView as RNScrollView,
   Pressable,
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme, hexToRgba } from '../../../../theme';
@@ -244,6 +245,13 @@ const PianoRollGrid = memo(function PianoRollGrid({
   const BEAT_WIDTH = stepWidth * 4; // 4 steps per beat
   const gridHeight = totalPitches * rowHeight;
 
+  // pitchToMidi: maps pitchIdx (0 = bottom/lowest) → MIDI note number
+  // Drums: each index maps to the sample's noteNumber
+  // Melodic/bass: linear from MELODIC_MIN_PITCH
+  const pitchToMidi: number[] = isDrum
+    ? Array.from({ length: totalPitches }, (_, i) => (samples ?? [])[i]?.noteNumber ?? i)
+    : Array.from({ length: totalPitches }, (_, i) => MELODIC_MIN_PITCH + i);
+
   /**
    * Get label for a pitch row.
    * - Drum: sample.name (human readable, e.g. "Kick", "Hi-Hat Closed")
@@ -414,7 +422,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
                     onResize={onNoteResize}
                     onMove={onNoteMove}
                     totalPitches={totalPitches}
-                    minPitch={isDrum ? 0 : MELODIC_MIN_PITCH}
+                    pitchToMidi={pitchToMidi}
                   />
                 );
               })}
@@ -622,7 +630,7 @@ const VelocityLane = memo(function VelocityLane({
       </View>
 
       {/* Beat markers: 1.1, 1.2, 1.3, 1.4 */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <RNScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={styles.velContent}>
           <View style={styles.velBeatMarkers}>
             <View style={{ width: 50 }} />
@@ -715,7 +723,7 @@ const VelocityLane = memo(function VelocityLane({
             </View>
           </View>
         </View>
-      </ScrollView>
+      </RNScrollView>
     </View>
   );
 });

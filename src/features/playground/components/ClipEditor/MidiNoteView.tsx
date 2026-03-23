@@ -2,22 +2,27 @@
  * MidiNoteView — a single note on the piano roll grid.
  * Matches iOS MidiNoteView.swift.
  *
- * Gestures:
+ * Gestures (react-native-gesture-handler + reanimated):
  *   - Tap → delete note
- *   - Drag from body → move (position + pitch)
- *   - Drag from right edge → resize duration
+ *   - Pan → move (position + pitch), snaps to grid on release
+ *   - Pan from right edge → resize duration
  *
- * Snaps to 16th note grid horizontally, pitch rows vertically.
+ * All gesture callbacks run on the UI thread (worklets).
+ * Store is only updated on gesture end (runOnJS).
  */
-import { memo, useRef, useState } from 'react';
-import { PanResponder, StyleSheet, View } from 'react-native';
+import { memo, useCallback, useRef } from 'react';
+import { StyleSheet } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  runOnJS,
+  withTiming,
+} from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
 
 const MIN_STEPS = 1;
-const RESIZE_EDGE = 20; // rightmost pixels = resize zone
-const DRAG_THRESHOLD = 3; // px before drag activates
-
-type DragMode = 'none' | 'move' | 'resize';
+const RESIZE_EDGE = 20;
 
 interface MidiNoteViewProps {
   position: number;
@@ -32,15 +37,10 @@ interface MidiNoteViewProps {
   noteIndex: number;
   onDelete?: (noteIndex: number) => void;
   onResize?: (noteIndex: number, newDuration: number) => void;
-  onMove?: (
-    noteIndex: number,
-    newPosition: number,
-    newNoteNumber: number
-  ) => void;
-  /** Total pitches in the grid (for clamping vertical movement) */
+  onMove?: (noteIndex: number, newPosition: number, newNoteNumber: number) => void;
   totalPitches?: number;
-  /** Minimum MIDI pitch in the grid (for melodic/bass) */
-  minPitch?: number;
+  /** Maps pitchIdx (0 = bottom row) → MIDI note number */
+  pitchToMidi?: number[];
 }
 
 export const MidiNoteView = memo(function MidiNoteView({
@@ -58,127 +58,130 @@ export const MidiNoteView = memo(function MidiNoteView({
   onResize,
   onMove,
   totalPitches = 24,
-  minPitch = 0,
+  pitchToMidi,
 }: MidiNoteViewProps) {
   const baseWidth = Math.max(duration * beatWidth - 2, stepWidth);
 
-  // Drag state: offset from original position during drag
-  const [dragX, setDragX] = useState(0);
-  const [dragY, setDragY] = useState(0);
-  const [resizeOffset, setResizeOffset] = useState(0);
+  // Shared values for smooth animation during drag (UI thread, no JS re-renders)
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const widthOffset = useSharedValue(0);
+  const isResizeMode = useSharedValue(false);
+  const zIndex = useSharedValue(1);
 
-  const dragMode = useRef<DragMode>('none');
-  const isDragging = useRef(false);
+  // Callbacks bridged to JS thread on gesture end
+  const handleDelete = useCallback(() => {
+    onDelete?.(noteIndex);
+  }, [onDelete, noteIndex]);
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: (_, gs) =>
-        Math.abs(gs.dx) > DRAG_THRESHOLD || Math.abs(gs.dy) > DRAG_THRESHOLD,
-      // Capture phase: steal the gesture from parent ScrollView during drag
-      onMoveShouldSetPanResponderCapture: (_, gs) =>
-        Math.abs(gs.dx) > DRAG_THRESHOLD || Math.abs(gs.dy) > DRAG_THRESHOLD,
+  const handleResize = useCallback((dx: number) => {
+    const newWidth = baseWidth + dx;
+    const steps = Math.max(MIN_STEPS, Math.round(newWidth / stepWidth));
+    onResize?.(noteIndex, steps * 0.25);
+  }, [baseWidth, stepWidth, noteIndex, onResize]);
 
-      onPanResponderGrant: (e) => {
-        isDragging.current = false;
-        dragMode.current = 'none';
+  const handleMove = useCallback((dx: number, dy: number) => {
+    const stepsDx = Math.round(dx / stepWidth);
+    const rowsDy = Math.round(dy / rowHeight);
+    const newPosition = Math.max(0, position + stepsDx * 0.25);
+    const newRowIndex = Math.max(0, Math.min(totalPitches - 1, rowIndex + rowsDy));
+    const pitchIdx = totalPitches - 1 - newRowIndex;
+    // Use the mapping array if provided (handles drums + melodic correctly)
+    const newNoteNumber = pitchToMidi?.[pitchIdx] ?? pitchIdx;
+    if (newPosition !== position || newNoteNumber !== noteNumber) {
+      onMove?.(noteIndex, newPosition, newNoteNumber);
+    }
+  }, [stepWidth, rowHeight, position, rowIndex, totalPitches, pitchToMidi, noteNumber, noteIndex, onMove]);
 
-        // Determine drag mode from touch location within the note
-        const touchX = e.nativeEvent.locationX;
-        const noteWidth = baseWidth + resizeOffset;
-        if (touchX > noteWidth - RESIZE_EDGE) {
-          dragMode.current = 'resize';
-        } else {
-          dragMode.current = 'move';
-        }
-      },
+  // Tap → delete
+  const tap = Gesture.Tap()
+    .maxDuration(200)
+    .onEnd(() => {
+      'worklet';
+      runOnJS(handleDelete)();
+    });
 
-      onPanResponderMove: (_, gs) => {
-        if (
-          Math.abs(gs.dx) > DRAG_THRESHOLD ||
-          Math.abs(gs.dy) > DRAG_THRESHOLD
-        ) {
-          isDragging.current = true;
-        }
-
-        if (dragMode.current === 'resize') {
-          const minOffset = -(baseWidth - stepWidth);
-          setResizeOffset(Math.max(minOffset, gs.dx));
-        } else if (dragMode.current === 'move') {
-          setDragX(gs.dx);
-          setDragY(gs.dy);
-        }
-      },
-
-      onPanResponderRelease: (_, gs) => {
-        if (!isDragging.current) {
-          // Tap → delete
-          onDelete?.(noteIndex);
-        } else if (dragMode.current === 'resize') {
-          // Resize → snap to grid, commit
-          const newWidth = baseWidth + gs.dx;
-          const steps = Math.max(MIN_STEPS, Math.round(newWidth / stepWidth));
-          const newDuration = steps * 0.25;
-          onResize?.(noteIndex, newDuration);
-        } else if (dragMode.current === 'move') {
-          // Move → snap to grid, commit
-          const stepsDx = Math.round(gs.dx / stepWidth);
-          const rowsDy = Math.round(gs.dy / rowHeight);
-          const newPosition = Math.max(0, position + stepsDx * 0.25);
-          // Vertical: moving down = higher row index = lower pitch
-          const newRowIndex = Math.max(
-            0,
-            Math.min(totalPitches - 1, rowIndex + rowsDy)
-          );
-          const pitchIdx = totalPitches - 1 - newRowIndex;
-          const newNoteNumber = minPitch + pitchIdx;
-          if (newPosition !== position || newNoteNumber !== noteNumber) {
-            onMove?.(noteIndex, newPosition, newNoteNumber);
-          }
-        }
-
-        // Reset
-        setDragX(0);
-        setDragY(0);
-        setResizeOffset(0);
-        dragMode.current = 'none';
-        isDragging.current = false;
-      },
+  // Pan → move or resize
+  const pan = Gesture.Pan()
+    .activateAfterLongPress(150)
+    .onStart((e) => {
+      'worklet';
+      zIndex.value = 100;
+      // Right edge = resize, otherwise move
+      isResizeMode.value = e.x > baseWidth - RESIZE_EDGE;
     })
-  ).current;
+    .onUpdate((e) => {
+      'worklet';
+      if (isResizeMode.value) {
+        const minOff = -(baseWidth - stepWidth);
+        widthOffset.value = Math.max(minOff, e.translationX);
+      } else {
+        translateX.value = e.translationX;
+        translateY.value = e.translationY;
+      }
+    })
+    .onEnd((e) => {
+      'worklet';
+      if (isResizeMode.value) {
+        const newWidth = baseWidth + e.translationX;
+        const steps = Math.max(MIN_STEPS, Math.round(newWidth / stepWidth));
+        widthOffset.value = steps * stepWidth - baseWidth;
+        runOnJS(handleResize)(e.translationX);
+      } else {
+        // Snap to grid immediately — no animation, no jump
+        const snappedX = Math.round(e.translationX / stepWidth) * stepWidth;
+        const snappedY = Math.round(e.translationY / rowHeight) * rowHeight;
+        translateX.value = snappedX;
+        translateY.value = snappedY;
+        runOnJS(handleMove)(e.translationX, e.translationY);
+      }
+      zIndex.value = 1;
+    });
+
+  // Tap fires on short press, pan fires on long press + drag
+  const composed = Gesture.Exclusive(pan, tap);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+    ],
+    width: baseWidth + widthOffset.value,
+    zIndex: zIndex.value,
+  }));
 
   return (
-    <View
-      {...panResponder.panHandlers}
-      style={[
-        s.note,
-        {
-          left: position * beatWidth + dragX,
-          top: rowIndex * rowHeight + 2 + dragY,
-          width: baseWidth + resizeOffset,
-          height: rowHeight - 4,
-          backgroundColor: color,
-          zIndex: isDragging.current ? 100 : 1,
-        },
-      ]}
-    >
-      {label && baseWidth + resizeOffset > 24 ? (
-        <Text
-          variant="extraSmall"
-          color="rgba(0,0,0,0.6)"
-          numberOfLines={1}
-          style={s.label}
-        >
-          {label}
-        </Text>
-      ) : null}
-      <View style={s.dotGroup}>
-        <View style={s.dot} />
-        <View style={s.line} />
-        <View style={s.dot} />
-      </View>
-      <View style={s.resizeHandle} />
-    </View>
+    <GestureDetector gesture={composed}>
+      <Animated.View
+        style={[
+          s.note,
+          {
+            left: position * beatWidth,
+            top: rowIndex * rowHeight + 2,
+            height: rowHeight - 4,
+            backgroundColor: color,
+          },
+          animatedStyle,
+        ]}
+      >
+        {label && baseWidth > 24 ? (
+          <Text
+            variant="extraSmall"
+            color="rgba(0,0,0,0.6)"
+            numberOfLines={1}
+            style={s.label}
+          >
+            {label}
+          </Text>
+        ) : null}
+        <Animated.View style={s.dotGroup}>
+          <Animated.View style={s.dot} />
+          <Animated.View style={s.line} />
+          <Animated.View style={s.dot} />
+        </Animated.View>
+        <Animated.View style={s.resizeHandle} />
+      </Animated.View>
+    </GestureDetector>
   );
 });
 
@@ -194,23 +197,17 @@ const s = StyleSheet.create({
   label: { fontSize: 9, fontWeight: '600' },
   dotGroup: { flexDirection: 'row', alignItems: 'center' },
   dot: {
-    width: 2,
-    height: 2,
-    borderRadius: 1,
+    width: 2, height: 2, borderRadius: 1,
     backgroundColor: 'rgba(255,255,255,0.5)',
   },
   line: {
-    width: 1,
-    height: '60%',
+    width: 1, height: '60%',
     backgroundColor: 'rgba(255,255,255,0.6)',
     marginHorizontal: 1,
   },
   resizeHandle: {
     position: 'absolute',
-    right: 0,
-    top: 0,
-    bottom: 0,
-    width: 4,
+    right: 0, top: 0, bottom: 0, width: 4,
     backgroundColor: 'rgba(255,255,255,0.3)',
     borderTopRightRadius: 2,
     borderBottomRightRadius: 2,

@@ -18,6 +18,7 @@ import { MixerView } from '../Mixer';
 import { SongSettings } from '../Settings';
 import type {
   Clip,
+  InstrumentType,
   SongViewState,
   SongCallbacks,
   SongDestination,
@@ -63,10 +64,18 @@ const CLIP_PAD = 2;
 const ClipCell = memo(function ClipCell({
   clip,
   color,
+  instrumentType,
+  sampleCount,
+  defaultOctave,
   onPress,
 }: {
   clip?: Clip;
   color: string;
+  instrumentType?: InstrumentType;
+  /** Number of samples in soundBank (drums) or 24 (melodic/bass) */
+  sampleCount?: number;
+  /** soundBank.defaultOctave — base MIDI note for pitch offset */
+  defaultOctave?: number;
   onPress?: () => void;
 }) {
   if (!clip) {
@@ -81,7 +90,8 @@ const ClipCell = memo(function ClipCell({
     );
   }
 
-  // Pre-compute note range (outside render loop)
+  // iOS: uses pianoRollPitchCount (soundBank.samples.count for drums, 24 for melodic)
+  // and soundBank.defaultOctave as the base MIDI note for vertical positioning.
   const notes = clip.notes;
   const beatsInClip = Math.max(1, clip.activeLengthInBars) * 4;
   const stepsPerBeat = 4;
@@ -90,11 +100,9 @@ const ClipCell = memo(function ClipCell({
   const h = CELL_H - CLIP_PAD * 2;
   const stepWidth = w / totalSteps;
 
-  // Pitch range — match iOS soundBank.defaultOctave fallback
-  const noteNumbers = notes.map((n) => n.noteNumber);
-  const minNote = noteNumbers.length > 0 ? Math.min(...noteNumbers) : 0;
-  const maxNote = noteNumbers.length > 0 ? Math.max(...noteNumbers) : 127;
-  const pitchCount = Math.max(maxNote - minNote + 1, 1);
+  const isDrum = instrumentType === 'drum';
+  const pitchCount = Math.max(1, sampleCount ?? (isDrum ? 12 : 24));
+  const baseNote = defaultOctave ?? 0;
   const rawNoteHeight = h / pitchCount;
   const noteHeight = Math.max(rawNoteHeight, 3);
   const minNoteWidth = Math.max(stepWidth * 0.9, 2);
@@ -107,27 +115,40 @@ const ClipCell = memo(function ClipCell({
       <View style={[s.cellContent, { padding: CLIP_PAD }]}>
         {notes.slice(0, 30).map((note, i) => {
           if (note.position >= beatsInClip) return null;
+
+          // X: quantize position to step grid
           const stepPos = note.position * stepsPerBeat;
-          const xRaw = stepPos * stepWidth;
+          const xRaw = stepPos * stepWidth + CLIP_PAD;
+
+          // Y: iOS uses baseNote (soundBank.defaultOctave) as reference
           const noteIdx = Math.min(
-            Math.max(0, note.noteNumber - minNote),
+            Math.max(0, note.noteNumber - baseNote),
             pitchCount - 1
           );
-          const yRaw = noteIdx * rawNoteHeight;
+          const yRaw = noteIdx * rawNoteHeight + CLIP_PAD;
+          const maxY = Math.max(CLIP_PAD, h - noteHeight + CLIP_PAD);
+          const yOffset = Math.min(Math.max(yRaw, CLIP_PAD), maxY);
+
+          // Width: quantize duration, clamp to remaining clip space
           const stepDur = note.duration * stepsPerBeat;
           const durW = stepDur * stepWidth;
           const remainW =
-            (beatsInClip - note.position) * stepsPerBeat * stepWidth;
+            Math.max(0, (beatsInClip - note.position) * stepsPerBeat) *
+            stepWidth;
           const noteW = Math.min(Math.max(minNoteWidth, durW), remainW);
-          const x = Math.min(Math.max(xRaw, 0), Math.max(0, w - noteW));
-          const y = Math.min(Math.max(yRaw, 0), Math.max(0, h - noteHeight));
+          const maxX = Math.max(CLIP_PAD, w - noteW + CLIP_PAD);
+          const x = Math.min(Math.max(xRaw, CLIP_PAD), maxX);
+
+          // iOS: y = height - yOffset - noteHeight + padding (top-down, high pitch at top)
+          const top = h - yOffset - noteHeight + CLIP_PAD;
+
           return (
             <View
               key={i}
               style={{
                 position: 'absolute',
                 left: x,
-                bottom: y, // iOS renders bottom-up (low pitch at bottom)
+                top,
                 width: noteW,
                 height: noteHeight * 0.9,
                 backgroundColor: 'rgba(26,28,32,0.4)',
@@ -283,6 +304,9 @@ export const SongView = memo(function SongView({
                             key={sec.id}
                             clip={t.clips.find((c) => c.sectionID === sec.id)}
                             color={INSTRUMENT_COLORS[t.type] || '#fff'}
+                            instrumentType={t.type}
+                            sampleCount={t.soundBank?.samples?.length}
+                            defaultOctave={t.soundBank?.defaultOctave}
                             onPress={() => {
                               const c = t.clips.find(
                                 (cl) => cl.sectionID === sec.id
