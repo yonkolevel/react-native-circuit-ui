@@ -90,19 +90,32 @@ const ClipCell = memo(function ClipCell({
     );
   }
 
-  // iOS: uses pianoRollPitchCount (soundBank.samples.count for drums, 24 for melodic)
-  // and soundBank.defaultOctave as the base MIDI note for vertical positioning.
+  // iOS ClipViewMIDINotesPreview:
+  // - ClipView has padding(4), then ClipViewMIDINotesPreview has .padding(2)
+  // - GeometryReader gives the size AFTER the outer padding(4)
+  // - Then renderNotes subtracts padding*2 from each dimension
+  // - So effective drawing area = (80-8) - 4 = 68 wide, (60-8) - 4 = 48 tall
   const notes = clip.notes;
   const beatsInClip = Math.max(1, clip.activeLengthInBars) * 4;
   const stepsPerBeat = 4;
   const totalSteps = beatsInClip * stepsPerBeat;
-  const w = CELL_W - CLIP_PAD * 2;
-  const h = CELL_H - CLIP_PAD * 2;
+  // Cell padding=4 + content padding=CLIP_PAD on each side
+  const totalPad = 4 + CLIP_PAD; // 6pt each side
+  const w = CELL_W - totalPad * 2; // 68
+  const h = CELL_H - totalPad * 2; // 48
   const stepWidth = w / totalSteps;
 
   const isDrum = instrumentType === 'drum';
   const pitchCount = Math.max(1, sampleCount ?? (isDrum ? 12 : 24));
-  const baseNote = defaultOctave ?? 0;
+  // iOS: baseNote = soundBank.defaultOctave
+  // Fallback: use min noteNumber in clip so notes are visible even without soundBank data
+  const noteNumbers = notes.map((n) => n.noteNumber);
+  const effectiveBase =
+    defaultOctave && defaultOctave > 0
+      ? defaultOctave
+      : noteNumbers.length > 0
+        ? Math.min(...noteNumbers)
+        : 0;
   const rawNoteHeight = h / pitchCount;
   const noteHeight = Math.max(rawNoteHeight, 3);
   const minNoteWidth = Math.max(stepWidth * 0.9, 2);
@@ -116,31 +129,27 @@ const ClipCell = memo(function ClipCell({
         {notes.slice(0, 30).map((note, i) => {
           if (note.position >= beatsInClip) return null;
 
-          // X: quantize position to step grid
+          // X: position in steps → pixels
           const stepPos = note.position * stepsPerBeat;
-          const xRaw = stepPos * stepWidth + CLIP_PAD;
+          const x = Math.max(0, Math.min(stepPos * stepWidth, w));
 
-          // Y: iOS uses baseNote (soundBank.defaultOctave) as reference
-          const noteIdx = Math.min(
-            Math.max(0, note.noteNumber - baseNote),
-            pitchCount - 1
+          // Y: map noteNumber to pitch row
+          // iOS: noteIndex = noteNumber - soundBank.defaultOctave
+          // When defaultOctave is missing/0, fall back to min note in clip
+          const noteIdx = Math.max(
+            0,
+            Math.min(note.noteNumber - effectiveBase, pitchCount - 1)
           );
-          const yRaw = noteIdx * rawNoteHeight + CLIP_PAD;
-          const maxY = Math.max(CLIP_PAD, h - noteHeight + CLIP_PAD);
-          const yOffset = Math.min(Math.max(yRaw, CLIP_PAD), maxY);
+          const yOffset = noteIdx * rawNoteHeight;
 
-          // Width: quantize duration, clamp to remaining clip space
-          const stepDur = note.duration * stepsPerBeat;
-          const durW = stepDur * stepWidth;
+          // Width: duration in steps → pixels, clamped
+          const durW = note.duration * stepsPerBeat * stepWidth;
           const remainW =
-            Math.max(0, (beatsInClip - note.position) * stepsPerBeat) *
-            stepWidth;
+            Math.max(0, beatsInClip - note.position) * stepsPerBeat * stepWidth;
           const noteW = Math.min(Math.max(minNoteWidth, durW), remainW);
-          const maxX = Math.max(CLIP_PAD, w - noteW + CLIP_PAD);
-          const x = Math.min(Math.max(xRaw, CLIP_PAD), maxX);
 
-          // iOS: y = height - yOffset - noteHeight + padding (top-down, high pitch at top)
-          const top = h - yOffset - noteHeight + CLIP_PAD;
+          // iOS renders top-down: high pitch at top
+          const top = h - yOffset - noteHeight;
 
           return (
             <View
@@ -148,7 +157,7 @@ const ClipCell = memo(function ClipCell({
               style={{
                 position: 'absolute',
                 left: x,
-                top,
+                top: Math.max(0, top),
                 width: noteW,
                 height: noteHeight * 0.9,
                 backgroundColor: 'rgba(26,28,32,0.4)',

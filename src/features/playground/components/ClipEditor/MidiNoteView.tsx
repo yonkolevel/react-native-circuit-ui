@@ -1,28 +1,25 @@
 /**
  * MidiNoteView — a single note on the piano roll grid.
- * Matches iOS MidiNoteView.swift.
+ * Port of AudioKit PianoRoll's PianoRollNoteView.swift.
  *
- * Gestures (react-native-gesture-handler + reanimated):
- *   - Tap → delete note
- *   - Pan → move (position + pitch), snaps to grid on release
- *   - Pan from right edge → resize duration
+ * Two gesture zones (matching AudioKit):
+ *   1. Note body — drag to move (position + pitch)
+ *   2. Right-edge handle (half a step wide) — drag to resize duration
  *
- * All gesture callbacks run on the UI thread (worklets).
- * Store is only updated on gesture end (runOnJS).
+ * Tap on note body → delete note.
+ * Both zones have independent gesture detectors so they don't conflict.
  */
-import { memo, useCallback, useRef } from 'react';
-import { StyleSheet } from 'react-native';
+import { memo, useCallback } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   runOnJS,
-  withTiming,
 } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
 
 const MIN_STEPS = 1;
-const RESIZE_EDGE = 20;
 
 interface MidiNoteViewProps {
   position: number;
@@ -39,7 +36,6 @@ interface MidiNoteViewProps {
   onResize?: (noteIndex: number, newDuration: number) => void;
   onMove?: (noteIndex: number, newPosition: number, newNoteNumber: number) => void;
   totalPitches?: number;
-  /** Maps pitchIdx (0 = bottom row) → MIDI note number */
   pitchToMidi?: number[];
 }
 
@@ -61,15 +57,15 @@ export const MidiNoteView = memo(function MidiNoteView({
   pitchToMidi,
 }: MidiNoteViewProps) {
   const baseWidth = Math.max(duration * beatWidth - 2, stepWidth);
+  const handleWidth = stepWidth * 0.5; // AudioKit: half a grid column for resize handle
 
-  // Shared values for smooth animation during drag (UI thread, no JS re-renders)
-  const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
-  const widthOffset = useSharedValue(0);
-  const isResizeMode = useSharedValue(false);
-  const zIndex = useSharedValue(1);
+  // --- Shared values (UI thread, no JS re-renders during drag) ---
+  const moveX = useSharedValue(0);
+  const moveY = useSharedValue(0);
+  const resizeW = useSharedValue(0);
+  const isActive = useSharedValue(false);
 
-  // Callbacks bridged to JS thread on gesture end
+  // --- JS callbacks (called on gesture end) ---
   const handleDelete = useCallback(() => {
     onDelete?.(noteIndex);
   }, [onDelete, noteIndex]);
@@ -86,109 +82,140 @@ export const MidiNoteView = memo(function MidiNoteView({
     const newPosition = Math.max(0, position + stepsDx * 0.25);
     const newRowIndex = Math.max(0, Math.min(totalPitches - 1, rowIndex + rowsDy));
     const pitchIdx = totalPitches - 1 - newRowIndex;
-    // Use the mapping array if provided (handles drums + melodic correctly)
     const newNoteNumber = pitchToMidi?.[pitchIdx] ?? pitchIdx;
     if (newPosition !== position || newNoteNumber !== noteNumber) {
       onMove?.(noteIndex, newPosition, newNoteNumber);
     }
   }, [stepWidth, rowHeight, position, rowIndex, totalPitches, pitchToMidi, noteNumber, noteIndex, onMove]);
 
-  // Tap → delete
-  const tap = Gesture.Tap()
+  // --- Gesture 1: Note body — tap to delete, drag to move ---
+  const bodyTap = Gesture.Tap()
     .maxDuration(200)
     .onEnd(() => {
       'worklet';
       runOnJS(handleDelete)();
     });
 
-  // Pan → move or resize
-  const pan = Gesture.Pan()
-    .activateAfterLongPress(150)
-    .onStart((e) => {
+  const bodyDrag = Gesture.Pan()
+    .activateAfterLongPress(120)
+    .onStart(() => {
       'worklet';
-      zIndex.value = 100;
-      // Right edge = resize, otherwise move
-      isResizeMode.value = e.x > baseWidth - RESIZE_EDGE;
+      isActive.value = true;
     })
     .onUpdate((e) => {
       'worklet';
-      if (isResizeMode.value) {
-        const minOff = -(baseWidth - stepWidth);
-        widthOffset.value = Math.max(minOff, e.translationX);
-      } else {
-        translateX.value = e.translationX;
-        translateY.value = e.translationY;
-      }
+      moveX.value = e.translationX;
+      moveY.value = e.translationY;
     })
     .onEnd((e) => {
       'worklet';
-      if (isResizeMode.value) {
-        const newWidth = baseWidth + e.translationX;
-        const steps = Math.max(MIN_STEPS, Math.round(newWidth / stepWidth));
-        widthOffset.value = steps * stepWidth - baseWidth;
-        runOnJS(handleResize)(e.translationX);
-      } else {
-        // Snap to grid immediately — no animation, no jump
-        const snappedX = Math.round(e.translationX / stepWidth) * stepWidth;
-        const snappedY = Math.round(e.translationY / rowHeight) * rowHeight;
-        translateX.value = snappedX;
-        translateY.value = snappedY;
-        runOnJS(handleMove)(e.translationX, e.translationY);
-      }
-      zIndex.value = 1;
+      // Snap to grid
+      moveX.value = Math.round(e.translationX / stepWidth) * stepWidth;
+      moveY.value = Math.round(e.translationY / rowHeight) * rowHeight;
+      runOnJS(handleMove)(e.translationX, e.translationY);
+      isActive.value = false;
     });
 
-  // Tap fires on short press, pan fires on long press + drag
-  const composed = Gesture.Exclusive(pan, tap);
+  const bodyGesture = Gesture.Exclusive(bodyDrag, bodyTap);
 
-  const animatedStyle = useAnimatedStyle(() => ({
+  // --- Gesture 2: Right-edge handle — drag to resize ---
+  const resizeDrag = Gesture.Pan()
+    .minDistance(2)
+    .onStart(() => {
+      'worklet';
+      isActive.value = true;
+    })
+    .onUpdate((e) => {
+      'worklet';
+      const minOff = -(baseWidth - stepWidth);
+      resizeW.value = Math.max(minOff, e.translationX);
+    })
+    .onEnd((e) => {
+      'worklet';
+      const newWidth = baseWidth + e.translationX;
+      const steps = Math.max(MIN_STEPS, Math.round(newWidth / stepWidth));
+      resizeW.value = steps * stepWidth - baseWidth;
+      runOnJS(handleResize)(e.translationX);
+      isActive.value = false;
+    });
+
+  // --- Animated styles ---
+  const noteStyle = useAnimatedStyle(() => ({
     transform: [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
+      { translateX: moveX.value },
+      { translateY: moveY.value },
     ],
-    width: baseWidth + widthOffset.value,
-    zIndex: zIndex.value,
+    width: baseWidth + resizeW.value,
+    opacity: isActive.value ? 1 : 0.85,
+  }));
+
+  // Resize handle overlaps the right edge of the note
+  const handleStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: moveX.value },
+      { translateY: moveY.value },
+    ],
+    left: position * beatWidth + baseWidth + resizeW.value - handleWidth,
   }));
 
   return (
-    <GestureDetector gesture={composed}>
-      <Animated.View
-        style={[
-          s.note,
-          {
-            left: position * beatWidth,
-            top: rowIndex * rowHeight + 2,
-            height: rowHeight - 4,
-            backgroundColor: color,
-          },
-          animatedStyle,
-        ]}
-      >
-        {label && baseWidth > 24 ? (
-          <Text
-            variant="extraSmall"
-            color="rgba(0,0,0,0.6)"
-            numberOfLines={1}
-            style={s.label}
-          >
-            {label}
-          </Text>
-        ) : null}
-        <Animated.View style={s.dotGroup}>
-          <Animated.View style={s.dot} />
-          <Animated.View style={s.line} />
-          <Animated.View style={s.dot} />
+    <>
+      {/* Note body — move + tap-to-delete */}
+      <GestureDetector gesture={bodyGesture}>
+        <Animated.View
+          style={[
+            s.note,
+            {
+              left: position * beatWidth,
+              top: rowIndex * rowHeight + 2,
+              height: rowHeight - 4,
+              backgroundColor: color,
+            },
+            noteStyle,
+          ]}
+        >
+          {label && baseWidth > 24 ? (
+            <Text
+              variant="extraSmall"
+              color="rgba(0,0,0,0.6)"
+              numberOfLines={1}
+              style={s.label}
+            >
+              {label}
+            </Text>
+          ) : null}
+          <View style={s.dotGroup}>
+            <View style={s.dot} />
+            <View style={s.line} />
+            <View style={s.dot} />
+          </View>
+          {/* Visual resize indicator — black line at right edge (AudioKit DefaultNoteView) */}
+          <View style={s.resizeIndicator} />
         </Animated.View>
-        <Animated.View style={s.resizeHandle} />
-      </Animated.View>
-    </GestureDetector>
+      </GestureDetector>
+
+      {/* Resize handle — invisible, overlaps right edge (AudioKit: half a grid column) */}
+      <GestureDetector gesture={resizeDrag}>
+        <Animated.View
+          style={[
+            s.resizeHandle,
+            {
+              top: rowIndex * rowHeight,
+              width: handleWidth,
+              height: rowHeight,
+            },
+            handleStyle,
+          ]}
+        />
+      </GestureDetector>
+    </>
   );
 });
 
 const s = StyleSheet.create({
   note: {
     position: 'absolute',
-    borderRadius: 2,
+    borderRadius: 3,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
@@ -205,11 +232,18 @@ const s = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.6)',
     marginHorizontal: 1,
   },
+  resizeIndicator: {
+    position: 'absolute',
+    right: 2,
+    top: 4,
+    bottom: 4,
+    width: 2,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderRadius: 1,
+  },
   resizeHandle: {
     position: 'absolute',
-    right: 0, top: 0, bottom: 0, width: 4,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderTopRightRadius: 2,
-    borderBottomRightRadius: 2,
+    backgroundColor: 'transparent', // invisible — just a touch target
+    zIndex: 10,
   },
 });

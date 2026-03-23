@@ -4723,10 +4723,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
-                          "height": 4.2,
-                          "left": 2,
+                          "height": 3.6,
+                          "left": 0,
                           "position": "absolute",
-                          "top": -2.6645352591003757e-15,
+                          "top": 44,
                           "width": 2,
                         }
                       }
@@ -4736,10 +4736,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
-                          "height": 4.2,
-                          "left": 11.5,
+                          "height": 3.6,
+                          "left": 8.5,
                           "position": "absolute",
-                          "top": -2.6645352591003757e-15,
+                          "top": 44,
                           "width": 2,
                         }
                       }
@@ -4749,10 +4749,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
-                          "height": 4.2,
-                          "left": 6.75,
+                          "height": 3.6,
+                          "left": 4.25,
                           "position": "absolute",
-                          "top": -2.6645352591003757e-15,
+                          "top": 36,
                           "width": 2,
                         }
                       }
@@ -4762,10 +4762,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
-                          "height": 4.2,
-                          "left": 16.25,
+                          "height": 3.6,
+                          "left": 12.75,
                           "position": "absolute",
-                          "top": -2.6645352591003757e-15,
+                          "top": 36,
                           "width": 2,
                         }
                       }
@@ -4775,10 +4775,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
-                          "height": 4.2,
-                          "left": 2,
+                          "height": 3.6,
+                          "left": 0,
                           "position": "absolute",
-                          "top": -2.6645352591003757e-15,
+                          "top": 20,
                           "width": 2,
                         }
                       }
@@ -4788,10 +4788,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
-                          "height": 4.2,
-                          "left": 4.375,
+                          "height": 3.6,
+                          "left": 2.125,
                           "position": "absolute",
-                          "top": -2.6645352591003757e-15,
+                          "top": 20,
                           "width": 2,
                         }
                       }
@@ -4801,10 +4801,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
-                          "height": 4.2,
-                          "left": 6.75,
+                          "height": 3.6,
+                          "left": 4.25,
                           "position": "absolute",
-                          "top": -2.6645352591003757e-15,
+                          "top": 20,
                           "width": 2,
                         }
                       }
@@ -4814,10 +4814,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
-                          "height": 4.2,
-                          "left": 9.125,
+                          "height": 3.6,
+                          "left": 6.375,
                           "position": "absolute",
-                          "top": -2.6645352591003757e-15,
+                          "top": 20,
                           "width": 2,
                         }
                       }
@@ -4827,10 +4827,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
-                          "height": 4.2,
-                          "left": 11.5,
+                          "height": 3.6,
+                          "left": 8.5,
                           "position": "absolute",
-                          "top": -2.6645352591003757e-15,
+                          "top": 20,
                           "width": 2,
                         }
                       }
@@ -4840,10 +4840,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
-                          "height": 4.2,
-                          "left": 13.875,
+                          "height": 3.6,
+                          "left": 10.625,
                           "position": "absolute",
-                          "top": -2.6645352591003757e-15,
+                          "top": 20,
                           "width": 2,
                         }
                       }
@@ -4853,10 +4853,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
-                          "height": 4.2,
-                          "left": 16.25,
+                          "height": 3.6,
+                          "left": 12.75,
                           "position": "absolute",
-                          "top": -2.6645352591003757e-15,
+                          "top": 20,
                           "width": 2,
                         }
                       }
@@ -4866,10 +4866,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         {
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
-                          "height": 4.2,
-                          "left": 18.625,
+                          "height": 3.6,
+                          "left": 14.875,
                           "position": "absolute",
-                          "top": -2.6645352591003757e-15,
+                          "top": 20,
                           "width": 2,
                         }
                       }
@@ -5006,10 +5006,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
                           "height": 2.7,
-                          "left": 2,
+                          "left": 0,
                           "position": "absolute",
-                          "top": 0,
-                          "width": 4.75,
+                          "top": 45,
+                          "width": 4.25,
                         }
                       }
                     />
@@ -5019,10 +5019,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
                           "height": 2.7,
-                          "left": 6.75,
+                          "left": 4.25,
                           "position": "absolute",
-                          "top": 0,
-                          "width": 4.75,
+                          "top": 37,
+                          "width": 4.25,
                         }
                       }
                     />
@@ -5032,10 +5032,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
                           "height": 2.7,
-                          "left": 11.5,
+                          "left": 8.5,
                           "position": "absolute",
-                          "top": 0,
-                          "width": 4.75,
+                          "top": 31,
+                          "width": 4.25,
                         }
                       }
                     />
@@ -5045,10 +5045,10 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           "backgroundColor": "rgba(26,28,32,0.4)",
                           "borderRadius": 2,
                           "height": 2.7,
-                          "left": 16.25,
+                          "left": 12.75,
                           "position": "absolute",
-                          "top": 0,
-                          "width": 4.75,
+                          "top": 21,
+                          "width": 4.25,
                         }
                       }
                     />
