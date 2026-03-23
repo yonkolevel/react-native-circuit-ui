@@ -124,7 +124,7 @@ export const Icons = {
 
   // Audio
   speaker: { sf: 'speaker', fallback: Volume2, android: 'volume-high' },
-  metronomeOn: { sf: 'metronome.fill', fallback: Timer, android: 'metronome' },
+  metronomeOn: { sf: 'metronome.fill', fallback: Timer, android: 'metronome-tick' },
   metronomeOff: { sf: 'metronome', fallback: TimerOff, android: 'metronome' },
 
   // Placeholder

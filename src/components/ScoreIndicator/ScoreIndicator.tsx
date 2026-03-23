@@ -23,7 +23,7 @@ export interface ScoreIndicatorProps {
   max?: number;
   /** Star icon size in points. Default: 20 (matches Swift 20x20 frame) */
   size?: number;
-  /** Star color override. Default: theme primaryText */
+  /** Star color override. Default: theme mcWhite */
   color?: string;
   /** Custom style for the container */
   style?: StyleProp<ViewStyle>;
@@ -40,7 +40,7 @@ export const ScoreIndicator: React.FC<ScoreIndicatorProps> = memo(
     style,
   }) {
     const { colors } = useTheme();
-    const starColor = color || colors.primaryText;
+    const starColor = color || colors.mcWhite;
 
     // Mirrors Swift: ForEach(1...max) with starType(index)
     const stars = Array.from({ length: max }, (_, i) => {

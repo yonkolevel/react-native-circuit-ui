@@ -65,7 +65,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
 
     // ─── Colors ─────────────────────────────────────────────────────
 
-    const loopColor = song.isLoopEnabled ? colors.success : colors.primaryText;
+    const loopColor = song.isLoopEnabled ? colors.mcGreen : colors.mcWhite3;
 
     return (
       <View
@@ -86,7 +86,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
           accessibilityLabel="Back"
           style={styles.backButton}
         >
-          <Icon icon={Icons.back} size={20} color={colors.secondaryText} />
+          <Icon icon={Icons.back} size={20} color={colors.mcWhite2} />
         </Pressable>
 
         <View style={styles.spacer} />
@@ -107,9 +107,9 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
             testID="transport-play-pause"
           >
             {song.isPlaying ? (
-              <Icon icon={Icons.pause} size={20} color={colors.primaryText} />
+              <Icon icon={Icons.pause} size={20} color={colors.mcWhite} />
             ) : (
-              <Icon icon={Icons.play} size={20} color={colors.primaryText} />
+              <Icon icon={Icons.play} size={20} color={colors.mcWhite} />
             )}
           </Pressable>
 
@@ -142,11 +142,11 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
             ]}
             testID="transport-metronome"
           >
-            {song.isMetronomeEnabled ? (
-              <Icon icon={Icons.metronomeOn} size={18} color={colors.primaryText} />
-            ) : (
-              <Icon icon={Icons.metronomeOff} size={18} color={colors.primaryText} />
-            )}
+            <Icon
+              icon={song.isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff}
+              size={18}
+              color={song.isMetronomeEnabled ? colors.mcGreen : colors.mcWhite3}
+            />
           </Pressable>
         </View>
 
@@ -163,7 +163,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
             ]}
             testID="transport-settings"
           >
-            <Icon icon={Icons.settings} size={20} color={colors.primaryText} />
+            <Icon icon={Icons.settings} size={20} color={colors.mcWhite} />
           </Pressable>
         </View>
       </View>

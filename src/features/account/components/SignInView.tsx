@@ -26,10 +26,10 @@ export const SignInView = memo(function SignInView({
   const [password, setPassword] = useState('');
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.mcBlack2 }]}>
       <Text variant="h4" style={styles.title}>Sign In</Text>
 
-      {error && <Text variant="small" color={colors.error} style={styles.error}>{error}</Text>}
+      {error && <Text variant="small" color={colors.mcPink} style={styles.error}>{error}</Text>}
 
       <Input label="Email" value={email} onChangeText={setEmail} placeholder="your@email.com" keyboardType="email-address" autoCapitalize="none" />
       <Input label="Password" value={password} onChangeText={setPassword} placeholder="Password" secureTextEntry />

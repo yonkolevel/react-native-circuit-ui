@@ -25,10 +25,10 @@ export const CreateAccountView = memo(function CreateAccountView({
   const [password, setPassword] = useState('');
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.mcBlack2 }]}>
       <Text variant="h4" style={styles.title}>Create Account</Text>
 
-      {error && <Text variant="small" color={colors.error}>{error}</Text>}
+      {error && <Text variant="small" color={colors.mcPink}>{error}</Text>}
 
       <Input label="Name" value={name} onChangeText={setName} placeholder="Your name" />
       <Input label="Email" value={email} onChangeText={setEmail} placeholder="your@email.com" keyboardType="email-address" autoCapitalize="none" />

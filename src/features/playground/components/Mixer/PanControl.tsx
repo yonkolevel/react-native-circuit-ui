@@ -79,7 +79,7 @@ export const PanControl: React.FC<PanControlProps> = memo(
 
     return (
       <View testID={testID} style={styles.container}>
-        <Text variant="small" color={colors.secondaryText}>
+        <Text variant="small" color={colors.mcWhite2}>
           ↔
         </Text>
         <View
@@ -103,7 +103,7 @@ export const PanControl: React.FC<PanControlProps> = memo(
         <Text
           testID={`${testID}-label`}
           variant="small"
-          color={colors.secondaryText}
+          color={colors.mcWhite2}
           style={styles.label}
         >
           {label}

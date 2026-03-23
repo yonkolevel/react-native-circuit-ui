@@ -19,7 +19,7 @@ export interface ToolbarButtonProps {
   onPress?: () => void;
   /** Icon size. Default: 24. */
   size?: number;
-  /** Custom icon color. Default: secondaryText. */
+  /** Custom icon color. Default: mcWhite2. */
   color?: string;
   /** Container style. */
   style?: StyleProp<ViewStyle>;
@@ -34,7 +34,7 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = memo(
   function ToolbarButton({ type, onPress, size = 24, color, style }) {
     const { colors } = useTheme();
     const iconDef = ICON_MAP[type];
-    const iconColor = color || colors.secondaryText;
+    const iconColor = color || colors.mcWhite2;
 
     return (
       <Pressable

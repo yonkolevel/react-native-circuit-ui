@@ -34,7 +34,7 @@ export const ProfileCard = memo(function ProfileCard({
         {profile.name.trim().length > 0 && (
           <Text variant="body" numberOfLines={2}>{profile.name}</Text>
         )}
-        <Text variant="small" color={colors.secondaryText}>{profile.email}</Text>
+        <Text variant="small" color={colors.mcWhite2}>{profile.email}</Text>
 
         {onEditProfile && (
           <Pressable onPress={onEditProfile} style={styles.link} accessibilityRole="button" accessibilityLabel="Edit profile">

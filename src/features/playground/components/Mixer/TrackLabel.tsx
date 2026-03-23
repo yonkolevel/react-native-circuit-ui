@@ -32,7 +32,7 @@ export const TrackLabel: React.FC<TrackLabelProps> = memo(
           testID={`${testID}-dot`}
           style={[styles.dot, { backgroundColor: color }]}
         />
-        <Text variant="label" color={colors.primaryText}>
+        <Text variant="label" color={colors.mcWhite}>
           {name}
         </Text>
       </View>

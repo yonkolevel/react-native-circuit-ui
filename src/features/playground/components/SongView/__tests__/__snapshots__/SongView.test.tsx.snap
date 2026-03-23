@@ -630,7 +630,7 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
     >
       <View>
         <View
-          color="#F7F7F7"
+          color="rgba(247, 247, 247, 0.60)"
           size={18}
           testID="lucide-TimerOff"
         />
@@ -954,7 +954,7 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
     >
       <View>
         <View
-          color="#F7F7F7"
+          color="rgba(247, 247, 247, 0.60)"
           size={18}
           testID="lucide-TimerOff"
         />
@@ -1291,7 +1291,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
       >
         <View>
           <View
-            color="#F7F7F7"
+            color="rgba(247, 247, 247, 0.60)"
             size={18}
             testID="lucide-TimerOff"
           />
@@ -3221,7 +3221,7 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
       >
         <View>
           <View
-            color="#F7F7F7"
+            color="rgba(247, 247, 247, 0.60)"
             size={18}
             testID="lucide-TimerOff"
           />
@@ -3304,7 +3304,10 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
       accessibilityLabel="Song settings"
       style={
         {
-          "paddingVertical": 8,
+          "gap": 4,
+          "maxWidth": 480,
+          "paddingHorizontal": 20,
+          "paddingVertical": 16,
         }
       }
     >
@@ -3315,7 +3318,6 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
               "alignItems": "center",
               "borderBottomWidth": 0.5,
               "flexDirection": "row",
-              "paddingHorizontal": 12,
               "paddingVertical": 12,
             },
             {
@@ -3330,20 +3332,20 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 16,
-                "fontWeight": "600",
-                "lineHeight": 24,
+                "fontSize": 12,
+                "fontWeight": "400",
+                "lineHeight": 18,
               },
               {
-                "color": "#F7F7F7",
+                "color": "rgba(247, 247, 247, 0.60)",
               },
               {
-                "width": 120,
+                "width": 80,
               },
             ]
           }
         >
-          BPM: 120
+          TEMPO
         </Text>
         <View
           style={
@@ -3351,7 +3353,87 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
               "flex": 1,
             }
           }
-        />
+        >
+          <View
+            onLayout={[Function]}
+            style={
+              [
+                [
+                  {
+                    "height": 40,
+                  },
+                  {
+                    "flex": 1,
+                    "height": 36,
+                  },
+                ],
+                {
+                  "justifyContent": "center",
+                },
+              ]
+            }
+          >
+            <RNCSlider
+              accessibilityLabel="Tempo"
+              disabled={false}
+              inverted={false}
+              lowerLimit={-9007199254740991}
+              maximumTrackTintColor="#313336"
+              maximumValue={240}
+              minimumTrackTintColor="#F7F7F7"
+              minimumValue={40}
+              onChange={[Function]}
+              onRNCSliderAccessibilityAction={null}
+              onRNCSliderSlidingComplete={[Function]}
+              onRNCSliderSlidingStart={null}
+              onRNCSliderValueChange={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              step={1}
+              style={
+                [
+                  {
+                    "width": 0,
+                    "zIndex": 1,
+                  },
+                  {
+                    "height": 40,
+                  },
+                  {
+                    "alignContent": "center",
+                    "alignItems": "center",
+                  },
+                ]
+              }
+              tapToSeek={false}
+              thumbTintColor="#F7F7F7"
+              upperLimit={9007199254740991}
+              value={120}
+            />
+          </View>
+        </View>
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 12,
+                "fontWeight": "400",
+                "lineHeight": 18,
+              },
+              {
+                "color": "rgba(247, 247, 247, 0.60)",
+              },
+              {
+                "textAlign": "right",
+                "width": 60,
+              },
+            ]
+          }
+        >
+          120 BPM
+        </Text>
       </View>
       <View
         style={
@@ -3360,7 +3442,6 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
               "alignItems": "center",
               "borderBottomWidth": 0.5,
               "flexDirection": "row",
-              "paddingHorizontal": 12,
               "paddingVertical": 12,
             },
             {
@@ -3375,20 +3456,20 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 16,
-                "fontWeight": "600",
-                "lineHeight": 24,
+                "fontSize": 12,
+                "fontWeight": "400",
+                "lineHeight": 18,
               },
               {
-                "color": "#F7F7F7",
+                "color": "rgba(247, 247, 247, 0.60)",
               },
               {
-                "width": 120,
+                "width": 80,
               },
             ]
           }
         >
-          Volume: 90%
+          VOLUME
         </Text>
         <View
           style={
@@ -3396,7 +3477,87 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
               "flex": 1,
             }
           }
-        />
+        >
+          <View
+            onLayout={[Function]}
+            style={
+              [
+                [
+                  {
+                    "height": 40,
+                  },
+                  {
+                    "flex": 1,
+                    "height": 36,
+                  },
+                ],
+                {
+                  "justifyContent": "center",
+                },
+              ]
+            }
+          >
+            <RNCSlider
+              accessibilityLabel="Master volume"
+              disabled={false}
+              inverted={false}
+              lowerLimit={-9007199254740991}
+              maximumTrackTintColor="#313336"
+              maximumValue={100}
+              minimumTrackTintColor="#F7F7F7"
+              minimumValue={0}
+              onChange={[Function]}
+              onRNCSliderAccessibilityAction={null}
+              onRNCSliderSlidingComplete={[Function]}
+              onRNCSliderSlidingStart={null}
+              onRNCSliderValueChange={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              step={1}
+              style={
+                [
+                  {
+                    "width": 0,
+                    "zIndex": 1,
+                  },
+                  {
+                    "height": 40,
+                  },
+                  {
+                    "alignContent": "center",
+                    "alignItems": "center",
+                  },
+                ]
+              }
+              tapToSeek={false}
+              thumbTintColor="#F7F7F7"
+              upperLimit={9007199254740991}
+              value={90}
+            />
+          </View>
+        </View>
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 12,
+                "fontWeight": "400",
+                "lineHeight": 18,
+              },
+              {
+                "color": "rgba(247, 247, 247, 0.60)",
+              },
+              {
+                "textAlign": "right",
+                "width": 60,
+              },
+            ]
+          }
+        >
+          90%
+        </Text>
       </View>
       <View
         style={
@@ -3405,7 +3566,6 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
               "alignItems": "center",
               "borderBottomWidth": 0.5,
               "flexDirection": "row",
-              "paddingHorizontal": 12,
               "paddingVertical": 12,
             },
             {
@@ -3420,20 +3580,20 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
             [
               {
                 "fontFamily": "System",
-                "fontSize": 16,
-                "fontWeight": "600",
-                "lineHeight": 24,
+                "fontSize": 12,
+                "fontWeight": "400",
+                "lineHeight": 18,
               },
               {
-                "color": "#F7F7F7",
+                "color": "rgba(247, 247, 247, 0.60)",
               },
               {
-                "width": 120,
+                "width": 80,
               },
             ]
           }
         >
-          Metronome
+          METRONOME
         </Text>
         <View
           style={
@@ -3443,11 +3603,12 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
           }
         >
           <RCTSwitch
+            accessibilityLabel="Metronome"
             accessibilityRole="switch"
             onChange={[Function]}
             onResponderTerminationRequest={[Function]}
             onStartShouldSetResponder={[Function]}
-            onTintColor="#FF5C24"
+            onTintColor="#00FF9E"
             style={
               {
                 "height": 31,
@@ -3461,63 +3622,157 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
       </View>
       <View
         style={
-          [
-            {
-              "alignItems": "center",
-              "borderBottomWidth": 0.5,
-              "flexDirection": "row",
-              "paddingHorizontal": 12,
-              "paddingVertical": 12,
-            },
-            {
-              "borderBottomColor": "#313336",
-            },
-          ]
+          {
+            "gap": 12,
+            "marginTop": 16,
+          }
         }
       >
-        <Text
-          accessibilityRole="text"
+        <View
+          accessibilityLabel="EXPORT AUDIO"
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
           style={
             [
               {
-                "fontFamily": "System",
-                "fontSize": 16,
-                "fontWeight": "600",
-                "lineHeight": 24,
+                "alignItems": "center",
+                "borderRadius": 6,
+                "flexDirection": "row",
+                "gap": 10,
+                "padding": 12,
               },
               {
-                "color": "#F7F7F7",
-              },
-              {
-                "width": 120,
+                "backgroundColor": "rgba(247, 247, 247, 0.40)",
               },
             ]
           }
         >
-          Loop
-        </Text>
+          <View>
+            <View
+              color="#F7F7F7"
+              size={16}
+              testID="lucide-Mic"
+            />
+          </View>
+          <Text
+            accessibilityRole="text"
+            style={
+              [
+                {
+                  "fontFamily": "System",
+                  "fontSize": 16,
+                  "fontWeight": "600",
+                  "lineHeight": 24,
+                },
+                {
+                  "color": "#F7F7F7",
+                },
+              ]
+            }
+          >
+            EXPORT AUDIO
+          </Text>
+        </View>
         <View
-          style={
+          accessibilityLabel="EXPORT BUNDLE"
+          accessibilityRole="button"
+          accessibilityState={
             {
-              "flex": 1,
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
             }
           }
-        >
-          <RCTSwitch
-            accessibilityRole="switch"
-            onChange={[Function]}
-            onResponderTerminationRequest={[Function]}
-            onStartShouldSetResponder={[Function]}
-            onTintColor="#FF5C24"
-            style={
-              {
-                "height": 31,
-                "width": 51,
-              }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
             }
-            tintColor="#313336"
-            value={true}
-          />
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "borderRadius": 6,
+                "flexDirection": "row",
+                "gap": 10,
+                "padding": 12,
+              },
+              {
+                "backgroundColor": "rgba(247, 247, 247, 0.40)",
+              },
+            ]
+          }
+        >
+          <View>
+            <View
+              color="#F7F7F7"
+              size={16}
+              testID="lucide-Settings"
+            />
+          </View>
+          <Text
+            accessibilityRole="text"
+            style={
+              [
+                {
+                  "fontFamily": "System",
+                  "fontSize": 16,
+                  "fontWeight": "600",
+                  "lineHeight": 24,
+                },
+                {
+                  "color": "#F7F7F7",
+                },
+              ]
+            }
+          >
+            EXPORT BUNDLE
+          </Text>
         </View>
       </View>
     </View>
@@ -3788,7 +4043,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
       >
         <View>
           <View
-            color="#F7F7F7"
+            color="rgba(247, 247, 247, 0.60)"
             size={18}
             testID="lucide-TimerOff"
           />

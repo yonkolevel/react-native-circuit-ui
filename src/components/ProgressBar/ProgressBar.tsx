@@ -49,7 +49,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = memo(
 
     const clampedValue = Math.min(Math.max(0, value), 100);
     const progressColor =
-      tintColor || (isDark ? colors.mcWhite : colors.primary);
+      tintColor || (isDark ? colors.mcWhite : colors.mcOrange);
 
     useEffect(() => {
       if (animated) {

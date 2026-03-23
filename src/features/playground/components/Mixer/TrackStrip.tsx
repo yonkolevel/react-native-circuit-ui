@@ -100,7 +100,7 @@ export const TrackStrip: React.FC<TrackStripProps> = memo(
 
         {/* Volume section */}
         <View style={styles.section}>
-          <Text variant="small" color={colors.secondaryText}>
+          <Text variant="small" color={colors.mcWhite2}>
             Volume
           </Text>
           <VolumeFader
@@ -114,7 +114,7 @@ export const TrackStrip: React.FC<TrackStripProps> = memo(
 
         {/* Pan section */}
         <View style={styles.section}>
-          <Text variant="small" color={colors.secondaryText}>
+          <Text variant="small" color={colors.mcWhite2}>
             Pan
           </Text>
           <PanControl

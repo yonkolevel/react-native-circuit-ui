@@ -48,7 +48,7 @@ export const Text: React.FC<TextProps> = memo(function Text({
 }) {
   const { colors, typography } = useTheme();
 
-  const textColor = color || colors.primaryText;
+  const textColor = color || colors.mcWhite;
 
   const textStyle: TextStyle[] = [
     typography[variant],

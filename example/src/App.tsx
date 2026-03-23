@@ -72,17 +72,17 @@ const ThemeToggle = () => {
   const { colors, setMode, isDark } = useTheme();
   return (
     <View style={styles.themeToggle}>
-      <Text variant="label" color={colors.primaryText}>
+      <Text variant="label" color={colors.mcWhite}>
         Light
       </Text>
       <Switch
         value={isDark}
         onValueChange={() => setMode(isDark ? 'light' : 'dark')}
-        trackColor={{ false: '#767577', true: colors.primary }}
+        trackColor={{ false: '#767577', true: colors.mcOrange }}
         thumbColor="#fff"
         ios_backgroundColor={colors.mcBlack}
       />
-      <Text variant="label" color={colors.primaryText}>
+      <Text variant="label" color={colors.mcWhite}>
         Dark
       </Text>
     </View>

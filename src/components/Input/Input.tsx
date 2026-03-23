@@ -4,7 +4,7 @@
  * SwiftUI implementation:
  * - Height: 36pt
  * - Left padding: 16pt
- * - Border: secondaryText at 0.6 opacity
+ * - Border: mcWhite2 at 0.6 opacity
  * - Corner radius: 6
  */
 import React, { memo, useState, useCallback } from 'react';
@@ -76,13 +76,13 @@ export const Input: React.FC<InputProps> = memo(function Input({
   const getBorderColor = () => {
     switch (state) {
       case 'focused':
-        return colors.primary;
+        return colors.mcOrange;
       case 'error':
-        return colors.error;
+        return colors.mcPink;
       case 'disabled':
         return colors.disabled;
       default:
-        // Matches SwiftUI: secondaryText at 0.6 opacity
+        // Matches SwiftUI: mcWhite2 at 0.6 opacity
         return isDark
           ? 'rgba(247, 247, 247, 0.48)' // mcWhite2 * 0.6
           : 'rgba(26, 28, 32, 0.36)'; // mcBlack2 * 0.6
@@ -110,7 +110,7 @@ export const Input: React.FC<InputProps> = memo(function Input({
       {label && (
         <Text
           variant="label"
-          color={colors.secondaryText}
+          color={colors.mcWhite2}
           style={styles.label}
         >
           {label}
@@ -133,11 +133,11 @@ export const Input: React.FC<InputProps> = memo(function Input({
           style={[
             styles.input,
             {
-              color: colors.primaryText,
+              color: colors.mcWhite,
             },
             inputStyle,
           ]}
-          placeholderTextColor={colors.tertiaryText}
+          placeholderTextColor={colors.mcWhite3}
           editable={!disabled}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -155,7 +155,7 @@ export const Input: React.FC<InputProps> = memo(function Input({
       {(error || helperText) && (
         <Text
           variant="small"
-          color={error ? colors.error : colors.tertiaryText}
+          color={error ? colors.mcPink : colors.mcWhite3}
           style={styles.helperText}
         >
           {error || helperText}

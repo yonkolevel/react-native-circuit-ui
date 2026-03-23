@@ -59,7 +59,7 @@ const OPACITY_END = 0.5;
 export interface CircularLoadingViewProps {
   /** Optional size override. Default uses the Swift radius × 2 (100). */
   size?: number;
-  /** Override stroke/dot color. Default: theme primaryText. */
+  /** Override stroke/dot color. Default: theme mcWhite. */
   color?: string;
   /** Container style */
   style?: StyleProp<ViewStyle>;
@@ -129,7 +129,7 @@ export const CircularLoadingView: React.FC<CircularLoadingViewProps> = memo(
       transform: [{ rotate: `${rotation.value}deg` }],
     }));
 
-    const dotColor = color ?? colors.primaryText;
+    const dotColor = color ?? colors.mcWhite;
     const viewSize = size ?? DIAMETER;
 
     return (

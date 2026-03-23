@@ -52,7 +52,7 @@ export const DiscoverView = memo(function DiscoverView({
   if (status === 'error') {
     return (
       <View style={styles.centered}>
-        <Text variant="body" color={colors.secondaryText}>Unable to load content</Text>
+        <Text variant="body" color={colors.mcWhite2}>Unable to load content</Text>
       </View>
     );
   }

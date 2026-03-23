@@ -7,8 +7,8 @@
  *   - Optional HStack of ButtonPrimaryStyle buttons
  * - frame(maxWidth: 350, maxHeight: .infinity, alignment: .center)
  * - Icon maxHeight: 48 (iPhone) / 88 (desktop)
- * - Title: .mcTitle (.title2 ≈ 22pt) .semibold, primaryText color
- * - Subtitle: .mcBody (.body), secondaryText color
+ * - Title: .mcTitle (.title2 ≈ 22pt) .semibold, mcWhite color
+ * - Subtitle: .mcBody (.body), mcWhite2 color
  *
  * SF Symbol → Lucide mapping:
  *   magnifyingglass   → Search
@@ -153,7 +153,7 @@ export const PlaceholderView: React.FC<PlaceholderViewProps> = memo(
         <View style={styles.contentRow}>
           <Icon
             size={iconSize}
-            color={colors.primaryText}
+            color={colors.mcWhite}
             strokeWidth={1.5}
             accessibilityElementsHidden
           />
@@ -168,7 +168,7 @@ export const PlaceholderView: React.FC<PlaceholderViewProps> = memo(
               {title}
             </Text>
 
-            <Text variant="body" color={colors.secondaryText}>
+            <Text variant="body" color={colors.mcWhite2}>
               {subtitle}
             </Text>
           </View>

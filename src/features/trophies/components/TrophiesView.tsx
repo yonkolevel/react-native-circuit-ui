@@ -2,7 +2,7 @@
  * TrophiesView — Matches TrophiesView.swift
  *
  * LazyVGrid: 3 columns (iPhone) / 6 columns (desktop), 92pt min, spacing 20
- * Header: "TROPHY GALLERY" in .caption, secondaryText color
+ * Header: "TROPHY GALLERY" in .caption, mcWhite2 color
  */
 import { memo } from 'react';
 import { View, Pressable, StyleSheet, useWindowDimensions, Image } from 'react-native';
@@ -32,7 +32,7 @@ const TrophyView = memo(function TrophyView({ trophy, onPress }: TrophyViewProps
           <Text variant="h4">{trophy.achieved ? '🏆' : '?'}</Text>
         </View>
       )}
-      <Text variant="extraSmall" center color={colors.secondaryText} numberOfLines={2}>
+      <Text variant="extraSmall" center color={colors.mcWhite2} numberOfLines={2}>
         {trophy.title}
       </Text>
     </Pressable>
@@ -52,7 +52,7 @@ export const TrophiesView = memo(function TrophiesView({ trophies, onSelect }: T
 
   return (
     <View style={styles.container}>
-      <Text variant="small" uppercase color={colors.secondaryText} style={styles.header}>
+      <Text variant="small" uppercase color={colors.mcWhite2} style={styles.header}>
         Trophy gallery
       </Text>
       <View style={[styles.grid, { gap: 20 }]}>

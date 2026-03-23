@@ -126,16 +126,7 @@ const colorAliases = {
 // ─── Theme Color Value Interface ────────────────────────────────────────────
 
 interface SemanticColors {
-  background: string;
-  primaryText: string;
-  secondaryText: string;
-  tertiaryText: string;
-  primary: string;
   secondary: string;
-  success: string;
-  warning: string;
-  error: string;
-  info: string;
   border: string;
   divider: string;
   card: string;
@@ -148,22 +139,10 @@ interface SemanticColors {
 type ThemeColorValues = SemanticColors & typeof palette & typeof colorAliases;
 
 // ─── Theme Tokens ───────────────────────────────────────────────────────────
-// Mirrors SwiftUI: Color.background(for:), Color.primaryText(for:), etc.
 
 const lightTheme: ThemeColorValues = {
-  // Semantic backgrounds & text (match SwiftUI helpers)
-  background: palette.mcWhite, // Color.background(for: .light)
-  primaryText: palette.mcBlack, // Color.primaryText(for: .light)
-  secondaryText: palette.mcBlack2, // Color.secondaryText(for: .light)
-  tertiaryText: palette.mcBlack3, // Color.tertiaryText(for: .light)
-
   // Intent colors
-  primary: palette.mcOrange,
   secondary: palette.mcPink,
-  success: palette.mcGreen,
-  warning: palette.mcOrange,
-  error: palette.close,
-  info: palette.mcBlue,
 
   // Surface colors
   border: palette.mcWhite4,
@@ -181,19 +160,8 @@ const lightTheme: ThemeColorValues = {
 } as const;
 
 const darkTheme: ThemeColorValues = {
-  // Semantic backgrounds & text (match SwiftUI helpers)
-  background: palette.mcBlack2, // Color.background(for: .dark)
-  primaryText: palette.mcWhite, // Color.primaryText(for: .dark)
-  secondaryText: palette.mcWhite2, // Color.secondaryText(for: .dark)
-  tertiaryText: palette.mcWhite3, // Color.tertiaryText(for: .dark)
-
   // Intent colors
-  primary: palette.mcOrange,
   secondary: palette.mcPink,
-  success: palette.mcGreen,
-  warning: palette.mcOrange,
-  error: palette.close,
-  info: palette.mcBlue,
 
   // Surface colors
   border: palette.mcBlack4,
