@@ -7,10 +7,12 @@ exports[`SongMixerTabBar snapshots matches snapshot with mixer active 1`] = `
   style={
     [
       {
-        "backgroundColor": "#0A0A0A",
         "paddingBottom": 30,
         "paddingHorizontal": 40,
         "paddingTop": 12,
+      },
+      {
+        "backgroundColor": "#000000",
       },
       undefined,
     ]
@@ -19,14 +21,18 @@ exports[`SongMixerTabBar snapshots matches snapshot with mixer active 1`] = `
 >
   <View
     style={
-      {
-        "backgroundColor": "#222222",
-        "height": 1,
-        "left": 0,
-        "position": "absolute",
-        "right": 0,
-        "top": 0,
-      }
+      [
+        {
+          "height": 1,
+          "left": 0,
+          "position": "absolute",
+          "right": 0,
+          "top": 0,
+        },
+        {
+          "backgroundColor": "#25272B",
+        },
+      ]
     }
   />
   <View
@@ -96,7 +102,7 @@ exports[`SongMixerTabBar snapshots matches snapshot with mixer active 1`] = `
               "lineHeight": 21,
             },
             {
-              "color": "#666666",
+              "color": "rgba(247, 247, 247, 0.60)",
             },
             {
               "fontWeight": "700",
@@ -197,10 +203,12 @@ exports[`SongMixerTabBar snapshots matches snapshot with song active 1`] = `
   style={
     [
       {
-        "backgroundColor": "#0A0A0A",
         "paddingBottom": 30,
         "paddingHorizontal": 40,
         "paddingTop": 12,
+      },
+      {
+        "backgroundColor": "#000000",
       },
       undefined,
     ]
@@ -209,14 +217,18 @@ exports[`SongMixerTabBar snapshots matches snapshot with song active 1`] = `
 >
   <View
     style={
-      {
-        "backgroundColor": "#222222",
-        "height": 1,
-        "left": 0,
-        "position": "absolute",
-        "right": 0,
-        "top": 0,
-      }
+      [
+        {
+          "height": 1,
+          "left": 0,
+          "position": "absolute",
+          "right": 0,
+          "top": 0,
+        },
+        {
+          "backgroundColor": "#25272B",
+        },
+      ]
     }
   />
   <View
@@ -361,7 +373,7 @@ exports[`SongMixerTabBar snapshots matches snapshot with song active 1`] = `
               "lineHeight": 21,
             },
             {
-              "color": "#666666",
+              "color": "rgba(247, 247, 247, 0.60)",
             },
             {
               "fontWeight": "700",
@@ -436,14 +448,18 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
     style={
-      {
-        "alignItems": "center",
-        "backgroundColor": "#2C2C2E",
-        "borderRadius": 22,
-        "height": 44,
-        "justifyContent": "center",
-        "width": 44,
-      }
+      [
+        {
+          "alignItems": "center",
+          "borderRadius": 22,
+          "height": 44,
+          "justifyContent": "center",
+          "width": 44,
+        },
+        {
+          "backgroundColor": "#25272B",
+        },
+      ]
     }
   >
     <View>
@@ -760,14 +776,18 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
     style={
-      {
-        "alignItems": "center",
-        "backgroundColor": "#2C2C2E",
-        "borderRadius": 22,
-        "height": 44,
-        "justifyContent": "center",
-        "width": 44,
-      }
+      [
+        {
+          "alignItems": "center",
+          "borderRadius": 22,
+          "height": 44,
+          "justifyContent": "center",
+          "width": 44,
+        },
+        {
+          "backgroundColor": "#25272B",
+        },
+      ]
     }
   >
     <View>
@@ -1097,14 +1117,18 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
       onResponderTerminationRequest={[Function]}
       onStartShouldSetResponder={[Function]}
       style={
-        {
-          "alignItems": "center",
-          "backgroundColor": "#2C2C2E",
-          "borderRadius": 22,
-          "height": 44,
-          "justifyContent": "center",
-          "width": 44,
-        }
+        [
+          {
+            "alignItems": "center",
+            "borderRadius": 22,
+            "height": 44,
+            "justifyContent": "center",
+            "width": 44,
+          },
+          {
+            "backgroundColor": "#25272B",
+          },
+        ]
       }
     >
       <View>
@@ -2774,10 +2798,12 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
     style={
       [
         {
-          "backgroundColor": "#0A0A0A",
           "paddingBottom": 30,
           "paddingHorizontal": 40,
           "paddingTop": 12,
+        },
+        {
+          "backgroundColor": "#000000",
         },
         undefined,
       ]
@@ -2786,14 +2812,18 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
   >
     <View
       style={
-        {
-          "backgroundColor": "#222222",
-          "height": 1,
-          "left": 0,
-          "position": "absolute",
-          "right": 0,
-          "top": 0,
-        }
+        [
+          {
+            "height": 1,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "backgroundColor": "#25272B",
+          },
+        ]
       }
     />
     <View
@@ -2863,7 +2893,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 "lineHeight": 21,
               },
               {
-                "color": "#666666",
+                "color": "rgba(247, 247, 247, 0.60)",
               },
               {
                 "fontWeight": "700",
@@ -3027,14 +3057,18 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
       onResponderTerminationRequest={[Function]}
       onStartShouldSetResponder={[Function]}
       style={
-        {
-          "alignItems": "center",
-          "backgroundColor": "#2C2C2E",
-          "borderRadius": 22,
-          "height": 44,
-          "justifyContent": "center",
-          "width": 44,
-        }
+        [
+          {
+            "alignItems": "center",
+            "borderRadius": 22,
+            "height": 44,
+            "justifyContent": "center",
+            "width": 44,
+          },
+          {
+            "backgroundColor": "#25272B",
+          },
+        ]
       }
     >
       <View>
@@ -3849,14 +3883,18 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
       onResponderTerminationRequest={[Function]}
       onStartShouldSetResponder={[Function]}
       style={
-        {
-          "alignItems": "center",
-          "backgroundColor": "#2C2C2E",
-          "borderRadius": 22,
-          "height": 44,
-          "justifyContent": "center",
-          "width": 44,
-        }
+        [
+          {
+            "alignItems": "center",
+            "borderRadius": 22,
+            "height": 44,
+            "justifyContent": "center",
+            "width": 44,
+          },
+          {
+            "backgroundColor": "#25272B",
+          },
+        ]
       }
     >
       <View>
@@ -4498,7 +4536,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                       "width": 80,
                     },
                     {
-                      "backgroundColor": "#FFFFFF",
+                      "backgroundColor": "#F7F7F7",
                     },
                   ]
                 }
@@ -4566,7 +4604,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                       "width": 80,
                     },
                     {
-                      "backgroundColor": "rgba(247,247,247,0.6)",
+                      "backgroundColor": "rgba(247, 247, 247, 0.60)",
                     },
                   ]
                 }
@@ -4625,14 +4663,18 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                 onResponderTerminationRequest={[Function]}
                 onStartShouldSetResponder={[Function]}
                 style={
-                  {
-                    "alignItems": "center",
-                    "borderColor": "#D1D1D2",
-                    "borderWidth": 1,
-                    "height": 50,
-                    "justifyContent": "center",
-                    "width": 50,
-                  }
+                  [
+                    {
+                      "alignItems": "center",
+                      "borderWidth": 1,
+                      "height": 50,
+                      "justifyContent": "center",
+                      "width": 50,
+                    },
+                    {
+                      "borderColor": "#D1D1D2",
+                    },
+                  ]
                 }
               >
                 <View>
@@ -5241,10 +5283,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
     style={
       [
         {
-          "backgroundColor": "#0A0A0A",
           "paddingBottom": 30,
           "paddingHorizontal": 40,
           "paddingTop": 12,
+        },
+        {
+          "backgroundColor": "#000000",
         },
         undefined,
       ]
@@ -5253,14 +5297,18 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
   >
     <View
       style={
-        {
-          "backgroundColor": "#222222",
-          "height": 1,
-          "left": 0,
-          "position": "absolute",
-          "right": 0,
-          "top": 0,
-        }
+        [
+          {
+            "height": 1,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "backgroundColor": "#25272B",
+          },
+        ]
       }
     />
     <View
@@ -5405,7 +5453,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                 "lineHeight": 21,
               },
               {
-                "color": "#666666",
+                "color": "rgba(247, 247, 247, 0.60)",
               },
               {
                 "fontWeight": "700",

@@ -85,7 +85,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Back"
-          style={styles.backButton}
+          style={[styles.backButton, { backgroundColor: colors.mcBlack3 }]}
         >
           <Icon icon={Icons.back} size={20} color={colors.mcWhite} />
         </Pressable>
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#2C2C2E',
+
     justifyContent: 'center' as const,
     alignItems: 'center' as const,
   },

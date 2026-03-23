@@ -27,16 +27,6 @@ import type { SongDestination } from '../../types';
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
-/** Matches Swift Color(hex: "#FF5C24") — same as palette.mcOrange */
-const TAB_ACTIVE_BG = '#FF5C24';
-/** Matches Swift Color.mcBlack — text on active tab */
-const TAB_ACTIVE_TEXT = '#000000';
-/** Matches Swift Color(hex: "#666666") — text on inactive tab */
-const TAB_INACTIVE_TEXT = '#666666';
-/** Matches Swift Color(hex: "#0A0A0A") — container background */
-const TAB_BAR_BG = '#0A0A0A';
-/** Matches Swift Color(hex: "#222222") — top border */
-const TAB_BAR_BORDER = '#222222';
 /** Tab height from Swift: .frame(height: 40) */
 const TAB_HEIGHT = 40;
 
@@ -89,18 +79,19 @@ function resolveActiveTab(currentView: SongDestination): TabKey {
 
 export const SongMixerTabBar: React.FC<SongMixerTabBarProps> = memo(
   function SongMixerTabBar({ currentView, onTabPress, style }) {
-    const { borderRadius } = useTheme();
+    const { colors, borderRadius } = useTheme();
     const activeTab = resolveActiveTab(currentView);
 
     return (
       <View
-        style={[styles.container, style]}
+        style={[styles.container, { backgroundColor: colors.mcBlack }, style]}
         accessibilityRole="tablist"
         accessibilityLabel="View tabs"
         testID="song-mixer-tab-bar"
       >
-        {/* Top border line — matches Swift .overlay Rectangle #222 h=1 */}
-        <View style={styles.topBorder} />
+        <View
+          style={[styles.topBorder, { backgroundColor: colors.mcBlack3 }]}
+        />
 
         <View style={styles.tabRow}>
           {TABS.map((tab) => (
@@ -133,6 +124,7 @@ const TabButton: React.FC<TabButtonProps> = memo(function TabButton({
   borderRadius: radius,
   onPress,
 }) {
+  const { colors } = useTheme();
   const handlePress = useCallback(() => {
     onPress?.(tab.destination);
   }, [onPress, tab.destination]);
@@ -146,7 +138,7 @@ const TabButton: React.FC<TabButtonProps> = memo(function TabButton({
       style={({ pressed }) => [
         styles.tab,
         {
-          backgroundColor: isActive ? TAB_ACTIVE_BG : 'transparent',
+          backgroundColor: isActive ? colors.mcOrange : 'transparent',
           borderRadius: radius,
           opacity: pressed ? 0.7 : 1,
         },
@@ -156,7 +148,7 @@ const TabButton: React.FC<TabButtonProps> = memo(function TabButton({
       {/* iOS: .system(size: 14, weight: .semibold), uppercased */}
       <Text
         variant="body"
-        color={isActive ? TAB_ACTIVE_TEXT : TAB_INACTIVE_TEXT}
+        color={isActive ? colors.mcBlack : colors.mcWhite3}
         bold
         style={{ fontWeight: '600', fontSize: 14 }}
       >
@@ -170,7 +162,6 @@ const TabButton: React.FC<TabButtonProps> = memo(function TabButton({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: TAB_BAR_BG,
     paddingHorizontal: 40, // matches Swift .padding(.horizontal, 40)
     paddingTop: 12, // matches Swift .padding(.vertical, 12)
     paddingBottom: 30, // matches Swift .padding(.bottom, 30) + .padding(.vertical, 12)
@@ -181,7 +172,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 1,
-    backgroundColor: TAB_BAR_BORDER,
   },
   tabRow: {
     flexDirection: 'row',

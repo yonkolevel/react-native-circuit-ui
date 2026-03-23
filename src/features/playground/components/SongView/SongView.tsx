@@ -248,14 +248,14 @@ export const SongView = memo(function SongView({
                             s.secTab,
                             {
                               backgroundColor: isActive
-                                ? '#FFFFFF'
-                                : 'rgba(247,247,247,0.6)',
+                                ? colors.mcWhite
+                                : colors.mcWhite3,
                             },
                           ]}
                         >
                           <Text
                             variant="small"
-                            color={'#000000'}
+                            color={colors.mcBlack}
                             center
                             numberOfLines={1}
                           >
@@ -266,7 +266,7 @@ export const SongView = memo(function SongView({
                     })}
                     <Pressable
                       onPress={() => callbacks?.onAddSection?.()}
-                      style={s.addSecBtn}
+                      style={[s.addSecBtn, { borderColor: colors.black5 }]}
                     >
                       <Icon
                         icon={Icons.plus}
@@ -363,7 +363,6 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#D1D1D2', // mcBlack5
   },
   clipRows: { gap: GAP },
   clipRow: {
