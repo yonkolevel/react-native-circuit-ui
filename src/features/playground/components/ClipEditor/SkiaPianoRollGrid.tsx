@@ -12,7 +12,7 @@
  * - Skia draws everything in a single GPU pass — adding a note is just
  *   one more Rect in the draw list, no React re-render overhead
  */
-import { memo, useCallback, useMemo, useRef } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { View, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { Canvas, Path as SkiaPath, Rect, Skia, Line, vec } from '@shopify/react-native-skia';
 import { ScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -157,6 +157,14 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     origNoteNumber: number;
   } | null>(null);
 
+  // Live drag preview — updated during gesture, rendered as a modified note rect
+  const [dragPreview, setDragPreview] = useState<{
+    noteIdx: number;
+    x: number;
+    y: number;
+    width: number;
+  } | null>(null);
+
   // --- JS callbacks (must use runOnJS from gesture worklets) ---
   const handleTap = useCallback((x: number, y: number) => {
     const hit = hitTestNote(x, y);
@@ -189,6 +197,29 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     };
   }, [hitTestNote, notes]);
 
+  const handleDragUpdate = useCallback((x: number, y: number) => {
+    const ds = dragState.current;
+    if (!ds) return;
+    const dx = x - ds.startX;
+    const dy = y - ds.startY;
+
+    if (ds.type === 'resize') {
+      const newWidth = Math.max(stepWidth, ds.origDuration * beatWidth + dx);
+      const noteX = ds.origPosition * beatWidth;
+      setDragPreview({ noteIdx: ds.noteIdx, x: noteX, y: -1, width: newWidth });
+    } else {
+      const stepsDx = Math.round(dx / stepWidth);
+      const rowsDy = Math.round(dy / rowHeight);
+      const newPos = Math.max(0, ds.origPosition + stepsDx * 0.25);
+      const newRowIdx = Math.floor(ds.startY / rowHeight) + rowsDy;
+      const clampedRow = Math.max(0, Math.min(totalPitches - 1, newRowIdx));
+      const noteX = newPos * beatWidth;
+      const noteY = clampedRow * rowHeight + 2;
+      const noteW = ds.origDuration * beatWidth - 2;
+      setDragPreview({ noteIdx: ds.noteIdx, x: noteX, y: noteY, width: noteW });
+    }
+  }, [beatWidth, stepWidth, rowHeight, totalPitches]);
+
   const handleDragEnd = useCallback((x: number, y: number) => {
     const ds = dragState.current;
     if (!ds) return;
@@ -211,6 +242,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       }
     }
     dragState.current = null;
+    setDragPreview(null);
   }, [beatWidth, stepWidth, rowHeight, totalPitches, pitchToMidi, onNoteResize, onNoteMove]);
 
   // --- Gestures (UI thread → runOnJS for callbacks) ---
@@ -226,6 +258,10 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     .onStart((e) => {
       'worklet';
       runOnJS(handleDragStart)(e.x, e.y);
+    })
+    .onUpdate((e) => {
+      'worklet';
+      runOnJS(handleDragUpdate)(e.x, e.y);
     })
     .onEnd((e) => {
       'worklet';
@@ -326,6 +362,18 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   const y = rowIdx * rowHeight + 2;
                   const w = Math.max(note.duration * beatWidth - 2, stepWidth);
                   const h = rowHeight - 4;
+
+                  // During drag: dim the original, show preview at drag position
+                  const isDragging = dragPreview?.noteIdx === idx;
+                  if (isDragging && dragPreview) {
+                    const previewY = dragPreview.y >= 0 ? dragPreview.y : y;
+                    return (
+                      <React.Fragment key={`n${idx}`}>
+                        <Rect x={x} y={y} width={w} height={h} color={trackColor} opacity={0.3} />
+                        <Rect x={dragPreview.x} y={previewY} width={dragPreview.width} height={h} color={trackColor} opacity={0.9} />
+                      </React.Fragment>
+                    );
+                  }
                   return (
                     <Rect key={`n${idx}`} x={x} y={y} width={w} height={h} color={trackColor} />
                   );
