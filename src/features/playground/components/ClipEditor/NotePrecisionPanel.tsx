@@ -12,7 +12,7 @@
 import React, { memo, useMemo, useCallback, useRef, useState } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import { ScrollView as GHScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { Canvas, Rect, RoundedRect, Line, vec } from '@shopify/react-native-skia';
+import { Canvas, Rect, RoundedRect, Line, vec, Text as SkiaText, matchFont } from '@shopify/react-native-skia';
 import { runOnJS } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
@@ -28,6 +28,9 @@ const HANDLE_H = 16;
 const STEM_W = 2;
 const BEATS_PER_BAR = 4;
 const STEPS_PER_BEAT = 4;
+
+// Monospaced font for velocity numbers — rendered in Skia so it sticks to the handle
+const velFont = matchFont({ fontFamily: 'monospace', fontSize: 8, fontWeight: '600' });
 
 const VEL_LEVELS = [
   { fraction: 1.0, label: '127' },
@@ -216,32 +219,26 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
                   );
                 })}
 
-                {/* Handles — square rect, right edge touches stem */}
+                {/* Handles — square rect with velocity number inside (all Skia, same GPU frame) */}
                 {notesAtPitch.map(({ note }, i) => {
                   const vel = i === dragIdx ? dragVel : note.velocity;
                   const g = noteGeom(note, vel);
+                  const velStr = String(vel);
+                  // Center text in handle: measure width, offset to center
+                  const textW = velFont.measureText(velStr).width;
+                  const textX = g.handleX + (HANDLE_W - textW) / 2;
+                  const textY = g.handleY + HANDLE_H - 4; // baseline offset
                   return (
                     <React.Fragment key={`h${i}`}>
                       <Rect x={g.handleX} y={g.handleY} width={HANDLE_W} height={HANDLE_H}
                         color={trackColor} opacity={0.3 + 0.7 * g.fraction} />
                       <Rect x={g.handleX} y={g.handleY} width={HANDLE_W} height={HANDLE_H}
                         color="rgba(255,255,255,0.3)" style="stroke" strokeWidth={0.5} />
+                      <SkiaText x={textX} y={textY} text={velStr} font={velFont} color="white" />
                     </React.Fragment>
                   );
                 })}
               </Canvas>
-
-              {/* Velocity number labels — INSIDE the scroll container */}
-              {notesAtPitch.map(({ note }, i) => {
-                const vel = i === dragIdx ? dragVel : note.velocity;
-                const g = noteGeom(note, vel);
-                return (
-                  <View key={`vl${i}`} pointerEvents="none"
-                    style={{ position: 'absolute', left: g.handleX, top: g.handleY, width: HANDLE_W, height: HANDLE_H, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text variant="extraSmall" color={colors.mcWhite} style={{ fontSize: 8, fontFamily: 'monospace', fontWeight: '600' }}>{vel}</Text>
-                  </View>
-                );
-              })}
 
               {/* Drag touch targets — INSIDE the scroll container */}
               {notesAtPitch.map(({ note }, i) => {
