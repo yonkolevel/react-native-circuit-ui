@@ -1046,6 +1046,8 @@ export const ClipEditorView = memo(function ClipEditorView({
               trackColor={trackColor}
               onClose={() => setSelectedPitchIndex(null)}
               onVelocityChange={callbacks?.onVelocityChange}
+              onPositionChange={(idx, newPos) => callbacks?.onNoteMove?.(idx, newPos, clip.notes[idx]?.noteNumber ?? 0)}
+              onDurationChange={(idx, newDur) => callbacks?.onNoteResize?.(idx, newDur)}
             />
           ) : shouldShowPerformanceControls ? (
             instrumentType === 'drum' ? (

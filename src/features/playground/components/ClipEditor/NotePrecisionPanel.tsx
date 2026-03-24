@@ -50,6 +50,8 @@ export interface NotePrecisionPanelProps {
   trackColor: string;
   onClose?: () => void;
   onVelocityChange?: (noteIndex: number, velocity: number) => void;
+  onPositionChange?: (noteIndex: number, newPosition: number) => void;
+  onDurationChange?: (noteIndex: number, newDuration: number) => void;
 }
 
 export const NotePrecisionPanel = memo(function NotePrecisionPanel({
@@ -60,6 +62,8 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
   trackColor,
   onClose,
   onVelocityChange,
+  onPositionChange,
+  onDurationChange,
 }: NotePrecisionPanelProps) {
   const { colors } = useTheme();
 
@@ -74,11 +78,21 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
 
   const [velAreaH, setVelAreaH] = useState(120);
 
-  // Drag state
+  // Velocity drag state
   const [dragIdx, setDragIdx] = useState(-1);
   const [dragVel, setDragVel] = useState(0);
   const dragStartY = useRef(0);
   const dragStartVel = useRef(0);
+
+  // Position drag state (horizontal drag on note block body)
+  const [posBlockDragIdx, setPosBlockDragIdx] = useState(-1);
+  const [posBlockDragDx, setPosBlockDragDx] = useState(0);
+  const posBlockStartX = useRef(0);
+
+  // Duration drag state (horizontal drag on note block right edge)
+  const [durBlockDragIdx, setDurBlockDragIdx] = useState(-1);
+  const [durBlockDragDx, setDurBlockDragDx] = useState(0);
+  const durBlockStartX = useRef(0);
 
   const handleVelDragStart = useCallback((idx: number, y: number) => {
     const entry = notesAtPitch[idx];
@@ -102,6 +116,48 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
     }
     setDragIdx(-1);
   }, [dragIdx, dragVel, notesAtPitch, onVelocityChange]);
+
+  // Position drag handlers
+  const handlePosBlockDragStart = useCallback((idx: number, x: number) => {
+    setPosBlockDragIdx(idx);
+    setPosBlockDragDx(0);
+    posBlockStartX.current = x;
+  }, []);
+  const handlePosBlockDragUpdate = useCallback((x: number) => {
+    setPosBlockDragDx(x - posBlockStartX.current);
+  }, []);
+  const handlePosBlockDragEnd = useCallback((x: number) => {
+    if (posBlockDragIdx >= 0 && posBlockDragIdx < notesAtPitch.length) {
+      const dx = x - posBlockStartX.current;
+      const stepsDelta = Math.round(dx / STEP_W);
+      const note = notesAtPitch[posBlockDragIdx]!.note;
+      const newPos = Math.max(0, note.position + stepsDelta * 0.25);
+      onPositionChange?.(notesAtPitch[posBlockDragIdx]!.globalIdx, newPos);
+    }
+    setPosBlockDragIdx(-1);
+    setPosBlockDragDx(0);
+  }, [posBlockDragIdx, notesAtPitch, onPositionChange]);
+
+  // Duration drag handlers
+  const handleDurBlockDragStart = useCallback((idx: number, x: number) => {
+    setDurBlockDragIdx(idx);
+    setDurBlockDragDx(0);
+    durBlockStartX.current = x;
+  }, []);
+  const handleDurBlockDragUpdate = useCallback((x: number) => {
+    setDurBlockDragDx(x - durBlockStartX.current);
+  }, []);
+  const handleDurBlockDragEnd = useCallback((x: number) => {
+    if (durBlockDragIdx >= 0 && durBlockDragIdx < notesAtPitch.length) {
+      const dx = x - durBlockStartX.current;
+      const stepsDelta = Math.round(dx / STEP_W);
+      const note = notesAtPitch[durBlockDragIdx]!.note;
+      const newDur = Math.max(0.25, note.duration + stepsDelta * 0.25);
+      onDurationChange?.(notesAtPitch[durBlockDragIdx]!.globalIdx, newDur);
+    }
+    setDurBlockDragIdx(-1);
+    setDurBlockDragDx(0);
+  }, [durBlockDragIdx, notesAtPitch, onDurationChange]);
 
   /** Compute handle + stem geometry for a note (matches native VelocityHandle positioning) */
   const noteGeom = useCallback((note: ClipNote, vel: number) => {
@@ -180,20 +236,42 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
               ))}
             </View>
 
-            {/* Note blocks */}
+            {/* Note blocks — draggable for position + duration */}
             <View style={{ height: NOTE_AREA_H }}>
-              <Canvas style={StyleSheet.absoluteFill}>
+              <Canvas style={StyleSheet.absoluteFill} pointerEvents="none">
                 {Array.from({ length: totalSteps + 1 }, (_, s) => (
                   <Line key={s} p1={vec(s * STEP_W, 0)} p2={vec(s * STEP_W, NOTE_AREA_H)}
                     color={s % STEPS_PER_BEAT === 0 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.06)'}
                     strokeWidth={0.5} />
                 ))}
                 {notesAtPitch.map(({ note }, i) => {
-                  const x = (note.position / 0.25) * STEP_W;
-                  const w = Math.max((note.duration / 0.25) * STEP_W - 1, STEP_W * 0.5);
-                  return <RoundedRect key={i} x={x} y={2} width={w} height={NOTE_AREA_H - 4} r={3} color={trackColor} opacity={0.85} />;
+                  const dx = i === posBlockDragIdx ? posBlockDragDx : 0;
+                  const dw = i === durBlockDragIdx ? durBlockDragDx : 0;
+                  const x = (note.position / 0.25) * STEP_W + dx;
+                  const w = Math.max((note.duration / 0.25) * STEP_W + dw - 1, STEP_W * 0.5);
+                  const velOpacity = 0.4 + 0.6 * (note.velocity / 127);
+                  return (
+                    <React.Fragment key={i}>
+                      <RoundedRect x={x} y={2} width={w} height={NOTE_AREA_H - 4} r={3} color={trackColor} opacity={velOpacity} />
+                      <Line p1={vec(x + w - 2, 6)} p2={vec(x + w - 2, NOTE_AREA_H - 6)} color="rgba(0,0,0,0.4)" strokeWidth={2} />
+                    </React.Fragment>
+                  );
                 })}
               </Canvas>
+              {/* Gesture targets: body = position drag, right edge = duration drag */}
+              {notesAtPitch.map(({ note }, i) => {
+                const x = (note.position / 0.25) * STEP_W;
+                const w = Math.max((note.duration / 0.25) * STEP_W, STEP_W);
+                const edgeW = 12;
+                return (
+                  <React.Fragment key={`bg${i}`}>
+                    <PrecisionBlockDrag index={i} x={x} width={w - edgeW} type="position"
+                      onStart={handlePosBlockDragStart} onUpdate={handlePosBlockDragUpdate} onEnd={handlePosBlockDragEnd} />
+                    <PrecisionBlockDrag index={i} x={x + w - edgeW} width={edgeW} type="duration"
+                      onStart={handleDurBlockDragStart} onUpdate={handleDurBlockDragUpdate} onEnd={handleDurBlockDragEnd} />
+                  </React.Fragment>
+                );
+              })}
               {notesAtPitch.length === 0 && (
                 <View style={styles.emptyState}>
                   <Text variant="small" color={colors.mcWhite3}>No notes at {pitchLabel}</Text>
@@ -266,6 +344,28 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
         </GHScrollView>
       </View>
     </View>
+  );
+});
+
+/** Drag target for note block position or duration adjustment */
+const PrecisionBlockDrag = memo(function PrecisionBlockDrag({
+  index, x, width, type, onStart, onUpdate, onEnd,
+}: {
+  index: number; x: number; width: number; type: 'position' | 'duration';
+  onStart: (idx: number, x: number) => void;
+  onUpdate: (x: number) => void;
+  onEnd: (x: number) => void;
+}) {
+  const gesture = Gesture.Pan()
+    .minDistance(type === 'duration' ? 2 : 4)
+    .onStart((e) => { 'worklet'; runOnJS(onStart)(index, e.absoluteX); })
+    .onUpdate((e) => { 'worklet'; runOnJS(onUpdate)(e.absoluteX); })
+    .onEnd((e) => { 'worklet'; runOnJS(onEnd)(e.absoluteX); });
+
+  return (
+    <GestureDetector gesture={gesture}>
+      <View style={{ position: 'absolute', left: x, top: 0, width: Math.max(width, 12), height: NOTE_AREA_H }} />
+    </GestureDetector>
   );
 });
 
