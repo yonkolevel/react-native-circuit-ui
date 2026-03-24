@@ -164,8 +164,6 @@ interface PianoRollGridProps {
   rowHeight?: number;
   zoomLevel?: number;
   playheadPosition?: number;
-  isPlaying?: boolean;
-  tempo?: number;
   isExpanded?: boolean;
   selectedPitchIndex?: number | null;
   /** Base MIDI note for melodic/bass pitch range (from soundbank defaultOctave). Falls back to 48 (C3). */
@@ -293,8 +291,6 @@ const PianoRollGrid = memo(function PianoRollGrid({
   lengthInBeats,
   rowHeight = 34,
   zoomLevel = 1,
-  isPlaying,
-  tempo = 120,
   isExpanded,
   selectedPitchIndex,
   melodicMinPitch,
@@ -514,15 +510,6 @@ const PianoRollGrid = memo(function PianoRollGrid({
           </ScrollView>
         </View>
       </ScrollView>
-
-      {/* Playhead — outside PianoRollGrid so note additions don't re-render it */}
-      <PlayheadLine
-        beatWidth={BEAT_WIDTH}
-        clipBeats={lengthInBeats}
-        isPlaying={isPlaying}
-        tempo={tempo}
-        color={colors.mcWhite}
-      />
 
       {/* Zoom controls — iOS: individual buttons with black.opacity(0.6) bg, rounded, 36x36 */}
       <View style={styles.zoomControls}>
@@ -937,6 +924,8 @@ export const ClipEditorView = memo(function ClipEditorView({
   const [settingsVisible, setSettingsVisible] = useState(false);
   const trackColor = clip.colorHex;
   const samplesList = samples || [];
+  const { width: screenWidth } = useWindowDimensions();
+  const beatWidth = ((screenWidth - LABEL_COL_WIDTH) / 16) * zoom * 4;
 
   // iOS: PerformanceControlsView visible when config.isPerformanceControlsVisible && !isExpanded
   const shouldShowPerformanceControls =
@@ -970,7 +959,8 @@ export const ClipEditorView = memo(function ClipEditorView({
           onSettings={() => setSettingsVisible(true)}
         />
 
-        {/* Piano Roll */}
+        {/* Piano Roll + Playhead overlay */}
+        <View style={{ flex: 1, position: 'relative' }}>
         <PianoRollGrid
           notes={clip.notes}
           samples={samplesList}
@@ -978,8 +968,6 @@ export const ClipEditorView = memo(function ClipEditorView({
           trackColor={trackColor}
           lengthInBeats={clip.activeLengthInBars * 4}
           playheadPosition={playheadPosition}
-          isPlaying={isPlaying}
-          tempo={tempo}
           zoomLevel={zoom}
           isExpanded={isExpanded}
           selectedPitchIndex={selectedPitchIndex}
@@ -1007,6 +995,14 @@ export const ClipEditorView = memo(function ClipEditorView({
           onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
           onZoomOut={() => setZoom(Math.max(zoom - 0.25, 0.5))}
         />
+        <PlayheadLine
+          beatWidth={beatWidth}
+          clipBeats={clip.activeLengthInBars * 4}
+          isPlaying={isPlaying}
+          tempo={tempo}
+          color={colors.mcWhite}
+        />
+        </View>
 
         {/* Clip Length Bar */}
         {!isExpanded && (
