@@ -14,7 +14,7 @@
  */
 import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { View, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
-import { Canvas, Path as SkiaPath, Rect, Skia, Line, vec } from '@shopify/react-native-skia';
+import { Canvas, Path as SkiaPath, Rect, RoundedRect, Skia, Line, vec } from '@shopify/react-native-skia';
 import { ScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
@@ -348,7 +348,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   />
                 ))}
 
-                {/* Notes — Skia Rects, GPU-drawn */}
+                {/* Notes — styled to match AudioKit PianoRoll */}
                 {notes.map((note, idx) => {
                   let pitchIdx: number;
                   if (isDrum) {
@@ -359,23 +359,43 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   }
                   const rowIdx = totalPitches - 1 - pitchIdx;
                   const x = note.position * beatWidth;
-                  const y = rowIdx * rowHeight + 2;
-                  const w = Math.max(note.duration * beatWidth - 2, stepWidth);
-                  const h = rowHeight - 4;
+                  const y = rowIdx * rowHeight + 1; // 1px padding from row edge
+                  const w = Math.max(note.duration * beatWidth - 1, stepWidth); // 1px gap between consecutive
+                  const h = rowHeight - 2;
+                  const r = 3; // corner radius matching old MidiNoteView
 
-                  // During drag: dim the original, show preview at drag position
                   const isDragging = dragPreview?.noteIdx === idx;
                   if (isDragging && dragPreview) {
                     const previewY = dragPreview.y >= 0 ? dragPreview.y : y;
                     return (
                       <React.Fragment key={`n${idx}`}>
-                        <Rect x={x} y={y} width={w} height={h} color={trackColor} opacity={0.3} />
-                        <Rect x={dragPreview.x} y={previewY} width={dragPreview.width} height={h} color={trackColor} opacity={0.9} />
+                        {/* Ghost at original position */}
+                        <RoundedRect x={x} y={y} width={w} height={h} r={r} color="rgba(0,0,0,0.2)" />
+                        {/* Dragged note */}
+                        <RoundedRect x={dragPreview.x} y={previewY} width={dragPreview.width} height={h} r={r} color={trackColor} />
+                        {/* Resize handle on dragged note */}
+                        <Line
+                          p1={vec(dragPreview.x + dragPreview.width - 3, previewY + 4)}
+                          p2={vec(dragPreview.x + dragPreview.width - 3, previewY + h - 4)}
+                          color="rgba(0,0,0,0.4)"
+                          strokeWidth={2}
+                        />
                       </React.Fragment>
                     );
                   }
+
                   return (
-                    <Rect key={`n${idx}`} x={x} y={y} width={w} height={h} color={trackColor} />
+                    <React.Fragment key={`n${idx}`}>
+                      {/* Note body — rounded rect with slight transparency */}
+                      <RoundedRect x={x} y={y} width={w} height={h} r={r} color={trackColor} opacity={0.85} />
+                      {/* Resize handle — dark line at right edge (matches AudioKit DefaultNoteView) */}
+                      <Line
+                        p1={vec(x + w - 3, y + 4)}
+                        p2={vec(x + w - 3, y + h - 4)}
+                        color="rgba(0,0,0,0.3)"
+                        strokeWidth={2}
+                      />
+                    </React.Fragment>
                   );
                 })}
               </Canvas>
