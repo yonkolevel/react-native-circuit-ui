@@ -12,7 +12,7 @@
  * - Skia draws everything in a single GPU pass — adding a note is just
  *   one more Rect in the draw list, no React re-render overhead
  */
-import React, { memo, useCallback, useMemo, useRef } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { View, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { Canvas, Path as SkiaPath, Rect, RoundedRect, Skia, Line, vec } from '@shopify/react-native-skia';
 import { ScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -183,6 +183,10 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const dragY = useSharedValue(0);
   const dragW = useSharedValue(0);
   const dragOpacity = useSharedValue(0);
+  // Which note index is currently being dragged (-1 = none).
+  // React state — only set on drag start/end (2 renders per gesture, not per frame).
+  const [activeNoteIdx, setActiveNoteIdx] = useState(-1);
+
   // Drag state mirrored as shared values for worklet access
   const dragType = useSharedValue(0); // 0 = none, 1 = move, 2 = resize
   const dragStartX = useSharedValue(0);
@@ -209,7 +213,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 
   const handleDragStart = useCallback((x: number, y: number) => {
     const hit = hitTestNote(x, y);
-    if (!hit) { dragState.current = null; dragType.value = 0; return; }
+    if (!hit) { dragState.current = null; dragType.value = 0; setActiveNoteIdx(-1); return; }
+    setActiveNoteIdx(hit.idx);
     const note = notes[hit.idx]!;
     dragState.current = {
       type: hit.isResizeEdge ? 'resize' : 'move',
@@ -262,6 +267,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     dragState.current = null;
     dragNoteIdx.value = -1;
     dragOpacity.value = 0;
+    setActiveNoteIdx(-1);
   }, [beatWidth, stepWidth, rowHeight, totalPitches, pitchToMidi, onNoteResize, onNoteMove]);
 
   // --- Gestures (UI thread → runOnJS for callbacks) ---
@@ -402,6 +408,10 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   const w = Math.max(note.duration * beatWidth - 1, stepWidth);
                   const h = rowHeight - 2;
                   const r = 3;
+
+                  // Hide the original note while it's being dragged — the shared-value
+                  // preview rect shows the live position instead.
+                  if (idx === activeNoteIdx) return null;
 
                   return (
                     <React.Fragment key={`n${idx}`}>
