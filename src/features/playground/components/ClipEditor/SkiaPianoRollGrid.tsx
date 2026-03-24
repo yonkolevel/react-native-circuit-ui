@@ -265,13 +265,9 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       }
     }
     dragState.current = null;
-    // Clear preview after the store update renders — avoids flicker where
-    // the original note reappears at the old position for one frame.
-    requestAnimationFrame(() => {
-      dragNoteIdx.value = -1;
-      dragOpacity.value = 0;
-      setActiveNoteIdx(-1);
-    });
+    dragNoteIdx.value = -1;
+    dragOpacity.value = 0;
+    setActiveNoteIdx(-1);
   }, [beatWidth, stepWidth, rowHeight, totalPitches, pitchToMidi, onNoteResize, onNoteMove]);
 
   // --- Gestures (UI thread → runOnJS for callbacks) ---
@@ -412,34 +408,36 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   const w = Math.max(note.duration * beatWidth - 1, stepWidth);
                   const h = rowHeight - 2;
                   const r = 3;
-
-                  // Hide the original note while it's being dragged — the shared-value
-                  // preview rect shows the live position instead.
-                  if (idx === activeNoteIdx) return null;
+                  const isDragging = idx === activeNoteIdx;
 
                   return (
                     <React.Fragment key={`n${idx}`}>
-                      <RoundedRect x={x} y={y} width={w} height={h} r={r} color={trackColor} opacity={0.85} />
-                      <Line
-                        p1={vec(x + w - 3, y + 4)}
-                        p2={vec(x + w - 3, y + h - 4)}
-                        color="rgba(0,0,0,0.3)"
-                        strokeWidth={2}
+                      {/* When dragging: ghost at original position (AudioKit style) */}
+                      {isDragging && (
+                        <RoundedRect x={x} y={y} width={w} height={h} r={r} color="rgba(0,0,0,0.2)" />
+                      )}
+                      {/* Note body — uses shared values when dragging, static values otherwise */}
+                      <RoundedRect
+                        x={isDragging ? dragX : x}
+                        y={isDragging ? dragY : y}
+                        width={isDragging ? dragW : w}
+                        height={h}
+                        r={r}
+                        color={trackColor}
+                        opacity={isDragging ? 1 : 0.85}
                       />
+                      {/* Resize handle */}
+                      {!isDragging && (
+                        <Line
+                          p1={vec(x + w - 3, y + 4)}
+                          p2={vec(x + w - 3, y + h - 4)}
+                          color="rgba(0,0,0,0.3)"
+                          strokeWidth={2}
+                        />
+                      )}
                     </React.Fragment>
                   );
                 })}
-
-                {/* Drag preview — driven by shared values, updates on UI thread */}
-                <RoundedRect
-                  x={dragX}
-                  y={dragY}
-                  width={dragW}
-                  height={rowHeight - 2}
-                  r={3}
-                  color={trackColor}
-                  opacity={dragOpacity}
-                />
               </Canvas>
 
               {/* Touch overlay — gesture handler for tap/drag/resize */}
