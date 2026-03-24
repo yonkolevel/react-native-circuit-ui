@@ -122,8 +122,15 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   );
 
   // --- Note hit testing ---
+  // Expanded touch target: 12px padding around the visual note rect.
+  // Resize handle zone: rightmost 20px (or half the note, whichever is smaller).
   const hitTestNote = useCallback((x: number, y: number): { idx: number; isResizeEdge: boolean } | null => {
-    const RESIZE_HANDLE = stepWidth * 0.5; // right edge zone for resize
+    const TOUCH_PADDING = 12;
+    const MIN_RESIZE_ZONE = 20;
+    let bestIdx = -1;
+    let bestDist = Infinity;
+    let bestIsResize = false;
+
     for (let idx = notes.length - 1; idx >= 0; idx--) {
       const note = notes[idx]!;
       let pitchIdx: number;
@@ -135,15 +142,27 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       }
       const rowIdx = totalPitches - 1 - pitchIdx;
       const noteX = note.position * beatWidth;
-      const noteY = rowIdx * rowHeight + 2;
-      const noteW = Math.max(note.duration * beatWidth - 2, stepWidth);
-      const noteH = rowHeight - 4;
-      if (x >= noteX && x <= noteX + noteW && y >= noteY && y <= noteY + noteH) {
-        const isResizeEdge = x >= noteX + noteW - RESIZE_HANDLE;
-        return { idx, isResizeEdge };
+      const noteY = rowIdx * rowHeight + 1;
+      const noteW = Math.max(note.duration * beatWidth - 1, stepWidth);
+      const noteH = rowHeight - 2;
+
+      // Expanded hit area
+      if (x >= noteX - TOUCH_PADDING && x <= noteX + noteW + TOUCH_PADDING &&
+          y >= noteY - TOUCH_PADDING && y <= noteY + noteH + TOUCH_PADDING) {
+        // Distance to note center — pick the closest note if overlapping
+        const cx = noteX + noteW / 2;
+        const cy = noteY + noteH / 2;
+        const dist = Math.abs(x - cx) + Math.abs(y - cy);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestIdx = idx;
+          const resizeZone = Math.min(MIN_RESIZE_ZONE, noteW / 2);
+          bestIsResize = x >= noteX + noteW - resizeZone;
+        }
       }
     }
-    return null;
+
+    return bestIdx >= 0 ? { idx: bestIdx, isResizeEdge: bestIsResize } : null;
   }, [notes, isDrum, samples, basePitch, totalPitches, beatWidth, rowHeight, stepWidth]);
 
   // --- Gesture state ---
