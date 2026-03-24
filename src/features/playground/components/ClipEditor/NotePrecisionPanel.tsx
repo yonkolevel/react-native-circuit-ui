@@ -26,6 +26,7 @@ const STEP_W = 24;
 const HANDLE_W = STEP_W; // matches 1/16th note width
 const HANDLE_H = 16;
 const STEM_W = 2;
+const BOTTOM_PAD = 32; // space below velocity 0 — keeps handles reachable
 const BEATS_PER_BAR = 4;
 const STEPS_PER_BEAT = 4;
 
@@ -90,7 +91,8 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
 
   const handleVelDragUpdate = useCallback((y: number) => {
     const dy = y - dragStartY.current;
-    const delta = -dy / velAreaH * 127;
+    const usableH = velAreaH - BOTTOM_PAD - HANDLE_H;
+    const delta = -dy / usableH * 127;
     setDragVel(Math.round(Math.max(1, Math.min(127, dragStartVel.current + delta))));
   }, [velAreaH]);
 
@@ -104,22 +106,17 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
   /** Compute handle + stem geometry for a note (matches native VelocityHandle positioning) */
   const noteGeom = useCallback((note: ClipNote, vel: number) => {
     const fraction = vel / 127;
-    const usableH = velAreaH - HANDLE_H;
-    const stemH = Math.max(STEM_W, fraction * usableH);
+    const baseline = velAreaH - BOTTOM_PAD; // velocity 0 sits here
+    const usableH = baseline - HANDLE_H;    // range from vel 0 to vel 127
+    const stemH = Math.max(0, fraction * usableH);
 
-    // Handle and stem aligned at note start position.
-    // Handle width = 1 step (16th note). Stem at right edge of handle.
     const noteStartX = (note.position / 0.25) * STEP_W;
-
-    // Handle starts at note position
     const handleX = noteStartX;
-    // Stem at right edge of handle
-    const stemCenterX = noteStartX + HANDLE_W;
-    const stemX = stemCenterX;
-    const handleY = velAreaH - stemH - HANDLE_H;
-    const stemTop = velAreaH - stemH;
+    const stemX = noteStartX + HANDLE_W;
+    const handleY = baseline - stemH - HANDLE_H;
+    const stemTop = baseline - stemH;
 
-    return { noteStartX, stemX, stemCenterX, stemH, stemTop, handleX, handleY, fraction };
+    return { noteStartX, stemX, stemH, stemTop, handleX, handleY, fraction, baseline };
   }, [velAreaH]);
 
   return (
@@ -155,9 +152,10 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
             {/* Level ticks — positioned to match handle Y for each velocity */}
             {VEL_LEVELS.map(l => {
               const fraction = l.vel / 127;
-              const usableH = velAreaH - HANDLE_H;
+              const baseline = velAreaH - BOTTOM_PAD;
+              const usableH = baseline - HANDLE_H;
               const stemH = fraction * usableH;
-              const y = velAreaH - stemH - HANDLE_H;
+              const y = baseline - stemH - HANDLE_H / 2;
               return (
                 <View key={l.label} style={[styles.rulerTick, { top: y }]}>
                   <Text variant="extraSmall" color={colors.mcWhite3} style={styles.rulerNum}>{l.label}</Text>
@@ -206,16 +204,17 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
             {/* Velocity area — canvas + handles + labels ALL inside the scroll */}
             <View style={{ height: velAreaH }}>
               <Canvas style={StyleSheet.absoluteFill}>
-                {/* Grid lines — aligned with handle positions */}
+                {/* Grid lines — aligned with handle center positions */}
                 {VEL_LEVELS.map(l => {
                   const fraction = l.vel / 127;
-                  const usableH = velAreaH - HANDLE_H;
+                  const baseline = velAreaH - BOTTOM_PAD;
+                  const usableH = baseline - HANDLE_H;
                   const stemH = fraction * usableH;
-                  const y = velAreaH - stemH - HANDLE_H / 2;
+                  const y = baseline - stemH - HANDLE_H / 2;
                   return <Line key={l.label} p1={vec(0, y)} p2={vec(totalWidth, y)} color="rgba(255,255,255,0.08)" strokeWidth={0.5} />;
                 })}
-                {/* Baseline */}
-                <Line p1={vec(0, velAreaH - 1)} p2={vec(totalWidth, velAreaH - 1)} color="rgba(255,255,255,0.15)" strokeWidth={0.5} />
+                {/* Baseline at velocity 0 */}
+                <Line p1={vec(0, velAreaH - BOTTOM_PAD)} p2={vec(totalWidth, velAreaH - BOTTOM_PAD)} color="rgba(255,255,255,0.15)" strokeWidth={0.5} />
 
                 {/* Stems — thin line from handle down to baseline */}
                 {notesAtPitch.map(({ note }, i) => {
