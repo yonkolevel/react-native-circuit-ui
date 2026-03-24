@@ -1,30 +1,17 @@
 /**
- * NotePrecisionPanel — matches iOS NotePrecisionPanel.swift + VelocityLaneView.swift
+ * NotePrecisionPanel — matches iOS NotePrecisionPanel.swift + VelocityHandle.swift
  *
- * Layout:
- * ┌─────────────────────────────────────────────────────┐
- * │ PitchLabel                                     [X]  │  header 28px
- * ├──────┬──────────────────────────────────────────────┤
- * │      │ 1.1    1.2    1.3    1.4                    │  beat labels 16px
- * │NOTES │ [███]  [██]  [████]                         │  note blocks 36px
- * │ VEL  │  ┃      ┃     ┃                             │  velocity area (flex)
- * │ 127──│──╋──────╋─────╋──────────────────           │   stems + handles
- * │  95──│──╋──────╋─────╋──────────────────           │   handles: rect with
- * │  64──│──╋──────╋─────╋──────────────────           │    velocity number
- * │  32──│──╋──────╋─────╋──────────────────           │   draggable vertically
- * └──────┴──────────────────────────────────────────────┘
- *  60px        scrollable timeline
+ * Handle shape (inverted L):
+ *   [vel##]┃
+ *          ┃ stem
+ *          ┃
+ *   ───────┃─── baseline
  *
- * Handle design (matching VelocityHandle.swift):
- * - Rectangle (square corners, NOT rounded)
- * - Fill: trackColor at opacity 0.3 + 0.7 * fraction
- * - Border: white at 0.3 opacity, 0.5px
- * - Contains velocity number in monospaced font
- * - Stem: thin line (2px) from handle down to baseline
+ * Handle RIGHT edge = stem LEFT edge. Handle extends LEFT.
  */
 import React, { memo, useMemo, useCallback, useRef, useState } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
-import { ScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { ScrollView as GHScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { Canvas, Rect, RoundedRect, Line, vec } from '@shopify/react-native-skia';
 import { runOnJS } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
@@ -41,6 +28,13 @@ const STEM_W = 2;
 const BEATS_PER_BAR = 4;
 const STEPS_PER_BEAT = 4;
 const STEP_W = 24;
+
+const VEL_LEVELS = [
+  { fraction: 1.0, label: '127' },
+  { fraction: 0.75, label: '95' },
+  { fraction: 0.5, label: '64' },
+  { fraction: 0.25, label: '32' },
+];
 
 export interface NotePrecisionPanelProps {
   notes: ClipNote[];
@@ -73,10 +67,9 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
   const totalWidth = totalSteps * STEP_W;
   const totalBeats = activeLengthInBars * BEATS_PER_BAR;
 
-  // Velocity area height — measured from layout
   const [velAreaH, setVelAreaH] = useState(120);
 
-  // Dragging state
+  // Drag state
   const [dragIdx, setDragIdx] = useState(-1);
   const [dragVel, setDragVel] = useState(0);
   const dragStartY = useRef(0);
@@ -93,33 +86,37 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
 
   const handleVelDragUpdate = useCallback((y: number) => {
     const dy = y - dragStartY.current;
-    // Dragging down = lower velocity, up = higher
     const delta = -dy / velAreaH * 127;
-    const newVel = Math.round(Math.max(1, Math.min(127, dragStartVel.current + delta)));
-    setDragVel(newVel);
+    setDragVel(Math.round(Math.max(1, Math.min(127, dragStartVel.current + delta))));
   }, [velAreaH]);
 
   const handleVelDragEnd = useCallback(() => {
     if (dragIdx >= 0 && dragIdx < notesAtPitch.length) {
-      const globalIdx = notesAtPitch[dragIdx]!.globalIdx;
-      onVelocityChange?.(globalIdx, dragVel);
+      onVelocityChange?.(notesAtPitch[dragIdx]!.globalIdx, dragVel);
     }
     setDragIdx(-1);
   }, [dragIdx, dragVel, notesAtPitch, onVelocityChange]);
 
-  // Velocity levels for ruler
-  const LEVELS = [
-    { fraction: 1.0, label: '127' },
-    { fraction: 0.75, label: '95' },
-    { fraction: 0.5, label: '64' },
-    { fraction: 0.25, label: '32' },
-  ];
+  /** Compute handle + stem geometry for a note */
+  const noteGeom = useCallback((note: ClipNote, vel: number) => {
+    const fraction = vel / 127;
+    const usableH = velAreaH - HANDLE_H;
+    const stemH = Math.max(STEM_W, fraction * usableH);
+    // Stem X: at the note's start position
+    const noteStartX = (note.position / 0.25) * STEP_W;
+    const stemX = noteStartX;
+    // Handle: extends LEFT from stem. Right edge of handle = stem left edge.
+    const handleX = stemX - HANDLE_W;
+    const handleY = velAreaH - stemH - HANDLE_H;
+    const stemTop = velAreaH - stemH;
+    return { noteStartX, stemX, stemH, stemTop, handleX, handleY, fraction };
+  }, [velAreaH]);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack2 }]}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.mcBlack3 }]}>
-        <Text variant="label" color={colors.mcWhite} style={styles.headerTitle}>
+        <Text variant="label" color={colors.mcWhite} style={{ flex: 1, fontSize: 13 }}>
           {pitchLabel}
         </Text>
         <Pressable onPress={onClose} hitSlop={8}>
@@ -127,50 +124,56 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
         </Pressable>
       </View>
 
-      {/* Body */}
+      {/* Body: left ruler + scrollable timeline */}
       <View style={styles.body}>
-        {/* Left column */}
-        <View style={[styles.leftCol, { width: LABEL_COL }]}>
+
+        {/* Left ruler column */}
+        <View style={[styles.leftCol, { width: LABEL_COL, backgroundColor: colors.mcBlack2 }]}>
+          {/* Spacer for beat labels */}
           <View style={{ height: BEAT_LABEL_H }} />
-          <View style={styles.leftLabelRow}>
-            <Text variant="extraSmall" color={colors.mcWhite3} center style={styles.tiny}>NOTES</Text>
+          {/* NOTES label */}
+          <View style={{ height: NOTE_AREA_H, justifyContent: 'center' }}>
+            <Text variant="extraSmall" color={colors.mcWhite3} center style={styles.tinyLabel}>NOTES</Text>
           </View>
+          {/* Velocity ruler */}
           <View
-            style={styles.velRulerCol}
+            style={{ flex: 1 }}
             onLayout={(e) => setVelAreaH(Math.max(60, e.nativeEvent.layout.height))}
           >
-            <Text variant="extraSmall" color={colors.mcWhite3} center style={styles.tiny}>VEL</Text>
-            {LEVELS.map(l => (
-              <View key={l.label} style={[styles.rulerRow, { top: `${(1 - l.fraction) * 100}%` as any }]}>
-                <Text variant="extraSmall" color={colors.mcWhite3} style={styles.rulerLabel}>{l.label}</Text>
-                <View style={styles.rulerLine} />
+            {/* VEL label at top */}
+            <Text variant="extraSmall" color={colors.mcWhite3} center style={[styles.tinyLabel, { marginTop: 4 }]}>VEL</Text>
+            {/* Level ticks — positioned absolutely to match velocity area */}
+            {VEL_LEVELS.map(l => (
+              <View key={l.label} style={[styles.rulerTick, { top: (1 - l.fraction) * velAreaH }]}>
+                <Text variant="extraSmall" color={colors.mcWhite3} style={styles.rulerNum}>{l.label}</Text>
+                <View style={styles.rulerDash} />
               </View>
             ))}
           </View>
         </View>
 
-        {/* Timeline */}
-        <ScrollView horizontal showsHorizontalScrollIndicator style={styles.timeline}>
-          <View style={{ width: totalWidth }}>
+        {/* Scrollable timeline — SINGLE ScrollView for everything */}
+        <GHScrollView horizontal showsHorizontalScrollIndicator style={{ flex: 1 }}>
+          <View style={{ width: Math.max(totalWidth, totalWidth + HANDLE_W) }}>
+
             {/* Beat labels */}
             <View style={{ height: BEAT_LABEL_H, flexDirection: 'row' }}>
               {Array.from({ length: totalBeats }, (_, i) => (
-                <Text key={i} variant="extraSmall" color={colors.mcWhite3} style={styles.beatLabel}>
+                <Text key={i} variant="extraSmall" color={colors.mcWhite3}
+                  style={{ width: STEPS_PER_BEAT * STEP_W, fontSize: 8, paddingLeft: 2 }}>
                   {Math.floor(i / BEATS_PER_BAR) + 1}.{(i % BEATS_PER_BAR) + 1}
                 </Text>
               ))}
             </View>
 
-            {/* Note blocks area */}
+            {/* Note blocks */}
             <View style={{ height: NOTE_AREA_H }}>
               <Canvas style={StyleSheet.absoluteFill}>
-                {/* Step grid */}
                 {Array.from({ length: totalSteps + 1 }, (_, s) => (
                   <Line key={s} p1={vec(s * STEP_W, 0)} p2={vec(s * STEP_W, NOTE_AREA_H)}
                     color={s % STEPS_PER_BEAT === 0 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.06)'}
                     strokeWidth={0.5} />
                 ))}
-                {/* Note blocks */}
                 {notesAtPitch.map(({ note }, i) => {
                   const x = (note.position / 0.25) * STEP_W;
                   const w = Math.max((note.duration / 0.25) * STEP_W - 1, STEP_W * 0.5);
@@ -184,100 +187,76 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
               )}
             </View>
 
-            {/* Velocity area */}
-            <View style={{ flex: 1, minHeight: 80 }}>
+            {/* Velocity area — canvas + handles + labels ALL inside the scroll */}
+            <View style={{ height: velAreaH }}>
               <Canvas style={StyleSheet.absoluteFill}>
-                {/* Grid lines at velocity levels */}
-                {LEVELS.map(l => {
+                {/* Grid lines */}
+                {VEL_LEVELS.map(l => {
                   const y = (1 - l.fraction) * velAreaH;
                   return <Line key={l.label} p1={vec(0, y)} p2={vec(totalWidth, y)} color="rgba(255,255,255,0.08)" strokeWidth={0.5} />;
                 })}
                 {/* Baseline */}
-                <Line p1={vec(0, velAreaH)} p2={vec(totalWidth, velAreaH)} color="rgba(255,255,255,0.15)" strokeWidth={0.5} />
+                <Line p1={vec(0, velAreaH - 1)} p2={vec(totalWidth, velAreaH - 1)} color="rgba(255,255,255,0.15)" strokeWidth={0.5} />
 
-                {/* Stems */}
+                {/* Stems — thin line from handle down to baseline */}
                 {notesAtPitch.map(({ note }, i) => {
                   const vel = i === dragIdx ? dragVel : note.velocity;
-                  const fraction = vel / 127;
-                  const usableH = velAreaH - HANDLE_H;
-                  const stemH = Math.max(STEM_W, fraction * usableH);
-                  const centerX = (note.position / 0.25) * STEP_W + HANDLE_W / 2;
+                  const g = noteGeom(note, vel);
                   return (
                     <Rect key={`s${i}`}
-                      x={centerX - STEM_W / 2} y={velAreaH - stemH}
-                      width={STEM_W} height={stemH}
+                      x={g.stemX - STEM_W / 2} y={g.stemTop}
+                      width={STEM_W} height={g.stemH}
                       color={trackColor} opacity={0.4} />
                   );
                 })}
 
-                {/* Handles — rectangles with velocity number (drawn as colored rect) */}
+                {/* Handles — square rect, right edge touches stem */}
                 {notesAtPitch.map(({ note }, i) => {
                   const vel = i === dragIdx ? dragVel : note.velocity;
-                  const fraction = vel / 127;
-                  const usableH = velAreaH - HANDLE_H;
-                  const stemH = Math.max(STEM_W, fraction * usableH);
-                  const centerX = (note.position / 0.25) * STEP_W + HANDLE_W / 2;
-                  const handleY = velAreaH - stemH - HANDLE_H / 2;
-                  const handleX = centerX - HANDLE_W / 2;
-                  const opacity = 0.3 + 0.7 * fraction;
+                  const g = noteGeom(note, vel);
                   return (
                     <React.Fragment key={`h${i}`}>
-                      {/* Handle background */}
-                      <Rect x={handleX} y={handleY} width={HANDLE_W} height={HANDLE_H} color={trackColor} opacity={opacity} />
-                      {/* Handle border */}
-                      <Rect x={handleX} y={handleY} width={HANDLE_W} height={HANDLE_H}
+                      <Rect x={g.handleX} y={g.handleY} width={HANDLE_W} height={HANDLE_H}
+                        color={trackColor} opacity={0.3 + 0.7 * g.fraction} />
+                      <Rect x={g.handleX} y={g.handleY} width={HANDLE_W} height={HANDLE_H}
                         color="rgba(255,255,255,0.3)" style="stroke" strokeWidth={0.5} />
                     </React.Fragment>
                   );
                 })}
               </Canvas>
 
-              {/* Velocity number labels (React Text — Skia text is complex) */}
+              {/* Velocity number labels — INSIDE the scroll container */}
               {notesAtPitch.map(({ note }, i) => {
                 const vel = i === dragIdx ? dragVel : note.velocity;
-                const fraction = vel / 127;
-                const usableH = velAreaH - HANDLE_H;
-                const stemH = Math.max(STEM_W, fraction * usableH);
-                const centerX = (note.position / 0.25) * STEP_W + HANDLE_W / 2;
-                const handleY = velAreaH - stemH - HANDLE_H / 2;
-                const handleX = centerX - HANDLE_W / 2;
+                const g = noteGeom(note, vel);
                 return (
-                  <View key={`vl${i}`} style={[styles.velLabel, { left: handleX, top: handleY, width: HANDLE_W, height: HANDLE_H }]} pointerEvents="none">
-                    <Text variant="extraSmall" color={colors.mcWhite} style={styles.velText}>{vel}</Text>
+                  <View key={`vl${i}`} pointerEvents="none"
+                    style={{ position: 'absolute', left: g.handleX, top: g.handleY, width: HANDLE_W, height: HANDLE_H, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text variant="extraSmall" color={colors.mcWhite} style={{ fontSize: 8, fontFamily: 'monospace', fontWeight: '600' }}>{vel}</Text>
                   </View>
                 );
               })}
 
-              {/* Drag touch targets */}
+              {/* Drag touch targets — INSIDE the scroll container */}
               {notesAtPitch.map(({ note }, i) => {
                 const vel = i === dragIdx ? dragVel : note.velocity;
-                const fraction = vel / 127;
-                const usableH = velAreaH - HANDLE_H;
-                const stemH = Math.max(STEM_W, fraction * usableH);
-                const centerX = (note.position / 0.25) * STEP_W + HANDLE_W / 2;
-                const handleY = velAreaH - stemH - HANDLE_H / 2;
-                const handleX = centerX - HANDLE_W / 2;
+                const g = noteGeom(note, vel);
                 return (
-                  <VelDragTarget
-                    key={`dt${i}`}
-                    index={i}
-                    x={handleX}
-                    y={handleY}
+                  <VelDragTarget key={`dt${i}`} index={i}
+                    x={g.handleX - 8} y={g.handleY - 8}
                     onDragStart={handleVelDragStart}
                     onDragUpdate={handleVelDragUpdate}
-                    onDragEnd={handleVelDragEnd}
-                  />
+                    onDragEnd={handleVelDragEnd} />
                 );
               })}
             </View>
           </View>
-        </ScrollView>
+        </GHScrollView>
       </View>
     </View>
   );
 });
 
-/** Invisible drag target for a velocity handle */
 const VelDragTarget = memo(function VelDragTarget({
   index, x, y, onDragStart, onDragUpdate, onDragEnd,
 }: {
@@ -293,10 +272,7 @@ const VelDragTarget = memo(function VelDragTarget({
 
   return (
     <GestureDetector gesture={gesture}>
-      <View style={{
-        position: 'absolute', left: x - 8, top: y - 8,
-        width: HANDLE_W + 16, height: HANDLE_H + 16,
-      }} />
+      <View style={{ position: 'absolute', left: x, top: y, width: HANDLE_W + 16, height: HANDLE_H + 16 }} />
     </GestureDetector>
   );
 });
@@ -304,18 +280,11 @@ const VelDragTarget = memo(function VelDragTarget({
 const styles = StyleSheet.create({
   container: { flex: 1 },
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, height: 28 },
-  headerTitle: { flex: 1, fontSize: 13 },
   body: { flex: 1, flexDirection: 'row' },
-  leftCol: {},
-  leftLabelRow: { height: NOTE_AREA_H, justifyContent: 'center', alignItems: 'center' },
-  tiny: { fontSize: 8, fontWeight: '600' },
-  velRulerCol: { flex: 1, position: 'relative' },
-  rulerRow: { position: 'absolute', flexDirection: 'row', alignItems: 'center', left: 0, right: 0 },
-  rulerLabel: { fontSize: 7, width: 22, textAlign: 'right', marginRight: 4 },
-  rulerLine: { flex: 1, height: 0.5, backgroundColor: 'rgba(255,255,255,0.1)' },
-  timeline: { flex: 1 },
-  beatLabel: { width: STEPS_PER_BEAT * STEP_W, fontSize: 8, paddingLeft: 2 },
+  leftCol: { borderRightWidth: 0.5, borderRightColor: 'rgba(255,255,255,0.1)' },
+  tinyLabel: { fontSize: 8, fontWeight: '600' },
+  rulerTick: { position: 'absolute', flexDirection: 'row', alignItems: 'center', left: 2, right: 0 },
+  rulerNum: { fontSize: 7, width: 20, textAlign: 'right', marginRight: 4 },
+  rulerDash: { flex: 1, height: 0.5, backgroundColor: 'rgba(255,255,255,0.1)' },
   emptyState: { ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center' },
-  velLabel: { position: 'absolute', justifyContent: 'center', alignItems: 'center' },
-  velText: { fontSize: 8, fontFamily: 'monospace', fontWeight: '600' },
 });
