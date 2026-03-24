@@ -33,10 +33,10 @@ const STEPS_PER_BEAT = 4;
 const velFont = matchFont({ fontFamily: 'monospace', fontSize: 8, fontWeight: '600' });
 
 const VEL_LEVELS = [
-  { fraction: 1.0, label: '127' },
-  { fraction: 0.75, label: '95' },
-  { fraction: 0.5, label: '64' },
-  { fraction: 0.25, label: '32' },
+  { vel: 127, label: '127' },
+  { vel: 95, label: '95' },
+  { vel: 64, label: '64' },
+  { vel: 32, label: '32' },
 ];
 
 export interface NotePrecisionPanelProps {
@@ -151,13 +151,19 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
           >
             {/* VEL label at top */}
             <Text variant="extraSmall" color={colors.mcWhite3} center style={[styles.tinyLabel, { marginTop: 4 }]}>VEL</Text>
-            {/* Level ticks — positioned absolutely to match velocity area */}
-            {VEL_LEVELS.map(l => (
-              <View key={l.label} style={[styles.rulerTick, { top: (1 - l.fraction) * velAreaH }]}>
-                <Text variant="extraSmall" color={colors.mcWhite3} style={styles.rulerNum}>{l.label}</Text>
-                <View style={styles.rulerDash} />
-              </View>
-            ))}
+            {/* Level ticks — positioned to match handle Y for each velocity */}
+            {VEL_LEVELS.map(l => {
+              const fraction = l.vel / 127;
+              const usableH = velAreaH - HANDLE_H;
+              const stemH = fraction * usableH;
+              const y = velAreaH - stemH - HANDLE_H;
+              return (
+                <View key={l.label} style={[styles.rulerTick, { top: y }]}>
+                  <Text variant="extraSmall" color={colors.mcWhite3} style={styles.rulerNum}>{l.label}</Text>
+                  <View style={styles.rulerDash} />
+                </View>
+              );
+            })}
           </View>
         </View>
 
@@ -199,9 +205,12 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
             {/* Velocity area — canvas + handles + labels ALL inside the scroll */}
             <View style={{ height: velAreaH }}>
               <Canvas style={StyleSheet.absoluteFill}>
-                {/* Grid lines */}
+                {/* Grid lines — aligned with handle positions */}
                 {VEL_LEVELS.map(l => {
-                  const y = (1 - l.fraction) * velAreaH;
+                  const fraction = l.vel / 127;
+                  const usableH = velAreaH - HANDLE_H;
+                  const stemH = fraction * usableH;
+                  const y = velAreaH - stemH - HANDLE_H / 2;
                   return <Line key={l.label} p1={vec(0, y)} p2={vec(totalWidth, y)} color="rgba(255,255,255,0.08)" strokeWidth={0.5} />;
                 })}
                 {/* Baseline */}
