@@ -37,6 +37,7 @@ const VEL_LEVELS = [
   { vel: 95, label: '95' },
   { vel: 64, label: '64' },
   { vel: 32, label: '32' },
+  { vel: 0, label: '0' },
 ];
 
 export interface NotePrecisionPanelProps {
