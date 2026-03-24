@@ -262,7 +262,7 @@ const PlayheadLine = memo(function PlayheadLine({
       style={[
         {
           position: 'absolute',
-          left: 0,
+          left: LABEL_COL_WIDTH,
           top: 0,
           bottom: 0,
           width: 2,
@@ -276,6 +276,9 @@ const PlayheadLine = memo(function PlayheadLine({
 });
 
 // ─── PianoRoll Grid ─────────────────────────────────────────────────────────
+
+/** Width of the pitch label column in the piano roll grid */
+const LABEL_COL_WIDTH = 60;
 
 /** Default MIDI pitch range for melodic/bass tracks (2 octaves starting at C3 = MIDI 48).
  *  Can be overridden per-track via the `melodicMinPitch` prop on ClipEditorView. */
@@ -319,8 +322,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
 
   // iOS: baseWidth = availableGridWidth / 16 (steps per bar)
   // At zoom 1.0, one bar fills the available width exactly.
-  const LABEL_WIDTH = 60;
-  const availableGridWidth = screenWidth - LABEL_WIDTH;
+  const availableGridWidth = screenWidth - LABEL_COL_WIDTH;
   const STEPS_PER_BAR = 16;
   const baseStepWidth = availableGridWidth / STEPS_PER_BAR;
   const stepWidth = baseStepWidth * zoomLevel;
@@ -369,7 +371,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
       <ScrollView style={styles.pianoRollContent}>
         <View style={styles.pianoRollRow}>
           {/* Fixed-width pitch labels column — scrolls vertically with grid */}
-          <View style={[styles.pitchLabels, { width: LABEL_WIDTH }]}>
+          <View style={[styles.pitchLabels, { width: LABEL_COL_WIDTH }]}>
             {Array.from({ length: totalPitches }, (_, i) => {
               const pitchIdx = totalPitches - 1 - i;
               const hasName = pitchHasName(pitchIdx);
@@ -508,18 +510,19 @@ const PianoRollGrid = memo(function PianoRollGrid({
                   />
                 );
               })}
-              {/* Playhead — Animated.View driven by shared value for smooth 60fps motion */}
-              <PlayheadLine
-                beatWidth={BEAT_WIDTH}
-                clipBeats={lengthInBeats}
-                isPlaying={isPlaying}
-                tempo={tempo}
-                color={colors.mcWhite}
-              />
             </View>
           </ScrollView>
         </View>
       </ScrollView>
+
+      {/* Playhead — outside PianoRollGrid so note additions don't re-render it */}
+      <PlayheadLine
+        beatWidth={BEAT_WIDTH}
+        clipBeats={lengthInBeats}
+        isPlaying={isPlaying}
+        tempo={tempo}
+        color={colors.mcWhite}
+      />
 
       {/* Zoom controls — iOS: individual buttons with black.opacity(0.6) bg, rounded, 36x36 */}
       <View style={styles.zoomControls}>
