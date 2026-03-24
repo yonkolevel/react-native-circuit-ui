@@ -83,6 +83,8 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
   const [dragVel, setDragVel] = useState(0);
   const dragStartY = useRef(0);
   const dragStartVel = useRef(0);
+  const dragIdxRef = useRef(-1);
+  const dragVelRef = useRef(0);
 
   // Position drag state (horizontal drag on note block body)
   const [posBlockDragIdx, setPosBlockDragIdx] = useState(-1);
@@ -97,25 +99,32 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
   const handleVelDragStart = useCallback((idx: number, y: number) => {
     const entry = notesAtPitch[idx];
     if (!entry) return;
-    setDragIdx(idx);
-    setDragVel(entry.note.velocity);
+    dragIdxRef.current = idx;
     dragStartY.current = y;
     dragStartVel.current = entry.note.velocity;
+    dragVelRef.current = entry.note.velocity;
+    setDragIdx(idx);
+    setDragVel(entry.note.velocity);
   }, [notesAtPitch]);
 
   const handleVelDragUpdate = useCallback((y: number) => {
     const dy = y - dragStartY.current;
     const usableH = velAreaH - BOTTOM_PAD - HANDLE_H;
     const delta = -dy / usableH * 127;
-    setDragVel(Math.round(Math.max(1, Math.min(127, dragStartVel.current + delta))));
+    const newVel = Math.round(Math.max(1, Math.min(127, dragStartVel.current + delta)));
+    dragVelRef.current = newVel;
+    setDragVel(newVel);
   }, [velAreaH]);
 
   const handleVelDragEnd = useCallback(() => {
-    if (dragIdx >= 0 && dragIdx < notesAtPitch.length) {
-      onVelocityChange?.(notesAtPitch[dragIdx]!.globalIdx, dragVel);
+    const idx = dragIdxRef.current;
+    const vel = dragVelRef.current;
+    if (idx >= 0 && idx < notesAtPitch.length) {
+      onVelocityChange?.(notesAtPitch[idx]!.globalIdx, vel);
     }
+    dragIdxRef.current = -1;
     setDragIdx(-1);
-  }, [dragIdx, dragVel, notesAtPitch, onVelocityChange]);
+  }, [notesAtPitch, onVelocityChange]);
 
   // Position drag handlers
   const handlePosBlockDragStart = useCallback((idx: number, x: number) => {
