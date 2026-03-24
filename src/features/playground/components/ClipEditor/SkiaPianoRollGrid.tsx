@@ -16,6 +16,7 @@ import { memo, useCallback, useMemo, useRef } from 'react';
 import { View, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { Canvas, Path as SkiaPath, Rect, Skia, Line, vec } from '@shopify/react-native-skia';
 import { ScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { runOnJS } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
 import { useTheme, hexToRgba } from '../../../../theme';
 import type { ClipNote, InstrumentType, Sample } from '../../types';
@@ -156,66 +157,79 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     origNoteNumber: number;
   } | null>(null);
 
-  // --- Gestures ---
-  // Tap: add note on empty grid, delete on existing note
+  // --- JS callbacks (must use runOnJS from gesture worklets) ---
+  const handleTap = useCallback((x: number, y: number) => {
+    const hit = hitTestNote(x, y);
+    if (hit) {
+      onNotePress?.(hit.idx);
+    } else if (onGridTap) {
+      const step = Math.floor(x / stepWidth);
+      const position = step * 0.25;
+      const rowIdx = Math.floor(y / rowHeight);
+      const pitchIdx = totalPitches - 1 - rowIdx;
+      if (pitchIdx >= 0 && pitchIdx < totalPitches) {
+        const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
+        onGridTap(noteNumber, position);
+      }
+    }
+  }, [hitTestNote, onNotePress, onGridTap, stepWidth, rowHeight, totalPitches, pitchToMidi]);
+
+  const handleDragStart = useCallback((x: number, y: number) => {
+    const hit = hitTestNote(x, y);
+    if (!hit) { dragState.current = null; return; }
+    const note = notes[hit.idx]!;
+    dragState.current = {
+      type: hit.isResizeEdge ? 'resize' : 'move',
+      noteIdx: hit.idx,
+      startX: x,
+      startY: y,
+      origPosition: note.position,
+      origDuration: note.duration,
+      origNoteNumber: note.noteNumber,
+    };
+  }, [hitTestNote, notes]);
+
+  const handleDragEnd = useCallback((x: number, y: number) => {
+    const ds = dragState.current;
+    if (!ds) return;
+    const dx = x - ds.startX;
+    const dy = y - ds.startY;
+
+    if (ds.type === 'resize') {
+      const newWidth = ds.origDuration * beatWidth + dx;
+      const steps = Math.max(1, Math.round(newWidth / stepWidth));
+      onNoteResize?.(ds.noteIdx, steps * 0.25);
+    } else {
+      const stepsDx = Math.round(dx / stepWidth);
+      const rowsDy = Math.round(dy / rowHeight);
+      const newPosition = Math.max(0, ds.origPosition + stepsDx * 0.25);
+      const newRowIdx = Math.floor(ds.startY / rowHeight) + rowsDy;
+      const newPitchIdx = Math.max(0, Math.min(totalPitches - 1, totalPitches - 1 - newRowIdx));
+      const newNoteNumber = pitchToMidi[newPitchIdx] ?? newPitchIdx;
+      if (newPosition !== ds.origPosition || newNoteNumber !== ds.origNoteNumber) {
+        onNoteMove?.(ds.noteIdx, newPosition, newNoteNumber);
+      }
+    }
+    dragState.current = null;
+  }, [beatWidth, stepWidth, rowHeight, totalPitches, pitchToMidi, onNoteResize, onNoteMove]);
+
+  // --- Gestures (UI thread → runOnJS for callbacks) ---
   const tapGesture = Gesture.Tap()
     .maxDuration(200)
     .onEnd((e) => {
-      const hit = hitTestNote(e.x, e.y);
-      if (hit) {
-        onNotePress?.(hit.idx);
-      } else if (onGridTap) {
-        const step = Math.floor(e.x / stepWidth);
-        const position = step * 0.25;
-        const rowIdx = Math.floor(e.y / rowHeight);
-        const pitchIdx = totalPitches - 1 - rowIdx;
-        if (pitchIdx >= 0 && pitchIdx < totalPitches) {
-          const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
-          onGridTap(noteNumber, position);
-        }
-      }
+      'worklet';
+      runOnJS(handleTap)(e.x, e.y);
     });
 
-  // Long press + drag: move note (position + pitch) or resize (duration)
   const panGesture = Gesture.Pan()
     .activateAfterLongPress(150)
     .onStart((e) => {
-      const hit = hitTestNote(e.x, e.y);
-      if (!hit) return;
-      const note = notes[hit.idx]!;
-      dragState.current = {
-        type: hit.isResizeEdge ? 'resize' : 'move',
-        noteIdx: hit.idx,
-        startX: e.x,
-        startY: e.y,
-        origPosition: note.position,
-        origDuration: note.duration,
-        origNoteNumber: note.noteNumber,
-      };
+      'worklet';
+      runOnJS(handleDragStart)(e.x, e.y);
     })
     .onEnd((e) => {
-      const ds = dragState.current;
-      if (!ds) return;
-      const dx = e.x - ds.startX;
-      const dy = e.y - ds.startY;
-
-      if (ds.type === 'resize') {
-        const newWidth = ds.origDuration * beatWidth + dx;
-        const steps = Math.max(1, Math.round(newWidth / stepWidth));
-        const newDuration = steps * 0.25;
-        onNoteResize?.(ds.noteIdx, newDuration);
-      } else {
-        const stepsDx = Math.round(dx / stepWidth);
-        const rowsDy = Math.round(dy / rowHeight);
-        const newPosition = Math.max(0, ds.origPosition + stepsDx * 0.25);
-        const newRowIdx = Math.floor(ds.startY / rowHeight) + rowsDy;
-        const newPitchIdx = Math.max(0, Math.min(totalPitches - 1, totalPitches - 1 - newRowIdx));
-        const newNoteNumber = pitchToMidi[newPitchIdx] ?? newPitchIdx;
-        if (newPosition !== ds.origPosition || newNoteNumber !== ds.origNoteNumber) {
-          onNoteMove?.(ds.noteIdx, newPosition, newNoteNumber);
-        }
-      }
-      dragState.current = null;
+      'worklet';
+      runOnJS(handleDragEnd)(e.x, e.y);
     });
 
   const composedGesture = Gesture.Exclusive(panGesture, tapGesture);
