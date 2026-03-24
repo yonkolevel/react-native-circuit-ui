@@ -35,6 +35,7 @@ import { MidiNoteView } from './MidiNoteView';
 import { ClipSettingsModal } from './ClipSettingsModal';
 import { DrumPadsView } from '../DrumPads/DrumPadsView';
 import { PianoKeyboard } from '../PianoKeyboard/PianoKeyboard';
+import { SkiaPianoRollGrid } from './SkiaPianoRollGrid';
 import type {
   Clip,
   ClipNote,
@@ -262,7 +263,7 @@ const PlayheadLine = memo(function PlayheadLine({
       style={[
         {
           position: 'absolute',
-          left: 0,
+          left: 60, // pitch label column width
           top: 0,
           bottom: 0,
           width: 2,
@@ -906,7 +907,6 @@ export const ClipEditorView = memo(function ClipEditorView({
   isPlaying,
   isRecording,
   isMetronomeEnabled,
-  playheadPosition = 0,
   canUndo = false,
   canRedo = false,
   callbacks,
@@ -928,10 +928,12 @@ export const ClipEditorView = memo(function ClipEditorView({
   onTogglePianoNoteNames,
 }: ClipEditorViewProps) {
   const { colors } = useTheme();
+  const { width: screenWidth } = useWindowDimensions();
   const [isExpanded, setIsExpanded] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [selectedPitchIndex, setSelectedPitchIndex] = useState<number | null>(null);
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const beatWidth = ((screenWidth - 60) / 16) * zoom * 4; // 60 = pitch label column width
   const trackColor = clip.colorHex;
   const samplesList = samples || [];
 
@@ -967,43 +969,44 @@ export const ClipEditorView = memo(function ClipEditorView({
           onSettings={() => setSettingsVisible(true)}
         />
 
-        {/* Piano Roll */}
-        <PianoRollGrid
-          notes={clip.notes}
-          samples={samplesList}
-          instrumentType={instrumentType}
-          trackColor={trackColor}
-          lengthInBeats={clip.activeLengthInBars * 4}
-          playheadPosition={playheadPosition}
-          isPlaying={isPlaying}
-          tempo={tempo}
-          zoomLevel={zoom}
-          isExpanded={isExpanded}
-          selectedPitchIndex={selectedPitchIndex}
-          melodicMinPitch={melodicMinPitch}
-          onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
-          onNoteResize={(idx, newDuration) =>
-            callbacks?.onNoteResize?.(idx, newDuration)
-          }
-          onNoteMove={(idx, newPos, newNote) =>
-            callbacks?.onNoteMove?.(idx, newPos, newNote)
-          }
-          onGridTap={(noteNumber, position) => {
-            callbacks?.onNoteAdd?.({
-              noteNumber,
-              velocity: 100,
-              position,
-              duration: 0.25, // 16th note default
-            });
-          }}
-          onPitchLabelTap={(pitch) => {
-            // Toggle velocity lane for this pitch (matching iOS selectedPitchForEditing)
-            setSelectedPitchIndex(selectedPitchIndex === pitch ? null : pitch);
-          }}
-          onToggleExpand={() => setIsExpanded(!isExpanded)}
-          onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
-          onZoomOut={() => setZoom(Math.max(zoom - 0.25, 0.5))}
-        />
+        {/* Piano Roll (Skia GPU-rendered) + Playhead */}
+        <View style={{ flex: 1, position: 'relative' }}>
+          <SkiaPianoRollGrid
+            notes={clip.notes}
+            samples={samplesList}
+            instrumentType={instrumentType}
+            trackColor={trackColor}
+            lengthInBeats={clip.activeLengthInBars * 4}
+            zoomLevel={zoom}
+            isExpanded={isExpanded}
+            selectedPitchIndex={selectedPitchIndex}
+            melodicMinPitch={melodicMinPitch}
+            onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
+            onNoteResize={(idx, newDuration) => callbacks?.onNoteResize?.(idx, newDuration)}
+            onNoteMove={(idx, newPos, newNote) => callbacks?.onNoteMove?.(idx, newPos, newNote)}
+            onGridTap={(noteNumber, position) => {
+              callbacks?.onNoteAdd?.({
+                noteNumber,
+                velocity: 100,
+                position,
+                duration: 0.25,
+              });
+            }}
+            onPitchLabelTap={(pitch) => {
+              setSelectedPitchIndex(selectedPitchIndex === pitch ? null : pitch);
+            }}
+            onToggleExpand={() => setIsExpanded(!isExpanded)}
+            onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
+            onZoomOut={() => setZoom(Math.max(zoom - 0.25, 0.5))}
+          />
+          <PlayheadLine
+            beatWidth={beatWidth}
+            clipBeats={clip.activeLengthInBars * 4}
+            isPlaying={isPlaying}
+            tempo={tempo}
+            color={colors.mcWhite}
+          />
+        </View>
 
         {/* Clip Length Bar */}
         {!isExpanded && (

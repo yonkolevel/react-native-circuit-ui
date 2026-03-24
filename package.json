@@ -197,6 +197,7 @@
     "version": "0.48.3"
   },
   "dependencies": {
+    "@shopify/react-native-skia": "^2.5.3",
     "lucide-react-native": "^0.481.0",
     "react-native-svg": "^15.11.2",
     "zustand": "^5.0.0"
