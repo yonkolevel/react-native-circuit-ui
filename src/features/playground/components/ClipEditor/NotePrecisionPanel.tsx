@@ -22,12 +22,12 @@ import type { ClipNote } from '../../types';
 const LABEL_COL = 60;
 const BEAT_LABEL_H = 16;
 const NOTE_AREA_H = 36;
-const HANDLE_W = 32;
+const STEP_W = 24;
+const HANDLE_W = STEP_W; // matches 1/16th note width
 const HANDLE_H = 16;
 const STEM_W = 2;
 const BEATS_PER_BAR = 4;
 const STEPS_PER_BEAT = 4;
-const STEP_W = 24;
 
 const VEL_LEVELS = [
   { fraction: 1.0, label: '127' },
@@ -97,19 +97,25 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
     setDragIdx(-1);
   }, [dragIdx, dragVel, notesAtPitch, onVelocityChange]);
 
-  /** Compute handle + stem geometry for a note */
+  /** Compute handle + stem geometry for a note (matches native VelocityHandle positioning) */
   const noteGeom = useCallback((note: ClipNote, vel: number) => {
     const fraction = vel / 127;
     const usableH = velAreaH - HANDLE_H;
     const stemH = Math.max(STEM_W, fraction * usableH);
-    // Stem X: at the note's start position
+
+    // Handle and stem aligned at note start position.
+    // Handle width = 1 step (16th note). Stem at right edge of handle.
     const noteStartX = (note.position / 0.25) * STEP_W;
-    const stemX = noteStartX;
-    // Handle: extends LEFT from stem. Right edge of handle = stem left edge.
-    const handleX = stemX - HANDLE_W;
+
+    // Handle starts at note position
+    const handleX = noteStartX;
+    // Stem at right edge of handle
+    const stemCenterX = noteStartX + HANDLE_W;
+    const stemX = stemCenterX;
     const handleY = velAreaH - stemH - HANDLE_H;
     const stemTop = velAreaH - stemH;
-    return { noteStartX, stemX, stemH, stemTop, handleX, handleY, fraction };
+
+    return { noteStartX, stemX, stemCenterX, stemH, stemTop, handleX, handleY, fraction };
   }, [velAreaH]);
 
   return (
