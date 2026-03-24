@@ -13,6 +13,7 @@ import {
   Text,
   useTheme,
 } from 'react-native-circuit-ui';
+import { create } from 'zustand';
 
 // Feature components (direct imports from source)
 import { SongToolbar, SongMixerTabBar } from '../../src/features/playground/components/SongView';
@@ -27,9 +28,30 @@ import { AddTrackMenu } from '../../src/features/playground/components/Toolbar';
 import { OnboardingSheet } from '../../src/features/playground/components/Onboarding';
 import { ClipEditorView } from '../../src/features/playground/components/ClipEditor';
 import { BottomPanel } from '../../src/features/playground/components/BottomPanel';
+import { SongStoreProvider } from '../../src/features/playground/stores/playgroundStore';
+import type { SongStore } from '../../src/features/playground/stores/playgroundStore';
 
 // Mock data
 import { createMockSong, createMockPlaygroundsList, createMockDrumClip, createDrumSamples } from '../../src/features/playground/mocks';
+
+// Create a mock store for showcase components that use useSongContext
+const noop = () => {};
+function createMockStore(song: ReturnType<typeof createMockSong>) {
+  return create<SongStore>()(() => ({
+    ...song,
+    currentTab: 'song' as const,
+    // Actions (no-ops for showcase)
+    setPlaying: noop, setRecording: noop, setTempo: noop, toggleMetronome: noop, toggleLoop: noop,
+    setCurrentSection: noop, addSection: noop, renameSection: noop,
+    setTrackVolume: noop, setTrackPan: noop, toggleTrackMute: noop, toggleTrackSolo: noop,
+    addNote: noop, removeNote: noop, updateNote: noop, setClipNotes: noop,
+    createClip: noop, setClipLength: noop,
+    addNewTrack: noop, removeTrack: noop,
+    showSongView: noop, showAddTrackMenu: noop, showSoundBankPicker: noop, fetchSoundBanks: async () => {}, selectSoundBank: noop, previewSoundBank: noop, stopPreview: noop, confirmSoundBank: noop,
+    undoClipEdit: noop, redoClipEdit: noop, liveNoteOn: noop, liveNoteOff: noop, showClipSettings: noop, hideClipSettings: noop, togglePianoNoteNames: noop,
+    openClipEditor: noop, setCurrentTab: noop, setMasterVolume: noop,
+  }));
+}
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => {
   const { colors } = useTheme();
@@ -47,19 +69,21 @@ function ShowcaseContent() {
   const mockPlaygrounds = createMockPlaygroundsList(4);
   const drumTrack = mockSong.tracks[0]!;
   const drumClip = createMockDrumClip({ trackID: drumTrack.id, sectionID: mockSong.currentSectionId });
+  const useMockStore = createMockStore(mockSong);
 
   return (
+    <SongStoreProvider store={useMockStore as any}>
     <SafeAreaView style={[styles.container, { backgroundColor: colors.mcBlack2 }]}>
       <ScrollView contentContainerStyle={styles.scroll}>
         <Text variant="h3" center style={styles.title}>🎹 DAW Showcase</Text>
         <Text variant="body" center color={colors.mcWhite3} style={styles.subtitle}>CorePlayground Feature Components</Text>
 
         <Section title="SongToolbar">
-          <SongToolbar song={mockSong} callbacks={{}} />
+          <SongToolbar />
         </Section>
 
         <Section title="SongMixerTabBar">
-          <SongMixerTabBar currentView="song" onTabPress={() => {}} />
+          <SongMixerTabBar />
         </Section>
 
         <Section title="SongSections">
@@ -72,7 +96,7 @@ function ShowcaseContent() {
         </Section>
 
         <Section title="Mixer">
-          <MixerView tracks={mockSong.tracks} callbacks={{}} />
+          <MixerView />
         </Section>
 
         <Section title="DrumPads">
@@ -119,6 +143,7 @@ function ShowcaseContent() {
         <View style={styles.footer} />
       </ScrollView>
     </SafeAreaView>
+    </SongStoreProvider>
   );
 }
 

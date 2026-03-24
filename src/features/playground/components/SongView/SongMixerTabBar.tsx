@@ -1,86 +1,53 @@
 /**
  * SongMixerTabBar — 2-tab navigation bar for Song and Mixer
  *
- * Matches SwiftUI SongMixerTabBar exactly:
+ * All state and actions from useSongContext() — zero callback props.
  *
- * Layout:
- *   HStack(spacing: 0) { tabButton("Song", .song), tabButton("Mixer", .mixer) }
- *   .padding(.horizontal, 40)
- *   .padding(.vertical, 12)
- *   .padding(.bottom, 30)
- *   .background(Color(hex: "#0A0A0A"))
- *   .overlay(alignment: .top) { Rectangle #222 h=1 }
- *
- * Selected tab:  bg #FF5C24 (orange), text .mcBlack (black), h=40, cornerRadius 6
- * Unselected tab: bg clear, text #666666
- * Font: system(size: 14, weight: .semibold), uppercased
- *
- * Note: The SwiftUI version has only Song and Mixer tabs (NOT Settings).
- * Settings is accessed via the gear button in SongToolbarView.
+ * Layout: HStack(spacing: 0) { tabButton("Song"), tabButton("Mixer") }
+ * Selected: bg mcOrange, text mcBlack. Unselected: bg clear, text #666.
  */
 import { memo, useCallback } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring, withSequence } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
-import type { SongDestination } from '../../types';
+import { useSongContext, useSongActions } from '../../stores/playgroundStore';
+import type { SongTab } from '../../types';
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
-/** Tab height from Swift: .frame(height: 40) */
 const TAB_HEIGHT = 40;
 
-// ─── Tab Definition ─────────────────────────────────────────────────────────
-
-type TabKey = 'song' | 'mixer';
+type TabKey = Extract<SongTab, 'song' | 'mixer'>;
 
 interface TabDef {
   key: TabKey;
   label: string;
-  destination: SongDestination;
 }
 
 const TABS: readonly TabDef[] = [
-  { key: 'song', label: 'SONG', destination: 'song' },
-  { key: 'mixer', label: 'MIXER', destination: 'mixer' },
+  { key: 'song', label: 'SONG' },
+  { key: 'mixer', label: 'MIXER' },
 ] as const;
 
 // ─── Props ──────────────────────────────────────────────────────────────────
 
 export interface SongMixerTabBarProps {
-  /** Current active view — used to highlight the active tab */
-  currentView: SongDestination;
-  /** Called when a tab is pressed */
-  onTabPress?: (destination: SongDestination) => void;
-  /** Container style override */
   style?: StyleProp<ViewStyle>;
-}
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
-/**
- * Resolves the active tab key from a SongDestination.
- * Object destinations (pianoRoll, audioClipEditor) fall back to 'song'.
- * Settings also falls back to 'song' since it's not a tab.
- */
-function resolveActiveTab(currentView: SongDestination): TabKey {
-  if (typeof currentView === 'string') {
-    if (currentView === 'song' || currentView === 'mixer') {
-      return currentView;
-    }
-    // 'settings' falls back to 'song'
-    return 'song';
-  }
-  // Object destinations — default to song tab
-  return 'song';
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export const SongMixerTabBar: React.FC<SongMixerTabBarProps> = memo(
-  function SongMixerTabBar({ currentView, onTabPress, style }) {
+  function SongMixerTabBar({ style }) {
     const { colors, borderRadius } = useTheme();
-    const activeTab = resolveActiveTab(currentView);
+    const currentTab = useSongContext(s => s.currentTab);
+    const { setCurrentTab } = useSongActions();
+
+    const activeTab: TabKey = currentTab === 'mixer' ? 'mixer' : 'song';
 
     return (
       <View
@@ -100,7 +67,7 @@ export const SongMixerTabBar: React.FC<SongMixerTabBarProps> = memo(
               tab={tab}
               isActive={activeTab === tab.key}
               borderRadius={borderRadius.md}
-              onPress={onTabPress}
+              onPress={setCurrentTab}
             />
           ))}
         </View>
@@ -109,13 +76,13 @@ export const SongMixerTabBar: React.FC<SongMixerTabBarProps> = memo(
   }
 );
 
-// ─── Tab Button ─────────────────────────────────────────────────────────────
+// ─── Tab Button with spring press feedback ──────────────────────────────────
 
 interface TabButtonProps {
   tab: TabDef;
   isActive: boolean;
   borderRadius: number;
-  onPress?: (destination: SongDestination) => void;
+  onPress: (tab: SongTab) => void;
 }
 
 const TabButton: React.FC<TabButtonProps> = memo(function TabButton({
@@ -125,34 +92,45 @@ const TabButton: React.FC<TabButtonProps> = memo(function TabButton({
   onPress,
 }) {
   const { colors } = useTheme();
+  const scale = useSharedValue(1);
+
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
   const handlePress = useCallback(() => {
-    onPress?.(tab.destination);
-  }, [onPress, tab.destination]);
+    // Quick spring bounce on tap — subtle, like iOS UIImpactFeedbackGenerator
+    scale.value = withSequence(
+      withSpring(0.92, { damping: 15, stiffness: 400 }),
+      withSpring(1, { damping: 10, stiffness: 200 })
+    );
+    onPress(tab.key);
+  }, [onPress, tab.key]);
 
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={handlePress}
       accessibilityRole="tab"
       accessibilityLabel={tab.label}
       accessibilityState={{ selected: isActive }}
-      style={({ pressed }) => [
+      style={[
         styles.tab,
         {
           backgroundColor: isActive ? colors.mcOrange : 'transparent',
           borderRadius: radius,
-          opacity: pressed ? 0.7 : 1,
         },
+        animStyle,
       ]}
       testID={`tab-${tab.key}`}
     >
       <Text
         variant="label"
         color={isActive ? colors.mcBlack : colors.mcWhite3}
-        style={{ fontSize: 14 }}
+        style={styles.tabText}
       >
         {tab.label}
       </Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 });
 
@@ -160,9 +138,9 @@ const TabButton: React.FC<TabButtonProps> = memo(function TabButton({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 40, // matches Swift .padding(.horizontal, 40)
-    paddingTop: 12, // matches Swift .padding(.vertical, 12)
-    paddingBottom: 30, // matches Swift .padding(.bottom, 30) + .padding(.vertical, 12)
+    paddingHorizontal: 40,
+    paddingTop: 12,
+    paddingBottom: 30,
   },
   topBorder: {
     position: 'absolute',
@@ -173,13 +151,15 @@ const styles = StyleSheet.create({
   },
   tabRow: {
     flexDirection: 'row',
-    // spacing: 0 in Swift — no gap
   },
   tab: {
     flex: 1,
-    height: TAB_HEIGHT, // matches Swift .frame(height: 40)
+    height: TAB_HEIGHT,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  tabText: {
+    fontSize: 14,
   },
 });
 

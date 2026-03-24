@@ -17,9 +17,10 @@
  *   Splitting into multiple stores adds sync complexity for zero perf gain.
  */
 import { createContext, useContext, type ReactNode } from 'react';
-import { shallow } from 'zustand/shallow';
+import { useShallow } from 'zustand/react/shallow';
 import type {
   SongState,
+  SongTab,
   ClipNote,
   InstrumentType,
   Track,
@@ -37,6 +38,7 @@ import type {
 export interface SongActions {
   // Transport
   setPlaying: (playing: boolean) => void;
+  setRecording: (recording: boolean) => void;
   setTempo: (bpm: number) => void;
   toggleMetronome: () => void;
   toggleLoop: () => void;
@@ -66,11 +68,35 @@ export interface SongActions {
   addNewTrack: (type: InstrumentType, soundBank: { slug: string; name: string }) => void;
   removeTrack: (trackId: number) => void;
 
+  // Master
+  setMasterVolume: (volume: number) => void;
+
   // Navigation
   showSongView: () => void;
   showAddTrackMenu: () => void;
+  showSoundBankPicker: (instrumentType: InstrumentType) => void;
   openClipEditor: (trackId: number, clipId: number) => void;
-  setCurrentTab: (tab: string) => void;
+  setCurrentTab: (tab: SongTab) => void;
+
+  // Soundbank picker
+  fetchSoundBanks: () => Promise<void>;
+  selectSoundBank: (slug: string) => void;
+  previewSoundBank: (slug: string) => void;
+  stopPreview: () => void;
+  confirmSoundBank: () => void;
+
+  // Undo/Redo
+  undoClipEdit: (trackId: number, clipId: number) => void;
+  redoClipEdit: (trackId: number, clipId: number) => void;
+
+  // Live recording
+  liveNoteOn: (trackId: number, clipId: number, noteIndex: number, velocity: number, currentBeat: number) => void;
+  liveNoteOff: (trackId: number, clipId: number, noteIndex: number, currentBeat: number) => void;
+
+  // Clip settings
+  showClipSettings: () => void;
+  hideClipSettings: () => void;
+  togglePianoNoteNames: () => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -83,12 +109,12 @@ export type SongStore = SongState & SongActions;
 // Context + Provider
 // ---------------------------------------------------------------------------
 
-/** The zustand hook type the app passes in */
+/** The zustand hook type the app passes in (zustand v5 signature) */
 export type UseSongStoreHook = {
   (): SongStore;
   <T>(selector: (state: SongStore) => T): T;
-  <T>(selector: (state: SongStore) => T, equalityFn: (a: T, b: T) => boolean): T;
   getState: () => SongStore;
+  subscribe: (listener: (state: SongStore, prevState: SongStore) => void) => () => void;
 };
 
 const SongStoreContext = createContext<UseSongStoreHook | null>(null);
@@ -111,13 +137,17 @@ function useStoreHook(): UseSongStoreHook {
 /**
  * Read a slice of the song store. Only re-renders when the selected value changes.
  *
- * @example
- * const isPlaying = useSongContext(s => s.isPlaying);          // primitive — exact equality
- * const track = useSongContext(s => s.tracks[0], shallow);     // object — shallow equality
+ * For primitive selectors (boolean, number, string), use directly:
+ *   const isPlaying = useSongContext(s => s.isPlaying);
+ *
+ * For object/array selectors, wrap with useShallow at the call site:
+ *   const tracks = useSongContext(useShallow(s => s.tracks));
+ *
+ * Do NOT pass an equalityFn — zustand v5 hooks ignore it.
  */
-export function useSongContext<T>(selector: (state: SongStore) => T, equalityFn?: (a: T, b: T) => boolean): T {
+export function useSongContext<T>(selector: (state: SongStore) => T): T {
   const useStore = useStoreHook();
-  return equalityFn ? useStore(selector, equalityFn) : useStore(selector);
+  return useStore(selector);
 }
 
 /** Get store for imperative access in callbacks (no subscription, no re-render) */
@@ -134,53 +164,48 @@ export function useSongActions(): SongActions {
 /** Select a single track. Re-renders only when THIS track's data changes. */
 export function useTrack(trackId: number): Track | undefined {
   return useSongContext(
-    (s) => s.tracks.find(t => t.id === trackId),
-    shallow
+    useShallow((s) => s.tracks.find(t => t.id === trackId))
   );
 }
 
 /** Select a single clip. Re-renders only when THIS clip changes. */
 export function useClip(trackId: number, clipId: number): Clip | undefined {
   return useSongContext(
-    (s) => s.tracks.find(t => t.id === trackId)?.clips.find(c => c.id === clipId),
-    shallow
+    useShallow((s) => s.tracks.find(t => t.id === trackId)?.clips.find(c => c.id === clipId))
   );
 }
 
 /** Select the active clip for a track in the current section. */
 export function useActiveClip(trackId: number): Clip | undefined {
   return useSongContext(
-    (s) => {
+    useShallow((s) => {
       const track = s.tracks.find(t => t.id === trackId);
       return track?.clips.find(c => c.sectionID === s.currentSectionId);
-    },
-    shallow
+    })
   );
 }
 
 /** Transport state only. Re-renders only on transport changes. */
 export function useTransport() {
   return useSongContext(
-    (s) => ({
+    useShallow((s) => ({
       isPlaying: s.isPlaying,
       tempo: s.tempo,
       isLoopEnabled: s.isLoopEnabled,
       isMetronomeEnabled: s.isMetronomeEnabled,
       currentBeatPosition: s.currentBeatPosition,
-    }),
-    shallow
+    }))
   );
 }
 
 /** Mixer state for a single track. */
 export function useTrackMixer(trackId: number) {
   return useSongContext(
-    (s) => {
+    useShallow((s) => {
       const t = s.tracks.find(tr => tr.id === trackId);
       if (!t) return undefined;
       return { volume: t.volume, pan: t.pan, isMuted: t.isMuted, isSoloed: t.isSoloed };
-    },
-    shallow
+    })
   );
 }
 

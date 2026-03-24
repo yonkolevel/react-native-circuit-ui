@@ -141,6 +141,13 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 {
                   "backgroundColor": "#25272B",
                 },
+                {
+                  "transform": [
+                    {
+                      "scale": 1,
+                    },
+                  ],
+                },
               ]
             }
           >
@@ -206,6 +213,13 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 },
                 {
                   "backgroundColor": "#25272B",
+                },
+                {
+                  "transform": [
+                    {
+                      "scale": 1,
+                    },
+                  ],
                 },
               ]
             }
@@ -592,6 +606,13 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 {
                   "backgroundColor": "#25272B",
                 },
+                {
+                  "transform": [
+                    {
+                      "scale": 1,
+                    },
+                  ],
+                },
               ]
             }
           >
@@ -657,6 +678,13 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 },
                 {
                   "backgroundColor": "#25272B",
+                },
+                {
+                  "transform": [
+                    {
+                      "scale": 1,
+                    },
+                  ],
                 },
               ]
             }
@@ -1043,6 +1071,13 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 {
                   "backgroundColor": "#25272B",
                 },
+                {
+                  "transform": [
+                    {
+                      "scale": 1,
+                    },
+                  ],
+                },
               ]
             }
           >
@@ -1108,6 +1143,13 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
                 },
                 {
                   "backgroundColor": "#25272B",
+                },
+                {
+                  "transform": [
+                    {
+                      "scale": 1,
+                    },
+                  ],
                 },
               ]
             }
@@ -1521,6 +1563,13 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                 {
                   "backgroundColor": "#FF5C24",
                 },
+                {
+                  "transform": [
+                    {
+                      "scale": 1,
+                    },
+                  ],
+                },
               ]
             }
           >
@@ -1586,6 +1635,13 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
                 },
                 {
                   "backgroundColor": "#25272B",
+                },
+                {
+                  "transform": [
+                    {
+                      "scale": 1,
+                    },
+                  ],
                 },
               ]
             }
@@ -1999,6 +2055,13 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 {
                   "backgroundColor": "#25272B",
                 },
+                {
+                  "transform": [
+                    {
+                      "scale": 1,
+                    },
+                  ],
+                },
               ]
             }
           >
@@ -2064,6 +2127,13 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 },
                 {
                   "backgroundColor": "#00FF9E",
+                },
+                {
+                  "transform": [
+                    {
+                      "scale": 1,
+                    },
+                  ],
                 },
               ]
             }
@@ -2450,6 +2520,13 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 {
                   "backgroundColor": "#FF5C24",
                 },
+                {
+                  "transform": [
+                    {
+                      "scale": 1,
+                    },
+                  ],
+                },
               ]
             }
           >
@@ -2515,6 +2592,13 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
                 },
                 {
                   "backgroundColor": "#25272B",
+                },
+                {
+                  "transform": [
+                    {
+                      "scale": 1,
+                    },
+                  ],
                 },
               ]
             }

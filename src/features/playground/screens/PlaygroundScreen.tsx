@@ -4,10 +4,14 @@
  */
 import { memo } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { create } from 'zustand';
 import { SongView } from '../components/SongView';
 import { useTheme } from '../../../theme';
 import { createMockSong } from '../mocks';
-import type { SongCallbacks } from '../types';
+import { SongStoreProvider } from '../stores/playgroundStore';
+import type { SongStore } from '../stores/playgroundStore';
+
+const noop = (() => {}) as any;
 
 interface Props { onBack?: () => void; }
 
@@ -15,17 +19,24 @@ export const PlaygroundScreen = memo(function PlaygroundScreen({ onBack }: Props
   const { colors } = useTheme();
   const mockSong = createMockSong();
 
-  const callbacks: SongCallbacks = {
-    onBack,
-    onPlay: () => console.log('play'),
-    onPause: () => console.log('pause'),
-    onNavigate: (dest) => console.log('navigate', dest),
-  };
+  const useMockStore = create<SongStore>()(() => ({
+    ...mockSong,
+    setPlaying: noop, setRecording: noop, setTempo: noop, toggleMetronome: noop, toggleLoop: noop,
+    setCurrentSection: noop, addSection: noop, renameSection: noop,
+    setTrackVolume: noop, setTrackPan: noop, toggleTrackMute: noop, toggleTrackSolo: noop,
+    addNote: noop, removeNote: noop, updateNote: noop, setClipNotes: noop,
+    createClip: noop, setClipLength: noop,
+    addNewTrack: noop, removeTrack: noop,
+    showSongView: noop, showAddTrackMenu: noop, showSoundBankPicker: noop, fetchSoundBanks: async () => {}, selectSoundBank: noop, previewSoundBank: noop, stopPreview: noop, confirmSoundBank: noop, undoClipEdit: noop, redoClipEdit: noop, liveNoteOn: noop, liveNoteOff: noop, showClipSettings: noop, hideClipSettings: noop, togglePianoNoteNames: noop,
+    openClipEditor: noop, setCurrentTab: noop, setMasterVolume: noop,
+  }));
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
-      <SongView song={mockSong} callbacks={callbacks} />
-    </View>
+    <SongStoreProvider store={useMockStore as any}>
+      <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
+        <SongView onBack={onBack} />
+      </View>
+    </SongStoreProvider>
   );
 });
 

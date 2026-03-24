@@ -13,10 +13,8 @@
 import { memo, useState, useCallback, useMemo } from 'react';
 import {
   View,
-  Pressable,
   StyleSheet,
   useWindowDimensions,
-  Platform,
 } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { MultiTouchOverlay } from '../../../../components/MultiTouchOverlay';
@@ -129,26 +127,7 @@ export const PianoKeyboard = memo(function PianoKeyboard({
     [overlayToKey, onNoteOff]
   );
 
-  // Fallback callbacks for non-iOS
-  const handleIn = useCallback(
-    (k: number) => {
-      setPressed((prev) => new Set(prev).add(k));
-      onNoteOn?.(k);
-    },
-    [onNoteOn]
-  );
 
-  const handleOut = useCallback(
-    (k: number) => {
-      setPressed((prev) => {
-        const s = new Set(prev);
-        s.delete(k);
-        return s;
-      });
-      onNoteOff?.(k);
-    },
-    [onNoteOff]
-  );
 
   const renderOctave = (octave: number) => {
     const start = octave * 12;
@@ -159,28 +138,18 @@ export const PianoKeyboard = memo(function PianoKeyboard({
       (k) => k >= start && k < start + 12 && !ALL_SHARP.has(k)
     );
 
-    const useNative = Platform.OS === 'ios';
-
     return (
       <View key={octave} style={styles.octave}>
         <View
           style={styles.sharpRow}
-          pointerEvents={useNative ? 'none' : 'auto'}
+          pointerEvents="none"
         >
           {sk.map((k) => {
             const active = pressed.has(k) || externalPressedNotes.has(k);
             const sq = SQUARE_SHARPS.has(k);
-            const KeyWrapper = useNative ? View : Pressable;
-            const pressProps = useNative
-              ? {}
-              : {
-                  onPressIn: () => handleIn(k),
-                  onPressOut: () => handleOut(k),
-                };
             return (
-              <KeyWrapper
+              <View
                 key={k}
-                {...pressProps}
                 style={[
                   styles.sharpKey,
                   sq ? styles.sharpSq : styles.sharpRect,
@@ -196,25 +165,17 @@ export const PianoKeyboard = memo(function PianoKeyboard({
                   <View style={styles.circle} />
                   {HAS_RIGHT.has(k) && !sq && <View style={styles.spacer} />}
                 </View>
-              </KeyWrapper>
+              </View>
             );
           })}
         </View>
-        <View style={styles.natRow} pointerEvents={useNative ? 'none' : 'auto'}>
+        <View style={styles.natRow} pointerEvents="none">
           {nk.map((k) => {
             const active = pressed.has(k) || externalPressedNotes.has(k);
             const s = k % 12;
-            const KeyWrapper = useNative ? View : Pressable;
-            const pressProps = useNative
-              ? {}
-              : {
-                  onPressIn: () => handleIn(k),
-                  onPressOut: () => handleOut(k),
-                };
             return (
-              <KeyWrapper
+              <View
                 key={k}
-                {...pressProps}
                 style={[
                   styles.natKey,
                   {
@@ -238,7 +199,7 @@ export const PianoKeyboard = memo(function PianoKeyboard({
                     </Text>
                   </View>
                 )}
-              </KeyWrapper>
+              </View>
             );
           })}
         </View>
@@ -253,16 +214,14 @@ export const PianoKeyboard = memo(function PianoKeyboard({
     >
       {octaves.map(renderOctave)}
 
-      {/* Native overlay for iOS drag-to-play */}
-      {Platform.OS === 'ios' && (
-        <MultiTouchOverlay
+      {/* Multi-touch overlay — all platforms */}
+      <MultiTouchOverlay
           rows={overlayRows}
           columns={overlayCols}
           onPadPress={handleNativePress}
           onPadRelease={handleNativeRelease}
           style={StyleSheet.absoluteFill}
         />
-      )}
     </View>
   );
 });

@@ -80,6 +80,7 @@ describe('ClipEditorView interactions', () => {
       <ClipEditorView
         clip={clip}
         instrumentType="drum"
+        canUndo
         callbacks={{ onUndo }}
       />
     );
@@ -94,6 +95,7 @@ describe('ClipEditorView interactions', () => {
       <ClipEditorView
         clip={clip}
         instrumentType="drum"
+        canRedo
         callbacks={{ onRedo }}
       />
     );

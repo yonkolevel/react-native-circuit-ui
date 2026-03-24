@@ -67,6 +67,8 @@ export interface Track {
   isSoloed: boolean;
 }
 
+export type SongTab = 'song' | 'mixer' | 'settings';
+
 /** Matches midicircuit-rn SongState */
 export interface SongState {
   id: string;
@@ -81,6 +83,23 @@ export interface SongState {
   currentBeatPosition: number;
   isDirty: boolean;
   masterVolume: number;
+  /** Active tab within the song view (song grid / mixer / settings) */
+  currentTab: SongTab;
+  /** Available soundbanks for the picker (fetched lazily) */
+  availableSoundBanks: SoundBankRef[];
+  /** Currently selected soundbank slug in the picker */
+  selectedSoundBankSlug: string | null;
+
+  // Undo/Redo stacks (keyed by clipId)
+  undoStacks: Record<number, ClipNote[][]>;
+  redoStacks: Record<number, ClipNote[][]>;
+
+  // Live recording state (keyed by noteNumber for tracking held notes)
+  liveRecordingNotes: Record<number, { noteIndex: number; startBeat: number; velocity: number }>;
+
+  // Clip editor UI state
+  isClipSettingsVisible: boolean;
+  showPianoNoteNames: boolean;
 }
 
 // ─── UI-only state (not in midicircuit-rn songStore) ────────────────────────
@@ -100,7 +119,6 @@ export interface SongViewState extends SongState {
   isSoundBankViewVisible: boolean;
   currentSoundBankCategorySelection?: InstrumentType;
   isSectionNameEditViewVisible: boolean;
-  isClipSettingsVisible: boolean;
   soundBanks: SoundBankRef[];
 }
 

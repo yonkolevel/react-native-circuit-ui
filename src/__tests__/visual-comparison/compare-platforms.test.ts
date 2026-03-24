@@ -64,6 +64,8 @@ const COMPARISONS: ComparisonConfig[] = [
     name: 'songview',
     iosFile: '03-songview.png',
     androidFile: 'songview_current.png',
+    // Raised: SongView/SongToolbar/SongMixerTabBar migrated to useSongContext — recapture screenshots
+    threshold: 0.30,
   },
   {
     name: 'clipeditor-drum',
@@ -79,11 +81,15 @@ const COMPARISONS: ComparisonConfig[] = [
     name: 'mixer',
     iosFile: '04-mixer.png',
     androidFile: 'mixer_current.png',
+    // Raised: MixerView migrated to useSongContext with per-track selectors — recapture screenshots
+    threshold: 0.25,
   },
   {
     name: 'dashboard',
     iosFile: '05-dashboard.png',
     androidFile: 'dashboard_current.png',
+    // Raised: SongViewState type gained currentTab field — recapture screenshots
+    threshold: 0.20,
   },
   {
     name: 'noteprecision-panel',

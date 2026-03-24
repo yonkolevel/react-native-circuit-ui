@@ -1,19 +1,67 @@
 /**
  * SongView Snapshot + Behavioral Tests
  *
- * Snapshots lock in the component tree structure.
- * Behavioral tests verify callbacks and state transitions.
+ * All components read state from useSongContext (SongStoreProvider).
+ * Tests create a real zustand store with mock data.
  */
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
+import { create } from 'zustand';
 import { ThemeProvider } from '../../../../../theme';
 import { SongView } from '../SongView';
 import { SongToolbar } from '../SongToolbar';
 import { SongMixerTabBar } from '../SongMixerTabBar';
+import { SongStoreProvider } from '../../../stores/playgroundStore';
+import type { SongStore } from '../../../stores/playgroundStore';
 import { createMockSong, resetMockIds } from '../../../mocks';
 
-function renderWithTheme(ui: React.ReactElement) {
-  return render(<ThemeProvider initialMode="dark">{ui}</ThemeProvider>);
+function createTestStore(overrides: Partial<ReturnType<typeof createMockSong>> = {}) {
+  const song = createMockSong(overrides);
+  return create<SongStore>()((set) => ({
+    ...song,
+    currentTab: (overrides as any).currentTab ?? 'song',
+    // Actions
+    setRecording: jest.fn(), setPlaying: jest.fn((playing) => set({ isPlaying: playing })),
+    setTempo: jest.fn(),
+    toggleMetronome: jest.fn(() => set((s) => ({ isMetronomeEnabled: !s.isMetronomeEnabled }))),
+    toggleLoop: jest.fn(() => set((s) => ({ isLoopEnabled: !s.isLoopEnabled }))),
+    setCurrentSection: jest.fn(),
+    addSection: jest.fn(),
+    renameSection: jest.fn(),
+    setTrackVolume: jest.fn(),
+    setTrackPan: jest.fn(),
+    toggleTrackMute: jest.fn(),
+    toggleTrackSolo: jest.fn(),
+    addNote: jest.fn(),
+    removeNote: jest.fn(),
+    updateNote: jest.fn(),
+    setClipNotes: jest.fn(),
+    createClip: jest.fn(),
+    setClipLength: jest.fn(),
+    addNewTrack: jest.fn(),
+    removeTrack: jest.fn(),
+    showSongView: jest.fn(),
+    showAddTrackMenu: jest.fn(),
+    showSoundBankPicker: jest.fn(),
+    fetchSoundBanks: jest.fn(),
+    selectSoundBank: jest.fn(),
+    previewSoundBank: jest.fn(),
+    stopPreview: jest.fn(),
+    confirmSoundBank: jest.fn(), undoClipEdit: jest.fn(), redoClipEdit: jest.fn(), liveNoteOn: jest.fn(), liveNoteOff: jest.fn(), showClipSettings: jest.fn(), hideClipSettings: jest.fn(), togglePianoNoteNames: jest.fn(),
+    openClipEditor: jest.fn(),
+    setCurrentTab: jest.fn((tab: string) => set({ currentTab: tab as any })),
+    setMasterVolume: jest.fn(),
+  }));
+}
+
+function renderWithStore(ui: React.ReactElement, store: ReturnType<typeof createTestStore>) {
+  return render(
+    <ThemeProvider initialMode="dark">
+      <SongStoreProvider store={store as any}>
+        {ui}
+      </SongStoreProvider>
+    </ThemeProvider>
+  );
 }
 
 beforeEach(() => resetMockIds());
@@ -22,122 +70,96 @@ beforeEach(() => resetMockIds());
 
 describe('SongView snapshots', () => {
   it('matches snapshot for song view', () => {
-    const song = createMockSong({ currentView: 'song' });
-    const tree = renderWithTheme(<SongView song={song} />);
+    const store = createTestStore();
+    const tree = renderWithStore(<SongView />, store);
     expect(tree.toJSON()).toMatchSnapshot();
   });
 
   it('matches snapshot for mixer view', () => {
-    const song = createMockSong({ currentView: 'mixer' });
-    const tree = renderWithTheme(<SongView song={song} />);
+    const store = createTestStore({ currentTab: 'mixer' } as any);
+    const tree = renderWithStore(<SongView />, store);
     expect(tree.toJSON()).toMatchSnapshot();
   });
 
   it('matches snapshot for settings view', () => {
-    const song = createMockSong({ currentView: 'settings' });
-    const tree = renderWithTheme(<SongView song={song} />);
+    const store = createTestStore({ currentTab: 'settings' } as any);
+    const tree = renderWithStore(<SongView />, store);
     expect(tree.toJSON()).toMatchSnapshot();
   });
 });
 
 describe('SongToolbar snapshots', () => {
   it('matches snapshot when stopped', () => {
-    const song = createMockSong({ isPlaying: false });
-    const tree = renderWithTheme(<SongToolbar song={song} />);
+    const store = createTestStore({ isPlaying: false });
+    const tree = renderWithStore(<SongToolbar />, store);
     expect(tree.toJSON()).toMatchSnapshot();
   });
 
   it('matches snapshot when playing', () => {
-    const song = createMockSong({ isPlaying: true });
-    const tree = renderWithTheme(<SongToolbar song={song} />);
+    const store = createTestStore({ isPlaying: true });
+    const tree = renderWithStore(<SongToolbar />, store);
     expect(tree.toJSON()).toMatchSnapshot();
   });
 });
 
 describe('SongMixerTabBar snapshots', () => {
   it('matches snapshot with song active', () => {
-    const tree = renderWithTheme(<SongMixerTabBar currentView="song" />);
+    const store = createTestStore();
+    const tree = renderWithStore(<SongMixerTabBar />, store);
     expect(tree.toJSON()).toMatchSnapshot();
   });
 
   it('matches snapshot with mixer active', () => {
-    const tree = renderWithTheme(<SongMixerTabBar currentView="mixer" />);
+    const store = createTestStore({ currentTab: 'mixer' } as any);
+    const tree = renderWithStore(<SongMixerTabBar />, store);
     expect(tree.toJSON()).toMatchSnapshot();
   });
 });
 
 // ─── Behavioral Tests ───────────────────────────────────────────────────────
 
-describe('SongView behavior', () => {
-  it('returns null for editor views', () => {
-    const song = createMockSong({
-      currentView: {
-        kind: 'pianoRoll',
-        config: { clipId: 1, trackId: 1, instrumentType: 'drum' },
-      },
-    });
-    const { toJSON } = renderWithTheme(<SongView song={song} />);
-    expect(toJSON()).toBeNull();
-  });
-});
-
 describe('SongToolbar behavior', () => {
-  it('calls onPlay when not playing', () => {
-    const onPlay = jest.fn();
-    const song = createMockSong({ isPlaying: false });
-    const { getByTestId } = renderWithTheme(
-      <SongToolbar song={song} callbacks={{ onPlay }} />
-    );
+  it('calls setPlaying(true) when not playing', () => {
+    const store = createTestStore({ isPlaying: false });
+    const { getByTestId } = renderWithStore(<SongToolbar />, store);
     fireEvent.press(getByTestId('transport-play-pause'));
-    expect(onPlay).toHaveBeenCalled();
+    expect(store.getState().setPlaying).toHaveBeenCalledWith(true);
   });
 
-  it('calls onPause when playing', () => {
-    const onPause = jest.fn();
-    const song = createMockSong({ isPlaying: true });
-    const { getByTestId } = renderWithTheme(
-      <SongToolbar song={song} callbacks={{ onPause }} />
-    );
+  it('calls setPlaying(false) when playing', () => {
+    const store = createTestStore({ isPlaying: true });
+    const { getByTestId } = renderWithStore(<SongToolbar />, store);
     fireEvent.press(getByTestId('transport-play-pause'));
-    expect(onPause).toHaveBeenCalled();
+    expect(store.getState().setPlaying).toHaveBeenCalledWith(false);
   });
 
-  it('calls onToggleLoop', () => {
-    const onToggleLoop = jest.fn();
-    const song = createMockSong();
-    const { getByTestId } = renderWithTheme(
-      <SongToolbar song={song} callbacks={{ onToggleLoop }} />
-    );
+  it('calls toggleLoop', () => {
+    const store = createTestStore();
+    const { getByTestId } = renderWithStore(<SongToolbar />, store);
     fireEvent.press(getByTestId('transport-loop'));
-    expect(onToggleLoop).toHaveBeenCalled();
+    expect(store.getState().toggleLoop).toHaveBeenCalled();
   });
 
-  it('calls onToggleMetronome', () => {
-    const onToggleMetronome = jest.fn();
-    const song = createMockSong();
-    const { getByTestId } = renderWithTheme(
-      <SongToolbar song={song} callbacks={{ onToggleMetronome }} />
-    );
+  it('calls toggleMetronome', () => {
+    const store = createTestStore();
+    const { getByTestId } = renderWithStore(<SongToolbar />, store);
     fireEvent.press(getByTestId('transport-metronome'));
-    expect(onToggleMetronome).toHaveBeenCalled();
+    expect(store.getState().toggleMetronome).toHaveBeenCalled();
   });
 });
 
 describe('SongMixerTabBar behavior', () => {
   it('renders both tabs', () => {
-    const { getByTestId } = renderWithTheme(
-      <SongMixerTabBar currentView="song" />
-    );
+    const store = createTestStore();
+    const { getByTestId } = renderWithStore(<SongMixerTabBar />, store);
     expect(getByTestId('tab-song')).toBeTruthy();
     expect(getByTestId('tab-mixer')).toBeTruthy();
   });
 
-  it('calls onTabPress with mixer', () => {
-    const onTabPress = jest.fn();
-    const { getByTestId } = renderWithTheme(
-      <SongMixerTabBar currentView="song" onTabPress={onTabPress} />
-    );
+  it('calls setCurrentTab with mixer', () => {
+    const store = createTestStore();
+    const { getByTestId } = renderWithStore(<SongMixerTabBar />, store);
     fireEvent.press(getByTestId('tab-mixer'));
-    expect(onTabPress).toHaveBeenCalledWith('mixer');
+    expect(store.getState().setCurrentTab).toHaveBeenCalledWith('mixer');
   });
 });

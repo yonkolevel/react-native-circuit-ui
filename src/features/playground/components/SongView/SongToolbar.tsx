@@ -1,36 +1,27 @@
 /**
  * SongToolbar — Transport controls bar
  *
- * Matches Swift SongToolbarView which provides:
- * - Play/Pause toggle (centered)
- * - Loop toggle (green when enabled)
- * - Metronome toggle (filled when enabled)
- * - Settings gear (right-aligned)
+ * All state and actions from useSongContext() — zero callback props.
  *
  * Layout (from Swift):
- *   HStack { Spacer, HStack(spacing:8) { play/pause, loop, metronome }, Spacer, settings }
- *
- * SF Symbol → Lucide mapping:
- *   play.fill / pause.fill   → Play / Pause
- *   arrow.rectanglepath      → Repeat
- *   metronome / metronome.fill → Timer / TimerOff (closest match)
- *   gearshape.fill           → Settings
+ *   HStack { back, Spacer, HStack(spacing:8) { play/pause, loop, metronome }, Spacer, settings }
  */
 import { memo, useCallback } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring, withSequence } from 'react-native-reanimated';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
-import type { SongViewState, SongCallbacks } from '../../types';
+import { useSongContext, useSongActions } from '../../stores/playgroundStore';
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 // ─── Props ──────────────────────────────────────────────────────────────────
 
 export interface SongToolbarProps {
-  /** Song state — reads isPlaying, isLoopEnabled, isMetronomeEnabled */
-  song: SongViewState;
-  /** Callback handlers for transport actions */
-  callbacks?: SongCallbacks;
+  /** Called when the back button is pressed (navigation is outside store scope) */
+  onBack?: () => void;
   /** Container style override */
   style?: StyleProp<ViewStyle>;
 }
@@ -38,35 +29,63 @@ export interface SongToolbarProps {
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export const SongToolbar: React.FC<SongToolbarProps> = memo(
-  function SongToolbar({ song, callbacks, style }) {
+  function SongToolbar({ onBack, style }) {
     const { colors } = useTheme();
+
+    // State — fine-grained selectors, re-render only when these change
+    const isPlaying = useSongContext(s => s.isPlaying);
+    const isLoopEnabled = useSongContext(s => s.isLoopEnabled);
+    const isMetronomeEnabled = useSongContext(s => s.isMetronomeEnabled);
+
+    // Actions — stable refs, no subscription (getState)
+    const { setPlaying, toggleLoop, toggleMetronome, setCurrentTab } = useSongActions();
+
+    // ─── Press-scale animation (matches iOS button feedback) ────────
+    const playScale = useSharedValue(1);
+    const loopScale = useSharedValue(1);
+    const metroScale = useSharedValue(1);
+
+    const bounce = (sv: { value: number }) => {
+      sv.value = withSequence(
+        withSpring(0.85, { damping: 15, stiffness: 400 }),
+        withSpring(1, { damping: 12, stiffness: 200 })
+      );
+    };
+
+    const playStyle = useAnimatedStyle(() => ({
+      transform: [{ scale: playScale.value }],
+    }));
+    const loopStyle = useAnimatedStyle(() => ({
+      transform: [{ scale: loopScale.value }],
+    }));
+    const metroStyle = useAnimatedStyle(() => ({
+      transform: [{ scale: metroScale.value }],
+    }));
 
     // ─── Handlers ───────────────────────────────────────────────────
 
     const handlePlayPause = useCallback(() => {
-      if (song.isPlaying) {
-        callbacks?.onPause?.();
-      } else {
-        callbacks?.onPlay?.();
-      }
-    }, [song.isPlaying, callbacks]);
+      bounce(playScale);
+      setPlaying(!isPlaying);
+    }, [isPlaying, setPlaying]);
 
     const handleToggleLoop = useCallback(() => {
-      callbacks?.onToggleLoop?.();
-    }, [callbacks]);
+      bounce(loopScale);
+      toggleLoop();
+    }, [toggleLoop]);
 
     const handleToggleMetronome = useCallback(() => {
-      callbacks?.onToggleMetronome?.();
-    }, [callbacks]);
+      bounce(metroScale);
+      toggleMetronome();
+    }, [toggleMetronome]);
 
     const handleSettings = useCallback(() => {
-      callbacks?.onNavigate?.('settings');
-    }, [callbacks]);
+      setCurrentTab('settings');
+    }, [setCurrentTab]);
 
     // ─── Colors ─────────────────────────────────────────────────────
 
-    // iOS: loop = mcGreen when enabled, mcWhite when disabled
-    const loopColor = song.isLoopEnabled ? colors.mcGreen : colors.mcWhite;
+    const loopColor = isLoopEnabled ? colors.mcGreen : colors.mcWhite;
 
     return (
       <View
@@ -79,9 +98,9 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
         accessibilityLabel="Song toolbar"
         testID="song-toolbar"
       >
-        {/* Back button — matches iOS chevron.left at x=28 */}
+        {/* Back button */}
         <Pressable
-          onPress={callbacks?.onBack}
+          onPress={onBack}
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Back"
@@ -94,63 +113,52 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
 
         {/* Transport Controls — centered */}
         <View style={styles.transportGroup}>
-          {/* Play / Pause */}
-          <Pressable
+          {/* Play / Pause — bounce on tap */}
+          <AnimatedPressable
             onPress={handlePlayPause}
             hitSlop={8}
             accessibilityRole="button"
-            accessibilityLabel={song.isPlaying ? 'Pause' : 'Play'}
-            accessibilityState={{ selected: song.isPlaying }}
-            style={({ pressed }) => [
-              styles.transportButton,
-              { opacity: pressed ? 0.6 : 1 },
-            ]}
+            accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
+            accessibilityState={{ selected: isPlaying }}
+            style={[styles.transportButton, playStyle]}
             testID="transport-play-pause"
           >
-            {song.isPlaying ? (
+            {isPlaying ? (
               <Icon icon={Icons.pause} size={22} color={colors.mcWhite} />
             ) : (
               <Icon icon={Icons.play} size={22} color={colors.mcWhite} />
             )}
-          </Pressable>
+          </AnimatedPressable>
 
-          {/* Loop */}
-          <Pressable
+          {/* Loop — bounce on tap */}
+          <AnimatedPressable
             onPress={handleToggleLoop}
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Loop"
-            accessibilityState={{ selected: song.isLoopEnabled }}
-            style={({ pressed }) => [
-              styles.transportButton,
-              { opacity: pressed ? 0.6 : 1 },
-            ]}
+            accessibilityState={{ selected: isLoopEnabled }}
+            style={[styles.transportButton, loopStyle]}
             testID="transport-loop"
           >
             <Icon icon={Icons.loop} size={22} color={loopColor} />
-          </Pressable>
+          </AnimatedPressable>
 
-          {/* Metronome */}
-          <Pressable
+          {/* Metronome — bounce on tap */}
+          <AnimatedPressable
             onPress={handleToggleMetronome}
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Metronome"
-            accessibilityState={{ selected: song.isMetronomeEnabled }}
-            style={({ pressed }) => [
-              styles.transportButton,
-              { opacity: pressed ? 0.6 : 1 },
-            ]}
+            accessibilityState={{ selected: isMetronomeEnabled }}
+            style={[styles.transportButton, metroStyle]}
             testID="transport-metronome"
           >
             <Icon
-              icon={
-                song.isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff
-              }
+              icon={isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff}
               size={22}
               color={colors.mcWhite}
             />
-          </Pressable>
+          </AnimatedPressable>
         </View>
 
         {/* Right spacer + Settings gear */}
@@ -180,15 +188,14 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: makeSpacing(3), // 12
-    paddingVertical: makeSpacing(2), // 8
+    paddingHorizontal: makeSpacing(3),
+    paddingVertical: makeSpacing(2),
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   backButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
-
     justifyContent: 'center' as const,
     alignItems: 'center' as const,
   },
@@ -199,17 +206,17 @@ const styles = StyleSheet.create({
   transportGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: makeSpacing(2), // 8 — matches Swift spacing: 8
+    gap: makeSpacing(2),
   },
   transportButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: makeSpacing(1), // 4
+    padding: makeSpacing(1),
   },
   settingsButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: makeSpacing(1), // 4
+    padding: makeSpacing(1),
   },
 });
 

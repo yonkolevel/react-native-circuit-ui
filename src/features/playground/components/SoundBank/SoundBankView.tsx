@@ -24,6 +24,7 @@ export interface SoundBankViewProps {
   onSelect?: (slug: string) => void;
   onDone?: (selectedName: string) => void;
   onPreview?: (slug: string) => void;
+  onStopPreview?: () => void;
 }
 
 export const SoundBankView = memo(function SoundBankView({
@@ -34,6 +35,7 @@ export const SoundBankView = memo(function SoundBankView({
   onSelect,
   onDone,
   onPreview,
+  onStopPreview,
 }: SoundBankViewProps) {
   const { colors } = useTheme();
   const [playingSlug, setPlayingSlug] = useState<string | null>(null);
@@ -105,6 +107,7 @@ export const SoundBankView = memo(function SoundBankView({
                   onPress={() => {
                     if (isPlaying) {
                       setPlayingSlug(null);
+                      onStopPreview?.();
                     } else {
                       setPlayingSlug(sb.slug);
                       onPreview?.(sb.slug);

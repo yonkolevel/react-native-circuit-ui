@@ -85,7 +85,13 @@ exports[`SongMixerTabBar snapshots matches snapshot with mixer active 1`] = `
           {
             "backgroundColor": "transparent",
             "borderRadius": 6,
-            "opacity": 1,
+          },
+          {
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -156,7 +162,13 @@ exports[`SongMixerTabBar snapshots matches snapshot with mixer active 1`] = `
           {
             "backgroundColor": "#FF5C24",
             "borderRadius": 6,
-            "opacity": 1,
+          },
+          {
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -273,7 +285,13 @@ exports[`SongMixerTabBar snapshots matches snapshot with song active 1`] = `
           {
             "backgroundColor": "#FF5C24",
             "borderRadius": 6,
-            "opacity": 1,
+          },
+          {
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -344,7 +362,13 @@ exports[`SongMixerTabBar snapshots matches snapshot with song active 1`] = `
           {
             "backgroundColor": "transparent",
             "borderRadius": 6,
-            "opacity": 1,
+          },
+          {
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -512,7 +536,11 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
             "padding": 4,
           },
           {
-            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -567,7 +595,11 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
             "padding": 4,
           },
           {
-            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -622,7 +654,11 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
             "padding": 4,
           },
           {
-            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -840,7 +876,11 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
             "padding": 4,
           },
           {
-            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -895,7 +935,11 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
             "padding": 4,
           },
           {
-            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -950,7 +994,11 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
             "padding": 4,
           },
           {
-            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -1181,7 +1229,11 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
               "padding": 4,
             },
             {
-              "opacity": 1,
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }
@@ -1236,7 +1288,11 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
               "padding": 4,
             },
             {
-              "opacity": 1,
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }
@@ -1291,7 +1347,11 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
               "padding": 4,
             },
             {
-              "opacity": 1,
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }
@@ -1518,6 +1578,13 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                     {
                       "backgroundColor": "#25272B",
                     },
+                    {
+                      "transform": [
+                        {
+                          "scale": 1,
+                        },
+                      ],
+                    },
                   ]
                 }
               >
@@ -1583,6 +1650,13 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                     },
                     {
                       "backgroundColor": "#25272B",
+                    },
+                    {
+                      "transform": [
+                        {
+                          "scale": 1,
+                        },
+                      ],
                     },
                   ]
                 }
@@ -1969,6 +2043,13 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                     {
                       "backgroundColor": "#25272B",
                     },
+                    {
+                      "transform": [
+                        {
+                          "scale": 1,
+                        },
+                      ],
+                    },
                   ]
                 }
               >
@@ -2034,6 +2115,13 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                     },
                     {
                       "backgroundColor": "#25272B",
+                    },
+                    {
+                      "transform": [
+                        {
+                          "scale": 1,
+                        },
+                      ],
                     },
                   ]
                 }
@@ -2420,6 +2508,13 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                     {
                       "backgroundColor": "#25272B",
                     },
+                    {
+                      "transform": [
+                        {
+                          "scale": 1,
+                        },
+                      ],
+                    },
                   ]
                 }
               >
@@ -2485,6 +2580,13 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                     },
                     {
                       "backgroundColor": "#25272B",
+                    },
+                    {
+                      "transform": [
+                        {
+                          "scale": 1,
+                        },
+                      ],
                     },
                   ]
                 }
@@ -2840,7 +2942,13 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
             {
               "backgroundColor": "transparent",
               "borderRadius": 6,
-              "opacity": 1,
+            },
+            {
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }
@@ -2911,7 +3019,13 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
             {
               "backgroundColor": "#FF5C24",
               "borderRadius": 6,
-              "opacity": 1,
+            },
+            {
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }
@@ -3093,7 +3207,11 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
               "padding": 4,
             },
             {
-              "opacity": 1,
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }
@@ -3148,7 +3266,11 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
               "padding": 4,
             },
             {
-              "opacity": 1,
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }
@@ -3203,7 +3325,11 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
               "padding": 4,
             },
             {
-              "opacity": 1,
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }
@@ -3919,7 +4045,11 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
               "padding": 4,
             },
             {
-              "opacity": 1,
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }
@@ -3974,7 +4104,11 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
               "padding": 4,
             },
             {
-              "opacity": 1,
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }
@@ -4029,7 +4163,11 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
               "padding": 4,
             },
             {
-              "opacity": 1,
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }
@@ -5317,7 +5455,13 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
             {
               "backgroundColor": "#FF5C24",
               "borderRadius": 6,
-              "opacity": 1,
+            },
+            {
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }
@@ -5388,7 +5532,13 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
             {
               "backgroundColor": "transparent",
               "borderRadius": 6,
-              "opacity": 1,
+            },
+            {
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
             },
           ]
         }

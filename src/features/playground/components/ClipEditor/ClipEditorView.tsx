@@ -17,7 +17,7 @@
  * │ VEL:   [velocity bars with values]               │
  * └──────────────────────────────────────────────────┘
  */
-import { memo, useState } from 'react';
+import { memo, useState, useCallback, useEffect } from 'react';
 import {
   View,
   ScrollView as RNScrollView,
@@ -25,12 +25,14 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, Easing, runOnJS } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme, hexToRgba } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
 import { MidiNoteView } from './MidiNoteView';
+import { ClipSettingsModal } from './ClipSettingsModal';
 import { DrumPadsView } from '../DrumPads/DrumPadsView';
 import { PianoKeyboard } from '../PianoKeyboard/PianoKeyboard';
 import type {
@@ -162,8 +164,12 @@ interface PianoRollGridProps {
   rowHeight?: number;
   zoomLevel?: number;
   playheadPosition?: number;
+  isPlaying?: boolean;
+  tempo?: number;
   isExpanded?: boolean;
   selectedPitchIndex?: number | null;
+  /** Base MIDI note for melodic/bass pitch range (from soundbank defaultOctave). Falls back to 48 (C3). */
+  melodicMinPitch?: number;
   onNotePress?: (index: number) => void;
   onNoteResize?: (index: number, newDuration: number) => void;
   onNoteMove?: (
@@ -201,8 +207,79 @@ const getNoteName = (pitch: number): string => {
   return `${noteName}${octave}`;
 };
 
-/** Default MIDI pitch range for melodic/bass tracks (2 octaves starting at C3 = MIDI 48). */
-const MELODIC_MIN_PITCH = 48;
+// ─── Playhead (UI thread, 60fps via useFrameCallback) ───────────────────────
+
+/**
+ * Smooth playhead — fire-and-forget native animation.
+ *
+ * Uses withRepeat(withTiming(..., linear)) — the native animation driver
+ * handles all interpolation. Zero worklets, zero frame callbacks, zero
+ * main thread work during animation. Gestures are never blocked.
+ *
+ * One loop = playhead travels from left edge to right edge of the clip.
+ * Duration = (clipBeats / (tempo/60)) * 1000 ms.
+ */
+const PlayheadLine = memo(function PlayheadLine({
+  beatWidth,
+  clipBeats,
+  isPlaying,
+  tempo,
+  color,
+}: {
+  beatWidth: number;
+  clipBeats: number;
+  isPlaying?: boolean;
+  tempo: number;
+  color: string;
+}) {
+  const posX = useSharedValue(0);
+
+  const maxX = clipBeats * beatWidth;
+  const loopMs = clipBeats > 0 && tempo > 0
+    ? (clipBeats / (tempo / 60)) * 1000
+    : 1000;
+
+  useEffect(() => {
+    if (isPlaying && maxX > 0) {
+      posX.value = 0;
+      posX.value = withRepeat(
+        withTiming(maxX, { duration: loopMs, easing: Easing.linear }),
+        -1,    // infinite
+        false  // don't reverse — jump back to 0
+      );
+    } else {
+      posX.value = 0;
+    }
+  }, [isPlaying, maxX, loopMs]);
+
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: posX.value }],
+  }));
+
+  return (
+    <Animated.View
+      pointerEvents="none"
+      style={[
+        {
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: 2,
+          backgroundColor: color,
+          zIndex: 10,
+        },
+        animStyle,
+      ]}
+    />
+  );
+});
+
+// ─── PianoRoll Grid ─────────────────────────────────────────────────────────
+
+/** Default MIDI pitch range for melodic/bass tracks (2 octaves starting at C3 = MIDI 48).
+ *  Can be overridden per-track via the `melodicMinPitch` prop on ClipEditorView. */
+const DEFAULT_MELODIC_MIN_PITCH = 48;
 const MELODIC_PITCH_COUNT = 24;
 
 const PianoRollGrid = memo(function PianoRollGrid({
@@ -213,9 +290,11 @@ const PianoRollGrid = memo(function PianoRollGrid({
   lengthInBeats,
   rowHeight = 34,
   zoomLevel = 1,
-  playheadPosition = 0,
+  isPlaying,
+  tempo = 120,
   isExpanded,
   selectedPitchIndex,
+  melodicMinPitch,
   onNotePress,
   onNoteResize,
   onNoteMove,
@@ -229,6 +308,9 @@ const PianoRollGrid = memo(function PianoRollGrid({
   const { width: screenWidth } = useWindowDimensions();
 
   const isDrum = instrumentType === 'drum';
+
+  // Effective base pitch for melodic/bass: use soundbank's defaultOctave when available
+  const basePitch = isDrum ? 0 : (melodicMinPitch ?? DEFAULT_MELODIC_MIN_PITCH);
 
   // Calculate pitch range: drums use sample count, melodic/bass use fixed 2-octave range
   const totalPitches = isDrum
@@ -247,10 +329,10 @@ const PianoRollGrid = memo(function PianoRollGrid({
 
   // pitchToMidi: maps pitchIdx (0 = bottom/lowest) → MIDI note number
   // Drums: each index maps to the sample's noteNumber
-  // Melodic/bass: linear from MELODIC_MIN_PITCH
+  // Melodic/bass: linear from basePitch (soundbank defaultOctave)
   const pitchToMidi: number[] = isDrum
     ? Array.from({ length: totalPitches }, (_, i) => (samples ?? [])[i]?.noteNumber ?? i)
-    : Array.from({ length: totalPitches }, (_, i) => MELODIC_MIN_PITCH + i);
+    : Array.from({ length: totalPitches }, (_, i) => basePitch + i);
 
   /**
    * Get label for a pitch row.
@@ -262,7 +344,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
       const sample = (samples ?? [])[pitchIdx];
       return sample?.name ?? `Note ${pitchIdx}`;
     }
-    return getNoteName(MELODIC_MIN_PITCH + pitchIdx);
+    return getNoteName(basePitch + pitchIdx);
   };
 
   /**
@@ -353,7 +435,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
                         const sample = (samples ?? [])[pitchIdx];
                         noteNumber = sample?.noteNumber ?? pitchIdx;
                       } else {
-                        noteNumber = MELODIC_MIN_PITCH + pitchIdx;
+                        noteNumber = basePitch + pitchIdx;
                       }
                       onGridTap(noteNumber, position);
                     }}
@@ -402,7 +484,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
                   );
                   pitchIdx = sampleIdx >= 0 ? sampleIdx : 0;
                 } else {
-                  pitchIdx = note.noteNumber - MELODIC_MIN_PITCH;
+                  pitchIdx = note.noteNumber - basePitch;
                 }
                 const rowIdx = totalPitches - 1 - pitchIdx;
                 return (
@@ -426,17 +508,13 @@ const PianoRollGrid = memo(function PianoRollGrid({
                   />
                 );
               })}
-              {/* Playhead */}
-              <View
-                style={{
-                  position: 'absolute',
-                  left: playheadPosition * BEAT_WIDTH,
-                  top: 0,
-                  bottom: 0,
-                  width: 2,
-                  backgroundColor: colors.mcWhite,
-                  zIndex: 10,
-                }}
+              {/* Playhead — Animated.View driven by shared value for smooth 60fps motion */}
+              <PlayheadLine
+                beatWidth={BEAT_WIDTH}
+                clipBeats={lengthInBeats}
+                isPlaying={isPlaying}
+                tempo={tempo}
+                color={colors.mcWhite}
               />
             </View>
           </ScrollView>
@@ -583,6 +661,78 @@ const ClipLengthBar = memo(function ClipLengthBar({
 // Matches SwiftUI VelocityLaneView: stem+handle pattern, VEL label column,
 // velocity values ON TOP of bars in orange, beat markers above notes row
 
+// ─── Velocity Bar (drag-to-edit) ────────────────────────────────────────────
+
+const VelocityBar = memo(function VelocityBar({
+  index,
+  velocity,
+  barHeight,
+  trackColor,
+  onChange,
+}: {
+  index: number;
+  velocity: number;
+  barHeight: number;
+  trackColor: string;
+  onChange?: (index: number, velocity: number) => void;
+}) {
+  const { colors } = useTheme();
+  const dragVel = useSharedValue(velocity);
+  const isDragging = useSharedValue(false);
+
+  const commitVelocity = useCallback((vel: number) => {
+    onChange?.(index, vel);
+  }, [index, onChange]);
+
+  const drag = Gesture.Pan()
+    .onStart(() => {
+      'worklet';
+      isDragging.value = true;
+      dragVel.value = velocity;
+    })
+    .onUpdate((e) => {
+      'worklet';
+      // Drag up = increase, drag down = decrease
+      const delta = -e.translationY * (127 / barHeight);
+      dragVel.value = Math.round(Math.max(1, Math.min(127, velocity + delta)));
+    })
+    .onEnd(() => {
+      'worklet';
+      isDragging.value = false;
+      runOnJS(commitVelocity)(dragVel.value);
+    });
+
+  const barStyle = useAnimatedStyle(() => ({
+    height: (isDragging.value ? dragVel.value : velocity) / 127 * barHeight,
+  }));
+
+  const displayVel = velocity;
+
+  return (
+    <GestureDetector gesture={drag}>
+      <View style={styles.velBarCol}>
+        <Text
+          variant="extraSmall"
+          color={colors.mcOrange}
+          bold
+          style={styles.velValueLabel}
+        >
+          {displayVel}
+        </Text>
+        <Animated.View
+          style={[
+            styles.velBar,
+            { backgroundColor: trackColor },
+            barStyle,
+          ]}
+        />
+      </View>
+    </GestureDetector>
+  );
+});
+
+// ─── Velocity Lane ──────────────────────────────────────────────────────────
+
 interface VelocityLaneProps {
   notes: ClipNote[];
   trackColor: string;
@@ -692,34 +842,16 @@ const VelocityLane = memo(function VelocityLane({
               ))}
             </View>
             <View style={[styles.velBarsRow, { height: BAR_HEIGHT }]}>
-              {notes.map((_n, i) => {
-                const vel = notes[i]!.velocity;
-                const barH = (vel / 127) * BAR_HEIGHT;
-                return (
-                  <Pressable
-                    key={i}
-                    onPress={() => onVelocityChange?.(i, vel)}
-                    style={styles.velBarCol}
-                  >
-                    {/* Value label ON TOP of bar */}
-                    <Text
-                      variant="extraSmall"
-                      color={colors.mcOrange}
-                      bold
-                      style={styles.velValueLabel}
-                    >
-                      {vel}
-                    </Text>
-                    {/* Bar stem */}
-                    <View
-                      style={[
-                        styles.velBar,
-                        { height: barH, backgroundColor: trackColor },
-                      ]}
-                    />
-                  </Pressable>
-                );
-              })}
+              {notes.map((_n, i) => (
+                <VelocityBar
+                  key={i}
+                  index={i}
+                  velocity={notes[i]!.velocity}
+                  barHeight={BAR_HEIGHT}
+                  trackColor={trackColor}
+                  onChange={onVelocityChange}
+                />
+              ))}
             </View>
           </View>
         </View>
@@ -738,6 +870,8 @@ export interface ClipEditorViewProps {
   isRecording?: boolean;
   isMetronomeEnabled?: boolean;
   playheadPosition?: number;
+  canUndo?: boolean;
+  canRedo?: boolean;
   callbacks?: ClipEditorCallbacks;
   /** Show DrumPadsView or PianoKeyboard in the bottom half (default: true). Hidden when expanded. */
   showPerformanceControls?: boolean;
@@ -747,7 +881,22 @@ export interface ClipEditorViewProps {
   pianoKeyCallbacks?: PianoKeyCallbacks;
   /** Notes currently pressed externally (e.g. MIDI input), highlighted on pads/keyboard */
   externalPressedNotes?: Set<number>;
+  /** Base MIDI note for melodic/bass tracks (from soundbank defaultOctave). Falls back to 48 (C3). */
+  melodicMinPitch?: number;
   onBack?: () => void;
+  onPlayPause?: () => void;
+  onToggleRecord?: () => void;
+  onToggleMetronome?: () => void;
+  onClipLengthIncrease?: () => void;
+  onClipLengthDecrease?: () => void;
+  onClipLengthSet?: (bars: number) => void;
+  onShowSettings?: () => void;
+  /** Current tempo — passed to clip settings modal */
+  tempo?: number;
+  /** Whether to show note names on piano keyboard */
+  showPianoNoteNames?: boolean;
+  onTempoChange?: (bpm: number) => void;
+  onTogglePianoNoteNames?: () => void;
 }
 
 export const ClipEditorView = memo(function ClipEditorView({
@@ -758,19 +907,31 @@ export const ClipEditorView = memo(function ClipEditorView({
   isRecording,
   isMetronomeEnabled,
   playheadPosition = 0,
+  canUndo = false,
+  canRedo = false,
   callbacks,
   showPerformanceControls = true,
   drumPadCallbacks,
   pianoKeyCallbacks,
   externalPressedNotes,
+  melodicMinPitch = DEFAULT_MELODIC_MIN_PITCH,
   onBack,
+  onPlayPause,
+  onToggleRecord,
+  onToggleMetronome,
+  onClipLengthIncrease,
+  onClipLengthDecrease,
+  onClipLengthSet,
+  tempo = 120,
+  showPianoNoteNames = false,
+  onTempoChange,
+  onTogglePianoNoteNames,
 }: ClipEditorViewProps) {
   const { colors } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   const [zoom, setZoom] = useState(1);
-  const [selectedPitchIndex, setSelectedPitchIndex] = useState<number | null>(
-    null
-  );
+  const [selectedPitchIndex, setSelectedPitchIndex] = useState<number | null>(null);
+  const [settingsVisible, setSettingsVisible] = useState(false);
   const trackColor = clip.colorHex;
   const samplesList = samples || [];
 
@@ -795,13 +956,15 @@ export const ClipEditorView = memo(function ClipEditorView({
           isPlaying={isPlaying}
           isRecording={isRecording}
           isMetronomeEnabled={isMetronomeEnabled}
+          canUndo={canUndo}
+          canRedo={canRedo}
           onBack={onBack || callbacks?.onClose}
-          onPlayPause={() => {}}
-          onRecord={() => {}}
-          onMetronome={() => {}}
+          onPlayPause={onPlayPause}
+          onRecord={onToggleRecord}
+          onMetronome={onToggleMetronome}
           onUndo={callbacks?.onUndo}
           onRedo={callbacks?.onRedo}
-          onSettings={() => {}}
+          onSettings={() => setSettingsVisible(true)}
         />
 
         {/* Piano Roll */}
@@ -812,9 +975,12 @@ export const ClipEditorView = memo(function ClipEditorView({
           trackColor={trackColor}
           lengthInBeats={clip.activeLengthInBars * 4}
           playheadPosition={playheadPosition}
+          isPlaying={isPlaying}
+          tempo={tempo}
           zoomLevel={zoom}
           isExpanded={isExpanded}
           selectedPitchIndex={selectedPitchIndex}
+          melodicMinPitch={melodicMinPitch}
           onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
           onNoteResize={(idx, newDuration) =>
             callbacks?.onNoteResize?.(idx, newDuration)
@@ -844,6 +1010,9 @@ export const ClipEditorView = memo(function ClipEditorView({
           <ClipLengthBar
             lengthInBars={clip.lengthInBars}
             activeLengthInBars={clip.activeLengthInBars}
+            onIncrease={onClipLengthIncrease}
+            onDecrease={onClipLengthDecrease}
+            onSetActiveLength={onClipLengthSet}
           />
         )}
       </View>
@@ -872,11 +1041,12 @@ export const ClipEditorView = memo(function ClipEditorView({
             ) : (
               <PianoKeyboard
                 numberOfOctaves={2}
+                showNoteNames={showPianoNoteNames}
                 onNoteOn={
                   pianoKeyCallbacks?.onKeyPress
                     ? (noteIndex: number) =>
                         pianoKeyCallbacks.onKeyPress?.(
-                          noteIndex + MELODIC_MIN_PITCH,
+                          noteIndex + melodicMinPitch,
                           100
                         )
                     : undefined
@@ -885,7 +1055,7 @@ export const ClipEditorView = memo(function ClipEditorView({
                   pianoKeyCallbacks?.onKeyRelease
                     ? (noteIndex: number) =>
                         pianoKeyCallbacks.onKeyRelease?.(
-                          noteIndex + MELODIC_MIN_PITCH
+                          noteIndex + melodicMinPitch
                         )
                     : undefined
                 }
@@ -896,6 +1066,17 @@ export const ClipEditorView = memo(function ClipEditorView({
           ) : null}
         </View>
       )}
+      {/* Clip Settings Modal */}
+      <ClipSettingsModal
+        visible={settingsVisible}
+        tempo={tempo}
+        isMetronomeEnabled={isMetronomeEnabled ?? false}
+        showNoteLabels={showPianoNoteNames}
+        onClose={() => setSettingsVisible(false)}
+        onTempoChange={onTempoChange}
+        onToggleMetronome={onToggleMetronome}
+        onToggleNoteLabels={onTogglePianoNoteNames}
+      />
     </View>
   );
 });

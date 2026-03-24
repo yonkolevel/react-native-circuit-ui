@@ -1,8 +1,9 @@
 /**
  * SongSettings — matches iOS SongSettingsView layout.
  *
+ * All state and actions from useSongContext() — zero callback props.
+ *
  * Controls: tempo slider, volume slider, metronome toggle, export buttons.
- * Uses @react-native-community/slider for native sliders.
  */
 import { memo, useState } from 'react';
 import { View, Switch, Pressable, StyleSheet } from 'react-native';
@@ -10,39 +11,39 @@ import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
-import type { SongViewState } from '../../types';
+import { useSongContext, useSongActions } from '../../stores/playgroundStore';
 
 // Slider imported dynamically — available when @react-native-community/slider is installed.
-// Falls back to a text display if not available.
 let SliderComponent: any = null;
 try {
   SliderComponent = require('@react-native-community/slider').default;
 } catch {}
 
 export interface SongSettingsProps {
-  song: SongViewState;
-  onTempoChange?: (bpm: number) => void;
-  onToggleMetronome?: () => void;
-  onMasterVolumeChange?: (v: number) => void;
   onExportAudio?: () => void;
   onExportBundle?: () => void;
 }
 
 export const SongSettings = memo(function SongSettings({
-  song,
-  onTempoChange,
-  onToggleMetronome,
-  onMasterVolumeChange,
   onExportAudio,
   onExportBundle,
 }: SongSettingsProps) {
   const { colors } = useTheme();
+
+  // State — fine-grained selectors
+  const tempo = useSongContext(s => s.tempo);
+  const masterVolume = useSongContext(s => s.masterVolume);
+  const isMetronomeEnabled = useSongContext(s => s.isMetronomeEnabled);
+
+  // Actions — stable refs, no subscription
+  const { setTempo, setMasterVolume, toggleMetronome } = useSongActions();
+
   // Local display values while dragging (avoids store updates on every frame)
   const [tempoDisplay, setTempoDisplay] = useState<number | null>(null);
   const [volumeDisplay, setVolumeDisplay] = useState<number | null>(null);
 
-  const tempoValue = tempoDisplay ?? song.tempo;
-  const volumeValue = volumeDisplay ?? song.masterVolume;
+  const tempoValue = tempoDisplay ?? tempo;
+  const volumeValue = volumeDisplay ?? masterVolume;
 
   return (
     <View style={styles.container} accessibilityLabel="Song settings">
@@ -53,12 +54,12 @@ export const SongSettings = memo(function SongSettings({
             style={styles.slider}
             minimumValue={40}
             maximumValue={240}
-            value={song.tempo}
+            value={tempo}
             step={1}
             onValueChange={setTempoDisplay}
             onSlidingComplete={(v: number) => {
               setTempoDisplay(null);
-              onTempoChange?.(v);
+              setTempo(v);
             }}
             minimumTrackTintColor={colors.mcWhite}
             maximumTrackTintColor={colors.mcBlack4}
@@ -79,12 +80,12 @@ export const SongSettings = memo(function SongSettings({
             style={styles.slider}
             minimumValue={0}
             maximumValue={100}
-            value={song.masterVolume}
+            value={masterVolume}
             step={1}
             onValueChange={setVolumeDisplay}
             onSlidingComplete={(v: number) => {
               setVolumeDisplay(null);
-              onMasterVolumeChange?.(v);
+              setMasterVolume(v);
             }}
             minimumTrackTintColor={colors.mcWhite}
             maximumTrackTintColor={colors.mcBlack4}
@@ -101,8 +102,8 @@ export const SongSettings = memo(function SongSettings({
       {/* Metronome */}
       <SettingRow label="METRONOME">
         <Switch
-          value={song.isMetronomeEnabled}
-          onValueChange={() => onToggleMetronome?.()}
+          value={isMetronomeEnabled}
+          onValueChange={toggleMetronome}
           trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}
           accessibilityLabel="Metronome"
         />

@@ -179,6 +179,14 @@ export function createMockSong(overrides?: Partial<SongViewState>): SongViewStat
     currentBeatPosition: 0,
     isDirty: false,
     masterVolume: 90,
+    currentTab: 'song' as const,
+    availableSoundBanks: [],
+    selectedSoundBankSlug: null,
+    undoStacks: {},
+    redoStacks: {},
+    liveRecordingNotes: {},
+    isClipSettingsVisible: false,
+    showPianoNoteNames: false,
     // UI-only state
     currentView: 'song',
     zoomLevel: 1,
@@ -186,7 +194,6 @@ export function createMockSong(overrides?: Partial<SongViewState>): SongViewStat
     isSoundBankViewVisible: false,
     currentSoundBankCategorySelection: undefined,
     isSectionNameEditViewVisible: false,
-    isClipSettingsVisible: false,
     soundBanks: [createMockSoundBank()],
     ...overrides,
   };

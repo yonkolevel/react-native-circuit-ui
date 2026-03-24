@@ -223,7 +223,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             {
               "busy": undefined,
               "checked": undefined,
-              "disabled": false,
+              "disabled": true,
               "expanded": undefined,
               "selected": undefined,
             }
@@ -252,7 +252,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
         >
           <View>
             <View
-              color="#F7F7F7"
+              color="#E0E0E0"
               size={22}
               testID="lucide-Undo2"
             />
@@ -264,7 +264,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             {
               "busy": undefined,
               "checked": undefined,
-              "disabled": false,
+              "disabled": true,
               "expanded": undefined,
               "selected": undefined,
             }
@@ -293,7 +293,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
         >
           <View>
             <View
-              color="#F7F7F7"
+              color="#E0E0E0"
               size={22}
               testID="lucide-Redo2"
             />
@@ -5042,7 +5042,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             {
               "busy": undefined,
               "checked": undefined,
-              "disabled": false,
+              "disabled": true,
               "expanded": undefined,
               "selected": undefined,
             }
@@ -5071,7 +5071,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
         >
           <View>
             <View
-              color="#F7F7F7"
+              color="#E0E0E0"
               size={22}
               testID="lucide-Undo2"
             />
@@ -5083,7 +5083,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             {
               "busy": undefined,
               "checked": undefined,
-              "disabled": false,
+              "disabled": true,
               "expanded": undefined,
               "selected": undefined,
             }
@@ -5112,7 +5112,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
         >
           <View>
             <View
-              color="#F7F7F7"
+              color="#E0E0E0"
               size={22}
               testID="lucide-Redo2"
             />
@@ -10697,7 +10697,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             {
               "busy": undefined,
               "checked": undefined,
-              "disabled": false,
+              "disabled": true,
               "expanded": undefined,
               "selected": undefined,
             }
@@ -10726,7 +10726,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
         >
           <View>
             <View
-              color="#F7F7F7"
+              color="#E0E0E0"
               size={22}
               testID="lucide-Undo2"
             />
@@ -10738,7 +10738,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             {
               "busy": undefined,
               "checked": undefined,
-              "disabled": false,
+              "disabled": true,
               "expanded": undefined,
               "selected": undefined,
             }
@@ -10767,7 +10767,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
         >
           <View>
             <View
-              color="#F7F7F7"
+              color="#E0E0E0"
               size={22}
               testID="lucide-Redo2"
             />
@@ -16540,7 +16540,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             {
               "busy": undefined,
               "checked": undefined,
-              "disabled": false,
+              "disabled": true,
               "expanded": undefined,
               "selected": undefined,
             }
@@ -16569,7 +16569,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
         >
           <View>
             <View
-              color="#F7F7F7"
+              color="#E0E0E0"
               size={22}
               testID="lucide-Undo2"
             />
@@ -16581,7 +16581,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             {
               "busy": undefined,
               "checked": undefined,
-              "disabled": false,
+              "disabled": true,
               "expanded": undefined,
               "selected": undefined,
             }
@@ -16610,7 +16610,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
         >
           <View>
             <View
-              color="#F7F7F7"
+              color="#E0E0E0"
               size={22}
               testID="lucide-Redo2"
             />

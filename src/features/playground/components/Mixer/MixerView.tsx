@@ -1,17 +1,22 @@
 /**
  * MixerView — Matches iOS MixerView.swift exactly
  *
+ * All state and actions from useSongContext() — zero callback props.
+ *
  * ScrollView { VStack(spacing: 8) { ForEach tracks → TrackStripView } }
- * .frame(maxWidth: 800), .padding(), .background(.mcBlack)
  */
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import Slider from '@react-native-community/slider';
-import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, ScrollView, StyleSheet } from 'react-native';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring, withSequence } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme } from '../../../../theme';
-import type { Track, MixerCallbacks } from '../../types';
+import { useSongContext, useSongActions, useTrackMixer } from '../../stores/playgroundStore';
 import { INSTRUMENT_COLORS } from '../../types';
+import { useShallow } from 'zustand/react/shallow';
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 // ── Mute Button (32×32, orange when active) ─────────────────────────────────
 
@@ -23,12 +28,24 @@ const MuteButton = memo(function MuteButton({
   onToggle?: () => void;
 }) {
   const { colors } = useTheme();
+  const scale = useSharedValue(1);
+  const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+
+  const handlePress = useCallback(() => {
+    scale.value = withSequence(
+      withSpring(0.8, { damping: 15, stiffness: 400 }),
+      withSpring(1, { damping: 10, stiffness: 200 })
+    );
+    onToggle?.();
+  }, [onToggle]);
+
   return (
-    <Pressable
-      onPress={onToggle}
+    <AnimatedPressable
+      onPress={handlePress}
       style={[
         styles.muteBtn,
         { backgroundColor: isMuted ? colors.mcOrange : colors.mcBlack3 },
+        animStyle,
       ]}
       accessibilityRole="button"
       accessibilityLabel="Mute"
@@ -40,11 +57,11 @@ const MuteButton = memo(function MuteButton({
       >
         M
       </Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 });
 
-// ── Solo Button (32×32, green when active) ──────────────────────────────────
+// ── Solo Button (32×32, green when active, spring feedback) ─────────────────
 
 const SoloButton = memo(function SoloButton({
   isSoloed,
@@ -54,12 +71,24 @@ const SoloButton = memo(function SoloButton({
   onToggle?: () => void;
 }) {
   const { colors } = useTheme();
+  const scale = useSharedValue(1);
+  const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+
+  const handlePress = useCallback(() => {
+    scale.value = withSequence(
+      withSpring(0.8, { damping: 15, stiffness: 400 }),
+      withSpring(1, { damping: 10, stiffness: 200 })
+    );
+    onToggle?.();
+  }, [onToggle]);
+
   return (
-    <Pressable
-      onPress={onToggle}
+    <AnimatedPressable
+      onPress={handlePress}
       style={[
         styles.soloBtn,
         { backgroundColor: isSoloed ? colors.mcGreen : colors.mcBlack3 },
+        animStyle,
       ]}
       accessibilityRole="button"
       accessibilityLabel="Solo"
@@ -71,35 +100,33 @@ const SoloButton = memo(function SoloButton({
       >
         S
       </Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 });
 
 // ── Track Strip ─────────────────────────────────────────────────────────────
 
 interface TrackStripProps {
-  track: Track;
-  isAudible: boolean;
-  hasSoloedTracks: boolean;
-  onVolumeChange?: (volume: number) => void;
-  onPanChange?: (pan: number) => void;
-  onMuteToggle?: () => void;
-  onSoloToggle?: () => void;
+  trackId: number;
 }
 
-const TrackStrip = memo(function TrackStrip({
-  track,
-  isAudible,
-  hasSoloedTracks,
-  onVolumeChange,
-  onPanChange,
-  onMuteToggle,
-  onSoloToggle,
-}: TrackStripProps) {
+const TrackStrip = memo(function TrackStrip({ trackId }: TrackStripProps) {
   const { colors } = useTheme();
+
+  // Fine-grained selectors — only this track's data
+  const track = useSongContext(
+    useShallow(s => s.tracks.find(t => t.id === trackId))
+  );
+  const mixer = useTrackMixer(trackId);
+  const hasSoloedTracks = useSongContext(s => s.tracks.some(t => t.isSoloed));
+
+  // Actions — stable refs, no subscription
+  const { setTrackVolume, setTrackPan, toggleTrackMute, toggleTrackSolo } = useSongActions();
+
+  if (!track || !mixer) return null;
+
   const trackColor = INSTRUMENT_COLORS[track.type] || colors.mcWhite;
-  const muteActive = !isAudible;
-  const soloActive = track.isSoloed && hasSoloedTracks;
+  const isAudible = !mixer.isMuted && (!hasSoloedTracks || mixer.isSoloed);
 
   return (
     <View style={[styles.strip, { backgroundColor: colors.mcBlack2 }]}>
@@ -117,8 +144,8 @@ const TrackStrip = memo(function TrackStrip({
           </Text>
         </View>
         <View style={styles.mutesoloRow}>
-          <MuteButton isMuted={muteActive} onToggle={onMuteToggle} />
-          <SoloButton isSoloed={soloActive} onToggle={onSoloToggle} />
+          <MuteButton isMuted={!isAudible} onToggle={() => toggleTrackMute(trackId)} />
+          <SoloButton isSoloed={mixer.isSoloed && hasSoloedTracks} onToggle={() => toggleTrackSolo(trackId)} />
         </View>
       </View>
 
@@ -132,18 +159,18 @@ const TrackStrip = memo(function TrackStrip({
             style={styles.slider}
             minimumValue={0}
             maximumValue={100}
-            value={track.volume}
+            value={mixer.volume}
             minimumTrackTintColor={isAudible ? trackColor : colors.mcBlack3}
             maximumTrackTintColor={colors.mcBlack3}
             thumbTintColor={colors.mcWhite}
-            onSlidingComplete={(v: number) => onVolumeChange?.(v)}
+            onSlidingComplete={(v: number) => setTrackVolume(trackId, v)}
           />
           <Text
             variant="buttonLabelSemiBold"
             color={colors.mcWhite}
             style={styles.sliderValue}
           >
-            {Math.round(track.volume)}%
+            {Math.round(mixer.volume)}%
           </Text>
         </View>
       </View>
@@ -158,18 +185,18 @@ const TrackStrip = memo(function TrackStrip({
             style={styles.slider}
             minimumValue={-1}
             maximumValue={1}
-            value={track.pan}
+            value={mixer.pan}
             minimumTrackTintColor={colors.mcWhite2}
             maximumTrackTintColor={colors.mcWhite2}
             thumbTintColor={colors.mcWhite}
-            onSlidingComplete={(v: number) => onPanChange?.(v)}
+            onSlidingComplete={(v: number) => setTrackPan(trackId, v)}
           />
           <Text
             variant="buttonLabelSemiBold"
             color={colors.mcWhite2}
             style={styles.panLabel}
           >
-            {Math.abs(track.pan) < 0.1 ? 'C' : track.pan < 0 ? 'L' : 'R'}
+            {Math.abs(mixer.pan) < 0.1 ? 'C' : mixer.pan < 0 ? 'L' : 'R'}
           </Text>
         </View>
       </View>
@@ -179,39 +206,22 @@ const TrackStrip = memo(function TrackStrip({
 
 // ── MixerView ───────────────────────────────────────────────────────────────
 
-export interface MixerViewProps {
-  tracks: Track[];
-  callbacks?: MixerCallbacks;
-}
+export interface MixerViewProps {}
 
-export const MixerView = memo(function MixerView({
-  tracks,
-  callbacks,
-}: MixerViewProps) {
+export const MixerView = memo(function MixerView({}: MixerViewProps) {
   const { colors } = useTheme();
-  const hasSoloedTracks = tracks.some((t) => t.isSoloed);
+  const trackIds = useSongContext(
+    useShallow(s => s.tracks.map(t => t.id))
+  );
 
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.mcBlack }]}
       contentContainerStyle={styles.scrollContent}
     >
-      {tracks.map((track) => {
-        const isAudible =
-          !track.isMuted && (!hasSoloedTracks || track.isSoloed);
-        return (
-          <TrackStrip
-            key={track.id}
-            track={track}
-            isAudible={isAudible}
-            hasSoloedTracks={hasSoloedTracks}
-            onVolumeChange={(v) => callbacks?.onVolumeChange?.(track.id, v)}
-            onPanChange={(p) => callbacks?.onPanChange?.(track.id, p)}
-            onMuteToggle={() => callbacks?.onMuteToggle?.(track.id)}
-            onSoloToggle={() => callbacks?.onSoloToggle?.(track.id)}
-          />
-        );
-      })}
+      {trackIds.map((id) => (
+        <TrackStrip key={id} trackId={id} />
+      ))}
     </ScrollView>
   );
 });
@@ -225,7 +235,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '100%',
   },
-
   strip: {
     padding: 16,
     borderRadius: 8,
@@ -253,32 +262,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   sliderSection: { gap: 4 },
   sliderRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  sliderTrack: {
-    flex: 1,
-    height: 4,
-    borderRadius: 2,
-    position: 'relative',
-  },
-  sliderFill: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 0,
-    borderRadius: 2,
-  },
   slider: { flex: 1, height: 36 },
   sliderValue: { width: 36, textAlign: 'right' },
-
-  panIndicator: {
-    position: 'absolute',
-    top: -4,
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginLeft: -6,
-  },
   panLabel: { width: 20, textAlign: 'right' },
 });

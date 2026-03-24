@@ -8,7 +8,7 @@
  * sampleIndex = (3 - row) * 4 + col
  */
 import { memo, useState, useCallback } from 'react';
-import { View, Pressable, StyleSheet, Platform } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { MultiTouchOverlay } from '../../../../components/MultiTouchOverlay';
 import { useTheme } from '../../../../theme';
@@ -62,36 +62,12 @@ export const DrumPadsView = memo(function DrumPadsView({
     [onPadRelease]
   );
 
-  // Fallback for non-iOS (simple Pressable per pad)
-  const handlePressIn = useCallback(
-    (idx: number) => {
-      setPressedPads((prev) => new Set(prev).add(idx));
-      onPadPress?.(idx);
-    },
-    [onPadPress]
-  );
-
-  const handlePressOut = useCallback(
-    (idx: number) => {
-      setPressedPads((prev) => {
-        const n = new Set(prev);
-        n.delete(idx);
-        return n;
-      });
-      onPadRelease?.(idx);
-    },
-    [onPadRelease]
-  );
-
   const sampleIndexFromGrid = (row: number, col: number) => (3 - row) * 4 + col;
 
   return (
     <View style={styles.container} accessibilityLabel="Drum pads">
-      {/* Visual grid */}
-      <View
-        style={styles.grid}
-        pointerEvents={Platform.OS === 'ios' ? 'none' : 'auto'}
-      >
+      {/* Visual grid — pointerEvents none, touch handled by overlay */}
+      <View style={styles.grid} pointerEvents="none">
         {[0, 1, 2, 3].map((row) => (
           <View key={row} style={styles.row}>
             {[0, 1, 2, 3].map((col) => {
@@ -100,31 +76,21 @@ export const DrumPadsView = memo(function DrumPadsView({
               const isActive =
                 pressedPads.has(idx) || externalPressedNotes.has(idx);
 
-              if (!sample) {
-                return (
-                  <View
-                    key={col}
-                    style={[styles.pad, { backgroundColor: colors.mcBlack2 }]}
-                  />
-                );
-              }
-
-              if (Platform.OS !== 'ios') {
-                // Android/Web fallback — Pressable per pad
-                return (
-                  <Pressable
-                    key={col}
-                    onPressIn={() => handlePressIn(idx)}
-                    onPressOut={() => handlePressOut(idx)}
-                    style={[
-                      styles.pad,
-                      {
-                        backgroundColor: isActive
+              return (
+                <View
+                  key={col}
+                  style={[
+                    styles.pad,
+                    {
+                      backgroundColor: !sample
+                        ? colors.mcBlack2
+                        : isActive
                           ? highlightColor
                           : colors.mcBlack3,
-                      },
-                    ]}
-                  >
+                    },
+                  ]}
+                >
+                  {sample && (
                     <Text
                       variant="extraSmall"
                       color="rgba(255,255,255,0.5)"
@@ -133,30 +99,7 @@ export const DrumPadsView = memo(function DrumPadsView({
                     >
                       {sample.name}
                     </Text>
-                  </Pressable>
-                );
-              }
-
-              return (
-                <View
-                  key={col}
-                  style={[
-                    styles.pad,
-                    {
-                      backgroundColor: isActive
-                        ? highlightColor
-                        : colors.mcBlack3,
-                    },
-                  ]}
-                >
-                  <Text
-                    variant="extraSmall"
-                    color="rgba(255,255,255,0.5)"
-                    numberOfLines={2}
-                    style={styles.label}
-                  >
-                    {sample.name}
-                  </Text>
+                  )}
                 </View>
               );
             })}
@@ -164,16 +107,14 @@ export const DrumPadsView = memo(function DrumPadsView({
         ))}
       </View>
 
-      {/* Native touch overlay (iOS only) — sits on top, captures all touches */}
-      {Platform.OS === 'ios' && (
-        <MultiTouchOverlay
-          rows={4}
-          columns={4}
-          onPadPress={handleNativePress}
-          onPadRelease={handleNativeRelease}
-          style={StyleSheet.absoluteFill}
-        />
-      )}
+      {/* Multi-touch overlay — captures all touches on both platforms */}
+      <MultiTouchOverlay
+        rows={4}
+        columns={4}
+        onPadPress={handleNativePress}
+        onPadRelease={handleNativeRelease}
+        style={StyleSheet.absoluteFill}
+      />
     </View>
   );
 });
