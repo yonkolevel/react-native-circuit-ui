@@ -265,9 +265,13 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       }
     }
     dragState.current = null;
-    dragNoteIdx.value = -1;
-    dragOpacity.value = 0;
-    setActiveNoteIdx(-1);
+    // Clear preview after the store update renders — avoids flicker where
+    // the original note reappears at the old position for one frame.
+    requestAnimationFrame(() => {
+      dragNoteIdx.value = -1;
+      dragOpacity.value = 0;
+      setActiveNoteIdx(-1);
+    });
   }, [beatWidth, stepWidth, rowHeight, totalPitches, pitchToMidi, onNoteResize, onNoteMove]);
 
   // --- Gestures (UI thread → runOnJS for callbacks) ---
