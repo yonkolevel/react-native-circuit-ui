@@ -9,21 +9,21 @@ import { memo, useRef, useCallback } from 'react';
 import { View } from 'react-native';
 import type { ViewProps, LayoutChangeEvent, GestureResponderEvent } from 'react-native';
 
-export interface AndroidMultiTouchProps extends ViewProps {
+export interface MultiTouchOverlayProps extends ViewProps {
   rows: number;
   columns: number;
   onPadPress?: (index: number) => void;
   onPadRelease?: (index: number) => void;
 }
 
-export const AndroidMultiTouch = memo(function AndroidMultiTouch({
+export const MultiTouchOverlay = memo(function MultiTouchOverlay({
   rows,
   columns,
   onPadPress,
   onPadRelease,
   style,
   ...rest
-}: AndroidMultiTouchProps) {
+}: MultiTouchOverlayProps) {
   const layoutRef = useRef({ width: 0, height: 0 });
   // Track which cell each pointer is currently in (pointerId → cellIndex)
   const pointerCells = useRef<Map<number, number>>(new Map());
