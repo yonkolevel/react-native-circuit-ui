@@ -12,11 +12,11 @@
  * - Skia draws everything in a single GPU pass — adding a note is just
  *   one more Rect in the draw list, no React re-render overhead
  */
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { View, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { Canvas, Path as SkiaPath, Rect, RoundedRect, Skia, Line, vec } from '@shopify/react-native-skia';
 import { ScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { runOnJS } from 'react-native-reanimated';
+import { runOnJS, useSharedValue } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
 import { useTheme, hexToRgba } from '../../../../theme';
 import type { ClipNote, InstrumentType, Sample } from '../../types';
@@ -176,13 +176,19 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     origNoteNumber: number;
   } | null>(null);
 
-  // Live drag preview — updated during gesture, rendered as a modified note rect
-  const [dragPreview, setDragPreview] = useState<{
-    noteIdx: number;
-    x: number;
-    y: number;
-    width: number;
-  } | null>(null);
+  // Live drag preview — Reanimated shared values read directly by Skia on UI thread.
+  // No React re-renders during drag — GPU updates every frame.
+  const dragNoteIdx = useSharedValue(-1);
+  const dragX = useSharedValue(0);
+  const dragY = useSharedValue(0);
+  const dragW = useSharedValue(0);
+  const dragOpacity = useSharedValue(0);
+  // Drag state mirrored as shared values for worklet access
+  const dragType = useSharedValue(0); // 0 = none, 1 = move, 2 = resize
+  const dragStartX = useSharedValue(0);
+  const dragStartY = useSharedValue(0);
+  const dragOrigPos = useSharedValue(0);
+  const dragOrigDur = useSharedValue(0);
 
   // --- JS callbacks (must use runOnJS from gesture worklets) ---
   const handleTap = useCallback((x: number, y: number) => {
@@ -203,7 +209,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 
   const handleDragStart = useCallback((x: number, y: number) => {
     const hit = hitTestNote(x, y);
-    if (!hit) { dragState.current = null; return; }
+    if (!hit) { dragState.current = null; dragType.value = 0; return; }
     const note = notes[hit.idx]!;
     dragState.current = {
       type: hit.isResizeEdge ? 'resize' : 'move',
@@ -214,30 +220,23 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       origDuration: note.duration,
       origNoteNumber: note.noteNumber,
     };
+    // Mirror to shared values for worklet access
+    dragType.value = hit.isResizeEdge ? 2 : 1;
+    dragNoteIdx.value = hit.idx;
+    dragStartX.value = x;
+    dragStartY.value = y;
+    dragOrigPos.value = note.position;
+    dragOrigDur.value = note.duration;
+    dragOpacity.value = 1;
   }, [hitTestNote, notes]);
 
-  const handleDragUpdate = useCallback((x: number, y: number) => {
-    const ds = dragState.current;
-    if (!ds) return;
-    const dx = x - ds.startX;
-    const dy = y - ds.startY;
-
-    if (ds.type === 'resize') {
-      const newWidth = Math.max(stepWidth, ds.origDuration * beatWidth + dx);
-      const noteX = ds.origPosition * beatWidth;
-      setDragPreview({ noteIdx: ds.noteIdx, x: noteX, y: -1, width: newWidth });
-    } else {
-      const stepsDx = Math.round(dx / stepWidth);
-      const rowsDy = Math.round(dy / rowHeight);
-      const newPos = Math.max(0, ds.origPosition + stepsDx * 0.25);
-      const newRowIdx = Math.floor(ds.startY / rowHeight) + rowsDy;
-      const clampedRow = Math.max(0, Math.min(totalPitches - 1, newRowIdx));
-      const noteX = newPos * beatWidth;
-      const noteY = clampedRow * rowHeight + 2;
-      const noteW = ds.origDuration * beatWidth - 2;
-      setDragPreview({ noteIdx: ds.noteIdx, x: noteX, y: noteY, width: noteW });
-    }
-  }, [beatWidth, stepWidth, rowHeight, totalPitches]);
+  // Drag update — pure worklet, reads/writes shared values only.
+  // Runs on UI thread every gesture frame. Skia picks up changes on next GPU frame.
+  // Captures JS constants via closure (stepWidth, beatWidth, rowHeight, totalPitches are stable numbers).
+  const swRef = stepWidth;
+  const bwRef = beatWidth;
+  const rhRef = rowHeight;
+  const tpRef = totalPitches;
 
   const handleDragEnd = useCallback((x: number, y: number) => {
     const ds = dragState.current;
@@ -261,7 +260,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       }
     }
     dragState.current = null;
-    setDragPreview(null);
+    dragNoteIdx.value = -1;
+    dragOpacity.value = 0;
   }, [beatWidth, stepWidth, rowHeight, totalPitches, pitchToMidi, onNoteResize, onNoteMove]);
 
   // --- Gestures (UI thread → runOnJS for callbacks) ---
@@ -280,7 +280,27 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     })
     .onUpdate((e) => {
       'worklet';
-      runOnJS(handleDragUpdate)(e.x, e.y);
+      if (dragType.value === 0) return;
+      const dx = e.x - dragStartX.value;
+      const dy = e.y - dragStartY.value;
+
+      if (dragType.value === 2) {
+        // Resize
+        dragX.value = dragOrigPos.value * bwRef;
+        dragW.value = Math.max(swRef, dragOrigDur.value * bwRef + dx);
+        const origRow = Math.floor(dragStartY.value / rhRef);
+        dragY.value = origRow * rhRef + 1;
+      } else {
+        // Move
+        const stepsDx = Math.round(dx / swRef);
+        const rowsDy = Math.round(dy / rhRef);
+        const newPos = Math.max(0, dragOrigPos.value + stepsDx * 0.25);
+        const newRowIdx = Math.floor(dragStartY.value / rhRef) + rowsDy;
+        const clampedRow = Math.max(0, Math.min(tpRef - 1, newRowIdx));
+        dragX.value = newPos * bwRef;
+        dragY.value = clampedRow * rhRef + 1;
+        dragW.value = dragOrigDur.value * bwRef - 1;
+      }
     })
     .onEnd((e) => {
       'worklet';
@@ -378,36 +398,14 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   }
                   const rowIdx = totalPitches - 1 - pitchIdx;
                   const x = note.position * beatWidth;
-                  const y = rowIdx * rowHeight + 1; // 1px padding from row edge
-                  const w = Math.max(note.duration * beatWidth - 1, stepWidth); // 1px gap between consecutive
+                  const y = rowIdx * rowHeight + 1;
+                  const w = Math.max(note.duration * beatWidth - 1, stepWidth);
                   const h = rowHeight - 2;
-                  const r = 3; // corner radius matching old MidiNoteView
-
-                  const isDragging = dragPreview?.noteIdx === idx;
-                  if (isDragging && dragPreview) {
-                    const previewY = dragPreview.y >= 0 ? dragPreview.y : y;
-                    return (
-                      <React.Fragment key={`n${idx}`}>
-                        {/* Ghost at original position */}
-                        <RoundedRect x={x} y={y} width={w} height={h} r={r} color="rgba(0,0,0,0.2)" />
-                        {/* Dragged note */}
-                        <RoundedRect x={dragPreview.x} y={previewY} width={dragPreview.width} height={h} r={r} color={trackColor} />
-                        {/* Resize handle on dragged note */}
-                        <Line
-                          p1={vec(dragPreview.x + dragPreview.width - 3, previewY + 4)}
-                          p2={vec(dragPreview.x + dragPreview.width - 3, previewY + h - 4)}
-                          color="rgba(0,0,0,0.4)"
-                          strokeWidth={2}
-                        />
-                      </React.Fragment>
-                    );
-                  }
+                  const r = 3;
 
                   return (
                     <React.Fragment key={`n${idx}`}>
-                      {/* Note body — rounded rect with slight transparency */}
                       <RoundedRect x={x} y={y} width={w} height={h} r={r} color={trackColor} opacity={0.85} />
-                      {/* Resize handle — dark line at right edge (matches AudioKit DefaultNoteView) */}
                       <Line
                         p1={vec(x + w - 3, y + 4)}
                         p2={vec(x + w - 3, y + h - 4)}
@@ -417,6 +415,17 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                     </React.Fragment>
                   );
                 })}
+
+                {/* Drag preview — driven by shared values, updates on UI thread */}
+                <RoundedRect
+                  x={dragX}
+                  y={dragY}
+                  width={dragW}
+                  height={rowHeight - 2}
+                  r={3}
+                  color={trackColor}
+                  opacity={dragOpacity}
+                />
               </Canvas>
 
               {/* Touch overlay — gesture handler for tap/drag/resize */}
