@@ -36,6 +36,7 @@ import { ClipSettingsModal } from './ClipSettingsModal';
 import { DrumPadsView } from '../DrumPads/DrumPadsView';
 import { PianoKeyboard } from '../PianoKeyboard/PianoKeyboard';
 import { SkiaPianoRollGrid } from './SkiaPianoRollGrid';
+import { NotePrecisionPanel } from './NotePrecisionPanel';
 import type {
   Clip,
   ClipNote,
@@ -277,6 +278,8 @@ const PlayheadLine = memo(function PlayheadLine({
 });
 
 // ─── PianoRoll Grid ─────────────────────────────────────────────────────────
+
+const NOTE_NAMES_FULL = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
 
 /** Default MIDI pitch range for melodic/bass tracks (2 octaves starting at C3 = MIDI 48).
  *  Can be overridden per-track via the `melodicMinPitch` prop on ClipEditorView. */
@@ -1025,9 +1028,21 @@ export const ClipEditorView = memo(function ClipEditorView({
        *       when nil → PerformanceControlsView (drum→PadsView, melodic/bass→TeenagePianoView) */}
       {!isExpanded && (
         <View style={styles.splitHalf}>
-          {showVelocityLane && clip.notes.length > 0 ? (
-            <VelocityLane
+          {showVelocityLane ? (
+            <NotePrecisionPanel
               notes={clip.notes}
+              pitchIndex={selectedPitchIndex!}
+              pitchLabel={(() => {
+                const isDrum = instrumentType === 'drum';
+                if (isDrum) return (samples || [])[selectedPitchIndex!]?.name ?? `Note ${selectedPitchIndex}`;
+                const basePitch = melodicMinPitch;
+                return `${NOTE_NAMES_FULL[(basePitch + selectedPitchIndex!) % 12]}${Math.floor((basePitch + selectedPitchIndex!) / 12) + 1}`;
+              })()}
+              pitchMidiNumber={(() => {
+                if (instrumentType === 'drum') return (samples || [])[selectedPitchIndex!]?.noteNumber ?? selectedPitchIndex!;
+                return (melodicMinPitch) + selectedPitchIndex!;
+              })()}
+              activeLengthInBars={clip.activeLengthInBars}
               trackColor={trackColor}
               onClose={() => setSelectedPitchIndex(null)}
               onVelocityChange={callbacks?.onVelocityChange}
