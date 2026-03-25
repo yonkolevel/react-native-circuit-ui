@@ -15,7 +15,7 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import type { LayoutChangeEvent } from 'react-native';
-import { Canvas, Path as SkiaPath, Rect, RoundedRect, Skia, Line, vec } from '@shopify/react-native-skia';
+import { Canvas, Path as SkiaPath, Rect, RoundedRect, Skia, Line, vec, Text as SkiaText, matchFont } from '@shopify/react-native-skia';
 import { ScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS, useSharedValue } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
@@ -29,6 +29,9 @@ const MELODIC_PITCH_COUNT = 24;
 
 const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
 const getNoteName = (pitch: number): string => `${NOTE_NAMES[pitch % 12]}${Math.floor(pitch / 12) + 1}`;
+
+// Font for note labels inside the grid — small, semi-bold
+const noteFont = matchFont({ fontSize: 9, fontWeight: '600' });
 
 export interface SkiaPianoRollGridProps {
   notes: ClipNote[];
@@ -480,6 +483,16 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                           p2={vec(x + w - 3, y + h - 4)}
                           color="rgba(0,0,0,0.3)"
                           strokeWidth={2}
+                        />
+                      )}
+                      {/* Note label — melodic/bass only, when note is wide enough */}
+                      {!isDrum && !isDragging && w > 24 && (
+                        <SkiaText
+                          x={x + 4}
+                          y={y + h - 4}
+                          text={getNoteName(note.noteNumber)}
+                          font={noteFont}
+                          color="rgba(0,0,0,0.6)"
                         />
                       )}
                     </React.Fragment>
