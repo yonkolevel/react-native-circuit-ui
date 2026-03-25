@@ -927,11 +927,9 @@ export const ClipEditorView = memo(function ClipEditorView({
   const [zoom, setZoom] = useState(1);
   const [selectedPitchIndex, setSelectedPitchIndex] = useState<number | null>(null);
   const [settingsVisible, setSettingsVisible] = useState(false);
-  const beatWidth = ((screenWidth - 60) / 16) * zoom * 4; // 60 = pitch label column width
+  const beatWidth = ((screenWidth - LABEL_COL_WIDTH) / 16) * zoom * 4;
   const trackColor = clip.colorHex;
   const samplesList = samples || [];
-  const { width: screenWidth } = useWindowDimensions();
-  const beatWidth = ((screenWidth - LABEL_COL_WIDTH) / 16) * zoom * 4;
 
   // iOS: PerformanceControlsView visible when config.isPerformanceControlsVisible && !isExpanded
   const shouldShowPerformanceControls =
@@ -1030,7 +1028,7 @@ export const ClipEditorView = memo(function ClipEditorView({
                 const isDrum = instrumentType === 'drum';
                 if (isDrum) return (samples || [])[selectedPitchIndex!]?.name ?? `Note ${selectedPitchIndex}`;
                 const basePitch = melodicMinPitch;
-                return `${NOTE_NAMES_FULL[(basePitch + selectedPitchIndex!) % 12]}${Math.floor((basePitch + selectedPitchIndex!) / 12) + 1}`;
+                return `${NOTE_NAMES[(basePitch + selectedPitchIndex!) % 12]}${Math.floor((basePitch + selectedPitchIndex!) / 12) + 1}`;
               })()}
               pitchMidiNumber={(() => {
                 if (instrumentType === 'drum') return (samples || [])[selectedPitchIndex!]?.noteNumber ?? selectedPitchIndex!;
