@@ -76,7 +76,7 @@ export interface SongState {
   tempo: number;
   isLoopEnabled: boolean;
   isMetronomeEnabled: boolean;
-  isRecording: boolean;
+  isRecording: boolean; isRecordingArmed: boolean;
   sections: Section[];
   currentSectionId: number;
   tracks: Track[];

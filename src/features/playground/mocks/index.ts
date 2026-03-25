@@ -172,7 +172,7 @@ export function createMockSong(overrides?: Partial<SongViewState>): SongViewStat
     tempo: 120,
     isLoopEnabled: true,
     isMetronomeEnabled: false,
-    isRecording: false,
+    isRecording: false, isRecordingArmed: false,
     sections: [section1, section2],
     currentSectionId: section1.id,
     tracks: [drumTrack, keysTrack, bassTrack],
