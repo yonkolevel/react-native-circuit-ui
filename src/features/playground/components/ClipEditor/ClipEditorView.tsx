@@ -35,6 +35,8 @@ import { MidiNoteView } from './MidiNoteView';
 import { ClipSettingsModal } from './ClipSettingsModal';
 import { DrumPadsView } from '../DrumPads/DrumPadsView';
 import { PianoKeyboard } from '../PianoKeyboard/PianoKeyboard';
+import { SkiaPianoRollGrid } from './SkiaPianoRollGrid';
+import { NotePrecisionPanel } from './NotePrecisionPanel';
 import type {
   Clip,
   ClipNote,
@@ -881,6 +883,8 @@ export interface ClipEditorViewProps {
   onClipLengthDecrease?: () => void;
   onClipLengthSet?: (bars: number) => void;
   onShowSettings?: () => void;
+  /** Recording count-in remaining (3, 2, 1, null) */
+  recordingCountIn?: number | null;
   /** Current tempo — passed to clip settings modal */
   tempo?: number;
   /** Whether to show note names on piano keyboard */
@@ -896,7 +900,6 @@ export const ClipEditorView = memo(function ClipEditorView({
   isPlaying,
   isRecording,
   isMetronomeEnabled,
-  playheadPosition = 0,
   canUndo = false,
   canRedo = false,
   callbacks,
@@ -912,16 +915,19 @@ export const ClipEditorView = memo(function ClipEditorView({
   onClipLengthIncrease,
   onClipLengthDecrease,
   onClipLengthSet,
+  recordingCountIn,
   tempo = 120,
   showPianoNoteNames = false,
   onTempoChange,
   onTogglePianoNoteNames,
 }: ClipEditorViewProps) {
   const { colors } = useTheme();
+  const { width: screenWidth } = useWindowDimensions();
   const [isExpanded, setIsExpanded] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [selectedPitchIndex, setSelectedPitchIndex] = useState<number | null>(null);
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const beatWidth = ((screenWidth - 60) / 16) * zoom * 4; // 60 = pitch label column width
   const trackColor = clip.colorHex;
   const samplesList = samples || [];
   const { width: screenWidth } = useWindowDimensions();
@@ -933,16 +939,15 @@ export const ClipEditorView = memo(function ClipEditorView({
 
   // iOS: velocity lane only shows when a pitch label is tapped (selectedPitchForEditing)
   const showVelocityLane = selectedPitchIndex != null && !isExpanded;
+  const showCountIn = recordingCountIn != null;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
-      {/* Top half: toolbar + piano roll + clip length bar
-       * iOS uses splitHeight = availableHeight * 0.5 for each half */}
-      <View
-        style={
-          shouldShowPerformanceControls ? styles.splitHalf : styles.fullContent
-        }
-      >
+      {/* Top section: toolbar + piano roll + clip length bar
+       * Always flex:1. When bottom half renders (not expanded), they split 50/50.
+       * When expanded, bottom is hidden → top gets 100%. */}
+      <View style={styles.splitHalf}>
+
         {/* Toolbar */}
         <ClipEditorToolbar
           isPlaying={isPlaying}
@@ -959,49 +964,45 @@ export const ClipEditorView = memo(function ClipEditorView({
           onSettings={() => setSettingsVisible(true)}
         />
 
-        {/* Piano Roll + Playhead overlay */}
+        {/* Piano Roll (Skia GPU-rendered) + Playhead */}
         <View style={{ flex: 1, position: 'relative' }}>
-        <PianoRollGrid
-          notes={clip.notes}
-          samples={samplesList}
-          instrumentType={instrumentType}
-          trackColor={trackColor}
-          lengthInBeats={clip.activeLengthInBars * 4}
-          playheadPosition={playheadPosition}
-          zoomLevel={zoom}
-          isExpanded={isExpanded}
-          selectedPitchIndex={selectedPitchIndex}
-          melodicMinPitch={melodicMinPitch}
-          onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
-          onNoteResize={(idx, newDuration) =>
-            callbacks?.onNoteResize?.(idx, newDuration)
-          }
-          onNoteMove={(idx, newPos, newNote) =>
-            callbacks?.onNoteMove?.(idx, newPos, newNote)
-          }
-          onGridTap={(noteNumber, position) => {
-            callbacks?.onNoteAdd?.({
-              noteNumber,
-              velocity: 100,
-              position,
-              duration: 0.25, // 16th note default
-            });
-          }}
-          onPitchLabelTap={(pitch) => {
-            // Toggle velocity lane for this pitch (matching iOS selectedPitchForEditing)
-            setSelectedPitchIndex(selectedPitchIndex === pitch ? null : pitch);
-          }}
-          onToggleExpand={() => setIsExpanded(!isExpanded)}
-          onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
-          onZoomOut={() => setZoom(Math.max(zoom - 0.25, 0.5))}
-        />
-        <PlayheadLine
-          beatWidth={beatWidth}
-          clipBeats={clip.activeLengthInBars * 4}
-          isPlaying={isPlaying}
-          tempo={tempo}
-          color={colors.mcWhite}
-        />
+          <SkiaPianoRollGrid
+            notes={clip.notes}
+            samples={samplesList}
+            instrumentType={instrumentType}
+            trackColor={trackColor}
+            lengthInBeats={clip.activeLengthInBars * 4}
+            zoomLevel={zoom}
+            isExpanded={isExpanded}
+            selectedPitchIndex={selectedPitchIndex}
+            melodicMinPitch={melodicMinPitch}
+            onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
+            onNoteResize={(idx, newDuration) => callbacks?.onNoteResize?.(idx, newDuration)}
+            onNoteMove={(idx, newPos, newNote) => callbacks?.onNoteMove?.(idx, newPos, newNote)}
+            onGridTap={(noteNumber, position) => {
+              callbacks?.onNoteAdd?.({
+                noteNumber,
+                velocity: 100,
+                position,
+                duration: 0.25,
+              });
+            }}
+            onPitchLabelTap={(pitch) => {
+              setSelectedPitchIndex(selectedPitchIndex === pitch ? null : pitch);
+            }}
+            onToggleExpand={() => setIsExpanded(!isExpanded)}
+            onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
+            onZoomOut={() => setZoom(Math.max(zoom - 0.25, 1))}
+            onZoomChange={(z) => setZoom(Math.max(1, Math.min(3, z)))}
+            showNoteLabels={showPianoNoteNames}
+          />
+          <PlayheadLine
+            beatWidth={beatWidth}
+            clipBeats={clip.activeLengthInBars * 4}
+            isPlaying={isPlaying}
+            tempo={tempo}
+            color={colors.mcWhite}
+          />
         </View>
 
         {/* Clip Length Bar */}
@@ -1021,12 +1022,26 @@ export const ClipEditorView = memo(function ClipEditorView({
        *       when nil → PerformanceControlsView (drum→PadsView, melodic/bass→TeenagePianoView) */}
       {!isExpanded && (
         <View style={styles.splitHalf}>
-          {showVelocityLane && clip.notes.length > 0 ? (
-            <VelocityLane
+          {showVelocityLane ? (
+            <NotePrecisionPanel
               notes={clip.notes}
+              pitchIndex={selectedPitchIndex!}
+              pitchLabel={(() => {
+                const isDrum = instrumentType === 'drum';
+                if (isDrum) return (samples || [])[selectedPitchIndex!]?.name ?? `Note ${selectedPitchIndex}`;
+                const basePitch = melodicMinPitch;
+                return `${NOTE_NAMES_FULL[(basePitch + selectedPitchIndex!) % 12]}${Math.floor((basePitch + selectedPitchIndex!) / 12) + 1}`;
+              })()}
+              pitchMidiNumber={(() => {
+                if (instrumentType === 'drum') return (samples || [])[selectedPitchIndex!]?.noteNumber ?? selectedPitchIndex!;
+                return (melodicMinPitch) + selectedPitchIndex!;
+              })()}
+              activeLengthInBars={clip.activeLengthInBars}
               trackColor={trackColor}
               onClose={() => setSelectedPitchIndex(null)}
               onVelocityChange={callbacks?.onVelocityChange}
+              onPositionChange={(idx, newPos) => callbacks?.onNoteMove?.(idx, newPos, clip.notes[idx]?.noteNumber ?? 0)}
+              onDurationChange={(idx, newDur) => callbacks?.onNoteResize?.(idx, newDur)}
             />
           ) : shouldShowPerformanceControls ? (
             instrumentType === 'drum' ? (
@@ -1065,6 +1080,15 @@ export const ClipEditorView = memo(function ClipEditorView({
           ) : null}
         </View>
       )}
+      {/* Recording count-in overlay — matches iOS: big orange number in circle */}
+      {showCountIn && (
+        <View style={styles.countInOverlay} pointerEvents="none">
+          <View style={styles.countInCircle}>
+            <Text variant="h1" color={colors.mcOrange}>{recordingCountIn}</Text>
+          </View>
+        </View>
+      )}
+
       {/* Clip Settings Modal */}
       <ClipSettingsModal
         visible={settingsVisible}
@@ -1086,6 +1110,20 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   /** iOS: splitHeight = availableHeight * 0.5 — each half gets equal flex */
   splitHalf: { flex: 1 },
+  countInOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
+  },
+  countInCircle: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   /** Full content when performance controls are hidden */
   fullContent: { flex: 1 },
 

@@ -52,7 +52,9 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
         <View style={styles.header}>
           <View style={styles.headerSpacer} />
           <Pressable onPress={onClose} hitSlop={8}>
-            <Text variant="label" color={colors.mcOrange}>Done</Text>
+            <Text variant="label" color={colors.mcOrange}>
+              Done
+            </Text>
           </Pressable>
         </View>
 
@@ -60,7 +62,9 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
         <View style={styles.content}>
           {/* Metronome */}
           <View style={[styles.row, { borderBottomColor: colors.mcBlack4 }]}>
-            <Text variant="label" color={colors.mcWhite}>Metronome</Text>
+            <Text variant="label" color={colors.mcWhite}>
+              Metronome
+            </Text>
             <Switch
               value={isMetronomeEnabled}
               onValueChange={() => onToggleMetronome?.()}
@@ -70,8 +74,12 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
 
           {/* Tempo */}
           <View style={[styles.row, { borderBottomColor: colors.mcBlack4 }]}>
-            <Text variant="label" color={colors.mcWhite}>Tempo</Text>
-            <Text variant="label" color={colors.mcWhite3}>{Math.round(tempoValue)} BPM</Text>
+            <Text variant="label" color={colors.mcWhite}>
+              Tempo
+            </Text>
+            <Text variant="label" color={colors.mcWhite3}>
+              {Math.round(tempoValue)} BPM
+            </Text>
           </View>
           {SliderComponent && (
             <View style={styles.sliderRow}>
@@ -93,9 +101,21 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
             </View>
           )}
 
-          {/* Show Note Labels */}
-          <View style={[styles.row, { borderBottomColor: colors.mcBlack4 }]}>
-            <Text variant="label" color={colors.mcWhite}>Show Note Names</Text>
+          {/* Show Note Labels on Piano Roll Notes */}
+          <View
+            style={[
+              styles.row,
+              { borderBottomColor: colors.mcBlack4, alignItems: 'flex-start' },
+            ]}
+          >
+            <View style={styles.labelWithSubtitle}>
+              <Text variant="label" color={colors.mcWhite}>
+                Show Labels on Notes
+              </Text>
+              <Text variant="extraSmall" color={colors.mcGray}>
+                Display note/sample names on piano roll notes
+              </Text>
+            </View>
             <Switch
               value={showNoteLabels}
               onValueChange={() => onToggleNoteLabels?.()}
@@ -129,6 +149,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: makeSpacing(4),
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  labelWithSubtitle: {
+    flex: 1,
+    paddingRight: makeSpacing(2),
   },
   sliderRow: {
     paddingVertical: makeSpacing(2),

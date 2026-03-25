@@ -76,7 +76,7 @@ export interface SongState {
   tempo: number;
   isLoopEnabled: boolean;
   isMetronomeEnabled: boolean;
-  isRecording: boolean;
+  isRecording: boolean; isRecordingArmed: boolean;
   sections: Section[];
   currentSectionId: number;
   tracks: Track[];
@@ -100,6 +100,7 @@ export interface SongState {
   // Clip editor UI state
   isClipSettingsVisible: boolean;
   showPianoNoteNames: boolean;
+  recordingCountIn: number | null;
 }
 
 // ─── UI-only state (not in midicircuit-rn songStore) ────────────────────────
