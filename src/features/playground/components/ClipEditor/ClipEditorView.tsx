@@ -999,7 +999,7 @@ export const ClipEditorView = memo(function ClipEditorView({
             onToggleExpand={() => setIsExpanded(!isExpanded)}
             onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
             onZoomOut={() => setZoom(Math.max(zoom - 0.25, 1))}
-            onZoomChange={(z) => setZoom(z)}
+            onZoomChange={(z) => setZoom(Math.max(1, Math.min(3, z)))}
           />
           <PlayheadLine
             beatWidth={beatWidth}
