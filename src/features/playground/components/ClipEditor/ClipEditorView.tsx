@@ -998,7 +998,7 @@ export const ClipEditorView = memo(function ClipEditorView({
             }}
             onToggleExpand={() => setIsExpanded(!isExpanded)}
             onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
-            onZoomOut={() => setZoom(Math.max(zoom - 0.25, 0.5))}
+            onZoomOut={() => setZoom(Math.max(zoom - 0.25, 1))}
             onZoomChange={(z) => setZoom(z)}
           />
           <PlayheadLine

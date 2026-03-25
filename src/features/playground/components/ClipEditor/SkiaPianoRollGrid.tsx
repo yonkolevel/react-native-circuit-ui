@@ -332,7 +332,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   // Pinch-to-zoom — matches iOS MagnificationGesture behavior
   const pinchStartZoom = useSharedValue(1);
   const handlePinchZoom = useCallback((newZoom: number) => {
-    onZoomChange?.(Math.max(0.5, Math.min(3, newZoom)));
+    onZoomChange?.(Math.max(1, Math.min(3, newZoom)));
   }, [onZoomChange]);
 
   const pinchGesture = Gesture.Pinch()
