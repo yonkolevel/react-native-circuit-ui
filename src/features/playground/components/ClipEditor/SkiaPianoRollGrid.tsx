@@ -53,6 +53,7 @@ export interface SkiaPianoRollGridProps {
   onZoomIn?: () => void;
   onZoomOut?: () => void;
   onZoomChange?: (zoom: number) => void;
+  showNoteLabels?: boolean;
 }
 
 export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
@@ -75,6 +76,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   onZoomIn,
   onZoomOut,
   onZoomChange,
+  showNoteLabels = false,
 }: SkiaPianoRollGridProps) {
   const { colors } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
@@ -485,8 +487,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                           strokeWidth={2}
                         />
                       )}
-                      {/* Note label — melodic/bass only, when note is wide enough */}
-                      {!isDrum && !isDragging && w > 24 && (
+                      {/* Note label — melodic/bass only, when enabled + note wide enough */}
+                      {showNoteLabels && !isDrum && !isDragging && w > 24 && (
                         <SkiaText
                           x={x + 4}
                           y={y + h - 4}

@@ -1004,6 +1004,7 @@ export const ClipEditorView = memo(function ClipEditorView({
             onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
             onZoomOut={() => setZoom(Math.max(zoom - 0.25, 1))}
             onZoomChange={(z) => setZoom(Math.max(1, Math.min(3, z)))}
+            showNoteLabels={showPianoNoteNames}
           />
           <PlayheadLine
             beatWidth={beatWidth}
