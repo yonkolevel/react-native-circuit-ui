@@ -895,6 +895,8 @@ export interface ClipEditorViewProps {
   onClipLengthDecrease?: () => void;
   onClipLengthSet?: (bars: number) => void;
   onShowSettings?: () => void;
+  /** Recording count-in remaining (3, 2, 1, null) */
+  recordingCountIn?: number | null;
   /** Current tempo — passed to clip settings modal */
   tempo?: number;
   /** Whether to show note names on piano keyboard */
@@ -925,6 +927,7 @@ export const ClipEditorView = memo(function ClipEditorView({
   onClipLengthIncrease,
   onClipLengthDecrease,
   onClipLengthSet,
+  recordingCountIn,
   tempo = 120,
   showPianoNoteNames = false,
   onTempoChange,
@@ -946,6 +949,7 @@ export const ClipEditorView = memo(function ClipEditorView({
 
   // iOS: velocity lane only shows when a pitch label is tapped (selectedPitchForEditing)
   const showVelocityLane = selectedPitchIndex != null && !isExpanded;
+  const showCountIn = recordingCountIn != null;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
@@ -1085,6 +1089,15 @@ export const ClipEditorView = memo(function ClipEditorView({
           ) : null}
         </View>
       )}
+      {/* Recording count-in overlay — matches iOS: big orange number in circle */}
+      {showCountIn && (
+        <View style={styles.countInOverlay} pointerEvents="none">
+          <View style={styles.countInCircle}>
+            <Text variant="h1" color={colors.mcOrange}>{recordingCountIn}</Text>
+          </View>
+        </View>
+      )}
+
       {/* Clip Settings Modal */}
       <ClipSettingsModal
         visible={settingsVisible}
@@ -1106,6 +1119,20 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   /** iOS: splitHeight = availableHeight * 0.5 — each half gets equal flex */
   splitHalf: { flex: 1 },
+  countInOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
+  },
+  countInCircle: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   /** Full content when performance controls are hidden */
   fullContent: { flex: 1 },
 

@@ -100,6 +100,7 @@ export interface SongState {
   // Clip editor UI state
   isClipSettingsVisible: boolean;
   showPianoNoteNames: boolean;
+  recordingCountIn: number | null;
 }
 
 // ─── UI-only state (not in midicircuit-rn songStore) ────────────────────────

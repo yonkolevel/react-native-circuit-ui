@@ -186,7 +186,7 @@ export function createMockSong(overrides?: Partial<SongViewState>): SongViewStat
     redoStacks: {},
     liveRecordingNotes: {},
     isClipSettingsVisible: false,
-    showPianoNoteNames: false,
+    showPianoNoteNames: false, recordingCountIn: null,
     // UI-only state
     currentView: 'song',
     zoomLevel: 1,
