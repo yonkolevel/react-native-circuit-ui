@@ -19,6 +19,7 @@ import { Canvas, Path as SkiaPath, Rect, RoundedRect, Skia, Line, vec } from '@s
 import { ScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS, useSharedValue } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
+import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme, hexToRgba } from '../../../../theme';
 import type { ClipNote, InstrumentType, Sample } from '../../types';
 
@@ -487,16 +488,16 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       {/* Zoom controls */}
       <View style={styles.zoomControls}>
         <Pressable onPress={onToggleExpand} style={styles.zoomBtn}>
-          <Text variant="extraSmall" color="white">{isExpanded ? '↙' : '↗'}</Text>
+          <Icon icon={isExpanded ? Icons.collapse : Icons.expand} size={14} color="white" />
         </Pressable>
         <Pressable onPress={onZoomIn} style={styles.zoomBtn}>
-          <Text variant="extraSmall" color="white">+</Text>
+          <Icon icon={Icons.zoomIn} size={14} color="white" />
         </Pressable>
         <View style={styles.zoomLabel}>
           <Text variant="extraSmall10" color="white" center>{Math.round(zoomLevel * 100)}%</Text>
         </View>
         <Pressable onPress={onZoomOut} style={styles.zoomBtn}>
-          <Text variant="extraSmall" color="white">−</Text>
+          <Icon icon={Icons.zoomOut} size={14} color="white" />
         </Pressable>
       </View>
     </View>
