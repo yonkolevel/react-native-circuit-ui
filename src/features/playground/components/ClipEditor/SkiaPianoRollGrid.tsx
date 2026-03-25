@@ -14,6 +14,7 @@
  */
 import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { View, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
+import type { LayoutChangeEvent } from 'react-native';
 import { Canvas, Path as SkiaPath, Rect, RoundedRect, Skia, Line, vec } from '@shopify/react-native-skia';
 import { ScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS, useSharedValue } from 'react-native-reanimated';
@@ -78,11 +79,24 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const basePitch = isDrum ? 0 : (melodicMinPitch ?? DEFAULT_MELODIC_MIN_PITCH);
   const totalPitches = isDrum ? Math.max((samples ?? []).length, 12) : MELODIC_PITCH_COUNT;
 
+  // Measure available height for expanded mode
+  const [containerH, setContainerH] = useState(0);
+  const onContainerLayout = useCallback((e: LayoutChangeEvent) => {
+    setContainerH(e.nativeEvent.layout.height);
+  }, []);
+
+  // When expanded: grow row height to fill available space (matching native behavior)
+  // Native: isExpandedAndDrum ? max(28, availableH / pitchCount) : 34
+  const MIN_EXPANDED_ROW = 28;
+  const effectiveRowHeight = isExpanded && containerH > 0
+    ? Math.max(MIN_EXPANDED_ROW, containerH / totalPitches)
+    : rowHeight;
+
   const availableGridWidth = screenWidth - LABEL_COL_WIDTH;
   const stepWidth = (availableGridWidth / 16) * zoomLevel;
   const beatWidth = stepWidth * 4;
   const gridWidth = lengthInBeats * beatWidth;
-  const gridHeight = totalPitches * rowHeight;
+  const gridHeight = totalPitches * effectiveRowHeight;
   const totalSteps = lengthInBeats * 4;
 
   // Build the grid path once — memoized on dimensions only (not notes)
@@ -91,7 +105,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 
     // Horizontal row lines
     for (let i = 0; i <= totalPitches; i++) {
-      const y = i * rowHeight;
+      const y = i * effectiveRowHeight;
       path.moveTo(0, y);
       path.lineTo(gridWidth, y);
     }
@@ -104,7 +118,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     }
 
     return path;
-  }, [totalPitches, rowHeight, gridWidth, totalSteps, stepWidth, gridHeight]);
+  }, [totalPitches, effectiveRowHeight, gridWidth, totalSteps, stepWidth, gridHeight]);
 
   // Row background colors — alternating
   const rowBgColor1 = colors.mcBlack;
@@ -144,9 +158,9 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       }
       const rowIdx = totalPitches - 1 - pitchIdx;
       const noteX = note.position * beatWidth;
-      const noteY = rowIdx * rowHeight + 1;
+      const noteY = rowIdx * effectiveRowHeight + 1;
       const noteW = Math.max(note.duration * beatWidth - 1, stepWidth);
-      const noteH = rowHeight - 2;
+      const noteH = effectiveRowHeight - 2;
 
       // Expanded hit area
       if (x >= noteX - TOUCH_PADDING && x <= noteX + noteW + TOUCH_PADDING &&
@@ -165,7 +179,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     }
 
     return bestIdx >= 0 ? { idx: bestIdx, isResizeEdge: bestIsResize } : null;
-  }, [notes, isDrum, samples, basePitch, totalPitches, beatWidth, rowHeight, stepWidth]);
+  }, [notes, isDrum, samples, basePitch, totalPitches, beatWidth, effectiveRowHeight, stepWidth]);
 
   // --- Gesture state ---
   const dragState = useRef<{
@@ -204,14 +218,14 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     } else if (onGridTap) {
       const step = Math.floor(x / stepWidth);
       const position = step * 0.25;
-      const rowIdx = Math.floor(y / rowHeight);
+      const rowIdx = Math.floor(y / effectiveRowHeight);
       const pitchIdx = totalPitches - 1 - rowIdx;
       if (pitchIdx >= 0 && pitchIdx < totalPitches) {
         const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
         onGridTap(noteNumber, position);
       }
     }
-  }, [hitTestNote, onNotePress, onGridTap, stepWidth, rowHeight, totalPitches, pitchToMidi]);
+  }, [hitTestNote, onNotePress, onGridTap, stepWidth, effectiveRowHeight, totalPitches, pitchToMidi]);
 
   const handleDragStart = useCallback((x: number, y: number) => {
     const hit = hitTestNote(x, y);
@@ -239,10 +253,10 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 
   // Drag update — pure worklet, reads/writes shared values only.
   // Runs on UI thread every gesture frame. Skia picks up changes on next GPU frame.
-  // Captures JS constants via closure (stepWidth, beatWidth, rowHeight, totalPitches are stable numbers).
+  // Captures JS constants via closure (stepWidth, beatWidth, effectiveRowHeight, totalPitches are stable numbers).
   const swRef = stepWidth;
   const bwRef = beatWidth;
-  const rhRef = rowHeight;
+  const rhRef = effectiveRowHeight;
   const tpRef = totalPitches;
 
   const handleDragEnd = useCallback((x: number, y: number) => {
@@ -257,9 +271,9 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       onNoteResize?.(ds.noteIdx, steps * 0.25);
     } else {
       const stepsDx = Math.round(dx / stepWidth);
-      const rowsDy = Math.round(dy / rowHeight);
+      const rowsDy = Math.round(dy / effectiveRowHeight);
       const newPosition = Math.max(0, ds.origPosition + stepsDx * 0.25);
-      const newRowIdx = Math.floor(ds.startY / rowHeight) + rowsDy;
+      const newRowIdx = Math.floor(ds.startY / effectiveRowHeight) + rowsDy;
       const newPitchIdx = Math.max(0, Math.min(totalPitches - 1, totalPitches - 1 - newRowIdx));
       const newNoteNumber = pitchToMidi[newPitchIdx] ?? newPitchIdx;
       if (newPosition !== ds.origPosition || newNoteNumber !== ds.origNoteNumber) {
@@ -270,7 +284,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     dragNoteIdx.value = -1;
     dragOpacity.value = 0;
     setActiveNoteIdx(-1);
-  }, [beatWidth, stepWidth, rowHeight, totalPitches, pitchToMidi, onNoteResize, onNoteMove]);
+  }, [beatWidth, stepWidth, effectiveRowHeight, totalPitches, pitchToMidi, onNoteResize, onNoteMove]);
 
   // --- Gestures (UI thread → runOnJS for callbacks) ---
   const tapGesture = Gesture.Tap()
@@ -316,21 +330,19 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     });
 
   // Pinch-to-zoom — matches iOS MagnificationGesture behavior
-  const pinchStartZoom = useRef(1);
+  const pinchStartZoom = useSharedValue(1);
   const handlePinchZoom = useCallback((newZoom: number) => {
-    const clamped = Math.max(0.5, Math.min(3, newZoom));
-    onZoomChange?.(clamped);
+    onZoomChange?.(Math.max(0.5, Math.min(3, newZoom)));
   }, [onZoomChange]);
 
   const pinchGesture = Gesture.Pinch()
     .onStart(() => {
       'worklet';
-      pinchStartZoom.current = zoomLevel;
+      pinchStartZoom.value = zoomLevel;
     })
     .onUpdate((e) => {
       'worklet';
-      const newZoom = pinchStartZoom.current * e.scale;
-      runOnJS(handlePinchZoom)(newZoom);
+      runOnJS(handlePinchZoom)(pinchStartZoom.value * e.scale);
     });
 
   const composedGesture = Gesture.Simultaneous(
@@ -339,7 +351,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   );
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={onContainerLayout}>
       <ScrollView style={styles.scrollV}>
         <View style={styles.row}>
           {/* Pitch labels — React Views (interactive, need text) */}
@@ -354,7 +366,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   style={[
                     styles.label,
                     {
-                      height: rowHeight,
+                      height: effectiveRowHeight,
                       backgroundColor:
                         selectedPitchIndex === pitchIdx
                           ? colors.mcOrange
@@ -379,9 +391,9 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   <Rect
                     key={`bg${i}`}
                     x={0}
-                    y={i * rowHeight}
+                    y={i * effectiveRowHeight}
                     width={gridWidth}
-                    height={rowHeight}
+                    height={effectiveRowHeight}
                     color={i % 2 === 0 ? rowBgColor1 : rowBgColor2}
                   />
                 ))}
@@ -427,9 +439,9 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   }
                   const rowIdx = totalPitches - 1 - pitchIdx;
                   const x = note.position * beatWidth;
-                  const y = rowIdx * rowHeight + 1;
+                  const y = rowIdx * effectiveRowHeight + 1;
                   const w = Math.max(note.duration * beatWidth - 1, stepWidth);
-                  const h = rowHeight - 2;
+                  const h = effectiveRowHeight - 2;
                   const r = 3;
                   const isDragging = idx === activeNoteIdx;
 
