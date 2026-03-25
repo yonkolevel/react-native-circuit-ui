@@ -949,13 +949,11 @@ export const ClipEditorView = memo(function ClipEditorView({
 
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
-      {/* Top half: toolbar + piano roll + clip length bar
-       * iOS uses splitHeight = availableHeight * 0.5 for each half */}
-      <View
-        style={
-          shouldShowPerformanceControls ? styles.splitHalf : styles.fullContent
-        }
-      >
+      {/* Top section: toolbar + piano roll + clip length bar
+       * Always flex:1. When bottom half renders (not expanded), they split 50/50.
+       * When expanded, bottom is hidden → top gets 100%. */}
+      <View style={styles.splitHalf}>
+
         {/* Toolbar */}
         <ClipEditorToolbar
           isPlaying={isPlaying}
