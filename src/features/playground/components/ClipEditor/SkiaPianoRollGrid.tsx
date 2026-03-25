@@ -47,6 +47,7 @@ export interface SkiaPianoRollGridProps {
   onToggleExpand?: () => void;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
+  onZoomChange?: (zoom: number) => void;
 }
 
 export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
@@ -68,6 +69,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   onToggleExpand,
   onZoomIn,
   onZoomOut,
+  onZoomChange,
 }: SkiaPianoRollGridProps) {
   const { colors } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
@@ -313,7 +315,28 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       runOnJS(handleDragEnd)(e.x, e.y);
     });
 
-  const composedGesture = Gesture.Exclusive(panGesture, tapGesture);
+  // Pinch-to-zoom — matches iOS MagnificationGesture behavior
+  const pinchStartZoom = useRef(1);
+  const handlePinchZoom = useCallback((newZoom: number) => {
+    const clamped = Math.max(0.5, Math.min(3, newZoom));
+    onZoomChange?.(clamped);
+  }, [onZoomChange]);
+
+  const pinchGesture = Gesture.Pinch()
+    .onStart(() => {
+      'worklet';
+      pinchStartZoom.current = zoomLevel;
+    })
+    .onUpdate((e) => {
+      'worklet';
+      const newZoom = pinchStartZoom.current * e.scale;
+      runOnJS(handlePinchZoom)(newZoom);
+    });
+
+  const composedGesture = Gesture.Simultaneous(
+    pinchGesture,
+    Gesture.Exclusive(panGesture, tapGesture)
+  );
 
   return (
     <View style={styles.container}>
