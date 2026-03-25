@@ -12,7 +12,7 @@
  * - Skia draws everything in a single GPU pass — adding a note is just
  *   one more Rect in the draw list, no React re-render overhead
  */
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import type { LayoutChangeEvent } from 'react-native';
 import { Canvas, Path as SkiaPath, Rect, RoundedRect, Skia, Line, vec } from '@shopify/react-native-skia';
@@ -92,6 +92,17 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const effectiveRowHeight = isExpanded && containerH > 0
     ? Math.max(MIN_EXPANDED_ROW, containerH / totalPitches)
     : rowHeight;
+
+  // Scroll ref — reset position when zoom changes to prevent over-scroll
+  const hScrollRef = useRef<any>(null);
+  const prevZoom = useRef(zoomLevel);
+  useEffect(() => {
+    if (zoomLevel < prevZoom.current) {
+      // Zoomed out — clamp scroll to prevent blank space on the right
+      hScrollRef.current?.scrollTo?.({ x: 0, animated: false });
+    }
+    prevZoom.current = zoomLevel;
+  }, [zoomLevel]);
 
   const availableGridWidth = screenWidth - LABEL_COL_WIDTH;
   const stepWidth = (availableGridWidth / 16) * zoomLevel;
@@ -384,7 +395,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
           </View>
 
           {/* Grid — Skia Canvas (single GPU draw) */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.gridScroll}>
+          <ScrollView ref={hScrollRef} horizontal showsHorizontalScrollIndicator={false} style={styles.gridScroll}>
             <View style={{ width: gridWidth, height: gridHeight }}>
               <Canvas style={StyleSheet.absoluteFill}>
                 {/* Row backgrounds — alternating colors */}
