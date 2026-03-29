@@ -35,6 +35,8 @@ export interface ModalProps {
   style?: StyleProp<ViewStyle>;
   /** Animation type. Default: 'fade'. */
   animationType?: 'fade' | 'slide' | 'none';
+  /** Test ID for testing */
+  testID?: string;
 }
 
 export const Modal: React.FC<ModalProps> = memo(function Modal({
@@ -44,6 +46,7 @@ export const Modal: React.FC<ModalProps> = memo(function Modal({
   children,
   style,
   animationType = 'fade',
+  testID,
 }) {
   const { colors, isDark } = useTheme();
   const { width } = useWindowDimensions();
@@ -86,6 +89,7 @@ export const Modal: React.FC<ModalProps> = memo(function Modal({
           ]}
           accessibilityRole="alert"
           accessibilityLabel={title ? `Dialog: ${title}` : 'Dialog'}
+          testID={testID}
         >
           {/* Header — matches SwiftUI HStack { title + close } */}
           <View style={styles.header}>

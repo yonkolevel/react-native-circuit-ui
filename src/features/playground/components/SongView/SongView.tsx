@@ -144,11 +144,16 @@ const ClipCell = memo(function ClipCell({
 export interface SongViewProps {
   /** Navigation back — lives outside the song store */
   onBack?: () => void;
+  /** Export callbacks — wired from PlaygroundScreen to native StorageBridge */
+  onExportAudio?: () => void;
+  onExportBundle?: () => void;
   style?: StyleProp<ViewStyle>;
 }
 
 export const SongView = memo(function SongView({
   onBack,
+  onExportAudio,
+  onExportBundle,
   style,
 }: SongViewProps) {
   const { colors } = useTheme();
@@ -160,7 +165,7 @@ export const SongView = memo(function SongView({
   const currentSectionId = useSongContext(s => s.currentSectionId);
 
   // Actions — stable refs, no subscription
-  const { openClipEditor, createClip, setCurrentSection, addSection, showAddTrackMenu, removeTrack } = useSongActions();
+  const { openClipEditor, createClip, setCurrentSection, addSection, showAddTrackMenu, removeTrack, renameSection, removeSection } = useSongActions();
 
   const showTab = currentTab === 'song' || currentTab === 'mixer';
 
@@ -225,12 +230,39 @@ export const SongView = memo(function SongView({
             >
               <View>
                 <View style={s.sections}>
-                  {sections.map((sec) => {
+                  {sections.map((sec, index) => {
                     const isActive = sec.id === currentSectionId;
                     return (
                       <Pressable
                         key={sec.id}
                         onPress={() => setCurrentSection(sec.id)}
+                        onLongPress={() => {
+                          Alert.alert(
+                            sec.name || `Section ${index + 1}`,
+                            undefined,
+                            [
+                              {
+                                text: 'Rename',
+                                onPress: () => {
+                                  Alert.prompt?.(
+                                    'Rename Section',
+                                    undefined,
+                                    (newName: string) => {
+                                      if (newName.trim()) renameSection(sec.id, newName.trim());
+                                    },
+                                    'plain-text',
+                                    sec.name || `Section ${index + 1}`
+                                  );
+                                  // Alert.prompt is iOS-only; on Android renameSection is called from settings
+                                },
+                              },
+                              ...(sections.length > 1
+                                ? [{ text: 'Delete', style: 'destructive' as const, onPress: () => removeSection(sec.id) }]
+                                : []),
+                              { text: 'Cancel', style: 'cancel' as const },
+                            ]
+                          );
+                        }}
                         style={[
                           s.secTab,
                           {
@@ -239,6 +271,8 @@ export const SongView = memo(function SongView({
                               : colors.mcWhite3,
                           },
                         ]}
+                        accessibilityLabel={`Section ${sec.name || (index + 1)}`}
+                        accessibilityRole="button"
                       >
                         <Text
                           variant="small"
@@ -246,7 +280,7 @@ export const SongView = memo(function SongView({
                           center
                           numberOfLines={1}
                         >
-                          {sec.name}
+                          {sec.name || `${index + 1}`}
                         </Text>
                       </Pressable>
                     );
@@ -281,10 +315,12 @@ export const SongView = memo(function SongView({
                               if (clip) {
                                 openClipEditor(t.id, clip.id);
                               } else {
+                                // Create clip then immediately open editor
+                                // Compute new ID using same logic as songStore.createClip
+                                const allClipIds = tracks.flatMap((tr) => tr.clips.map((c) => c.id));
+                                const newClipId = allClipIds.length > 0 ? Math.max(...allClipIds) + 1 : 0;
                                 createClip(t.id, sec.id);
-                                // After creating clip, open the editor
-                                // We need the new clip ID — it's the max ID + 1
-                                // This is a known pattern from the native app
+                                openClipEditor(t.id, newClipId);
                               }
                             }}
                           />
@@ -298,7 +334,9 @@ export const SongView = memo(function SongView({
           </View>
         )}
         {currentTab === 'mixer' && <MixerView />}
-        {currentTab === 'settings' && <SongSettings />}
+        {currentTab === 'settings' && (
+          <SongSettings onExportAudio={onExportAudio} onExportBundle={onExportBundle} />
+        )}
       </View>
 
       {showTab && <SongMixerTabBar />}

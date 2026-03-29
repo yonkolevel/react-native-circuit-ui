@@ -1,0 +1,163 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProfileStatsCard matches snapshot (dark mode) 1`] = `
+<View
+  accessibilityLabel="Circuits: 5"
+  style={
+    [
+      {
+        "borderRadius": 5,
+        "elevation": 3,
+        "flex": 1,
+        "minHeight": 126,
+        "padding": 16,
+        "shadowColor": "#000",
+        "shadowOffset": {
+          "height": 1,
+          "width": 0,
+        },
+        "shadowOpacity": 0.2,
+        "shadowRadius": 3,
+      },
+      {
+        "backgroundColor": "#1A1C20",
+      },
+    ]
+  }
+>
+  <Text
+    accessibilityRole="text"
+    style={
+      [
+        {
+          "fontFamily": "System",
+          "fontSize": 12,
+          "fontWeight": "400",
+          "lineHeight": 18,
+        },
+        {
+          "color": "#F7F7F7",
+        },
+        [
+          {
+            "textTransform": "uppercase",
+          },
+          {
+            "color": "rgba(247, 247, 247, 0.60)",
+          },
+        ],
+      ]
+    }
+  >
+    CIRCUITS
+  </Text>
+  <Text
+    accessibilityRole="text"
+    style={
+      [
+        {
+          "fontFamily": "System",
+          "fontSize": 38,
+          "fontWeight": "600",
+          "lineHeight": 46,
+        },
+        {
+          "color": "#F7F7F7",
+        },
+        [
+          {
+            "fontWeight": "400",
+            "marginTop": "auto",
+          },
+          {
+            "color": "#F7F7F7",
+          },
+        ],
+      ]
+    }
+  >
+    5
+  </Text>
+</View>
+`;
+
+exports[`ProfileStatsCard matches snapshot (light mode) 1`] = `
+<View
+  accessibilityLabel="Trophies: 12"
+  style={
+    [
+      {
+        "borderRadius": 5,
+        "elevation": 3,
+        "flex": 1,
+        "minHeight": 126,
+        "padding": 16,
+        "shadowColor": "#000",
+        "shadowOffset": {
+          "height": 1,
+          "width": 0,
+        },
+        "shadowOpacity": 0.2,
+        "shadowRadius": 3,
+      },
+      {
+        "backgroundColor": "#F7F7F7",
+      },
+    ]
+  }
+>
+  <Text
+    accessibilityRole="text"
+    style={
+      [
+        {
+          "fontFamily": "System",
+          "fontSize": 12,
+          "fontWeight": "400",
+          "lineHeight": 18,
+        },
+        {
+          "color": "#F7F7F7",
+        },
+        [
+          {
+            "textTransform": "uppercase",
+          },
+          {
+            "color": "#25272B",
+          },
+        ],
+      ]
+    }
+  >
+    TROPHIES
+  </Text>
+  <Text
+    accessibilityRole="text"
+    style={
+      [
+        {
+          "fontFamily": "System",
+          "fontSize": 38,
+          "fontWeight": "600",
+          "lineHeight": 46,
+        },
+        {
+          "color": "#F7F7F7",
+        },
+        [
+          {
+            "fontWeight": "400",
+            "marginTop": "auto",
+          },
+          {
+            "color": "#000000",
+          },
+        ],
+      ]
+    }
+  >
+    12
+  </Text>
+</View>
+`;

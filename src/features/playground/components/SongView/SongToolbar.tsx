@@ -6,8 +6,8 @@
  * Layout (from Swift):
  *   HStack { back, Spacer, HStack(spacing:8) { play/pause, loop, metronome }, Spacer, settings }
  */
-import { memo, useCallback } from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { memo, useCallback, useState } from 'react';
+import { View, Pressable, StyleSheet, Text, Modal, TouchableOpacity } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring, withSequence } from 'react-native-reanimated';
 import { Icon, Icons } from '../../../../components/SFSymbol';
@@ -36,9 +36,13 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
     const isPlaying = useSongContext(s => s.isPlaying);
     const isLoopEnabled = useSongContext(s => s.isLoopEnabled);
     const isMetronomeEnabled = useSongContext(s => s.isMetronomeEnabled);
+    const tempo = useSongContext(s => s.tempo);
 
     // Actions — stable refs, no subscription (getState)
-    const { setPlaying, toggleLoop, toggleMetronome, setCurrentTab } = useSongActions();
+    const { setPlaying, toggleLoop, toggleMetronome, setCurrentTab, setTempo } = useSongActions();
+
+    // BPM editor modal
+    const [showBpmEditor, setShowBpmEditor] = useState(false);
 
     // ─── Press-scale animation (matches iOS button feedback) ────────
     const playScale = useSharedValue(1);
@@ -161,6 +165,20 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
           </AnimatedPressable>
         </View>
 
+        {/* BPM display — tappable */}
+        <Pressable
+          onPress={() => setShowBpmEditor(true)}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={`${Math.round(tempo)} BPM`}
+          style={styles.bpmButton}
+          testID="transport-bpm"
+        >
+          <Text style={[styles.bpmText, { color: colors.mcWhite }]}>
+            {Math.round(tempo)}
+          </Text>
+        </Pressable>
+
         {/* Right spacer + Settings gear */}
         <View style={styles.spacer}>
           <Pressable
@@ -177,6 +195,55 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
             <Icon icon={Icons.settings} size={22} color={colors.mcWhite} />
           </Pressable>
         </View>
+
+        {/* BPM Editor Modal */}
+        {showBpmEditor && (
+          <Modal transparent animationType="fade" onRequestClose={() => setShowBpmEditor(false)}>
+            <Pressable style={styles.bpmModalOverlay} onPress={() => setShowBpmEditor(false)}>
+              <Pressable style={[styles.bpmModalContent, { backgroundColor: colors.mcBlack3 }]} onPress={() => {}}>
+                <Text style={[styles.bpmModalTitle, { color: colors.mcWhite }]}>Tempo</Text>
+                <Text style={[styles.bpmModalValue, { color: colors.mcOrange }]}>{Math.round(tempo)} BPM</Text>
+                <View style={styles.bpmModalButtons}>
+                  <TouchableOpacity
+                    onPress={() => setTempo(Math.max(40, tempo - 5))}
+                    style={styles.bpmAdjust}
+                    accessibilityLabel="Decrease tempo"
+                  >
+                    <Text style={[styles.bpmAdjustText, { color: colors.mcWhite }]}>− 5</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => setTempo(Math.max(40, tempo - 1))}
+                    style={styles.bpmAdjust}
+                    accessibilityLabel="Decrease tempo by 1"
+                  >
+                    <Text style={[styles.bpmAdjustText, { color: colors.mcWhite }]}>− 1</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => setTempo(Math.min(300, tempo + 1))}
+                    style={styles.bpmAdjust}
+                    accessibilityLabel="Increase tempo by 1"
+                  >
+                    <Text style={[styles.bpmAdjustText, { color: colors.mcWhite }]}>+ 1</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => setTempo(Math.min(300, tempo + 5))}
+                    style={styles.bpmAdjust}
+                    accessibilityLabel="Increase tempo"
+                  >
+                    <Text style={[styles.bpmAdjustText, { color: colors.mcWhite }]}>+ 5</Text>
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity
+                  onPress={() => setShowBpmEditor(false)}
+                  style={styles.bpmDone}
+                  accessibilityLabel="Close tempo editor"
+                >
+                  <Text style={{ color: colors.mcOrange, fontWeight: '600', fontSize: 16 }}>Done</Text>
+                </TouchableOpacity>
+              </Pressable>
+            </Pressable>
+          </Modal>
+        )}
       </View>
     );
   }
@@ -218,6 +285,42 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: makeSpacing(1),
   },
+  // BPM
+  bpmButton: {
+    paddingHorizontal: makeSpacing(2),
+    paddingVertical: makeSpacing(1),
+    marginLeft: makeSpacing(2),
+  },
+  bpmText: {
+    fontSize: 14,
+    fontWeight: '600',
+    fontVariant: ['tabular-nums'],
+  },
+  // BPM Modal
+  bpmModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bpmModalContent: {
+    borderRadius: 12,
+    padding: 24,
+    minWidth: 260,
+    alignItems: 'center',
+    gap: 16,
+  },
+  bpmModalTitle: { fontSize: 16, fontWeight: '600' },
+  bpmModalValue: { fontSize: 40, fontWeight: '700', fontVariant: ['tabular-nums'] },
+  bpmModalButtons: { flexDirection: 'row', gap: 12 },
+  bpmAdjust: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  bpmAdjustText: { fontSize: 14, fontWeight: '600' },
+  bpmDone: { paddingVertical: 8, paddingHorizontal: 24 },
 });
 
 export default SongToolbar;

@@ -151,7 +151,7 @@ function resizePNG(img: PNG, targetW: number, targetH: number): PNG {
 /** Save a PNG to disk */
 function savePNG(img: PNG, filepath: string): void {
   const buffer = PNG.sync.write(img);
-  writeFileSync(filepath, buffer);
+  writeFileSync(filepath, buffer as unknown as Uint8Array);
 }
 
 // ---------------------------------------------------------------------------

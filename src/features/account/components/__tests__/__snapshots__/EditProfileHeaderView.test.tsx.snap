@@ -1,0 +1,263 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditProfileHeaderView matches snapshot (dark mode) 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "flexDirection": "row",
+      "gap": 20,
+      "height": 100,
+    }
+  }
+>
+  <View
+    accessibilityLabel="User avatar"
+    accessibilityRole="image"
+    accessible={true}
+    style={
+      [
+        {
+          "alignItems": "center",
+          "justifyContent": "center",
+          "overflow": "hidden",
+        },
+        {
+          "backgroundColor": "#313336",
+          "borderRadius": 40,
+          "height": 80,
+          "width": 80,
+        },
+        {
+          "elevation": 5,
+          "shadowColor": "#000000",
+          "shadowOffset": {
+            "height": 2,
+            "width": 0,
+          },
+          "shadowOpacity": 0.3,
+          "shadowRadius": 3,
+        },
+        undefined,
+      ]
+    }
+  >
+    <Image
+      onError={[Function]}
+      onLoadEnd={[Function]}
+      onLoadStart={[Function]}
+      source={
+        {
+          "uri": "https://example.com/avatar.jpg",
+        }
+      }
+      style={
+        [
+          {
+            "resizeMode": "cover",
+          },
+          {
+            "borderRadius": 40,
+            "height": 80,
+            "width": 80,
+          },
+          undefined,
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      {
+        "flex": 1,
+        "gap": 4,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      accessibilityRole="text"
+      style={
+        [
+          {
+            "fontFamily": "System",
+            "fontSize": 18,
+            "fontWeight": "600",
+            "lineHeight": 27,
+          },
+          {
+            "color": "#F7F7F7",
+          },
+          [
+            {
+              "fontWeight": "600",
+            },
+            {
+              "color": "#F7F7F7",
+            },
+          ],
+        ]
+      }
+    >
+      Test User
+    </Text>
+    <Text
+      accessibilityRole="text"
+      style={
+        [
+          {
+            "fontFamily": "System",
+            "fontSize": 12,
+            "fontWeight": "400",
+            "lineHeight": 18,
+          },
+          {
+            "color": "#F7F7F7",
+          },
+          [
+            {
+              "fontWeight": "500",
+            },
+            {
+              "color": "rgba(247, 247, 247, 0.80)",
+            },
+          ],
+        ]
+      }
+    >
+      test@example.com
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`EditProfileHeaderView matches snapshot (light mode) 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "flexDirection": "row",
+      "gap": 20,
+      "height": 100,
+    }
+  }
+>
+  <View
+    accessibilityLabel="User avatar"
+    accessibilityRole="image"
+    accessible={true}
+    style={
+      [
+        {
+          "alignItems": "center",
+          "justifyContent": "center",
+          "overflow": "hidden",
+        },
+        {
+          "backgroundColor": "#D1D1D2",
+          "borderRadius": 40,
+          "height": 80,
+          "width": 80,
+        },
+        {
+          "elevation": 5,
+          "shadowColor": "#000000",
+          "shadowOffset": {
+            "height": 2,
+            "width": 0,
+          },
+          "shadowOpacity": 0.3,
+          "shadowRadius": 3,
+        },
+        undefined,
+      ]
+    }
+  >
+    <Image
+      onError={[Function]}
+      onLoadEnd={[Function]}
+      onLoadStart={[Function]}
+      source={
+        {
+          "uri": "https://example.com/avatar.jpg",
+        }
+      }
+      style={
+        [
+          {
+            "resizeMode": "cover",
+          },
+          {
+            "borderRadius": 40,
+            "height": 80,
+            "width": 80,
+          },
+          undefined,
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      {
+        "flex": 1,
+        "gap": 4,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      accessibilityRole="text"
+      style={
+        [
+          {
+            "fontFamily": "System",
+            "fontSize": 18,
+            "fontWeight": "600",
+            "lineHeight": 27,
+          },
+          {
+            "color": "#F7F7F7",
+          },
+          [
+            {
+              "fontWeight": "600",
+            },
+            {
+              "color": "#000000",
+            },
+          ],
+        ]
+      }
+    >
+      Test User
+    </Text>
+    <Text
+      accessibilityRole="text"
+      style={
+        [
+          {
+            "fontFamily": "System",
+            "fontSize": 12,
+            "fontWeight": "400",
+            "lineHeight": 18,
+          },
+          {
+            "color": "#F7F7F7",
+          },
+          [
+            {
+              "fontWeight": "500",
+            },
+            {
+              "color": "#1A1C20",
+            },
+          ],
+        ]
+      }
+    >
+      test@example.com
+    </Text>
+  </View>
+</View>
+`;

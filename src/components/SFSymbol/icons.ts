@@ -28,6 +28,8 @@ import {
   RefreshCw,
   WifiOff,
   AlertTriangle,
+  Info,
+  Lightbulb,
   Piano,
   Timer,
   TimerOff,
@@ -43,6 +45,9 @@ import {
   Trash2,
   Copy,
   Type,
+  UserPlus,
+  Apple,
+  Mail,
 } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
 
@@ -136,6 +141,16 @@ export const Icons = {
     fallback: AlertTriangle,
     android: 'alert-outline',
   },
+  infoCircle: {
+    sf: 'info.circle.fill',
+    fallback: Info,
+    android: 'information-outline',
+  },
+  lightbulb: {
+    sf: 'lightbulb.fill',
+    fallback: Lightbulb,
+    android: 'lightbulb-outline',
+  },
 
   // Mixer
   panArrows: {
@@ -183,6 +198,20 @@ export const Icons = {
     fallback: Minimize2,
     android: 'arrow-collapse',
   },
+
+  // Account
+  gear: { sf: 'gearshape', fallback: Settings, android: 'cog' },
+  personFill: { sf: 'person.fill', fallback: UserCircle, android: 'account' },
+  createAccount: {
+    sf: 'person.crop.circle.badge.plus',
+    fallback: UserPlus,
+    android: 'account-plus',
+  },
+
+  // Social sign-in
+  apple: { sf: 'apple.logo', fallback: Apple, android: 'apple' },
+  google: { sf: 'g.circle', fallback: UserCircle, android: 'google' },
+  envelope: { sf: 'envelope', fallback: Mail, android: 'email-outline' },
 } as const satisfies Record<string, IconDef>;
 
 export type IconName = keyof typeof Icons;

@@ -1,0 +1,1389 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AccountLoggedIn matches snapshot (dark mode) 1`] = `
+<View
+  style={
+    {
+      "maxWidth": 1440,
+      "paddingHorizontal": 24,
+      "paddingVertical": 16,
+    }
+  }
+>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "marginBottom": 24,
+      }
+    }
+  >
+    <Text
+      accessibilityRole="text"
+      style={
+        [
+          {
+            "fontFamily": "System",
+            "fontSize": 38,
+            "fontWeight": "600",
+            "lineHeight": 46,
+          },
+          {
+            "color": "#F7F7F7",
+          },
+          {
+            "color": "#F7F7F7",
+          },
+        ]
+      }
+    >
+      Profile
+    </Text>
+    <View
+      accessibilityLabel="Settings"
+      accessibilityRole="button"
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "padding": 8,
+        }
+      }
+    >
+      <View>
+        <View
+          color="#F7F7F7"
+          size={22}
+          testID="lucide-Settings"
+        />
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      [
+        {
+          "flexDirection": "row",
+          "gap": 24,
+        },
+        {
+          "flexDirection": "column",
+        },
+      ]
+    }
+  >
+    <View
+      style={
+        {
+          "gap": 12,
+        }
+      }
+    >
+      <Text
+        accessibilityRole="text"
+        style={
+          [
+            {
+              "fontFamily": "System",
+              "fontSize": 12,
+              "fontWeight": "400",
+              "lineHeight": 18,
+            },
+            {
+              "color": "#F7F7F7",
+            },
+            [
+              {
+                "textTransform": "uppercase",
+              },
+              {
+                "color": "rgba(247, 247, 247, 0.80)",
+              },
+            ],
+          ]
+        }
+      >
+        ID
+      </Text>
+      <View
+        style={
+          {
+            "maxWidth": 350,
+            "minHeight": 126,
+          }
+        }
+      >
+        <View
+          accessibilityLabel="Profile: Test User"
+          style={
+            [
+              {
+                "alignItems": "center",
+                "borderRadius": 5,
+                "elevation": 3,
+                "flexDirection": "row",
+                "gap": 12,
+                "padding": 16,
+                "shadowColor": "#000",
+                "shadowOffset": {
+                  "height": 1,
+                  "width": 0,
+                },
+                "shadowOpacity": 0.2,
+                "shadowRadius": 3,
+              },
+              {
+                "backgroundColor": "#25272B",
+              },
+            ]
+          }
+        >
+          <View
+            accessibilityLabel="User avatar"
+            accessibilityRole="image"
+            accessible={true}
+            style={
+              [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "overflow": "hidden",
+                },
+                {
+                  "backgroundColor": "#313336",
+                  "borderRadius": 40,
+                  "height": 80,
+                  "width": 80,
+                },
+                {
+                  "elevation": 5,
+                  "shadowColor": "#000000",
+                  "shadowOffset": {
+                    "height": 2,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.3,
+                  "shadowRadius": 3,
+                },
+                undefined,
+              ]
+            }
+          >
+            <Image
+              onError={[Function]}
+              onLoadEnd={[Function]}
+              onLoadStart={[Function]}
+              source={
+                {
+                  "uri": "https://example.com/avatar.jpg",
+                }
+              }
+              style={
+                [
+                  {
+                    "resizeMode": "cover",
+                  },
+                  {
+                    "borderRadius": 40,
+                    "height": 80,
+                    "width": 80,
+                  },
+                  undefined,
+                ]
+              }
+            />
+          </View>
+          <View
+            style={
+              {
+                "flex": 1,
+                "gap": 12,
+              }
+            }
+          >
+            <Text
+              accessibilityRole="text"
+              numberOfLines={2}
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 14,
+                    "fontWeight": "400",
+                    "lineHeight": 21,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              Test User
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "rgba(247, 247, 247, 0.80)",
+                  },
+                ]
+              }
+            >
+              test@example.com
+            </Text>
+            <View
+              accessibilityLabel="Edit profile"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "paddingVertical": 2,
+                }
+              }
+            >
+              <Text
+                accessibilityRole="text"
+                style={
+                  [
+                    {
+                      "fontFamily": "System",
+                      "fontSize": 12,
+                      "fontWeight": "400",
+                      "lineHeight": 18,
+                    },
+                    {
+                      "color": "#2496FF",
+                    },
+                  ]
+                }
+              >
+                Edit Account
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="Log out"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "paddingVertical": 2,
+                }
+              }
+            >
+              <Text
+                accessibilityRole="text"
+                style={
+                  [
+                    {
+                      "fontFamily": "System",
+                      "fontSize": 12,
+                      "fontWeight": "400",
+                      "lineHeight": 18,
+                    },
+                    {
+                      "color": "#FF245B",
+                    },
+                  ]
+                }
+              >
+                Log out
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "gap": 12,
+        }
+      }
+    >
+      <Text
+        accessibilityRole="text"
+        style={
+          [
+            {
+              "fontFamily": "System",
+              "fontSize": 12,
+              "fontWeight": "400",
+              "lineHeight": 18,
+            },
+            {
+              "color": "#F7F7F7",
+            },
+            [
+              {
+                "textTransform": "uppercase",
+              },
+              {
+                "color": "rgba(247, 247, 247, 0.80)",
+              },
+            ],
+          ]
+        }
+      >
+        PROGRESS SUMMARY
+      </Text>
+      <View
+        style={
+          {
+            "flexDirection": "row",
+            "gap": 12,
+            "minHeight": 126,
+          }
+        }
+      >
+        <View
+          style={
+            {
+              "flex": 1,
+            }
+          }
+        >
+          <View
+            accessibilityLabel="Circuits: 5"
+            style={
+              [
+                {
+                  "borderRadius": 5,
+                  "elevation": 3,
+                  "flex": 1,
+                  "minHeight": 126,
+                  "padding": 16,
+                  "shadowColor": "#000",
+                  "shadowOffset": {
+                    "height": 1,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.2,
+                  "shadowRadius": 3,
+                },
+                {
+                  "backgroundColor": "#1A1C20",
+                },
+              ]
+            }
+            testID="circuits-stat"
+          >
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                  [
+                    {
+                      "textTransform": "uppercase",
+                    },
+                    {
+                      "color": "rgba(247, 247, 247, 0.60)",
+                    },
+                  ],
+                ]
+              }
+            >
+              CIRCUITS
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 38,
+                    "fontWeight": "600",
+                    "lineHeight": 46,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                  [
+                    {
+                      "fontWeight": "400",
+                      "marginTop": "auto",
+                    },
+                    {
+                      "color": "#F7F7F7",
+                    },
+                  ],
+                ]
+              }
+            >
+              5
+            </Text>
+          </View>
+        </View>
+        <View
+          style={
+            {
+              "flex": 1,
+            }
+          }
+        >
+          <View
+            accessibilityLabel="Lessons: 12"
+            style={
+              [
+                {
+                  "borderRadius": 5,
+                  "elevation": 3,
+                  "flex": 1,
+                  "minHeight": 126,
+                  "padding": 16,
+                  "shadowColor": "#000",
+                  "shadowOffset": {
+                    "height": 1,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.2,
+                  "shadowRadius": 3,
+                },
+                {
+                  "backgroundColor": "#1A1C20",
+                },
+              ]
+            }
+            testID="lessons-stat"
+          >
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                  [
+                    {
+                      "textTransform": "uppercase",
+                    },
+                    {
+                      "color": "rgba(247, 247, 247, 0.60)",
+                    },
+                  ],
+                ]
+              }
+            >
+              LESSONS
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 38,
+                    "fontWeight": "600",
+                    "lineHeight": 46,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                  [
+                    {
+                      "fontWeight": "400",
+                      "marginTop": "auto",
+                    },
+                    {
+                      "color": "#F7F7F7",
+                    },
+                  ],
+                ]
+              }
+            >
+              12
+            </Text>
+          </View>
+        </View>
+        <View
+          style={
+            {
+              "flex": 1,
+            }
+          }
+        >
+          <View
+            accessibilityLabel="Trophies: 3"
+            style={
+              [
+                {
+                  "borderRadius": 5,
+                  "elevation": 3,
+                  "flex": 1,
+                  "minHeight": 126,
+                  "padding": 16,
+                  "shadowColor": "#000",
+                  "shadowOffset": {
+                    "height": 1,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.2,
+                  "shadowRadius": 3,
+                },
+                {
+                  "backgroundColor": "#1A1C20",
+                },
+              ]
+            }
+            testID="trophies-stat"
+          >
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                  [
+                    {
+                      "textTransform": "uppercase",
+                    },
+                    {
+                      "color": "rgba(247, 247, 247, 0.60)",
+                    },
+                  ],
+                ]
+              }
+            >
+              TROPHIES
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 38,
+                    "fontWeight": "600",
+                    "lineHeight": 46,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                  [
+                    {
+                      "fontWeight": "400",
+                      "marginTop": "auto",
+                    },
+                    {
+                      "color": "#F7F7F7",
+                    },
+                  ],
+                ]
+              }
+            >
+              3
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`AccountLoggedIn matches snapshot (light mode) 1`] = `
+<View
+  style={
+    {
+      "maxWidth": 1440,
+      "paddingHorizontal": 24,
+      "paddingVertical": 16,
+    }
+  }
+>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "marginBottom": 24,
+      }
+    }
+  >
+    <Text
+      accessibilityRole="text"
+      style={
+        [
+          {
+            "fontFamily": "System",
+            "fontSize": 38,
+            "fontWeight": "600",
+            "lineHeight": 46,
+          },
+          {
+            "color": "#F7F7F7",
+          },
+          {
+            "color": "#F7F7F7",
+          },
+        ]
+      }
+    >
+      Profile
+    </Text>
+    <View
+      accessibilityLabel="Settings"
+      accessibilityRole="button"
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "padding": 8,
+        }
+      }
+    >
+      <View>
+        <View
+          color="#F7F7F7"
+          size={22}
+          testID="lucide-Settings"
+        />
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      [
+        {
+          "flexDirection": "row",
+          "gap": 24,
+        },
+        {
+          "flexDirection": "column",
+        },
+      ]
+    }
+  >
+    <View
+      style={
+        {
+          "gap": 12,
+        }
+      }
+    >
+      <Text
+        accessibilityRole="text"
+        style={
+          [
+            {
+              "fontFamily": "System",
+              "fontSize": 12,
+              "fontWeight": "400",
+              "lineHeight": 18,
+            },
+            {
+              "color": "#F7F7F7",
+            },
+            [
+              {
+                "textTransform": "uppercase",
+              },
+              {
+                "color": "#1A1C20",
+              },
+            ],
+          ]
+        }
+      >
+        ID
+      </Text>
+      <View
+        style={
+          {
+            "maxWidth": 350,
+            "minHeight": 126,
+          }
+        }
+      >
+        <View
+          accessibilityLabel="Profile: Test User"
+          style={
+            [
+              {
+                "alignItems": "center",
+                "borderRadius": 5,
+                "elevation": 3,
+                "flexDirection": "row",
+                "gap": 12,
+                "padding": 16,
+                "shadowColor": "#000",
+                "shadowOffset": {
+                  "height": 1,
+                  "width": 0,
+                },
+                "shadowOpacity": 0.2,
+                "shadowRadius": 3,
+              },
+              {
+                "backgroundColor": "#F7F7F7",
+              },
+            ]
+          }
+        >
+          <View
+            accessibilityLabel="User avatar"
+            accessibilityRole="image"
+            accessible={true}
+            style={
+              [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "overflow": "hidden",
+                },
+                {
+                  "backgroundColor": "#D1D1D2",
+                  "borderRadius": 40,
+                  "height": 80,
+                  "width": 80,
+                },
+                {
+                  "elevation": 5,
+                  "shadowColor": "#000000",
+                  "shadowOffset": {
+                    "height": 2,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.3,
+                  "shadowRadius": 3,
+                },
+                undefined,
+              ]
+            }
+          >
+            <Image
+              onError={[Function]}
+              onLoadEnd={[Function]}
+              onLoadStart={[Function]}
+              source={
+                {
+                  "uri": "https://example.com/avatar.jpg",
+                }
+              }
+              style={
+                [
+                  {
+                    "resizeMode": "cover",
+                  },
+                  {
+                    "borderRadius": 40,
+                    "height": 80,
+                    "width": 80,
+                  },
+                  undefined,
+                ]
+              }
+            />
+          </View>
+          <View
+            style={
+              {
+                "flex": 1,
+                "gap": 12,
+              }
+            }
+          >
+            <Text
+              accessibilityRole="text"
+              numberOfLines={2}
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 14,
+                    "fontWeight": "400",
+                    "lineHeight": 21,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              Test User
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "rgba(247, 247, 247, 0.80)",
+                  },
+                ]
+              }
+            >
+              test@example.com
+            </Text>
+            <View
+              accessibilityLabel="Edit profile"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "paddingVertical": 2,
+                }
+              }
+            >
+              <Text
+                accessibilityRole="text"
+                style={
+                  [
+                    {
+                      "fontFamily": "System",
+                      "fontSize": 12,
+                      "fontWeight": "400",
+                      "lineHeight": 18,
+                    },
+                    {
+                      "color": "#2496FF",
+                    },
+                  ]
+                }
+              >
+                Edit Account
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="Log out"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "paddingVertical": 2,
+                }
+              }
+            >
+              <Text
+                accessibilityRole="text"
+                style={
+                  [
+                    {
+                      "fontFamily": "System",
+                      "fontSize": 12,
+                      "fontWeight": "400",
+                      "lineHeight": 18,
+                    },
+                    {
+                      "color": "#FF245B",
+                    },
+                  ]
+                }
+              >
+                Log out
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "gap": 12,
+        }
+      }
+    >
+      <Text
+        accessibilityRole="text"
+        style={
+          [
+            {
+              "fontFamily": "System",
+              "fontSize": 12,
+              "fontWeight": "400",
+              "lineHeight": 18,
+            },
+            {
+              "color": "#F7F7F7",
+            },
+            [
+              {
+                "textTransform": "uppercase",
+              },
+              {
+                "color": "#1A1C20",
+              },
+            ],
+          ]
+        }
+      >
+        PROGRESS SUMMARY
+      </Text>
+      <View
+        style={
+          {
+            "flexDirection": "row",
+            "gap": 12,
+            "minHeight": 126,
+          }
+        }
+      >
+        <View
+          style={
+            {
+              "flex": 1,
+            }
+          }
+        >
+          <View
+            accessibilityLabel="Circuits: 5"
+            style={
+              [
+                {
+                  "borderRadius": 5,
+                  "elevation": 3,
+                  "flex": 1,
+                  "minHeight": 126,
+                  "padding": 16,
+                  "shadowColor": "#000",
+                  "shadowOffset": {
+                    "height": 1,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.2,
+                  "shadowRadius": 3,
+                },
+                {
+                  "backgroundColor": "#F7F7F7",
+                },
+              ]
+            }
+            testID="circuits-stat"
+          >
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                  [
+                    {
+                      "textTransform": "uppercase",
+                    },
+                    {
+                      "color": "#25272B",
+                    },
+                  ],
+                ]
+              }
+            >
+              CIRCUITS
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 38,
+                    "fontWeight": "600",
+                    "lineHeight": 46,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                  [
+                    {
+                      "fontWeight": "400",
+                      "marginTop": "auto",
+                    },
+                    {
+                      "color": "#000000",
+                    },
+                  ],
+                ]
+              }
+            >
+              5
+            </Text>
+          </View>
+        </View>
+        <View
+          style={
+            {
+              "flex": 1,
+            }
+          }
+        >
+          <View
+            accessibilityLabel="Lessons: 12"
+            style={
+              [
+                {
+                  "borderRadius": 5,
+                  "elevation": 3,
+                  "flex": 1,
+                  "minHeight": 126,
+                  "padding": 16,
+                  "shadowColor": "#000",
+                  "shadowOffset": {
+                    "height": 1,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.2,
+                  "shadowRadius": 3,
+                },
+                {
+                  "backgroundColor": "#F7F7F7",
+                },
+              ]
+            }
+            testID="lessons-stat"
+          >
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                  [
+                    {
+                      "textTransform": "uppercase",
+                    },
+                    {
+                      "color": "#25272B",
+                    },
+                  ],
+                ]
+              }
+            >
+              LESSONS
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 38,
+                    "fontWeight": "600",
+                    "lineHeight": 46,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                  [
+                    {
+                      "fontWeight": "400",
+                      "marginTop": "auto",
+                    },
+                    {
+                      "color": "#000000",
+                    },
+                  ],
+                ]
+              }
+            >
+              12
+            </Text>
+          </View>
+        </View>
+        <View
+          style={
+            {
+              "flex": 1,
+            }
+          }
+        >
+          <View
+            accessibilityLabel="Trophies: 3"
+            style={
+              [
+                {
+                  "borderRadius": 5,
+                  "elevation": 3,
+                  "flex": 1,
+                  "minHeight": 126,
+                  "padding": 16,
+                  "shadowColor": "#000",
+                  "shadowOffset": {
+                    "height": 1,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.2,
+                  "shadowRadius": 3,
+                },
+                {
+                  "backgroundColor": "#F7F7F7",
+                },
+              ]
+            }
+            testID="trophies-stat"
+          >
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                  [
+                    {
+                      "textTransform": "uppercase",
+                    },
+                    {
+                      "color": "#25272B",
+                    },
+                  ],
+                ]
+              }
+            >
+              TROPHIES
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 38,
+                    "fontWeight": "600",
+                    "lineHeight": 46,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                  [
+                    {
+                      "fontWeight": "400",
+                      "marginTop": "auto",
+                    },
+                    {
+                      "color": "#000000",
+                    },
+                  ],
+                ]
+              }
+            >
+              3
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  </View>
+</View>
+`;

@@ -1,0 +1,1833 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditProfileView matches snapshot (dark mode, visible) 1`] = `
+<Modal
+  accessibilityViewIsModal={true}
+  animationType="fade"
+  hardwareAccelerated={false}
+  onRequestClose={[MockFunction]}
+  transparent={true}
+  visible={true}
+>
+  <View
+    accessibilityLabel="Close modal"
+    accessibilityRole="button"
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "backgroundColor": "rgba(0, 0, 0, 0.5)",
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+  >
+    <View />
+  </View>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      accessibilityLabel="Dialog"
+      accessibilityRole="alert"
+      style={
+        [
+          {
+            "borderRadius": 12,
+            "overflow": "hidden",
+            "width": "90%",
+          },
+          {
+            "backgroundColor": "#25272B",
+            "maxHeight": 700,
+            "maxWidth": 1400,
+            "minWidth": undefined,
+            "padding": 20,
+          },
+          undefined,
+        ]
+      }
+    >
+      <View
+        style={
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "paddingBottom": 24,
+          }
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 28,
+                "fontWeight": "600",
+                "lineHeight": 34,
+              },
+              {
+                "color": "#F7F7F7",
+              },
+              {
+                "flex": 1,
+              },
+            ]
+          }
+        />
+        <View
+          accessibilityLabel="Close"
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          hitSlop={8}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "padding": 4,
+            }
+          }
+        >
+          <View>
+            <View
+              color="rgba(247, 247, 247, 0.80)"
+              size={24}
+              testID="lucide-X"
+            />
+          </View>
+        </View>
+      </View>
+      <RCTScrollView
+        showsVerticalScrollIndicator={false}
+        style={
+          {
+            "flex": 1,
+          }
+        }
+      >
+        <View>
+          <View
+            style={
+              [
+                {
+                  "borderRadius": 8,
+                  "gap": 20,
+                  "minWidth": 300,
+                  "padding": 20,
+                },
+                {
+                  "backgroundColor": "#1A1C20",
+                },
+              ]
+            }
+          >
+            <View
+              style={
+                {
+                  "alignItems": "center",
+                  "flexDirection": "row",
+                  "gap": 20,
+                  "height": 100,
+                }
+              }
+            >
+              <View
+                accessibilityLabel="User avatar"
+                accessibilityRole="image"
+                accessible={true}
+                style={
+                  [
+                    {
+                      "alignItems": "center",
+                      "justifyContent": "center",
+                      "overflow": "hidden",
+                    },
+                    {
+                      "backgroundColor": "#313336",
+                      "borderRadius": 40,
+                      "height": 80,
+                      "width": 80,
+                    },
+                    {
+                      "elevation": 5,
+                      "shadowColor": "#000000",
+                      "shadowOffset": {
+                        "height": 2,
+                        "width": 0,
+                      },
+                      "shadowOpacity": 0.3,
+                      "shadowRadius": 3,
+                    },
+                    undefined,
+                  ]
+                }
+              >
+                <Image
+                  onError={[Function]}
+                  onLoadEnd={[Function]}
+                  onLoadStart={[Function]}
+                  source={
+                    {
+                      "uri": "https://example.com/avatar.jpg",
+                    }
+                  }
+                  style={
+                    [
+                      {
+                        "resizeMode": "cover",
+                      },
+                      {
+                        "borderRadius": 40,
+                        "height": 80,
+                        "width": 80,
+                      },
+                      undefined,
+                    ]
+                  }
+                />
+              </View>
+              <View
+                style={
+                  {
+                    "flex": 1,
+                    "gap": 4,
+                    "justifyContent": "center",
+                  }
+                }
+              >
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 18,
+                        "fontWeight": "600",
+                        "lineHeight": 27,
+                      },
+                      {
+                        "color": "#F7F7F7",
+                      },
+                      [
+                        {
+                          "fontWeight": "600",
+                        },
+                        {
+                          "color": "#F7F7F7",
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  Test User
+                </Text>
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 12,
+                        "fontWeight": "400",
+                        "lineHeight": 18,
+                      },
+                      {
+                        "color": "#F7F7F7",
+                      },
+                      [
+                        {
+                          "fontWeight": "500",
+                        },
+                        {
+                          "color": "rgba(247, 247, 247, 0.80)",
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  test@example.com
+                </Text>
+              </View>
+            </View>
+            <View
+              style={
+                {
+                  "gap": 16,
+                }
+              }
+            >
+              <Text
+                accessibilityRole="text"
+                style={
+                  [
+                    {
+                      "fontFamily": "System",
+                      "fontSize": 18,
+                      "fontWeight": "600",
+                      "lineHeight": 27,
+                    },
+                    {
+                      "color": "#F7F7F7",
+                    },
+                    [
+                      {
+                        "fontWeight": "600",
+                      },
+                      {
+                        "color": "rgba(247, 247, 247, 0.80)",
+                      },
+                    ],
+                  ]
+                }
+              >
+                Change Email
+              </Text>
+              <View
+                style={
+                  {
+                    "gap": 8,
+                  }
+                }
+              >
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 12,
+                        "fontWeight": "400",
+                        "lineHeight": 18,
+                      },
+                      {
+                        "color": "#F7F7F7",
+                      },
+                      [
+                        {
+                          "fontWeight": "600",
+                        },
+                        {
+                          "color": "rgba(247, 247, 247, 0.60)",
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  New email
+                </Text>
+                <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  keyboardType="email-address"
+                  onChangeText={[Function]}
+                  placeholder="E.g. johnsmith@mail.com"
+                  placeholderTextColor="rgba(247, 247, 247, 0.60)"
+                  secureTextEntry={false}
+                  style={
+                    [
+                      {
+                        "borderRadius": 6,
+                        "borderWidth": 1,
+                        "height": 36,
+                        "paddingHorizontal": 16,
+                      },
+                      {
+                        "borderColor": "rgba(247, 247, 247, 0.60)",
+                        "color": "#F7F7F7",
+                      },
+                    ]
+                  }
+                  value=""
+                />
+              </View>
+              <View
+                style={
+                  {
+                    "gap": 8,
+                  }
+                }
+              >
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 12,
+                        "fontWeight": "400",
+                        "lineHeight": 18,
+                      },
+                      {
+                        "color": "#F7F7F7",
+                      },
+                      [
+                        {
+                          "fontWeight": "600",
+                        },
+                        {
+                          "color": "rgba(247, 247, 247, 0.60)",
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  Current Password
+                </Text>
+                <TextInput
+                  autoCapitalize="sentences"
+                  autoCorrect={false}
+                  keyboardType="default"
+                  onChangeText={[Function]}
+                  placeholder="Your Password"
+                  placeholderTextColor="rgba(247, 247, 247, 0.60)"
+                  secureTextEntry={true}
+                  style={
+                    [
+                      {
+                        "borderRadius": 6,
+                        "borderWidth": 1,
+                        "height": 36,
+                        "paddingHorizontal": 16,
+                      },
+                      {
+                        "borderColor": "rgba(247, 247, 247, 0.60)",
+                        "color": "#F7F7F7",
+                      },
+                    ]
+                  }
+                  value=""
+                />
+              </View>
+              <View
+                style={
+                  {
+                    "alignItems": "center",
+                    "flexDirection": "row",
+                    "gap": 12,
+                    "justifyContent": "space-between",
+                  }
+                }
+              >
+                <View
+                  accessibilityLabel="Save"
+                  accessibilityRole="button"
+                  accessibilityState={
+                    {
+                      "busy": false,
+                      "checked": undefined,
+                      "disabled": true,
+                      "expanded": undefined,
+                      "selected": undefined,
+                    }
+                  }
+                  accessibilityValue={
+                    {
+                      "max": undefined,
+                      "min": undefined,
+                      "now": undefined,
+                      "text": undefined,
+                    }
+                  }
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onFocus={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    [
+                      {
+                        "alignItems": "center",
+                        "flexDirection": "row",
+                        "justifyContent": "center",
+                      },
+                      {
+                        "paddingHorizontal": 16,
+                        "paddingVertical": 12,
+                      },
+                      {
+                        "backgroundColor": "transparent",
+                        "borderColor": "rgba(247, 247, 247, 0.40)",
+                        "borderRadius": 6,
+                        "borderWidth": 2,
+                        "opacity": 0.4,
+                      },
+                      false,
+                      undefined,
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      {
+                        "alignItems": "center",
+                        "flexDirection": "row",
+                        "justifyContent": "center",
+                      }
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 16,
+                            "fontWeight": "600",
+                            "lineHeight": 24,
+                          },
+                          {
+                            "color": "rgba(247, 247, 247, 0.40)",
+                          },
+                          {
+                            "textTransform": "uppercase",
+                          },
+                        ]
+                      }
+                    >
+                      Save
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View
+              style={
+                {
+                  "gap": 16,
+                }
+              }
+            >
+              <Text
+                accessibilityRole="text"
+                style={
+                  [
+                    {
+                      "fontFamily": "System",
+                      "fontSize": 18,
+                      "fontWeight": "600",
+                      "lineHeight": 27,
+                    },
+                    {
+                      "color": "#F7F7F7",
+                    },
+                    [
+                      {
+                        "fontWeight": "600",
+                      },
+                      {
+                        "color": "rgba(247, 247, 247, 0.80)",
+                      },
+                    ],
+                  ]
+                }
+              >
+                Change Password
+              </Text>
+              <View
+                style={
+                  {
+                    "gap": 8,
+                  }
+                }
+              >
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 12,
+                        "fontWeight": "400",
+                        "lineHeight": 18,
+                      },
+                      {
+                        "color": "#F7F7F7",
+                      },
+                      [
+                        {
+                          "fontWeight": "600",
+                        },
+                        {
+                          "color": "rgba(247, 247, 247, 0.60)",
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  Current Password
+                </Text>
+                <TextInput
+                  autoCapitalize="sentences"
+                  autoCorrect={false}
+                  keyboardType="default"
+                  onChangeText={[Function]}
+                  placeholder="Your old password"
+                  placeholderTextColor="rgba(247, 247, 247, 0.60)"
+                  secureTextEntry={true}
+                  style={
+                    [
+                      {
+                        "borderRadius": 6,
+                        "borderWidth": 1,
+                        "height": 36,
+                        "paddingHorizontal": 16,
+                      },
+                      {
+                        "borderColor": "rgba(247, 247, 247, 0.60)",
+                        "color": "#F7F7F7",
+                      },
+                    ]
+                  }
+                  value=""
+                />
+              </View>
+              <View
+                style={
+                  {
+                    "gap": 8,
+                  }
+                }
+              >
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 12,
+                        "fontWeight": "400",
+                        "lineHeight": 18,
+                      },
+                      {
+                        "color": "#F7F7F7",
+                      },
+                      [
+                        {
+                          "fontWeight": "600",
+                        },
+                        {
+                          "color": "rgba(247, 247, 247, 0.60)",
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  New Password
+                </Text>
+                <TextInput
+                  autoCapitalize="sentences"
+                  autoCorrect={false}
+                  keyboardType="default"
+                  onChangeText={[Function]}
+                  placeholder="Your new desired password"
+                  placeholderTextColor="rgba(247, 247, 247, 0.60)"
+                  secureTextEntry={true}
+                  style={
+                    [
+                      {
+                        "borderRadius": 6,
+                        "borderWidth": 1,
+                        "height": 36,
+                        "paddingHorizontal": 16,
+                      },
+                      {
+                        "borderColor": "rgba(247, 247, 247, 0.60)",
+                        "color": "#F7F7F7",
+                      },
+                    ]
+                  }
+                  value=""
+                />
+              </View>
+              <View
+                style={
+                  {
+                    "alignItems": "center",
+                    "flexDirection": "row",
+                    "gap": 12,
+                    "justifyContent": "space-between",
+                  }
+                }
+              >
+                <View
+                  accessibilityLabel="Save"
+                  accessibilityRole="button"
+                  accessibilityState={
+                    {
+                      "busy": false,
+                      "checked": undefined,
+                      "disabled": true,
+                      "expanded": undefined,
+                      "selected": undefined,
+                    }
+                  }
+                  accessibilityValue={
+                    {
+                      "max": undefined,
+                      "min": undefined,
+                      "now": undefined,
+                      "text": undefined,
+                    }
+                  }
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onFocus={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    [
+                      {
+                        "alignItems": "center",
+                        "flexDirection": "row",
+                        "justifyContent": "center",
+                      },
+                      {
+                        "paddingHorizontal": 16,
+                        "paddingVertical": 12,
+                      },
+                      {
+                        "backgroundColor": "transparent",
+                        "borderColor": "rgba(247, 247, 247, 0.40)",
+                        "borderRadius": 6,
+                        "borderWidth": 2,
+                        "opacity": 0.4,
+                      },
+                      false,
+                      undefined,
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      {
+                        "alignItems": "center",
+                        "flexDirection": "row",
+                        "justifyContent": "center",
+                      }
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 16,
+                            "fontWeight": "600",
+                            "lineHeight": 24,
+                          },
+                          {
+                            "color": "rgba(247, 247, 247, 0.40)",
+                          },
+                          {
+                            "textTransform": "uppercase",
+                          },
+                        ]
+                      }
+                    >
+                      Save
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View
+              style={
+                {
+                  "borderTopColor": "rgba(255,255,255,0.2)",
+                  "borderTopWidth": 1,
+                  "marginTop": "auto",
+                  "paddingTop": 16,
+                }
+              }
+            >
+              <View
+                accessibilityLabel="Delete Account"
+                accessibilityRole="button"
+                accessibilityState={
+                  {
+                    "busy": false,
+                    "checked": undefined,
+                    "disabled": false,
+                    "expanded": undefined,
+                    "selected": undefined,
+                  }
+                }
+                accessibilityValue={
+                  {
+                    "max": undefined,
+                    "min": undefined,
+                    "now": undefined,
+                    "text": undefined,
+                  }
+                }
+                accessible={true}
+                collapsable={false}
+                focusable={true}
+                onBlur={[Function]}
+                onClick={[Function]}
+                onFocus={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  [
+                    {
+                      "alignItems": "center",
+                      "flexDirection": "row",
+                      "justifyContent": "center",
+                    },
+                    {
+                      "paddingHorizontal": 16,
+                      "paddingVertical": 12,
+                    },
+                    {
+                      "backgroundColor": "transparent",
+                      "borderColor": "#FF5C24",
+                      "borderRadius": 6,
+                      "borderWidth": 1,
+                      "opacity": 1,
+                    },
+                    false,
+                    undefined,
+                  ]
+                }
+              >
+                <View
+                  style={
+                    {
+                      "alignItems": "center",
+                      "flexDirection": "row",
+                      "justifyContent": "center",
+                    }
+                  }
+                >
+                  <Text
+                    accessibilityRole="text"
+                    style={
+                      [
+                        {
+                          "fontFamily": "System",
+                          "fontSize": 16,
+                          "fontWeight": "600",
+                          "lineHeight": 24,
+                        },
+                        {
+                          "color": "#FF5C24",
+                        },
+                        {
+                          "textTransform": "uppercase",
+                        },
+                      ]
+                    }
+                  >
+                    Delete Account
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </RCTScrollView>
+    </View>
+  </View>
+</Modal>
+`;
+
+exports[`EditProfileView matches snapshot (hidden) 1`] = `null`;
+
+exports[`EditProfileView matches snapshot (light mode, visible) 1`] = `
+<Modal
+  accessibilityViewIsModal={true}
+  animationType="fade"
+  hardwareAccelerated={false}
+  onRequestClose={[MockFunction]}
+  transparent={true}
+  visible={true}
+>
+  <View
+    accessibilityLabel="Close modal"
+    accessibilityRole="button"
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "backgroundColor": "rgba(0, 0, 0, 0.5)",
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+  >
+    <View />
+  </View>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      accessibilityLabel="Dialog"
+      accessibilityRole="alert"
+      style={
+        [
+          {
+            "borderRadius": 12,
+            "overflow": "hidden",
+            "width": "90%",
+          },
+          {
+            "backgroundColor": "#25272B",
+            "maxHeight": 700,
+            "maxWidth": 1400,
+            "minWidth": undefined,
+            "padding": 20,
+          },
+          undefined,
+        ]
+      }
+    >
+      <View
+        style={
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "paddingBottom": 24,
+          }
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 28,
+                "fontWeight": "600",
+                "lineHeight": 34,
+              },
+              {
+                "color": "#F7F7F7",
+              },
+              {
+                "flex": 1,
+              },
+            ]
+          }
+        />
+        <View
+          accessibilityLabel="Close"
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          hitSlop={8}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "padding": 4,
+            }
+          }
+        >
+          <View>
+            <View
+              color="rgba(247, 247, 247, 0.80)"
+              size={24}
+              testID="lucide-X"
+            />
+          </View>
+        </View>
+      </View>
+      <RCTScrollView
+        showsVerticalScrollIndicator={false}
+        style={
+          {
+            "flex": 1,
+          }
+        }
+      >
+        <View>
+          <View
+            style={
+              [
+                {
+                  "borderRadius": 8,
+                  "gap": 20,
+                  "minWidth": 300,
+                  "padding": 20,
+                },
+                {
+                  "backgroundColor": "#1A1C20",
+                },
+              ]
+            }
+          >
+            <View
+              style={
+                {
+                  "alignItems": "center",
+                  "flexDirection": "row",
+                  "gap": 20,
+                  "height": 100,
+                }
+              }
+            >
+              <View
+                accessibilityLabel="User avatar"
+                accessibilityRole="image"
+                accessible={true}
+                style={
+                  [
+                    {
+                      "alignItems": "center",
+                      "justifyContent": "center",
+                      "overflow": "hidden",
+                    },
+                    {
+                      "backgroundColor": "#313336",
+                      "borderRadius": 40,
+                      "height": 80,
+                      "width": 80,
+                    },
+                    {
+                      "elevation": 5,
+                      "shadowColor": "#000000",
+                      "shadowOffset": {
+                        "height": 2,
+                        "width": 0,
+                      },
+                      "shadowOpacity": 0.3,
+                      "shadowRadius": 3,
+                    },
+                    undefined,
+                  ]
+                }
+              >
+                <Image
+                  onError={[Function]}
+                  onLoadEnd={[Function]}
+                  onLoadStart={[Function]}
+                  source={
+                    {
+                      "uri": "https://example.com/avatar.jpg",
+                    }
+                  }
+                  style={
+                    [
+                      {
+                        "resizeMode": "cover",
+                      },
+                      {
+                        "borderRadius": 40,
+                        "height": 80,
+                        "width": 80,
+                      },
+                      undefined,
+                    ]
+                  }
+                />
+              </View>
+              <View
+                style={
+                  {
+                    "flex": 1,
+                    "gap": 4,
+                    "justifyContent": "center",
+                  }
+                }
+              >
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 18,
+                        "fontWeight": "600",
+                        "lineHeight": 27,
+                      },
+                      {
+                        "color": "#F7F7F7",
+                      },
+                      [
+                        {
+                          "fontWeight": "600",
+                        },
+                        {
+                          "color": "#F7F7F7",
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  Test User
+                </Text>
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 12,
+                        "fontWeight": "400",
+                        "lineHeight": 18,
+                      },
+                      {
+                        "color": "#F7F7F7",
+                      },
+                      [
+                        {
+                          "fontWeight": "500",
+                        },
+                        {
+                          "color": "rgba(247, 247, 247, 0.80)",
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  test@example.com
+                </Text>
+              </View>
+            </View>
+            <View
+              style={
+                {
+                  "gap": 16,
+                }
+              }
+            >
+              <Text
+                accessibilityRole="text"
+                style={
+                  [
+                    {
+                      "fontFamily": "System",
+                      "fontSize": 18,
+                      "fontWeight": "600",
+                      "lineHeight": 27,
+                    },
+                    {
+                      "color": "#F7F7F7",
+                    },
+                    [
+                      {
+                        "fontWeight": "600",
+                      },
+                      {
+                        "color": "rgba(247, 247, 247, 0.80)",
+                      },
+                    ],
+                  ]
+                }
+              >
+                Change Email
+              </Text>
+              <View
+                style={
+                  {
+                    "gap": 8,
+                  }
+                }
+              >
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 12,
+                        "fontWeight": "400",
+                        "lineHeight": 18,
+                      },
+                      {
+                        "color": "#F7F7F7",
+                      },
+                      [
+                        {
+                          "fontWeight": "600",
+                        },
+                        {
+                          "color": "rgba(247, 247, 247, 0.60)",
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  New email
+                </Text>
+                <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  keyboardType="email-address"
+                  onChangeText={[Function]}
+                  placeholder="E.g. johnsmith@mail.com"
+                  placeholderTextColor="rgba(247, 247, 247, 0.60)"
+                  secureTextEntry={false}
+                  style={
+                    [
+                      {
+                        "borderRadius": 6,
+                        "borderWidth": 1,
+                        "height": 36,
+                        "paddingHorizontal": 16,
+                      },
+                      {
+                        "borderColor": "rgba(247, 247, 247, 0.60)",
+                        "color": "#F7F7F7",
+                      },
+                    ]
+                  }
+                  value=""
+                />
+              </View>
+              <View
+                style={
+                  {
+                    "gap": 8,
+                  }
+                }
+              >
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 12,
+                        "fontWeight": "400",
+                        "lineHeight": 18,
+                      },
+                      {
+                        "color": "#F7F7F7",
+                      },
+                      [
+                        {
+                          "fontWeight": "600",
+                        },
+                        {
+                          "color": "rgba(247, 247, 247, 0.60)",
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  Current Password
+                </Text>
+                <TextInput
+                  autoCapitalize="sentences"
+                  autoCorrect={false}
+                  keyboardType="default"
+                  onChangeText={[Function]}
+                  placeholder="Your Password"
+                  placeholderTextColor="rgba(247, 247, 247, 0.60)"
+                  secureTextEntry={true}
+                  style={
+                    [
+                      {
+                        "borderRadius": 6,
+                        "borderWidth": 1,
+                        "height": 36,
+                        "paddingHorizontal": 16,
+                      },
+                      {
+                        "borderColor": "rgba(247, 247, 247, 0.60)",
+                        "color": "#F7F7F7",
+                      },
+                    ]
+                  }
+                  value=""
+                />
+              </View>
+              <View
+                style={
+                  {
+                    "alignItems": "center",
+                    "flexDirection": "row",
+                    "gap": 12,
+                    "justifyContent": "space-between",
+                  }
+                }
+              >
+                <View
+                  accessibilityLabel="Save"
+                  accessibilityRole="button"
+                  accessibilityState={
+                    {
+                      "busy": false,
+                      "checked": undefined,
+                      "disabled": true,
+                      "expanded": undefined,
+                      "selected": undefined,
+                    }
+                  }
+                  accessibilityValue={
+                    {
+                      "max": undefined,
+                      "min": undefined,
+                      "now": undefined,
+                      "text": undefined,
+                    }
+                  }
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onFocus={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    [
+                      {
+                        "alignItems": "center",
+                        "flexDirection": "row",
+                        "justifyContent": "center",
+                      },
+                      {
+                        "paddingHorizontal": 16,
+                        "paddingVertical": 12,
+                      },
+                      {
+                        "backgroundColor": "transparent",
+                        "borderColor": "rgba(247, 247, 247, 0.40)",
+                        "borderRadius": 6,
+                        "borderWidth": 2,
+                        "opacity": 0.4,
+                      },
+                      false,
+                      undefined,
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      {
+                        "alignItems": "center",
+                        "flexDirection": "row",
+                        "justifyContent": "center",
+                      }
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 16,
+                            "fontWeight": "600",
+                            "lineHeight": 24,
+                          },
+                          {
+                            "color": "rgba(247, 247, 247, 0.40)",
+                          },
+                          {
+                            "textTransform": "uppercase",
+                          },
+                        ]
+                      }
+                    >
+                      Save
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View
+              style={
+                {
+                  "gap": 16,
+                }
+              }
+            >
+              <Text
+                accessibilityRole="text"
+                style={
+                  [
+                    {
+                      "fontFamily": "System",
+                      "fontSize": 18,
+                      "fontWeight": "600",
+                      "lineHeight": 27,
+                    },
+                    {
+                      "color": "#F7F7F7",
+                    },
+                    [
+                      {
+                        "fontWeight": "600",
+                      },
+                      {
+                        "color": "rgba(247, 247, 247, 0.80)",
+                      },
+                    ],
+                  ]
+                }
+              >
+                Change Password
+              </Text>
+              <View
+                style={
+                  {
+                    "gap": 8,
+                  }
+                }
+              >
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 12,
+                        "fontWeight": "400",
+                        "lineHeight": 18,
+                      },
+                      {
+                        "color": "#F7F7F7",
+                      },
+                      [
+                        {
+                          "fontWeight": "600",
+                        },
+                        {
+                          "color": "rgba(247, 247, 247, 0.60)",
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  Current Password
+                </Text>
+                <TextInput
+                  autoCapitalize="sentences"
+                  autoCorrect={false}
+                  keyboardType="default"
+                  onChangeText={[Function]}
+                  placeholder="Your old password"
+                  placeholderTextColor="rgba(247, 247, 247, 0.60)"
+                  secureTextEntry={true}
+                  style={
+                    [
+                      {
+                        "borderRadius": 6,
+                        "borderWidth": 1,
+                        "height": 36,
+                        "paddingHorizontal": 16,
+                      },
+                      {
+                        "borderColor": "rgba(247, 247, 247, 0.60)",
+                        "color": "#F7F7F7",
+                      },
+                    ]
+                  }
+                  value=""
+                />
+              </View>
+              <View
+                style={
+                  {
+                    "gap": 8,
+                  }
+                }
+              >
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 12,
+                        "fontWeight": "400",
+                        "lineHeight": 18,
+                      },
+                      {
+                        "color": "#F7F7F7",
+                      },
+                      [
+                        {
+                          "fontWeight": "600",
+                        },
+                        {
+                          "color": "rgba(247, 247, 247, 0.60)",
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  New Password
+                </Text>
+                <TextInput
+                  autoCapitalize="sentences"
+                  autoCorrect={false}
+                  keyboardType="default"
+                  onChangeText={[Function]}
+                  placeholder="Your new desired password"
+                  placeholderTextColor="rgba(247, 247, 247, 0.60)"
+                  secureTextEntry={true}
+                  style={
+                    [
+                      {
+                        "borderRadius": 6,
+                        "borderWidth": 1,
+                        "height": 36,
+                        "paddingHorizontal": 16,
+                      },
+                      {
+                        "borderColor": "rgba(247, 247, 247, 0.60)",
+                        "color": "#F7F7F7",
+                      },
+                    ]
+                  }
+                  value=""
+                />
+              </View>
+              <View
+                style={
+                  {
+                    "alignItems": "center",
+                    "flexDirection": "row",
+                    "gap": 12,
+                    "justifyContent": "space-between",
+                  }
+                }
+              >
+                <View
+                  accessibilityLabel="Save"
+                  accessibilityRole="button"
+                  accessibilityState={
+                    {
+                      "busy": false,
+                      "checked": undefined,
+                      "disabled": true,
+                      "expanded": undefined,
+                      "selected": undefined,
+                    }
+                  }
+                  accessibilityValue={
+                    {
+                      "max": undefined,
+                      "min": undefined,
+                      "now": undefined,
+                      "text": undefined,
+                    }
+                  }
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onFocus={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    [
+                      {
+                        "alignItems": "center",
+                        "flexDirection": "row",
+                        "justifyContent": "center",
+                      },
+                      {
+                        "paddingHorizontal": 16,
+                        "paddingVertical": 12,
+                      },
+                      {
+                        "backgroundColor": "transparent",
+                        "borderColor": "rgba(247, 247, 247, 0.40)",
+                        "borderRadius": 6,
+                        "borderWidth": 2,
+                        "opacity": 0.4,
+                      },
+                      false,
+                      undefined,
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      {
+                        "alignItems": "center",
+                        "flexDirection": "row",
+                        "justifyContent": "center",
+                      }
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 16,
+                            "fontWeight": "600",
+                            "lineHeight": 24,
+                          },
+                          {
+                            "color": "rgba(247, 247, 247, 0.40)",
+                          },
+                          {
+                            "textTransform": "uppercase",
+                          },
+                        ]
+                      }
+                    >
+                      Save
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View
+              style={
+                {
+                  "borderTopColor": "rgba(255,255,255,0.2)",
+                  "borderTopWidth": 1,
+                  "marginTop": "auto",
+                  "paddingTop": 16,
+                }
+              }
+            >
+              <View
+                accessibilityLabel="Delete Account"
+                accessibilityRole="button"
+                accessibilityState={
+                  {
+                    "busy": false,
+                    "checked": undefined,
+                    "disabled": false,
+                    "expanded": undefined,
+                    "selected": undefined,
+                  }
+                }
+                accessibilityValue={
+                  {
+                    "max": undefined,
+                    "min": undefined,
+                    "now": undefined,
+                    "text": undefined,
+                  }
+                }
+                accessible={true}
+                collapsable={false}
+                focusable={true}
+                onBlur={[Function]}
+                onClick={[Function]}
+                onFocus={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  [
+                    {
+                      "alignItems": "center",
+                      "flexDirection": "row",
+                      "justifyContent": "center",
+                    },
+                    {
+                      "paddingHorizontal": 16,
+                      "paddingVertical": 12,
+                    },
+                    {
+                      "backgroundColor": "transparent",
+                      "borderColor": "#FF5C24",
+                      "borderRadius": 6,
+                      "borderWidth": 1,
+                      "opacity": 1,
+                    },
+                    false,
+                    undefined,
+                  ]
+                }
+              >
+                <View
+                  style={
+                    {
+                      "alignItems": "center",
+                      "flexDirection": "row",
+                      "justifyContent": "center",
+                    }
+                  }
+                >
+                  <Text
+                    accessibilityRole="text"
+                    style={
+                      [
+                        {
+                          "fontFamily": "System",
+                          "fontSize": 16,
+                          "fontWeight": "600",
+                          "lineHeight": 24,
+                        },
+                        {
+                          "color": "#FF5C24",
+                        },
+                        {
+                          "textTransform": "uppercase",
+                        },
+                      ]
+                    }
+                  >
+                    Delete Account
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </RCTScrollView>
+    </View>
+  </View>
+</Modal>
+`;

@@ -48,8 +48,9 @@ export const LevelIcon: React.FC<LevelIconProps> = memo(function LevelIcon({
   backgroundColor,
   style,
 }) {
-  const { colors, isDark } = useTheme();
-  const bgColor = backgroundColor || (isDark ? colors.mcWhite4 : colors.mcBlack4);
+  const { colors } = useTheme();
+  // Matches SwiftUI: backgroundColor defaults to .mcBlack4
+  const bgColor = backgroundColor || colors.mcBlack4;
 
   const isLevel2 = level === 'intermediate' || level === 'advanced';
   const isLevel3 = level === 'advanced';
@@ -126,11 +127,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  // Matches SwiftUI ZStack with ~ 60x20 area
+  // Matches SwiftUI ZStack with ~ 46x12 area
   iconContainer: {
     position: 'relative',
-    width: 60,
-    height: 20,
+    width: 46,
+    height: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
+    width: 30, // 2 bars (10) + spacing (10)
     gap: 10, // SwiftUI HStack spacing: 10
   },
   bar: {
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
+    width: 46, // 3 dots (12) + spacing (5)
     gap: 5, // SwiftUI HStack spacing: 5
   },
   circle: {
