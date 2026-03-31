@@ -48,6 +48,8 @@ import {
   UserPlus,
   Apple,
   Mail,
+  Bell,
+  BellRing,
 } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
 
@@ -129,7 +131,11 @@ export const Icons = {
 
   // Audio
   speaker: { sf: 'speaker', fallback: Volume2, android: 'volume-high' },
-  metronomeOn: { sf: 'metronome.fill', fallback: Timer, android: 'metronome-tick' },
+  metronomeOn: {
+    sf: 'metronome.fill',
+    fallback: Timer,
+    android: 'metronome-tick',
+  },
   metronomeOff: { sf: 'metronome', fallback: TimerOff, android: 'metronome' },
 
   // Placeholder
@@ -207,6 +213,10 @@ export const Icons = {
     fallback: UserPlus,
     android: 'account-plus',
   },
+
+  // Notifications
+  bell: { sf: 'bell', fallback: Bell, android: 'bell-outline' },
+  bellFill: { sf: 'bell.fill', fallback: BellRing, android: 'bell' },
 
   // Social sign-in
   apple: { sf: 'apple.logo', fallback: Apple, android: 'apple' },

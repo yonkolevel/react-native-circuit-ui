@@ -13,6 +13,7 @@ import {
   View,
   ScrollView,
   Pressable,
+  ActivityIndicator,
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
@@ -129,8 +130,16 @@ export const PlaygroundsDashboard = memo(function PlaygroundsDashboard({
         )}
       </View>
 
-      {/* List — matches Swift LazyVStack(spacing: 0) */}
-      {playgrounds.length === 0 && !isLoading ? (
+      {/* List — matches Swift dashboardContent() states */}
+      {isLoading && playgrounds.length === 0 ? (
+        /* Initial load — centered spinner + text (matches Swift ProgressView + "Loading playgrounds…") */
+        <View style={styles.loadingState}>
+          <ActivityIndicator size="large" color={colors.mcOrange} />
+          <Text variant="small" color={colors.mcWhite3} style={styles.loadingText}>
+            Loading playgrounds…
+          </Text>
+        </View>
+      ) : playgrounds.length === 0 ? (
         <View style={styles.emptyState}>
           <Text variant="labelRegular2" color={colors.mcOrange} center>
             You haven't created a Playground yet
@@ -147,18 +156,26 @@ export const PlaygroundsDashboard = memo(function PlaygroundsDashboard({
           </View>
         </View>
       ) : (
-        <ScrollView
-          contentContainerStyle={[styles.list, { paddingHorizontal: padding }]}
-        >
-          {playgrounds.map((p) => (
-            <PlaygroundCard
-              key={p.id}
-              playground={p}
-              onPress={onSelect}
-              onMenuPress={onMenuPress}
-            />
-          ))}
-        </ScrollView>
+        <View style={styles.listContainer}>
+          {/* Refresh overlay — small spinner at top (matches Swift .overlay(alignment: .top)) */}
+          {isLoading ? (
+            <View style={styles.refreshIndicator}>
+              <ActivityIndicator size="small" color={colors.mcOrange} />
+            </View>
+          ) : null}
+          <ScrollView
+            contentContainerStyle={[styles.list, { paddingHorizontal: padding }]}
+          >
+            {playgrounds.map((p) => (
+              <PlaygroundCard
+                key={p.id}
+                playground={p}
+                onPress={onSelect}
+                onMenuPress={onMenuPress}
+              />
+            ))}
+          </ScrollView>
+        </View>
       )}
     </View>
   );
@@ -180,6 +197,14 @@ const styles = StyleSheet.create({
   },
   cardInfo: { flex: 1, gap: 2, marginLeft: 12 },
   menuBtn: { padding: 12 },
+  loadingState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 8,
+  },
   emptyState: {
     flex: 1,
     justifyContent: 'center',
@@ -187,5 +212,10 @@ const styles = StyleSheet.create({
     gap: 48,
   },
   emptyButton: { marginTop: 0 },
+  listContainer: { flex: 1 },
+  refreshIndicator: {
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
   newBtn: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 6 },
 });

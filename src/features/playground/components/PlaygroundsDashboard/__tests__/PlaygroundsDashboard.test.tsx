@@ -23,6 +23,21 @@ describe('PlaygroundsDashboard snapshots', () => {
     const tree = renderWithTheme(<PlaygroundsDashboard playgrounds={[]} />);
     expect(tree.toJSON()).toMatchSnapshot();
   });
+
+  it('matches snapshot loading state', () => {
+    const tree = renderWithTheme(
+      <PlaygroundsDashboard playgrounds={[]} isLoading />
+    );
+    expect(tree.toJSON()).toMatchSnapshot();
+  });
+
+  it('matches snapshot refresh with playgrounds', () => {
+    const playgrounds = createMockPlaygroundsList(2);
+    const tree = renderWithTheme(
+      <PlaygroundsDashboard playgrounds={playgrounds} isLoading />
+    );
+    expect(tree.toJSON()).toMatchSnapshot();
+  });
 });
 
 describe('PlaygroundsDashboard behavior', () => {
