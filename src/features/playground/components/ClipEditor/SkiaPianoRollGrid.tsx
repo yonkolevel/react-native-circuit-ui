@@ -129,7 +129,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const isDrum = instrumentType === 'drum';
   const basePitch = isDrum ? 0 : (melodicMinPitch ?? DEFAULT_MELODIC_MIN_PITCH);
   const totalPitches = isDrum
-    ? Math.max((samples ?? []).length, 12)
+    ? (samples ?? []).length || 12  // Use exact sample count (no minimum)
     : MELODIC_PITCH_COUNT;
 
   // Measure available height for expanded mode

@@ -325,7 +325,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
 
   // Calculate pitch range: drums use sample count, melodic/bass use fixed 2-octave range
   const totalPitches = isDrum
-    ? Math.max((samples ?? []).length, 12)
+    ? (samples ?? []).length || 12  // Use exact sample count (no minimum)
     : MELODIC_PITCH_COUNT;
 
   // iOS: baseWidth = availableGridWidth / 16 (steps per bar)
