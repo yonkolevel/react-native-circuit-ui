@@ -160,11 +160,7 @@ export const PlaceholderView: React.FC<PlaceholderViewProps> = memo(
 
           {/* Title + Subtitle — matches SwiftUI VStack(spacing: makeSpacing(3)) */}
           <View style={styles.textColumn}>
-            <Text
-              variant="quote"
-              bold
-              numberOfLines={2}
-            >
+            <Text variant="quote" bold numberOfLines={2}>
               {title}
             </Text>
 

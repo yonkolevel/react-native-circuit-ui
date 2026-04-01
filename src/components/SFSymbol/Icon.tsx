@@ -19,7 +19,13 @@ export interface IconProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export const Icon = memo(function Icon({ icon, size = 24, color = '#FFFFFF', weight, style }: IconProps) {
+export const Icon = memo(function Icon({
+  icon,
+  size = 24,
+  color = '#FFFFFF',
+  weight,
+  style,
+}: IconProps) {
   return (
     <SFSymbol
       name={icon.sf}

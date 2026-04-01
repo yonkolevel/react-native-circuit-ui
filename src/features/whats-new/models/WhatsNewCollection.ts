@@ -17,9 +17,7 @@ import { compareVersions } from './WhatsNewVersion';
 export function sortByVersionDescending(
   collection: WhatsNewCollection
 ): WhatsNewCollection {
-  return [...collection].sort((a, b) =>
-    compareVersions(b.version, a.version)
-  );
+  return [...collection].sort((a, b) => compareVersions(b.version, a.version));
 }
 
 /**

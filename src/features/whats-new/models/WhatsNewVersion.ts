@@ -56,10 +56,7 @@ export function compareVersions(
 /**
  * Check if two versions are equal.
  */
-export function versionsEqual(
-  a: WhatsNewVersion,
-  b: WhatsNewVersion
-): boolean {
+export function versionsEqual(a: WhatsNewVersion, b: WhatsNewVersion): boolean {
   return a.major === b.major && a.minor === b.minor && a.patch === b.patch;
 }
 
@@ -67,16 +64,11 @@ export function versionsEqual(
  * Get the current app version from expo-constants or a fallback.
  * Mirrors WhatsNew.Version.current(in: Bundle) in Swift.
  */
-export function currentVersion(
-  fallback: string = '1.0.0'
-): WhatsNewVersion {
+export function currentVersion(fallback: string = '1.0.0'): WhatsNewVersion {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Constants = require('expo-constants').default;
     const version =
-      Constants.expoConfig?.version ??
-      Constants.manifest?.version ??
-      fallback;
+      Constants.expoConfig?.version ?? Constants.manifest?.version ?? fallback;
     return parseVersion(version);
   } catch {
     return parseVersion(fallback);

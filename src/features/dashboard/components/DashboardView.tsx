@@ -18,14 +18,21 @@ export interface DashboardViewProps {
 }
 
 export const DashboardView = memo(function DashboardView({
-  tabs, selectedTab, onTabChange, children,
+  tabs,
+  selectedTab,
+  onTabChange,
+  children,
 }: DashboardViewProps) {
   const { colors } = useTheme();
 
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
       <View style={styles.content}>{children}</View>
-      <DashboardTabBar tabs={tabs} selectedTab={selectedTab} onTabPress={onTabChange} />
+      <DashboardTabBar
+        tabs={tabs}
+        selectedTab={selectedTab}
+        onTabPress={onTabChange}
+      />
     </View>
   );
 });

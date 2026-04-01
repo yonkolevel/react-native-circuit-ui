@@ -92,17 +92,25 @@ const ThemeToggle = () => {
 // ─── App Root ───────────────────────────────────────────────────────────────
 
 export default function App() {
-  const [screen, setScreen] = useState<'components' | 'playground' | 'features'>('components');
+  const [screen, setScreen] = useState<
+    'components' | 'playground' | 'features'
+  >('components');
 
   if (screen === 'playground') {
     return (
       <View style={{ flex: 1 }}>
         <PlaygroundShowcase />
         <View style={navStyles.navBar}>
-          <Pressable onPress={() => setScreen('components')} style={navStyles.navBtn}>
+          <Pressable
+            onPress={() => setScreen('components')}
+            style={navStyles.navBtn}
+          >
             <Text style={navStyles.navBtnText}>← UI Kit</Text>
           </Pressable>
-          <Pressable onPress={() => setScreen('features')} style={navStyles.navBtn}>
+          <Pressable
+            onPress={() => setScreen('features')}
+            style={navStyles.navBtn}
+          >
             <Text style={navStyles.navBtnText}>Features →</Text>
           </Pressable>
         </View>
@@ -115,10 +123,16 @@ export default function App() {
       <View style={{ flex: 1 }}>
         <FeaturesShowcase />
         <View style={navStyles.navBar}>
-          <Pressable onPress={() => setScreen('playground')} style={navStyles.navBtn}>
+          <Pressable
+            onPress={() => setScreen('playground')}
+            style={navStyles.navBtn}
+          >
             <Text style={navStyles.navBtnText}>← DAW</Text>
           </Pressable>
-          <Pressable onPress={() => setScreen('components')} style={navStyles.navBtn}>
+          <Pressable
+            onPress={() => setScreen('components')}
+            style={navStyles.navBtn}
+          >
             <Text style={navStyles.navBtnText}>UI Kit →</Text>
           </Pressable>
         </View>
@@ -131,10 +145,16 @@ export default function App() {
       <View style={{ flex: 1 }}>
         <AppContent />
         <View style={navStyles.navBar}>
-          <Pressable onPress={() => setScreen('playground')} style={navStyles.navBtn}>
+          <Pressable
+            onPress={() => setScreen('playground')}
+            style={navStyles.navBtn}
+          >
             <Text style={navStyles.navBtnText}>🎹 DAW</Text>
           </Pressable>
-          <Pressable onPress={() => setScreen('features')} style={navStyles.navBtn}>
+          <Pressable
+            onPress={() => setScreen('features')}
+            style={navStyles.navBtn}
+          >
             <Text style={navStyles.navBtnText}>📱 Features</Text>
           </Pressable>
         </View>
@@ -229,7 +249,11 @@ function AppContent() {
             <Button label="Normal" variant="normal" />
             <Button label="Outline" variant="outline" />
             <Button label="Solid" variant="solid" />
-            <Button label="Green Primary" variant="primary" color={colors.mcGreen} />
+            <Button
+              label="Green Primary"
+              variant="primary"
+              color={colors.mcGreen}
+            />
             <Button label="Large" size="large" />
             <Button label="Disabled" disabled />
             <Button label="Loading" loading />
@@ -281,23 +305,33 @@ function AppContent() {
           <ComponentSection title="ProgressBar">
             <Text variant="small">Value: {progressValue}%</Text>
             <ProgressBar value={progressValue} />
-            <ProgressBar value={progressValue} tintColor={colors.mcOrange} height={8} />
+            <ProgressBar
+              value={progressValue}
+              tintColor={colors.mcOrange}
+              height={8}
+            />
             <ProgressBar value={progressValue} tintColor={colors.mcGreen} />
             <View style={styles.row}>
               <Button
                 label="-10"
                 variant="outline"
-                onPress={() => setProgressValue(Math.max(0, progressValue - 10))}
+                onPress={() =>
+                  setProgressValue(Math.max(0, progressValue - 10))
+                }
               />
               <Button
                 label="+10"
                 variant="outline"
-                onPress={() => setProgressValue(Math.min(100, progressValue + 10))}
+                onPress={() =>
+                  setProgressValue(Math.min(100, progressValue + 10))
+                }
               />
               <Button
                 label="Random"
                 variant="outline"
-                onPress={() => setProgressValue(Math.floor(Math.random() * 101))}
+                onPress={() =>
+                  setProgressValue(Math.floor(Math.random() * 101))
+                }
               />
             </View>
           </ComponentSection>
@@ -321,32 +355,43 @@ function AppContent() {
           {/* ── LevelIndicator ──────────────────────────────────── */}
           <ComponentSection title="LevelIndicator">
             <LevelIndicator level={currentLevel} tintColor={colors.mcOrange} />
-            <LevelIndicator
-              level="beginner"
-              tintColor={colors.mcGreen}
-            />
-            <LevelIndicator
-              level="intermediate"
-              tintColor={colors.mcBlue}
-            />
-            <LevelIndicator
-              level="advanced"
-              tintColor={colors.mcPink}
-            />
+            <LevelIndicator level="beginner" tintColor={colors.mcGreen} />
+            <LevelIndicator level="intermediate" tintColor={colors.mcBlue} />
+            <LevelIndicator level="advanced" tintColor={colors.mcPink} />
             <LevelIndicator
               level={currentLevel}
               tintColor={colors.mcPurple}
-              levelLabels={{ beginner: 'Easy', intermediate: 'Normal', advanced: 'Hard' }}
+              levelLabels={{
+                beginner: 'Easy',
+                intermediate: 'Normal',
+                advanced: 'Hard',
+              }}
             />
-            <Button label="Cycle Level" variant="outline" onPress={cycleLevel} />
+            <Button
+              label="Cycle Level"
+              variant="outline"
+              onPress={cycleLevel}
+            />
           </ComponentSection>
 
           {/* ── GradientCover ───────────────────────────────────── */}
           <ComponentSection title="GradientCover">
             <View style={styles.row}>
-              <GradientCover id="550e8400-e29b-41d4-a716-446655440000" width={80} height={80} />
-              <GradientCover id="6ba7b810-9dad-11d1-80b4-00c04fd430c8" width={80} height={80} />
-              <GradientCover id="f47ac10b-58cc-4372-a567-0e02b2c3d479" width={80} height={80} />
+              <GradientCover
+                id="550e8400-e29b-41d4-a716-446655440000"
+                width={80}
+                height={80}
+              />
+              <GradientCover
+                id="6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+                width={80}
+                height={80}
+              />
+              <GradientCover
+                id="f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                width={80}
+                height={80}
+              />
             </View>
           </ComponentSection>
 
@@ -440,7 +485,11 @@ function AppContent() {
           {/* ── PlaceholderView ─────────────────────────────── */}
           <ComponentSection title="PlaceholderView">
             <PlaceholderView
-              type={{ kind: 'empty', title: 'No results', subtitle: 'Try a different search term' }}
+              type={{
+                kind: 'empty',
+                title: 'No results',
+                subtitle: 'Try a different search term',
+              }}
             />
             <PlaceholderView
               type={{ kind: 'network' }}

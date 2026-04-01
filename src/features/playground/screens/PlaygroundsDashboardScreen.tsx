@@ -12,24 +12,29 @@ interface Props {
   onNavigateToPlayground?: (id: string) => void;
 }
 
-export const PlaygroundsDashboardScreen = memo(function PlaygroundsDashboardScreen({ onNavigateToPlayground }: Props) {
-  const { colors } = useTheme();
+export const PlaygroundsDashboardScreen = memo(
+  function PlaygroundsDashboardScreen({ onNavigateToPlayground }: Props) {
+    const { colors } = useTheme();
 
-  const handleSelect = useCallback((id: string) => {
-    onNavigateToPlayground?.(id);
-  }, [onNavigateToPlayground]);
+    const handleSelect = useCallback(
+      (id: string) => {
+        onNavigateToPlayground?.(id);
+      },
+      [onNavigateToPlayground]
+    );
 
-  return (
-    <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
-      <PlaygroundsDashboard
-        playgrounds={createMockPlaygroundsList(4)}
-        onSelect={handleSelect}
-        onCreate={() => {}}
-        onMenuPress={() => {}}
-      />
-    </View>
-  );
-});
+    return (
+      <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
+        <PlaygroundsDashboard
+          playgrounds={createMockPlaygroundsList(4)}
+          onSelect={handleSelect}
+          onCreate={() => {}}
+          onMenuPress={() => {}}
+        />
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: { flex: 1 },

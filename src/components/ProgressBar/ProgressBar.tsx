@@ -86,9 +86,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = memo(
         }}
       >
         {/* Track — matches SwiftUI Rectangle().foregroundColor(.mcBlack) */}
-        <View
-          style={[styles.track, { backgroundColor: colors.mcBlack }]}
-        />
+        <View style={[styles.track, { backgroundColor: colors.mcBlack }]} />
         {/* Fill — matches SwiftUI Rectangle().foregroundColor(tintColor) */}
         <Animated.View
           style={[

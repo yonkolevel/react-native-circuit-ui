@@ -39,7 +39,10 @@ export const EditProfileHeaderView = memo(function EditProfileHeaderView({
         <Text variant="h5" style={[styles.name, { color: primaryTextColor }]}>
           {profile.name}
         </Text>
-        <Text variant="small" style={[styles.email, { color: secondaryTextColor }]}>
+        <Text
+          variant="small"
+          style={[styles.email, { color: secondaryTextColor }]}
+        >
           {profile.email}
         </Text>
       </View>

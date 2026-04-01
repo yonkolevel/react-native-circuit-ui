@@ -104,19 +104,17 @@ export const Modal: React.FC<ModalProps> = memo(function Modal({
                 accessibilityRole="button"
                 accessibilityLabel="Close"
               >
-                <Icon icon={Icons.close}
-                  
-                  size={24} color={isDark ? colors.mcWhite2 : colors.mcBlack2}
+                <Icon
+                  icon={Icons.close}
+                  size={24}
+                  color={isDark ? colors.mcWhite2 : colors.mcBlack2}
                 />
               </Pressable>
             )}
           </View>
 
           {/* Body — matches SwiftUI ScrollView { content } */}
-          <ScrollView
-            style={styles.body}
-            showsVerticalScrollIndicator={false}
-          >
+          <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
             {children}
           </ScrollView>
         </View>

@@ -8,7 +8,10 @@ export type { CreateAccountViewProps } from './components/CreateAccountView';
 export { ProfileStatsCard } from './components/ProfileStatsCard';
 export type { ProfileStatsCardProps } from './components/ProfileStatsCard';
 export { AccountLoggedIn } from './components/AccountLoggedIn';
-export type { AccountLoggedInProps, UserAchievements } from './components/AccountLoggedIn';
+export type {
+  AccountLoggedInProps,
+  UserAchievements,
+} from './components/AccountLoggedIn';
 export { EditProfileHeaderView } from './components/EditProfileHeaderView';
 export type { EditProfileHeaderViewProps } from './components/EditProfileHeaderView';
 export { EditProfileView } from './components/EditProfileView';

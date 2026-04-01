@@ -74,7 +74,12 @@ export const AccountLoggedIn = memo(function AccountLoggedIn({
           Profile
         </Text>
         {didTapSettingsButton && (
-          <Pressable onPress={didTapSettingsButton} style={styles.settingsButton} accessibilityRole="button" accessibilityLabel="Settings">
+          <Pressable
+            onPress={didTapSettingsButton}
+            style={styles.settingsButton}
+            accessibilityRole="button"
+            accessibilityLabel="Settings"
+          >
             <Icon icon={Icons.gear} size={22} color={colors.mcWhite} />
           </Pressable>
         )}
@@ -84,7 +89,10 @@ export const AccountLoggedIn = memo(function AccountLoggedIn({
       <View style={[styles.content, isMobile && styles.contentMobile]}>
         {/* Profile Card Section */}
         <View style={styles.section}>
-          <Text variant="small" style={[styles.sectionLabel, { color: secondaryTextColor }]}>
+          <Text
+            variant="small"
+            style={[styles.sectionLabel, { color: secondaryTextColor }]}
+          >
             ID
           </Text>
           <View style={styles.profileCardWrapper}>
@@ -98,7 +106,10 @@ export const AccountLoggedIn = memo(function AccountLoggedIn({
 
         {/* Stats Section - Always 3 columns in a row */}
         <View style={styles.section}>
-          <Text variant="small" style={[styles.sectionLabel, { color: secondaryTextColor }]}>
+          <Text
+            variant="small"
+            style={[styles.sectionLabel, { color: secondaryTextColor }]}
+          >
             PROGRESS SUMMARY
           </Text>
           <View style={styles.statsRow}>

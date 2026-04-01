@@ -17,7 +17,9 @@ const mockProfile: UserProfile = {
 
 describe('EditProfileHeaderView', () => {
   it('matches snapshot (dark mode)', () => {
-    const tree = renderWithTheme(<EditProfileHeaderView profile={mockProfile} />);
+    const tree = renderWithTheme(
+      <EditProfileHeaderView profile={mockProfile} />
+    );
     expect(tree.toJSON()).toMatchSnapshot();
   });
 
@@ -31,24 +33,36 @@ describe('EditProfileHeaderView', () => {
   });
 
   it('displays profile name', () => {
-    const { getByText } = renderWithTheme(<EditProfileHeaderView profile={mockProfile} />);
+    const { getByText } = renderWithTheme(
+      <EditProfileHeaderView profile={mockProfile} />
+    );
     expect(getByText('Test User')).toBeTruthy();
   });
 
   it('displays profile email', () => {
-    const { getByText } = renderWithTheme(<EditProfileHeaderView profile={mockProfile} />);
+    const { getByText } = renderWithTheme(
+      <EditProfileHeaderView profile={mockProfile} />
+    );
     expect(getByText('test@example.com')).toBeTruthy();
   });
 
   it('works without pictureUrl', () => {
-    const profileWithoutPic: UserProfile = { ...mockProfile, pictureUrl: undefined };
-    const { getByText } = renderWithTheme(<EditProfileHeaderView profile={profileWithoutPic} />);
+    const profileWithoutPic: UserProfile = {
+      ...mockProfile,
+      pictureUrl: undefined,
+    };
+    const { getByText } = renderWithTheme(
+      <EditProfileHeaderView profile={profileWithoutPic} />
+    );
     expect(getByText('Test User')).toBeTruthy();
   });
 
   it('has correct accessibility attributes', () => {
     const { getByTestId } = renderWithTheme(
-      <EditProfileHeaderView profile={mockProfile} testID="edit-profile-header" />
+      <EditProfileHeaderView
+        profile={mockProfile}
+        testID="edit-profile-header"
+      />
     );
     expect(getByTestId('edit-profile-header')).toBeTruthy();
   });

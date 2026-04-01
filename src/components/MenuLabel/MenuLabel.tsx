@@ -2,9 +2,15 @@ import { memo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from '../Text';
 
-export interface MenuLabelProps { title: string; icon?: React.ReactNode; }
+export interface MenuLabelProps {
+  title: string;
+  icon?: React.ReactNode;
+}
 
-export const MenuLabel = memo(function MenuLabel({ title, icon }: MenuLabelProps) {
+export const MenuLabel = memo(function MenuLabel({
+  title,
+  icon,
+}: MenuLabelProps) {
   return (
     <View style={styles.container}>
       {icon && <View style={styles.icon}>{icon}</View>}

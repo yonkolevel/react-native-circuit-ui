@@ -1,11 +1,26 @@
 import { memo, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming, Easing, interpolate } from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  Easing,
+  interpolate,
+} from 'react-native-reanimated';
 import { useTheme } from '../../theme';
 
-export interface PopAnimationProps { isEnabled: boolean; color?: string; children: React.ReactNode; }
+export interface PopAnimationProps {
+  isEnabled: boolean;
+  color?: string;
+  children: React.ReactNode;
+}
 
-export const PopAnimation = memo(function PopAnimation({ isEnabled, color, children }: PopAnimationProps) {
+export const PopAnimation = memo(function PopAnimation({
+  isEnabled,
+  color,
+  children,
+}: PopAnimationProps) {
   const { colors } = useTheme();
   const popColor = color || colors.mcGreen2;
   const progress = useSharedValue(0);
@@ -29,7 +44,9 @@ export const PopAnimation = memo(function PopAnimation({ isEnabled, color, child
   return (
     <View style={styles.container}>
       <Animated.View style={contentStyle}>{children}</Animated.View>
-      <Animated.View style={[styles.circle, { borderColor: popColor }, circleStyle]} />
+      <Animated.View
+        style={[styles.circle, { borderColor: popColor }, circleStyle]}
+      />
     </View>
   );
 });

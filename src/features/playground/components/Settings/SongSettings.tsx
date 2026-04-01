@@ -31,9 +31,9 @@ export const SongSettings = memo(function SongSettings({
   const { colors } = useTheme();
 
   // State — fine-grained selectors
-  const tempo = useSongContext(s => s.tempo);
-  const masterVolume = useSongContext(s => s.masterVolume);
-  const isMetronomeEnabled = useSongContext(s => s.isMetronomeEnabled);
+  const tempo = useSongContext((s) => s.tempo);
+  const masterVolume = useSongContext((s) => s.masterVolume);
+  const isMetronomeEnabled = useSongContext((s) => s.isMetronomeEnabled);
 
   // Actions — stable refs, no subscription
   const { setTempo, setMasterVolume, toggleMetronome } = useSongActions();

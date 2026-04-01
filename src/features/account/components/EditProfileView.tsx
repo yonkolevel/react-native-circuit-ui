@@ -39,7 +39,10 @@ export interface EditProfileViewProps {
   /** Called when user requests email change — store action */
   didChangeEmail?: (newEmail: string, password: string) => Promise<boolean>;
   /** Called when user requests password change — store action */
-  didChangePassword?: (oldPassword: string, newPassword: string) => Promise<boolean>;
+  didChangePassword?: (
+    oldPassword: string,
+    newPassword: string
+  ) => Promise<boolean>;
   /** Called when user requests account deletion — store action */
   didDeleteAccount?: () => Promise<boolean>;
   /** Called when modal closes — store action */
@@ -106,7 +109,8 @@ function EditProfileViewContent({
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
-  const isSocialProvider = authProvider === 'apple' || authProvider === 'google';
+  const isSocialProvider =
+    authProvider === 'apple' || authProvider === 'google';
 
   // Validation helpers (pure functions — not store actions)
   const validateEmail = (): boolean => {
@@ -169,7 +173,10 @@ function EditProfileViewContent({
         {/* Change Email Section (hidden for social auth) */}
         {!isSocialProvider && (
           <View style={styles.section}>
-            <Text variant="h5" style={[styles.sectionTitle, { color: secondaryTextColor }]}>
+            <Text
+              variant="h5"
+              style={[styles.sectionTitle, { color: secondaryTextColor }]}
+            >
               Change Email
             </Text>
 
@@ -197,7 +204,10 @@ function EditProfileViewContent({
                 </Text>
               )}
               {successMessage && (
-                <Text variant="small" style={{ color: colors.mcGreen, flex: 1 }}>
+                <Text
+                  variant="small"
+                  style={{ color: colors.mcGreen, flex: 1 }}
+                >
                   {successMessage}
                 </Text>
               )}
@@ -214,7 +224,10 @@ function EditProfileViewContent({
         {/* Change Password Section (hidden for social auth) */}
         {!isSocialProvider && (
           <View style={styles.section}>
-            <Text variant="h5" style={[styles.sectionTitle, { color: secondaryTextColor }]}>
+            <Text
+              variant="h5"
+              style={[styles.sectionTitle, { color: secondaryTextColor }]}
+            >
               Change Password
             </Text>
 
@@ -286,7 +299,10 @@ const LabeledInput = memo(function LabeledInput({
 
   return (
     <View style={labeledInputStyles.container}>
-      <Text variant="small" style={[labeledInputStyles.label, { color: placeholderColor }]}>
+      <Text
+        variant="small"
+        style={[labeledInputStyles.label, { color: placeholderColor }]}
+      >
         {label}
       </Text>
       <TextInput

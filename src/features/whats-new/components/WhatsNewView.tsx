@@ -49,28 +49,28 @@ const SF_SYMBOL_FALLBACK: Record<string, string> = {
   'musical.notes': '♫',
   'music.note': '♪',
   'music.note.list': '♪',
-  waveform: '〜',
+  'waveform': '〜',
   'waveform.circle': '〜',
   'star.fill': '★',
-  star: '☆',
-  sparkles: '✦',
+  'star': '☆',
+  'sparkles': '✦',
   'bolt.fill': '⚡',
-  bolt: '⚡',
+  'bolt': '⚡',
   'mic.fill': '🎤',
-  mic: '🎤',
+  'mic': '🎤',
   'guitars.fill': '🎸',
-  guitars: '🎸',
+  'guitars': '🎸',
   'pianokeys.inverse': '🎹',
   'speaker.wave.3.fill': '🔊',
   'arrow.down.circle': '↓',
   'square.and.arrow.up': '↑',
   'person.crop.circle': '👤',
   'trophy.fill': '🏆',
-  trophy: '🏆',
+  'trophy': '🏆',
   'chart.bar.fill': '📊',
   'paintbrush.fill': '🖌',
   'slider.horizontal.3': '☰',
-  gear: '⚙',
+  'gear': '⚙',
   'bell.fill': '🔔',
   'checkmark.circle.fill': '✓',
   'rectangle.stack.fill': '▤',
@@ -104,7 +104,7 @@ function FeatureImage({
   // systemName or asset — use fallback text
   const icon =
     image.type === 'systemName'
-      ? SF_SYMBOL_FALLBACK[image.name] ?? '●'
+      ? (SF_SYMBOL_FALLBACK[image.name] ?? '●')
       : image.name.charAt(0).toUpperCase();
 
   const color = image.color ?? DEFAULT_ACCENT;
@@ -209,8 +209,9 @@ export function WhatsNewView({
       whatsNew.primaryAction?.backgroundColor ?? DEFAULT_PRIMARY_BG,
     foregroundColor:
       whatsNew.primaryAction?.foregroundColor ?? DEFAULT_PRIMARY_FG,
-    hapticFeedback: whatsNew.primaryAction?.hapticFeedback ?? undefined as any,
-    onDismiss: whatsNew.primaryAction?.onDismiss ?? undefined as any,
+    hapticFeedback:
+      whatsNew.primaryAction?.hapticFeedback ?? (undefined as any),
+    onDismiss: whatsNew.primaryAction?.onDismiss ?? (undefined as any),
   };
 
   const handlePrimaryPress = useCallback(() => {

@@ -20,10 +20,7 @@ import { MixerView } from '../Mixer';
 import { SongSettings } from '../Settings';
 import { useSongContext, useSongActions } from '../../stores/playgroundStore';
 import { useShallow } from 'zustand/react/shallow';
-import type {
-  Clip,
-  InstrumentType,
-} from '../../types';
+import type { Clip, InstrumentType } from '../../types';
 import { INSTRUMENT_COLORS } from '../../types';
 
 const TRACK_ICONS: Record<string, any> = {
@@ -159,13 +156,22 @@ export const SongView = memo(function SongView({
   const { colors } = useTheme();
 
   // State — fine-grained selectors
-  const currentTab = useSongContext(s => s.currentTab);
-  const tracks = useSongContext(useShallow(s => s.tracks));
-  const sections = useSongContext(useShallow(s => s.sections));
-  const currentSectionId = useSongContext(s => s.currentSectionId);
+  const currentTab = useSongContext((s) => s.currentTab);
+  const tracks = useSongContext(useShallow((s) => s.tracks));
+  const sections = useSongContext(useShallow((s) => s.sections));
+  const currentSectionId = useSongContext((s) => s.currentSectionId);
 
   // Actions — stable refs, no subscription
-  const { openClipEditor, createClip, setCurrentSection, addSection, showAddTrackMenu, removeTrack, renameSection, removeSection } = useSongActions();
+  const {
+    openClipEditor,
+    createClip,
+    setCurrentSection,
+    addSection,
+    showAddTrackMenu,
+    removeTrack,
+    renameSection,
+    removeSection,
+  } = useSongActions();
 
   const showTab = currentTab === 'song' || currentTab === 'mixer';
 
@@ -248,7 +254,8 @@ export const SongView = memo(function SongView({
                                     'Rename Section',
                                     undefined,
                                     (newName: string) => {
-                                      if (newName.trim()) renameSection(sec.id, newName.trim());
+                                      if (newName.trim())
+                                        renameSection(sec.id, newName.trim());
                                     },
                                     'plain-text',
                                     sec.name || `Section ${index + 1}`
@@ -257,7 +264,13 @@ export const SongView = memo(function SongView({
                                 },
                               },
                               ...(sections.length > 1
-                                ? [{ text: 'Delete', style: 'destructive' as const, onPress: () => removeSection(sec.id) }]
+                                ? [
+                                    {
+                                      text: 'Delete',
+                                      style: 'destructive' as const,
+                                      onPress: () => removeSection(sec.id),
+                                    },
+                                  ]
                                 : []),
                               { text: 'Cancel', style: 'cancel' as const },
                             ]
@@ -271,7 +284,7 @@ export const SongView = memo(function SongView({
                               : colors.mcWhite3,
                           },
                         ]}
-                        accessibilityLabel={`Section ${sec.name || (index + 1)}`}
+                        accessibilityLabel={`Section ${sec.name || index + 1}`}
                         accessibilityRole="button"
                       >
                         <Text
@@ -289,11 +302,7 @@ export const SongView = memo(function SongView({
                     onPress={addSection}
                     style={[s.addSecBtn, { borderColor: colors.black5 }]}
                   >
-                    <Icon
-                      icon={Icons.plus}
-                      size={16}
-                      color={colors.mcBlack5}
-                    />
+                    <Icon icon={Icons.plus} size={16} color={colors.mcBlack5} />
                   </Pressable>
                 </View>
                 <View style={s.clipRows}>
@@ -317,8 +326,13 @@ export const SongView = memo(function SongView({
                               } else {
                                 // Create clip then immediately open editor
                                 // Compute new ID using same logic as songStore.createClip
-                                const allClipIds = tracks.flatMap((tr) => tr.clips.map((c) => c.id));
-                                const newClipId = allClipIds.length > 0 ? Math.max(...allClipIds) + 1 : 0;
+                                const allClipIds = tracks.flatMap((tr) =>
+                                  tr.clips.map((c) => c.id)
+                                );
+                                const newClipId =
+                                  allClipIds.length > 0
+                                    ? Math.max(...allClipIds) + 1
+                                    : 0;
                                 createClip(t.id, sec.id);
                                 openClipEditor(t.id, newClipId);
                               }
@@ -335,7 +349,10 @@ export const SongView = memo(function SongView({
         )}
         {currentTab === 'mixer' && <MixerView />}
         {currentTab === 'settings' && (
-          <SongSettings onExportAudio={onExportAudio} onExportBundle={onExportBundle} />
+          <SongSettings
+            onExportAudio={onExportAudio}
+            onExportBundle={onExportBundle}
+          />
         )}
       </View>
 

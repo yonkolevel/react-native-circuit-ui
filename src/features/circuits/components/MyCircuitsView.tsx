@@ -9,7 +9,11 @@ import { View, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { Text } from '../../../components/Text';
 import { useTheme } from '../../../theme';
 import { makeSpacing } from '../../../theme/spacing';
-import type { MyCircuitsState, CircuitDetails, LearningPathDetails } from '../types';
+import type {
+  MyCircuitsState,
+  CircuitDetails,
+  LearningPathDetails,
+} from '../types';
 
 export interface MyCircuitsViewProps {
   state: MyCircuitsState;
@@ -23,7 +27,9 @@ export interface MyCircuitsViewProps {
 }
 
 export const MyCircuitsView = memo(function MyCircuitsView({
-  state, renderCircuitCard, renderLearningPathCard,
+  state,
+  renderCircuitCard,
+  renderLearningPathCard,
 }: MyCircuitsViewProps) {
   const { colors } = useTheme();
 
@@ -38,7 +44,9 @@ export const MyCircuitsView = memo(function MyCircuitsView({
   if (state.status === 'error') {
     return (
       <View style={styles.centered}>
-        <Text variant="body" color={colors.mcWhite2}>Unable to load content</Text>
+        <Text variant="body" color={colors.mcWhite2}>
+          Unable to load content
+        </Text>
       </View>
     );
   }
@@ -48,7 +56,9 @@ export const MyCircuitsView = memo(function MyCircuitsView({
       {/* Recommended */}
       {state.recommended && (
         <View style={styles.section}>
-          <Text variant="h4" color={colors.mcWhite}>Continue learning</Text>
+          <Text variant="h4" color={colors.mcWhite}>
+            Continue learning
+          </Text>
           {renderCircuitCard?.(state.recommended)}
         </View>
       )}
@@ -56,9 +66,15 @@ export const MyCircuitsView = memo(function MyCircuitsView({
       {/* In Progress */}
       {state.inProgress.length > 0 && (
         <View style={styles.section}>
-          <Text variant="h4" color={colors.mcWhite}>In progress</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalList}>
-            {state.inProgress.map(c => (
+          <Text variant="h4" color={colors.mcWhite}>
+            In progress
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalList}
+          >
+            {state.inProgress.map((c) => (
               <View key={c.id}>{renderCircuitCard?.(c)}</View>
             ))}
           </ScrollView>
@@ -68,8 +84,10 @@ export const MyCircuitsView = memo(function MyCircuitsView({
       {/* Learning Paths */}
       {state.learningPaths.length > 0 && (
         <View style={styles.section}>
-          <Text variant="h4" color={colors.mcWhite}>Learning Paths</Text>
-          {state.learningPaths.map(lp => (
+          <Text variant="h4" color={colors.mcWhite}>
+            Learning Paths
+          </Text>
+          {state.learningPaths.map((lp) => (
             <View key={lp.id}>{renderLearningPathCard?.(lp)}</View>
           ))}
         </View>

@@ -9,7 +9,12 @@
 import { memo, useCallback } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, withSequence } from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withSequence,
+} from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
 import { useSongContext, useSongActions } from '../../stores/playgroundStore';
@@ -44,7 +49,7 @@ export interface SongMixerTabBarProps {
 export const SongMixerTabBar: React.FC<SongMixerTabBarProps> = memo(
   function SongMixerTabBar({ style }) {
     const { colors, borderRadius } = useTheme();
-    const currentTab = useSongContext(s => s.currentTab);
+    const currentTab = useSongContext((s) => s.currentTab);
     const { setCurrentTab } = useSongActions();
 
     const activeTab: TabKey = currentTab === 'mixer' ? 'mixer' : 'song';

@@ -8,24 +8,20 @@
  * - Corner radius: 6
  */
 import React, { memo, useState, useCallback } from 'react';
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  Pressable,
-} from 'react-native';
-import type {
-  TextInputProps,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import { View, TextInput, StyleSheet, Pressable } from 'react-native';
+import type { TextInputProps, StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../Text';
 import { useTheme } from '../../theme';
 import { borderRadius, layout } from '../../theme/spacing';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
-export type InputState = 'normal' | 'focused' | 'error' | 'success' | 'disabled';
+export type InputState =
+  | 'normal'
+  | 'focused'
+  | 'error'
+  | 'success'
+  | 'disabled';
 
 export interface InputProps extends Omit<TextInputProps, 'style'> {
   /** Label above the input */
@@ -108,11 +104,7 @@ export const Input: React.FC<InputProps> = memo(function Input({
   return (
     <View style={style}>
       {label && (
-        <Text
-          variant="label"
-          color={colors.mcWhite2}
-          style={styles.label}
-        >
+        <Text variant="label" color={colors.mcWhite2} style={styles.label}>
           {label}
         </Text>
       )}

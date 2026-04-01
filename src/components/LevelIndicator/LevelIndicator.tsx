@@ -60,20 +60,32 @@ export const LevelIcon: React.FC<LevelIconProps> = memo(function LevelIcon({
       {/* Bars layer (behind circles in SwiftUI ZStack) */}
       <View style={styles.barsContainer}>
         <View
-          style={[styles.bar, { backgroundColor: isLevel2 ? tintColor : bgColor }]}
+          style={[
+            styles.bar,
+            { backgroundColor: isLevel2 ? tintColor : bgColor },
+          ]}
         />
         <View
-          style={[styles.bar, { backgroundColor: isLevel3 ? tintColor : bgColor }]}
+          style={[
+            styles.bar,
+            { backgroundColor: isLevel3 ? tintColor : bgColor },
+          ]}
         />
       </View>
       {/* Circles layer */}
       <View style={styles.circlesContainer}>
         <View style={[styles.circle, { backgroundColor: tintColor }]} />
         <View
-          style={[styles.circle, { backgroundColor: isLevel2 ? tintColor : bgColor }]}
+          style={[
+            styles.circle,
+            { backgroundColor: isLevel2 ? tintColor : bgColor },
+          ]}
         />
         <View
-          style={[styles.circle, { backgroundColor: isLevel3 ? tintColor : bgColor }]}
+          style={[
+            styles.circle,
+            { backgroundColor: isLevel3 ? tintColor : bgColor },
+          ]}
         />
       </View>
     </View>
@@ -98,8 +110,7 @@ export const LevelIndicator: React.FC<LevelIndicatorProps> = memo(
     // SwiftUI default: .mcBlack
     const bgColor = backgroundColor || colors.mcBlack;
 
-    const displayText =
-      levelLabels?.[level] ?? label ?? level;
+    const displayText = levelLabels?.[level] ?? label ?? level;
 
     return (
       <View
@@ -112,7 +123,12 @@ export const LevelIndicator: React.FC<LevelIndicatorProps> = memo(
           tintColor={tintColor}
           backgroundColor={bgColor}
         />
-        <Text variant="small" uppercase color={txtColor} style={styles.levelText}>
+        <Text
+          variant="small"
+          uppercase
+          color={txtColor}
+          style={styles.levelText}
+        >
           {displayText}
         </Text>
       </View>

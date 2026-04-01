@@ -65,7 +65,7 @@ export const DurationLabel: React.FC<DurationLabelProps> = memo(
         </Text>
       </View>
     );
-  },
+  }
 );
 
 // ─── Styles ─────────────────────────────────────────────────────────────────

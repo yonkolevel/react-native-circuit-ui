@@ -19,7 +19,11 @@ export interface SignInViewProps {
 }
 
 export const SignInView = memo(function SignInView({
-  onSignIn, onSignInWithApple, onBack, isLoading, error,
+  onSignIn,
+  onSignInWithApple,
+  onBack,
+  isLoading,
+  error,
 }: SignInViewProps) {
   const { colors } = useTheme();
   const [email, setEmail] = useState('');
@@ -27,16 +31,46 @@ export const SignInView = memo(function SignInView({
 
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack2 }]}>
-      <Text variant="h4" style={styles.title}>Sign In</Text>
+      <Text variant="h4" style={styles.title}>
+        Sign In
+      </Text>
 
-      {error && <Text variant="small" color={colors.mcPink} style={styles.error}>{error}</Text>}
+      {error && (
+        <Text variant="small" color={colors.mcPink} style={styles.error}>
+          {error}
+        </Text>
+      )}
 
-      <Input label="Email" value={email} onChangeText={setEmail} placeholder="your@email.com" keyboardType="email-address" autoCapitalize="none" />
-      <Input label="Password" value={password} onChangeText={setPassword} placeholder="Password" secureTextEntry />
+      <Input
+        label="Email"
+        value={email}
+        onChangeText={setEmail}
+        placeholder="your@email.com"
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      <Input
+        label="Password"
+        value={password}
+        onChangeText={setPassword}
+        placeholder="Password"
+        secureTextEntry
+      />
 
-      <Button label="Sign In" variant="primary" fullWidth loading={isLoading} onPress={() => onSignIn?.(email, password)} />
+      <Button
+        label="Sign In"
+        variant="primary"
+        fullWidth
+        loading={isLoading}
+        onPress={() => onSignIn?.(email, password)}
+      />
 
-      <Button label="Sign in with Apple" variant="normal" fullWidth onPress={onSignInWithApple} />
+      <Button
+        label="Sign in with Apple"
+        variant="normal"
+        fullWidth
+        onPress={onSignInWithApple}
+      />
 
       {onBack && <Button label="Back" variant="outline" onPress={onBack} />}
     </View>

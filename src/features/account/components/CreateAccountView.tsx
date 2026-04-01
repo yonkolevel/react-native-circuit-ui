@@ -17,7 +17,10 @@ export interface CreateAccountViewProps {
 }
 
 export const CreateAccountView = memo(function CreateAccountView({
-  onCreateAccount, onBack, isLoading, error,
+  onCreateAccount,
+  onBack,
+  isLoading,
+  error,
 }: CreateAccountViewProps) {
   const { colors } = useTheme();
   const [name, setName] = useState('');
@@ -26,15 +29,45 @@ export const CreateAccountView = memo(function CreateAccountView({
 
   return (
     <View style={[styles.container, { backgroundColor: colors.mcBlack2 }]}>
-      <Text variant="h4" style={styles.title}>Create Account</Text>
+      <Text variant="h4" style={styles.title}>
+        Create Account
+      </Text>
 
-      {error && <Text variant="small" color={colors.mcPink}>{error}</Text>}
+      {error && (
+        <Text variant="small" color={colors.mcPink}>
+          {error}
+        </Text>
+      )}
 
-      <Input label="Name" value={name} onChangeText={setName} placeholder="Your name" />
-      <Input label="Email" value={email} onChangeText={setEmail} placeholder="your@email.com" keyboardType="email-address" autoCapitalize="none" />
-      <Input label="Password" value={password} onChangeText={setPassword} placeholder="Password" secureTextEntry />
+      <Input
+        label="Name"
+        value={name}
+        onChangeText={setName}
+        placeholder="Your name"
+      />
+      <Input
+        label="Email"
+        value={email}
+        onChangeText={setEmail}
+        placeholder="your@email.com"
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      <Input
+        label="Password"
+        value={password}
+        onChangeText={setPassword}
+        placeholder="Password"
+        secureTextEntry
+      />
 
-      <Button label="Create Account" variant="primary" fullWidth loading={isLoading} onPress={() => onCreateAccount?.(name, email, password)} />
+      <Button
+        label="Create Account"
+        variant="primary"
+        fullWidth
+        loading={isLoading}
+        onPress={() => onCreateAccount?.(name, email, password)}
+      />
       {onBack && <Button label="Back" variant="outline" onPress={onBack} />}
     </View>
   );

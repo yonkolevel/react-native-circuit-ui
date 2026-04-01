@@ -33,10 +33,7 @@ export interface PreviewLabelProps {
  * ```
  */
 export const PreviewLabel: React.FC<PreviewLabelProps> = memo(
-  function PreviewLabel({
-    style,
-    accessibilityLabel = 'Preview',
-  }) {
+  function PreviewLabel({ style, accessibilityLabel = 'Preview' }) {
     const { colors, borderRadius } = useTheme();
 
     return (
@@ -53,11 +50,7 @@ export const PreviewLabel: React.FC<PreviewLabelProps> = memo(
         accessibilityRole="text"
         accessibilityLabel={accessibilityLabel}
       >
-        <Text
-          variant="small"
-          color={colors.mcWhite}
-          style={styles.labelText}
-        >
+        <Text variant="small" color={colors.mcWhite} style={styles.labelText}>
           Preview
         </Text>
       </View>
@@ -83,27 +76,21 @@ export interface PreviewDotProps {
  * <PreviewDot style={{ marginRight: 4 }} />
  * ```
  */
-export const PreviewDot: React.FC<PreviewDotProps> = memo(
-  function PreviewDot({
-    style,
-    accessibilityLabel = 'Preview indicator',
-  }) {
-    const { colors } = useTheme();
+export const PreviewDot: React.FC<PreviewDotProps> = memo(function PreviewDot({
+  style,
+  accessibilityLabel = 'Preview indicator',
+}) {
+  const { colors } = useTheme();
 
-    return (
-      <View
-        style={[
-          styles.dot,
-          { backgroundColor: colors.mcOrange },
-          style,
-        ]}
-        accessible
-        accessibilityRole="image"
-        accessibilityLabel={accessibilityLabel}
-      />
-    );
-  }
-);
+  return (
+    <View
+      style={[styles.dot, { backgroundColor: colors.mcOrange }, style]}
+      accessible
+      accessibilityRole="image"
+      accessibilityLabel={accessibilityLabel}
+    />
+  );
+});
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 

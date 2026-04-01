@@ -35,9 +35,7 @@ export function createAsyncStorageVersionStore(
       const values = await Promise.all(
         whatsNewKeys.map((k: string) => storage.getItem(k))
       );
-      return values
-        .filter((v): v is string => v != null)
-        .map(parseVersion);
+      return values.filter((v): v is string => v != null).map(parseVersion);
     },
 
     async hasPresented(version: WhatsNewVersion): Promise<boolean> {
@@ -54,9 +52,7 @@ export function createAsyncStorageVersionStore(
       const whatsNewKeys = allKeys.filter((k: string) =>
         k.startsWith(KEY_PREFIX)
       );
-      await Promise.all(
-        whatsNewKeys.map((k: string) => storage.removeItem(k))
-      );
+      await Promise.all(whatsNewKeys.map((k: string) => storage.removeItem(k)));
     },
   };
 }

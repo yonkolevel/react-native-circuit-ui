@@ -1,9 +1,13 @@
 import { memo } from 'react';
 import { View, StyleSheet, useWindowDimensions } from 'react-native';
 
-export interface ScreenContainerProps { children: React.ReactNode; }
+export interface ScreenContainerProps {
+  children: React.ReactNode;
+}
 
-export const ScreenContainer = memo(function ScreenContainer({ children }: ScreenContainerProps) {
+export const ScreenContainer = memo(function ScreenContainer({
+  children,
+}: ScreenContainerProps) {
   const { width } = useWindowDimensions();
   const isPhone = width < 768;
   return (

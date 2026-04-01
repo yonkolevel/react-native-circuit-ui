@@ -47,7 +47,7 @@ export const ConnectedInstrument: React.FC<ConnectedInstrumentProps> = memo(
         </Text>
       </View>
     );
-  },
+  }
 );
 
 // ─── Styles ─────────────────────────────────────────────────────────────────

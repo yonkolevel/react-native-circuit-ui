@@ -19,7 +19,12 @@ export interface MultiTouchOverlayProps extends ViewProps {
 const NativeOverlay = requireNativeComponent<any>('RCTMultiTouchOverlay');
 
 export const MultiTouchOverlay = memo(function MultiTouchOverlay({
-  rows = 4, columns = 4, onPadPress, onPadRelease, style, ...rest
+  rows = 4,
+  columns = 4,
+  onPadPress,
+  onPadRelease,
+  style,
+  ...rest
 }: MultiTouchOverlayProps) {
   return (
     <NativeOverlay

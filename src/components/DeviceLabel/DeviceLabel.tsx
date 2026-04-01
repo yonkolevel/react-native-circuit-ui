@@ -29,11 +29,7 @@ export interface DeviceLabelProps {
 const ICON_SIZE = 14;
 
 export const DeviceLabel: React.FC<DeviceLabelProps> = memo(
-  function DeviceLabel({
-    deviceName,
-    iconColor = palette.mcWhite2,
-    style,
-  }) {
+  function DeviceLabel({ deviceName, iconColor = palette.mcWhite2, style }) {
     return (
       <View
         style={[styles.container, style]}
@@ -41,16 +37,12 @@ export const DeviceLabel: React.FC<DeviceLabelProps> = memo(
         accessibilityLabel={`Device: ${deviceName}`}
       >
         <Icon icon={Icons.piano} size={ICON_SIZE} color={iconColor} />
-        <Text
-          variant="body"
-          color={palette.mcWhite2}
-          numberOfLines={1}
-        >
+        <Text variant="body" color={palette.mcWhite2} numberOfLines={1}>
           {deviceName}
         </Text>
       </View>
     );
-  },
+  }
 );
 
 // ─── Styles ─────────────────────────────────────────────────────────────────

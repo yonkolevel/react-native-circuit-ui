@@ -208,10 +208,15 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const pitchToMidi = useMemo(
     () =>
       isDrum
-        ? Array.from(
-            { length: totalPitches },
-            (_, i) => (samples ?? [])[i]?.noteNumber ?? i
-          )
+        ? Array.from({ length: totalPitches }, (_, i) => {
+            const sample = (samples ?? [])[i];
+
+            if (!sample)
+              console.warn(
+                `[PianoRoll] No sample for drum row ${i}, samples length: ${samples?.length ?? 0}`
+              );
+            return sample?.noteNumber ?? i;
+          })
         : Array.from({ length: totalPitches }, (_, i) => basePitch + i),
     [isDrum, totalPitches, samples, basePitch]
   );

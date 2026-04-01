@@ -54,33 +54,68 @@ describe('WhatsNewVersion', () => {
 
   describe('compareVersions', () => {
     it('returns 0 for equal versions', () => {
-      expect(compareVersions({ major: 1, minor: 2, patch: 3 }, { major: 1, minor: 2, patch: 3 })).toBe(0);
+      expect(
+        compareVersions(
+          { major: 1, minor: 2, patch: 3 },
+          { major: 1, minor: 2, patch: 3 }
+        )
+      ).toBe(0);
     });
 
     it('returns negative when a < b (major)', () => {
-      expect(compareVersions({ major: 1, minor: 0, patch: 0 }, { major: 2, minor: 0, patch: 0 })).toBeLessThan(0);
+      expect(
+        compareVersions(
+          { major: 1, minor: 0, patch: 0 },
+          { major: 2, minor: 0, patch: 0 }
+        )
+      ).toBeLessThan(0);
     });
 
     it('returns positive when a > b (major)', () => {
-      expect(compareVersions({ major: 3, minor: 0, patch: 0 }, { major: 1, minor: 0, patch: 0 })).toBeGreaterThan(0);
+      expect(
+        compareVersions(
+          { major: 3, minor: 0, patch: 0 },
+          { major: 1, minor: 0, patch: 0 }
+        )
+      ).toBeGreaterThan(0);
     });
 
     it('compares minor when major is equal', () => {
-      expect(compareVersions({ major: 1, minor: 2, patch: 0 }, { major: 1, minor: 5, patch: 0 })).toBeLessThan(0);
+      expect(
+        compareVersions(
+          { major: 1, minor: 2, patch: 0 },
+          { major: 1, minor: 5, patch: 0 }
+        )
+      ).toBeLessThan(0);
     });
 
     it('compares patch when major and minor are equal', () => {
-      expect(compareVersions({ major: 1, minor: 2, patch: 3 }, { major: 1, minor: 2, patch: 1 })).toBeGreaterThan(0);
+      expect(
+        compareVersions(
+          { major: 1, minor: 2, patch: 3 },
+          { major: 1, minor: 2, patch: 1 }
+        )
+      ).toBeGreaterThan(0);
     });
   });
 
   describe('versionsEqual', () => {
     it('returns true for equal versions', () => {
-      expect(versionsEqual({ major: 1, minor: 2, patch: 3 }, { major: 1, minor: 2, patch: 3 })).toBe(true);
+      expect(
+        versionsEqual(
+          { major: 1, minor: 2, patch: 3 },
+          { major: 1, minor: 2, patch: 3 }
+        )
+      ).toBe(true);
     });
 
     it('returns false for different versions', () => {
-      expect(versionsEqual({ major: 1, minor: 2, patch: 3 }, { major: 1, minor: 2, patch: 4 })).toBe(false);
+      expect(
+        versionsEqual(
+          { major: 1, minor: 2, patch: 3 },
+          { major: 1, minor: 2, patch: 4 }
+        )
+      ).toBe(false);
     });
   });
 });

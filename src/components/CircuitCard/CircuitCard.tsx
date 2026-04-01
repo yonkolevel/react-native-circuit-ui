@@ -255,7 +255,11 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
       );
     }
     return (
-      <View style={cardStyles} accessible accessibilityLabel={cardAccessibilityLabel || 'Card'}>
+      <View
+        style={cardStyles}
+        accessible
+        accessibilityLabel={cardAccessibilityLabel || 'Card'}
+      >
         <View style={{ padding }}>{children}</View>
       </View>
     );
@@ -362,7 +366,11 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
   }
 
   return (
-    <View style={cardStyles} accessible accessibilityLabel={cardAccessibilityLabel || 'Card'}>
+    <View
+      style={cardStyles}
+      accessible
+      accessibilityLabel={cardAccessibilityLabel || 'Card'}
+    >
       {cardContent}
     </View>
   );
@@ -464,14 +472,15 @@ const CardContent: React.FC<CardContentProps> = ({
                 onPress={onFavoritePress}
                 style={styles.favoriteButton}
                 accessibilityRole="button"
-                accessibilityLabel={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                accessibilityLabel={
+                  isFavorite ? 'Remove from favorites' : 'Add to favorites'
+                }
                 accessibilityState={{ selected: isFavorite }}
               >
-                <Icon icon={Icons.heart}
+                <Icon
+                  icon={Icons.heart}
                   size={20}
                   color={isFavorite ? colors.mcWhite : colors.mcBlack}
-                  
-                  
                 />
               </TouchableOpacity>
             )}

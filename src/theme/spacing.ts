@@ -20,18 +20,18 @@ export const makeSpacing = (multiplier: number): number =>
 // ─── Named Spacing Scale ────────────────────────────────────────────────────
 
 export const spacing = {
-  none: 0,
-  xxs: BASE_UNIT / 2, // 2
-  xs: BASE_UNIT, // 4
-  sm: makeSpacing(2), // 8
-  md: makeSpacing(3), // 12
-  lg: makeSpacing(4), // 16
-  xl: makeSpacing(5), // 20
+  'none': 0,
+  'xxs': BASE_UNIT / 2, // 2
+  'xs': BASE_UNIT, // 4
+  'sm': makeSpacing(2), // 8
+  'md': makeSpacing(3), // 12
+  'lg': makeSpacing(4), // 16
+  'xl': makeSpacing(5), // 20
   '2xl': makeSpacing(6), // 24
   '3xl': makeSpacing(8), // 32
   '4xl': makeSpacing(10), // 40
   '5xl': makeSpacing(12), // 48
-  huge: makeSpacing(16), // 64
+  'huge': makeSpacing(16), // 64
 } as const;
 
 // ─── Layout Tokens ──────────────────────────────────────────────────────────
@@ -77,15 +77,15 @@ export const layout = {
 // SwiftUI uses cornerRadius(6) consistently
 
 export const borderRadius = {
-  none: 0,
-  xs: 2,
-  sm: 4,
+  'none': 0,
+  'xs': 2,
+  'sm': 4,
   /** Standard component radius — matches SwiftUI 6pt */
-  md: 6,
-  lg: 8,
-  xl: 12,
+  'md': 6,
+  'lg': 8,
+  'xl': 12,
   '2xl': 16,
-  pill: 9999,
+  'pill': 9999,
 } as const;
 
 // ─── Shadows ────────────────────────────────────────────────────────────────

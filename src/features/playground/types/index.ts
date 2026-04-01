@@ -76,7 +76,8 @@ export interface SongState {
   tempo: number;
   isLoopEnabled: boolean;
   isMetronomeEnabled: boolean;
-  isRecording: boolean; isRecordingArmed: boolean;
+  isRecording: boolean;
+  isRecordingArmed: boolean;
   sections: Section[];
   currentSectionId: number;
   tracks: Track[];
@@ -95,7 +96,10 @@ export interface SongState {
   redoStacks: Record<number, ClipNote[][]>;
 
   // Live recording state (keyed by noteNumber for tracking held notes)
-  liveRecordingNotes: Record<number, { noteIndex: number; startBeat: number; velocity: number }>;
+  liveRecordingNotes: Record<
+    number,
+    { noteIndex: number; startBeat: number; velocity: number }
+  >;
 
   // Clip editor UI state
   isClipSettingsVisible: boolean;

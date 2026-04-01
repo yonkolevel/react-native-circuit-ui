@@ -8,11 +8,20 @@
 import { memo, useCallback } from 'react';
 import Slider from '@react-native-community/slider';
 import { View, Pressable, ScrollView, StyleSheet } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, withSequence } from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withSequence,
+} from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme } from '../../../../theme';
-import { useSongContext, useSongActions, useTrackMixer } from '../../stores/playgroundStore';
+import {
+  useSongContext,
+  useSongActions,
+  useTrackMixer,
+} from '../../stores/playgroundStore';
 import { INSTRUMENT_COLORS } from '../../types';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -29,7 +38,9 @@ const MuteButton = memo(function MuteButton({
 }) {
   const { colors } = useTheme();
   const scale = useSharedValue(1);
-  const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
 
   const handlePress = useCallback(() => {
     scale.value = withSequence(
@@ -72,7 +83,9 @@ const SoloButton = memo(function SoloButton({
 }) {
   const { colors } = useTheme();
   const scale = useSharedValue(1);
-  const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
 
   const handlePress = useCallback(() => {
     scale.value = withSequence(
@@ -115,13 +128,16 @@ const TrackStrip = memo(function TrackStrip({ trackId }: TrackStripProps) {
 
   // Fine-grained selectors — only this track's data
   const track = useSongContext(
-    useShallow(s => s.tracks.find(t => t.id === trackId))
+    useShallow((s) => s.tracks.find((t) => t.id === trackId))
   );
   const mixer = useTrackMixer(trackId);
-  const hasSoloedTracks = useSongContext(s => s.tracks.some(t => t.isSoloed));
+  const hasSoloedTracks = useSongContext((s) =>
+    s.tracks.some((t) => t.isSoloed)
+  );
 
   // Actions — stable refs, no subscription
-  const { setTrackVolume, setTrackPan, toggleTrackMute, toggleTrackSolo } = useSongActions();
+  const { setTrackVolume, setTrackPan, toggleTrackMute, toggleTrackSolo } =
+    useSongActions();
 
   if (!track || !mixer) return null;
 
@@ -144,8 +160,14 @@ const TrackStrip = memo(function TrackStrip({ trackId }: TrackStripProps) {
           </Text>
         </View>
         <View style={styles.mutesoloRow}>
-          <MuteButton isMuted={!isAudible} onToggle={() => toggleTrackMute(trackId)} />
-          <SoloButton isSoloed={mixer.isSoloed && hasSoloedTracks} onToggle={() => toggleTrackSolo(trackId)} />
+          <MuteButton
+            isMuted={!isAudible}
+            onToggle={() => toggleTrackMute(trackId)}
+          />
+          <SoloButton
+            isSoloed={mixer.isSoloed && hasSoloedTracks}
+            onToggle={() => toggleTrackSolo(trackId)}
+          />
         </View>
       </View>
 
@@ -210,9 +232,7 @@ export interface MixerViewProps {}
 
 export const MixerView = memo(function MixerView({}: MixerViewProps) {
   const { colors } = useTheme();
-  const trackIds = useSongContext(
-    useShallow(s => s.tracks.map(t => t.id))
-  );
+  const trackIds = useSongContext(useShallow((s) => s.tracks.map((t) => t.id)));
 
   return (
     <ScrollView

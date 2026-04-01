@@ -14,7 +14,9 @@ function AppContent() {
   return (
     <>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
-      <SafeAreaView style={[styles.container, { backgroundColor: colors.mcBlack }]}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: colors.mcBlack }]}
+      >
         <AppNavigator />
       </SafeAreaView>
     </>

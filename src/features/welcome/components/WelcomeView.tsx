@@ -18,7 +18,9 @@ export interface WelcomeViewProps {
 }
 
 export const WelcomeView = memo(function WelcomeView({
-  onGetStarted, onSignIn, backgroundImage,
+  onGetStarted,
+  onSignIn,
+  backgroundImage,
 }: WelcomeViewProps) {
   const { colors } = useTheme();
 
@@ -30,7 +32,12 @@ export const WelcomeView = memo(function WelcomeView({
         <Text variant="h1" center color={colors.mcWhite}>
           midicircuit
         </Text>
-        <Text variant="label" center color={colors.mcWhite3} style={styles.tagline}>
+        <Text
+          variant="label"
+          center
+          color={colors.mcWhite3}
+          style={styles.tagline}
+        >
           Learn Create Share
         </Text>
       </View>

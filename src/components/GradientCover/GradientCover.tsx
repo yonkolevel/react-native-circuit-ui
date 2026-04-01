@@ -10,8 +10,16 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { palette } from '../../theme/colors';
 
 const COLOR_OPTIONS = [
-  palette.mcGreen, palette.mcBlue, palette.mcOrange, palette.mcPurple, palette.mcPink,
-  palette.mcGreen2, palette.mcBlue2, palette.mcOrange2, palette.mcPurple2, palette.mcPink2,
+  palette.mcGreen,
+  palette.mcBlue,
+  palette.mcOrange,
+  palette.mcPurple,
+  palette.mcPink,
+  palette.mcGreen2,
+  palette.mcBlue2,
+  palette.mcOrange2,
+  palette.mcPurple2,
+  palette.mcPink2,
 ] as const;
 
 function stableHash(str: string): number {

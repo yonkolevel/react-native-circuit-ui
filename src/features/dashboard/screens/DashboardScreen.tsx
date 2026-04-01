@@ -15,14 +15,20 @@ interface Props {
   onNavigateToPlayground?: (id: string) => void;
 }
 
-export const DashboardScreen = memo(function DashboardScreen({ onNavigateToPlayground }: Props) {
+export const DashboardScreen = memo(function DashboardScreen({
+  onNavigateToPlayground,
+}: Props) {
   const { colors } = useTheme();
   const [activeTab, setActiveTab] = useState<DashboardTab>('playgrounds');
 
   const renderContent = () => {
     switch (activeTab) {
       case 'playgrounds':
-        return <PlaygroundsDashboardScreen onNavigateToPlayground={onNavigateToPlayground} />;
+        return (
+          <PlaygroundsDashboardScreen
+            onNavigateToPlayground={onNavigateToPlayground}
+          />
+        );
       case 'myCircuits':
         return <Placeholder label="My Circuits" />;
       case 'discover':
@@ -48,8 +54,12 @@ const Placeholder = memo(function Placeholder({ label }: { label: string }) {
   const { colors } = useTheme();
   return (
     <View style={styles.placeholder}>
-      <Text variant="h4" color={colors.mcWhite3}>{label}</Text>
-      <Text variant="body" color={colors.mcWhite4}>Coming soon</Text>
+      <Text variant="h4" color={colors.mcWhite3}>
+        {label}
+      </Text>
+      <Text variant="body" color={colors.mcWhite4}>
+        Coming soon
+      </Text>
     </View>
   );
 });
@@ -57,5 +67,10 @@ const Placeholder = memo(function Placeholder({ label }: { label: string }) {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   content: { flex: 1 },
-  placeholder: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 8 },
+  placeholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+  },
 });

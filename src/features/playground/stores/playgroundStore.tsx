@@ -57,7 +57,12 @@ export interface SongActions {
   // Notes
   addNote: (trackId: number, clipId: number, note: ClipNote) => void;
   removeNote: (trackId: number, clipId: number, noteIndex: number) => void;
-  updateNote: (trackId: number, clipId: number, noteIndex: number, updates: Partial<ClipNote>) => void;
+  updateNote: (
+    trackId: number,
+    clipId: number,
+    noteIndex: number,
+    updates: Partial<ClipNote>
+  ) => void;
   setClipNotes: (trackId: number, clipId: number, notes: ClipNote[]) => void;
 
   // Clip
@@ -65,7 +70,10 @@ export interface SongActions {
   setClipLength: (trackId: number, clipId: number, bars: number) => void;
 
   // Track management
-  addNewTrack: (type: InstrumentType, soundBank: { slug: string; name: string }) => void;
+  addNewTrack: (
+    type: InstrumentType,
+    soundBank: { slug: string; name: string }
+  ) => void;
   removeTrack: (trackId: number) => void;
 
   // Master
@@ -90,8 +98,19 @@ export interface SongActions {
   redoClipEdit: (trackId: number, clipId: number) => void;
 
   // Live recording
-  liveNoteOn: (trackId: number, clipId: number, noteIndex: number, velocity: number, currentBeat: number) => void;
-  liveNoteOff: (trackId: number, clipId: number, noteIndex: number, currentBeat: number) => void;
+  liveNoteOn: (
+    trackId: number,
+    clipId: number,
+    noteIndex: number,
+    velocity: number,
+    currentBeat: number
+  ) => void;
+  liveNoteOff: (
+    trackId: number,
+    clipId: number,
+    noteIndex: number,
+    currentBeat: number
+  ) => void;
 
   // Clip settings
   showClipSettings: () => void;
@@ -114,13 +133,25 @@ export type UseSongStoreHook = {
   (): SongStore;
   <T>(selector: (state: SongStore) => T): T;
   getState: () => SongStore;
-  subscribe: (listener: (state: SongStore, prevState: SongStore) => void) => () => void;
+  subscribe: (
+    listener: (state: SongStore, prevState: SongStore) => void
+  ) => () => void;
 };
 
 const SongStoreContext = createContext<UseSongStoreHook | null>(null);
 
-export function SongStoreProvider({ store, children }: { store: UseSongStoreHook; children: ReactNode }) {
-  return <SongStoreContext.Provider value={store}>{children}</SongStoreContext.Provider>;
+export function SongStoreProvider({
+  store,
+  children,
+}: {
+  store: UseSongStoreHook;
+  children: ReactNode;
+}) {
+  return (
+    <SongStoreContext.Provider value={store}>
+      {children}
+    </SongStoreContext.Provider>
+  );
 }
 
 /** Raw hook access — for building custom selectors */
@@ -164,14 +195,16 @@ export function useSongActions(): SongActions {
 /** Select a single track. Re-renders only when THIS track's data changes. */
 export function useTrack(trackId: number): Track | undefined {
   return useSongContext(
-    useShallow((s) => s.tracks.find(t => t.id === trackId))
+    useShallow((s) => s.tracks.find((t) => t.id === trackId))
   );
 }
 
 /** Select a single clip. Re-renders only when THIS clip changes. */
 export function useClip(trackId: number, clipId: number): Clip | undefined {
   return useSongContext(
-    useShallow((s) => s.tracks.find(t => t.id === trackId)?.clips.find(c => c.id === clipId))
+    useShallow((s) =>
+      s.tracks.find((t) => t.id === trackId)?.clips.find((c) => c.id === clipId)
+    )
   );
 }
 
@@ -179,8 +212,8 @@ export function useClip(trackId: number, clipId: number): Clip | undefined {
 export function useActiveClip(trackId: number): Clip | undefined {
   return useSongContext(
     useShallow((s) => {
-      const track = s.tracks.find(t => t.id === trackId);
-      return track?.clips.find(c => c.sectionID === s.currentSectionId);
+      const track = s.tracks.find((t) => t.id === trackId);
+      return track?.clips.find((c) => c.sectionID === s.currentSectionId);
     })
   );
 }
@@ -202,9 +235,14 @@ export function useTransport() {
 export function useTrackMixer(trackId: number) {
   return useSongContext(
     useShallow((s) => {
-      const t = s.tracks.find(tr => tr.id === trackId);
+      const t = s.tracks.find((tr) => tr.id === trackId);
       if (!t) return undefined;
-      return { volume: t.volume, pan: t.pan, isMuted: t.isMuted, isSoloed: t.isSoloed };
+      return {
+        volume: t.volume,
+        pan: t.pan,
+        isMuted: t.isMuted,
+        isSoloed: t.isSoloed,
+      };
     })
   );
 }
@@ -216,12 +254,30 @@ export function useTrackMixer(trackId: number) {
 const TrackIdContext = createContext<number | null>(null);
 const ClipIdContext = createContext<number | null>(null);
 
-export function TrackScope({ trackId, children }: { trackId: number; children: ReactNode }) {
-  return <TrackIdContext.Provider value={trackId}>{children}</TrackIdContext.Provider>;
+export function TrackScope({
+  trackId,
+  children,
+}: {
+  trackId: number;
+  children: ReactNode;
+}) {
+  return (
+    <TrackIdContext.Provider value={trackId}>
+      {children}
+    </TrackIdContext.Provider>
+  );
 }
 
-export function ClipScope({ clipId, children }: { clipId: number; children: ReactNode }) {
-  return <ClipIdContext.Provider value={clipId}>{children}</ClipIdContext.Provider>;
+export function ClipScope({
+  clipId,
+  children,
+}: {
+  clipId: number;
+  children: ReactNode;
+}) {
+  return (
+    <ClipIdContext.Provider value={clipId}>{children}</ClipIdContext.Provider>
+  );
 }
 
 export function useTrackId(): number {

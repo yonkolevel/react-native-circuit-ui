@@ -11,11 +11,7 @@
  * and map the visual index to key index.
  */
 import { memo, useState, useCallback, useMemo } from 'react';
-import {
-  View,
-  StyleSheet,
-  useWindowDimensions,
-} from 'react-native';
+import { View, StyleSheet, useWindowDimensions } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { MultiTouchOverlay } from '../../../../components/MultiTouchOverlay';
 import { palette } from '../../../../theme/colors';
@@ -127,8 +123,6 @@ export const PianoKeyboard = memo(function PianoKeyboard({
     [overlayToKey, onNoteOff]
   );
 
-
-
   const renderOctave = (octave: number) => {
     const start = octave * 12;
     const sk = keys.filter(
@@ -140,10 +134,7 @@ export const PianoKeyboard = memo(function PianoKeyboard({
 
     return (
       <View key={octave} style={styles.octave}>
-        <View
-          style={styles.sharpRow}
-          pointerEvents="none"
-        >
+        <View style={styles.sharpRow} pointerEvents="none">
           {sk.map((k) => {
             const active = pressed.has(k) || externalPressedNotes.has(k);
             const sq = SQUARE_SHARPS.has(k);
@@ -216,12 +207,12 @@ export const PianoKeyboard = memo(function PianoKeyboard({
 
       {/* Multi-touch overlay — all platforms */}
       <MultiTouchOverlay
-          rows={overlayRows}
-          columns={overlayCols}
-          onPadPress={handleNativePress}
-          onPadRelease={handleNativeRelease}
-          style={StyleSheet.absoluteFill}
-        />
+        rows={overlayRows}
+        columns={overlayCols}
+        onPadPress={handleNativePress}
+        onPadRelease={handleNativeRelease}
+        style={StyleSheet.absoluteFill}
+      />
     </View>
   );
 });

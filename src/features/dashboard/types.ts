@@ -2,7 +2,11 @@
  * Dashboard types — matches AppRootFeature models
  */
 
-export type DashboardTab = 'myCircuits' | 'discover' | 'profile' | 'playgrounds';
+export type DashboardTab =
+  | 'myCircuits'
+  | 'discover'
+  | 'profile'
+  | 'playgrounds';
 
 export interface DashboardTabConfig {
   key: DashboardTab;

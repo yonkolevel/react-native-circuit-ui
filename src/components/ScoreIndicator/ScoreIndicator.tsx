@@ -32,13 +32,7 @@ export interface ScoreIndicatorProps {
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export const ScoreIndicator: React.FC<ScoreIndicatorProps> = memo(
-  function ScoreIndicator({
-    score,
-    max = 3,
-    size = 20,
-    color,
-    style,
-  }) {
+  function ScoreIndicator({ score, max = 3, size = 20, color, style }) {
     const { colors } = useTheme();
     const starColor = color || colors.mcWhite;
 

@@ -16,11 +16,25 @@ import type { ChapterDetails, ContentBlock } from '../types';
 // ── Content Block Renderers ─────────────────────────────────────────────────
 
 const TextBlock = memo(function TextBlock({ text }: { text: string }) {
-  return <Text variant="body" style={styles.textBlock}>{text}</Text>;
+  return (
+    <Text variant="body" style={styles.textBlock}>
+      {text}
+    </Text>
+  );
 });
 
-const ImageBlock = memo(function ImageBlock({ imageUrl }: { imageUrl: string }) {
-  return <Image source={{ uri: imageUrl }} style={styles.imageBlock} resizeMode="contain" />;
+const ImageBlock = memo(function ImageBlock({
+  imageUrl,
+}: {
+  imageUrl: string;
+}) {
+  return (
+    <Image
+      source={{ uri: imageUrl }}
+      style={styles.imageBlock}
+      resizeMode="contain"
+    />
+  );
 });
 
 interface ContentBlockViewProps {
@@ -28,7 +42,10 @@ interface ContentBlockViewProps {
   renderCustomBlock?: (block: ContentBlock) => React.ReactNode;
 }
 
-const ContentBlockView = memo(function ContentBlockView({ block, renderCustomBlock }: ContentBlockViewProps) {
+const ContentBlockView = memo(function ContentBlockView({
+  block,
+  renderCustomBlock,
+}: ContentBlockViewProps) {
   switch (block.type) {
     case 'text':
       return block.text ? <TextBlock text={block.text} /> : null;
@@ -53,7 +70,12 @@ export interface ActiveLessonViewProps {
 }
 
 export const ActiveLessonView = memo(function ActiveLessonView({
-  chapter, currentStepIndex, onNext, onPrevious, onComplete, renderCustomBlock,
+  chapter,
+  currentStepIndex,
+  onNext,
+  onPrevious,
+  onComplete,
+  renderCustomBlock,
 }: ActiveLessonViewProps) {
   const { colors } = useTheme();
   const step = chapter.steps[currentStepIndex];
@@ -73,9 +95,16 @@ export const ActiveLessonView = memo(function ActiveLessonView({
       </View>
 
       {/* Content blocks */}
-      <ScrollView style={styles.content} contentContainerStyle={styles.contentInner}>
-        {step.contentBlocks.map(block => (
-          <ContentBlockView key={block.id} block={block} renderCustomBlock={renderCustomBlock} />
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentInner}
+      >
+        {step.contentBlocks.map((block) => (
+          <ContentBlockView
+            key={block.id}
+            block={block}
+            renderCustomBlock={renderCustomBlock}
+          />
         ))}
       </ScrollView>
 

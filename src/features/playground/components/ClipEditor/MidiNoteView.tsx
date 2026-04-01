@@ -34,7 +34,11 @@ interface MidiNoteViewProps {
   noteIndex: number;
   onDelete?: (noteIndex: number) => void;
   onResize?: (noteIndex: number, newDuration: number) => void;
-  onMove?: (noteIndex: number, newPosition: number, newNoteNumber: number) => void;
+  onMove?: (
+    noteIndex: number,
+    newPosition: number,
+    newNoteNumber: number
+  ) => void;
   totalPitches?: number;
   pitchToMidi?: number[];
 }
@@ -70,23 +74,42 @@ export const MidiNoteView = memo(function MidiNoteView({
     onDelete?.(noteIndex);
   }, [onDelete, noteIndex]);
 
-  const handleResize = useCallback((dx: number) => {
-    const newWidth = baseWidth + dx;
-    const steps = Math.max(MIN_STEPS, Math.round(newWidth / stepWidth));
-    onResize?.(noteIndex, steps * 0.25);
-  }, [baseWidth, stepWidth, noteIndex, onResize]);
+  const handleResize = useCallback(
+    (dx: number) => {
+      const newWidth = baseWidth + dx;
+      const steps = Math.max(MIN_STEPS, Math.round(newWidth / stepWidth));
+      onResize?.(noteIndex, steps * 0.25);
+    },
+    [baseWidth, stepWidth, noteIndex, onResize]
+  );
 
-  const handleMove = useCallback((dx: number, dy: number) => {
-    const stepsDx = Math.round(dx / stepWidth);
-    const rowsDy = Math.round(dy / rowHeight);
-    const newPosition = Math.max(0, position + stepsDx * 0.25);
-    const newRowIndex = Math.max(0, Math.min(totalPitches - 1, rowIndex + rowsDy));
-    const pitchIdx = totalPitches - 1 - newRowIndex;
-    const newNoteNumber = pitchToMidi?.[pitchIdx] ?? pitchIdx;
-    if (newPosition !== position || newNoteNumber !== noteNumber) {
-      onMove?.(noteIndex, newPosition, newNoteNumber);
-    }
-  }, [stepWidth, rowHeight, position, rowIndex, totalPitches, pitchToMidi, noteNumber, noteIndex, onMove]);
+  const handleMove = useCallback(
+    (dx: number, dy: number) => {
+      const stepsDx = Math.round(dx / stepWidth);
+      const rowsDy = Math.round(dy / rowHeight);
+      const newPosition = Math.max(0, position + stepsDx * 0.25);
+      const newRowIndex = Math.max(
+        0,
+        Math.min(totalPitches - 1, rowIndex + rowsDy)
+      );
+      const pitchIdx = totalPitches - 1 - newRowIndex;
+      const newNoteNumber = pitchToMidi?.[pitchIdx] ?? pitchIdx;
+      if (newPosition !== position || newNoteNumber !== noteNumber) {
+        onMove?.(noteIndex, newPosition, newNoteNumber);
+      }
+    },
+    [
+      stepWidth,
+      rowHeight,
+      position,
+      rowIndex,
+      totalPitches,
+      pitchToMidi,
+      noteNumber,
+      noteIndex,
+      onMove,
+    ]
+  );
 
   // --- Gesture 1: Note body — tap to delete, drag to move ---
   const bodyTap = Gesture.Tap()
@@ -141,20 +164,14 @@ export const MidiNoteView = memo(function MidiNoteView({
 
   // --- Animated styles ---
   const noteStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: moveX.value },
-      { translateY: moveY.value },
-    ],
+    transform: [{ translateX: moveX.value }, { translateY: moveY.value }],
     width: baseWidth + resizeW.value,
     opacity: isActive.value ? 1 : 0.85,
   }));
 
   // Resize handle overlaps the right edge of the note
   const handleStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: moveX.value },
-      { translateY: moveY.value },
-    ],
+    transform: [{ translateX: moveX.value }, { translateY: moveY.value }],
     left: position * beatWidth + baseWidth + resizeW.value - handleWidth,
   }));
 
@@ -224,11 +241,14 @@ const s = StyleSheet.create({
   label: { fontSize: 9, fontWeight: '600' },
   dotGroup: { flexDirection: 'row', alignItems: 'center' },
   dot: {
-    width: 2, height: 2, borderRadius: 1,
+    width: 2,
+    height: 2,
+    borderRadius: 1,
     backgroundColor: 'rgba(255,255,255,0.5)',
   },
   line: {
-    width: 1, height: '60%',
+    width: 1,
+    height: '60%',
     backgroundColor: 'rgba(255,255,255,0.6)',
     marginHorizontal: 1,
   },

@@ -15,8 +15,12 @@ function createMockAsyncStorage(): AsyncStorageLike {
   const store = new Map<string, string>();
   return {
     getItem: jest.fn(async (key: string) => store.get(key) ?? null),
-    setItem: jest.fn(async (key: string, value: string) => { store.set(key, value); }),
-    removeItem: jest.fn(async (key: string) => { store.delete(key); }),
+    setItem: jest.fn(async (key: string, value: string) => {
+      store.set(key, value);
+    }),
+    removeItem: jest.fn(async (key: string) => {
+      store.delete(key);
+    }),
     getAllKeys: jest.fn(async () => Array.from(store.keys())),
   };
 }
@@ -32,7 +36,10 @@ describe('createAsyncStorageVersionStore', () => {
     const store = createAsyncStorageVersionStore(storage);
 
     await store.save(v1);
-    expect(storage.setItem).toHaveBeenCalledWith('@whats_new_presented_1.0.0', '1.0.0');
+    expect(storage.setItem).toHaveBeenCalledWith(
+      '@whats_new_presented_1.0.0',
+      '1.0.0'
+    );
   });
 
   it('hasPresented returns false for unseen version', async () => {

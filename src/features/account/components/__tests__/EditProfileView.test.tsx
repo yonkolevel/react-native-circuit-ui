@@ -45,12 +45,16 @@ describe('EditProfileView', () => {
   });
 
   it('displays profile name in header', () => {
-    const { getByText } = renderWithTheme(<EditProfileView {...defaultProps} />);
+    const { getByText } = renderWithTheme(
+      <EditProfileView {...defaultProps} />
+    );
     expect(getByText('Test User')).toBeTruthy();
   });
 
   it('displays profile email in header', () => {
-    const { getByText } = renderWithTheme(<EditProfileView {...defaultProps} />);
+    const { getByText } = renderWithTheme(
+      <EditProfileView {...defaultProps} />
+    );
     expect(getByText('test@example.com')).toBeTruthy();
   });
 
@@ -83,7 +87,9 @@ describe('EditProfileView', () => {
   });
 
   it('displays Delete Account button', () => {
-    const { getByText } = renderWithTheme(<EditProfileView {...defaultProps} />);
+    const { getByText } = renderWithTheme(
+      <EditProfileView {...defaultProps} />
+    );
     expect(getByText('Delete Account')).toBeTruthy();
   });
 
@@ -96,7 +102,10 @@ describe('EditProfileView', () => {
 
   it('displays success message when provided', () => {
     const { getByText } = renderWithTheme(
-      <EditProfileView {...defaultProps} successMessage="Email updated successfully" />
+      <EditProfileView
+        {...defaultProps}
+        successMessage="Email updated successfully"
+      />
     );
     expect(getByText('Email updated successfully')).toBeTruthy();
   });

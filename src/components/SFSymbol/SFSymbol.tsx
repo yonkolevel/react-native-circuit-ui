@@ -22,11 +22,21 @@ try {
 let MaterialCommunityIcons: any = null;
 try {
   if (Platform.OS === 'android') {
-    MaterialCommunityIcons = require('@expo/vector-icons/MaterialCommunityIcons').default;
+    MaterialCommunityIcons =
+      require('@expo/vector-icons/MaterialCommunityIcons').default;
   }
 } catch {}
 
-export type SFSymbolWeight = 'ultraLight' | 'thin' | 'light' | 'regular' | 'medium' | 'semibold' | 'bold' | 'heavy' | 'black';
+export type SFSymbolWeight =
+  | 'ultraLight'
+  | 'thin'
+  | 'light'
+  | 'regular'
+  | 'medium'
+  | 'semibold'
+  | 'bold'
+  | 'heavy'
+  | 'black';
 
 export interface SFSymbolProps {
   name: string;
@@ -40,14 +50,26 @@ export interface SFSymbolProps {
 }
 
 export const SFSymbol = memo(function SFSymbol({
-  name, fallback: FallbackIcon, androidIcon, size = 24, color = '#FFFFFF', weight = 'regular', style,
+  name,
+  fallback: FallbackIcon,
+  androidIcon,
+  size = 24,
+  color = '#FFFFFF',
+  weight = 'regular',
+  style,
 }: SFSymbolProps) {
   // iOS: native SF Symbols
   if (Platform.OS === 'ios' && SymbolView) {
     return (
       <View style={[{ width: size, height: size }, style]}>
-        <SymbolView name={name} size={size} tintColor={color} weight={weight}
-          style={styles.symbol} resizeMode="scaleAspectFit" />
+        <SymbolView
+          name={name}
+          size={size}
+          tintColor={color}
+          weight={weight}
+          style={styles.symbol}
+          resizeMode="scaleAspectFit"
+        />
       </View>
     );
   }

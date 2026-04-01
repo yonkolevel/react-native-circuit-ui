@@ -25,8 +25,19 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
-import { ScrollView, Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, Easing, runOnJS } from 'react-native-reanimated';
+import {
+  ScrollView,
+  Gesture,
+  GestureDetector,
+} from 'react-native-gesture-handler';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  Easing,
+  runOnJS,
+} from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme, hexToRgba } from '../../../../theme';
@@ -235,17 +246,16 @@ const PlayheadLine = memo(function PlayheadLine({
   const posX = useSharedValue(0);
 
   const maxX = clipBeats * beatWidth;
-  const loopMs = clipBeats > 0 && tempo > 0
-    ? (clipBeats / (tempo / 60)) * 1000
-    : 1000;
+  const loopMs =
+    clipBeats > 0 && tempo > 0 ? (clipBeats / (tempo / 60)) * 1000 : 1000;
 
   useEffect(() => {
     if (isPlaying && maxX > 0) {
       posX.value = 0;
       posX.value = withRepeat(
         withTiming(maxX, { duration: loopMs, easing: Easing.linear }),
-        -1,    // infinite
-        false  // don't reverse — jump back to 0
+        -1, // infinite
+        false // don't reverse — jump back to 0
       );
     } else {
       posX.value = 0;
@@ -331,7 +341,10 @@ const PianoRollGrid = memo(function PianoRollGrid({
   // Drums: each index maps to the sample's noteNumber
   // Melodic/bass: linear from basePitch (soundbank defaultOctave)
   const pitchToMidi: number[] = isDrum
-    ? Array.from({ length: totalPitches }, (_, i) => (samples ?? [])[i]?.noteNumber ?? i)
+    ? Array.from(
+        { length: totalPitches },
+        (_, i) => (samples ?? [])[i]?.noteNumber ?? i
+      )
     : Array.from({ length: totalPitches }, (_, i) => basePitch + i);
 
   /**
@@ -672,9 +685,12 @@ const VelocityBar = memo(function VelocityBar({
   const dragVel = useSharedValue(velocity);
   const isDragging = useSharedValue(false);
 
-  const commitVelocity = useCallback((vel: number) => {
-    onChange?.(index, vel);
-  }, [index, onChange]);
+  const commitVelocity = useCallback(
+    (vel: number) => {
+      onChange?.(index, vel);
+    },
+    [index, onChange]
+  );
 
   const drag = Gesture.Pan()
     .onStart(() => {
@@ -695,7 +711,7 @@ const VelocityBar = memo(function VelocityBar({
     });
 
   const barStyle = useAnimatedStyle(() => ({
-    height: (isDragging.value ? dragVel.value : velocity) / 127 * barHeight,
+    height: ((isDragging.value ? dragVel.value : velocity) / 127) * barHeight,
   }));
 
   const displayVel = velocity;
@@ -712,11 +728,7 @@ const VelocityBar = memo(function VelocityBar({
           {displayVel}
         </Text>
         <Animated.View
-          style={[
-            styles.velBar,
-            { backgroundColor: trackColor },
-            barStyle,
-          ]}
+          style={[styles.velBar, { backgroundColor: trackColor }, barStyle]}
         />
       </View>
     </GestureDetector>
@@ -925,7 +937,9 @@ export const ClipEditorView = memo(function ClipEditorView({
   const { width: screenWidth } = useWindowDimensions();
   const [isExpanded, setIsExpanded] = useState(false);
   const [zoom, setZoom] = useState(1);
-  const [selectedPitchIndex, setSelectedPitchIndex] = useState<number | null>(null);
+  const [selectedPitchIndex, setSelectedPitchIndex] = useState<number | null>(
+    null
+  );
   const [settingsVisible, setSettingsVisible] = useState(false);
   const beatWidth = ((screenWidth - LABEL_COL_WIDTH) / 16) * zoom * 4;
   const trackColor = clip.colorHex;
@@ -945,7 +959,6 @@ export const ClipEditorView = memo(function ClipEditorView({
        * Always flex:1. When bottom half renders (not expanded), they split 50/50.
        * When expanded, bottom is hidden → top gets 100%. */}
       <View style={styles.splitHalf}>
-
         {/* Toolbar */}
         <ClipEditorToolbar
           isPlaying={isPlaying}
@@ -975,8 +988,12 @@ export const ClipEditorView = memo(function ClipEditorView({
             selectedPitchIndex={selectedPitchIndex}
             melodicMinPitch={melodicMinPitch}
             onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
-            onNoteResize={(idx, newDuration) => callbacks?.onNoteResize?.(idx, newDuration)}
-            onNoteMove={(idx, newPos, newNote) => callbacks?.onNoteMove?.(idx, newPos, newNote)}
+            onNoteResize={(idx, newDuration) =>
+              callbacks?.onNoteResize?.(idx, newDuration)
+            }
+            onNoteMove={(idx, newPos, newNote) =>
+              callbacks?.onNoteMove?.(idx, newPos, newNote)
+            }
             onGridTap={(noteNumber, position) => {
               callbacks?.onNoteAdd?.({
                 noteNumber,
@@ -986,7 +1003,9 @@ export const ClipEditorView = memo(function ClipEditorView({
               });
             }}
             onPitchLabelTap={(pitch) => {
-              setSelectedPitchIndex(selectedPitchIndex === pitch ? null : pitch);
+              setSelectedPitchIndex(
+                selectedPitchIndex === pitch ? null : pitch
+              );
             }}
             onToggleExpand={() => setIsExpanded(!isExpanded)}
             onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
@@ -1026,20 +1045,36 @@ export const ClipEditorView = memo(function ClipEditorView({
               pitchIndex={selectedPitchIndex!}
               pitchLabel={(() => {
                 const isDrum = instrumentType === 'drum';
-                if (isDrum) return (samples || [])[selectedPitchIndex!]?.name ?? `Note ${selectedPitchIndex}`;
+                if (isDrum)
+                  return (
+                    (samples || [])[selectedPitchIndex!]?.name ??
+                    `Note ${selectedPitchIndex}`
+                  );
                 const basePitch = melodicMinPitch;
                 return `${NOTE_NAMES[(basePitch + selectedPitchIndex!) % 12]}${Math.floor((basePitch + selectedPitchIndex!) / 12) + 1}`;
               })()}
               pitchMidiNumber={(() => {
-                if (instrumentType === 'drum') return (samples || [])[selectedPitchIndex!]?.noteNumber ?? selectedPitchIndex!;
-                return (melodicMinPitch) + selectedPitchIndex!;
+                if (instrumentType === 'drum')
+                  return (
+                    (samples || [])[selectedPitchIndex!]?.noteNumber ??
+                    selectedPitchIndex!
+                  );
+                return melodicMinPitch + selectedPitchIndex!;
               })()}
               activeLengthInBars={clip.activeLengthInBars}
               trackColor={trackColor}
               onClose={() => setSelectedPitchIndex(null)}
               onVelocityChange={callbacks?.onVelocityChange}
-              onPositionChange={(idx, newPos) => callbacks?.onNoteMove?.(idx, newPos, clip.notes[idx]?.noteNumber ?? 0)}
-              onDurationChange={(idx, newDur) => callbacks?.onNoteResize?.(idx, newDur)}
+              onPositionChange={(idx, newPos) =>
+                callbacks?.onNoteMove?.(
+                  idx,
+                  newPos,
+                  clip.notes[idx]?.noteNumber ?? 0
+                )
+              }
+              onDurationChange={(idx, newDur) =>
+                callbacks?.onNoteResize?.(idx, newDur)
+              }
             />
           ) : shouldShowPerformanceControls ? (
             instrumentType === 'drum' ? (
@@ -1082,7 +1117,9 @@ export const ClipEditorView = memo(function ClipEditorView({
       {showCountIn && (
         <View style={styles.countInOverlay} pointerEvents="none">
           <View style={styles.countInCircle}>
-            <Text variant="h1" color={colors.mcOrange}>{recordingCountIn}</Text>
+            <Text variant="h1" color={colors.mcOrange}>
+              {recordingCountIn}
+            </Text>
           </View>
         </View>
       )}

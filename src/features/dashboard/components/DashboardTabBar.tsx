@@ -35,7 +35,10 @@ export interface DashboardTabBarProps {
 }
 
 export const DashboardTabBar = memo(function DashboardTabBar({
-  tabs, selectedTab, onTabPress, isLandscape,
+  tabs,
+  selectedTab,
+  onTabPress,
+  isLandscape,
 }: DashboardTabBarProps) {
   const { colors } = useTheme();
   const { width, height } = useWindowDimensions();
@@ -56,7 +59,11 @@ export const DashboardTabBar = memo(function DashboardTabBar({
         accessibilityState={{ selected: isActive }}
       >
         <Icon icon={tabIcon} size={28} color={color} />
-        <Text variant="extraSmallSemiBold" color={color} style={styles.tabLabel}>
+        <Text
+          variant="extraSmallSemiBold"
+          color={color}
+          style={styles.tabLabel}
+        >
           {TAB_LABELS[tab]}
         </Text>
       </Pressable>
@@ -81,11 +88,16 @@ export const DashboardTabBar = memo(function DashboardTabBar({
 
 const styles = StyleSheet.create({
   bottomBar: {
-    flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     paddingVertical: 12,
   },
   sideBar: {
-    width: 118, paddingVertical: 40, gap: 40, alignItems: 'center',
+    width: 118,
+    paddingVertical: 40,
+    gap: 40,
+    alignItems: 'center',
   },
   tabButton: { alignItems: 'center', gap: 8, paddingHorizontal: 8 },
   tabLabel: { textAlign: 'center' },

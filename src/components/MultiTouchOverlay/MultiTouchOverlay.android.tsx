@@ -7,7 +7,11 @@
  */
 import { memo, useRef, useCallback } from 'react';
 import { View } from 'react-native';
-import type { ViewProps, LayoutChangeEvent, GestureResponderEvent } from 'react-native';
+import type {
+  ViewProps,
+  LayoutChangeEvent,
+  GestureResponderEvent,
+} from 'react-native';
 
 export interface MultiTouchOverlayProps extends ViewProps {
   rows: number;
@@ -44,48 +48,54 @@ export const MultiTouchOverlay = memo(function MultiTouchOverlay({
     return row * columns + col;
   };
 
-  const processPointers = useCallback((e: GestureResponderEvent) => {
-    const touches = e.nativeEvent.touches || [];
-    const activePointers = new Set<number>();
+  const processPointers = useCallback(
+    (e: GestureResponderEvent) => {
+      const touches = e.nativeEvent.touches || [];
+      const activePointers = new Set<number>();
 
-    for (const touch of touches) {
-      const pointerId = (touch as any).identifier ?? 0;
-      activePointers.add(pointerId);
-      const cell = touchToCell(touch.locationX, touch.locationY);
-      const prevCell = pointerCells.current.get(pointerId);
+      for (const touch of touches) {
+        const pointerId = (touch as any).identifier ?? 0;
+        activePointers.add(pointerId);
+        const cell = touchToCell(touch.locationX, touch.locationY);
+        const prevCell = pointerCells.current.get(pointerId);
 
-      if (cell !== null && cell !== prevCell) {
-        // Release previous cell if pointer moved to a new one
-        if (prevCell !== undefined) {
+        if (cell !== null && cell !== prevCell) {
+          // Release previous cell if pointer moved to a new one
+          if (prevCell !== undefined) {
+            onPadRelease?.(prevCell);
+          }
+          pointerCells.current.set(pointerId, cell);
+          onPadPress?.(cell);
+        } else if (cell === null && prevCell !== undefined) {
+          // Pointer moved outside grid
           onPadRelease?.(prevCell);
+          pointerCells.current.delete(pointerId);
         }
-        pointerCells.current.set(pointerId, cell);
-        onPadPress?.(cell);
-      } else if (cell === null && prevCell !== undefined) {
-        // Pointer moved outside grid
-        onPadRelease?.(prevCell);
-        pointerCells.current.delete(pointerId);
       }
-    }
 
-    // Release cells for pointers that are no longer active
-    for (const [pointerId, cell] of pointerCells.current) {
-      if (!activePointers.has(pointerId)) {
+      // Release cells for pointers that are no longer active
+      for (const [pointerId, cell] of pointerCells.current) {
+        if (!activePointers.has(pointerId)) {
+          onPadRelease?.(cell);
+          pointerCells.current.delete(pointerId);
+        }
+      }
+    },
+    [columns, rows, onPadPress, onPadRelease]
+  );
+
+  const onTouchEnd = useCallback(
+    (e: GestureResponderEvent) => {
+      // Release the ended pointer
+      const pointerId = (e.nativeEvent as any).identifier ?? 0;
+      const cell = pointerCells.current.get(pointerId);
+      if (cell !== undefined) {
         onPadRelease?.(cell);
         pointerCells.current.delete(pointerId);
       }
-    }
-  }, [columns, rows, onPadPress, onPadRelease]);
-
-  const onTouchEnd = useCallback((e: GestureResponderEvent) => {
-    // Release the ended pointer
-    const pointerId = (e.nativeEvent as any).identifier ?? 0;
-    const cell = pointerCells.current.get(pointerId);
-    if (cell !== undefined) {
-      onPadRelease?.(cell);
-      pointerCells.current.delete(pointerId);
-    }
-  }, [onPadRelease]);
+    },
+    [onPadRelease]
+  );
 
   return (
     <View

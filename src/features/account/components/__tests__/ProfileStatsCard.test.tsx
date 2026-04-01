@@ -9,7 +9,9 @@ function renderWithTheme(ui: React.ReactElement) {
 
 describe('ProfileStatsCard', () => {
   it('matches snapshot (dark mode)', () => {
-    const tree = renderWithTheme(<ProfileStatsCard title="Circuits" value="5" />);
+    const tree = renderWithTheme(
+      <ProfileStatsCard title="Circuits" value="5" />
+    );
     expect(tree.toJSON()).toMatchSnapshot();
   });
 
@@ -23,12 +25,16 @@ describe('ProfileStatsCard', () => {
   });
 
   it('displays title in uppercase', () => {
-    const { getByText } = renderWithTheme(<ProfileStatsCard title="circuits" value="3" />);
+    const { getByText } = renderWithTheme(
+      <ProfileStatsCard title="circuits" value="3" />
+    );
     expect(getByText('CIRCUITS')).toBeTruthy();
   });
 
   it('displays value correctly', () => {
-    const { getByText } = renderWithTheme(<ProfileStatsCard title="Lessons" value="42" />);
+    const { getByText } = renderWithTheme(
+      <ProfileStatsCard title="Lessons" value="42" />
+    );
     expect(getByText('42')).toBeTruthy();
   });
 
@@ -47,12 +53,16 @@ describe('ProfileStatsCard', () => {
   });
 
   it('renders with zero value', () => {
-    const { getByText } = renderWithTheme(<ProfileStatsCard title="Lessons" value="0" />);
+    const { getByText } = renderWithTheme(
+      <ProfileStatsCard title="Lessons" value="0" />
+    );
     expect(getByText('0')).toBeTruthy();
   });
 
   it('renders with large value', () => {
-    const { getByText } = renderWithTheme(<ProfileStatsCard title="Points" value="10000" />);
+    const { getByText } = renderWithTheme(
+      <ProfileStatsCard title="Points" value="10000" />
+    );
     expect(getByText('10000')).toBeTruthy();
   });
 });

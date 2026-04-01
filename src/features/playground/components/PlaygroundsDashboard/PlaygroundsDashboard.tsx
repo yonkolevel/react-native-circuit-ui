@@ -135,7 +135,11 @@ export const PlaygroundsDashboard = memo(function PlaygroundsDashboard({
         /* Initial load — centered spinner + text (matches Swift ProgressView + "Loading playgrounds…") */
         <View style={styles.loadingState}>
           <ActivityIndicator size="large" color={colors.mcOrange} />
-          <Text variant="small" color={colors.mcWhite3} style={styles.loadingText}>
+          <Text
+            variant="small"
+            color={colors.mcWhite3}
+            style={styles.loadingText}
+          >
             Loading playgrounds…
           </Text>
         </View>
@@ -164,7 +168,10 @@ export const PlaygroundsDashboard = memo(function PlaygroundsDashboard({
             </View>
           ) : null}
           <ScrollView
-            contentContainerStyle={[styles.list, { paddingHorizontal: padding }]}
+            contentContainerStyle={[
+              styles.list,
+              { paddingHorizontal: padding },
+            ]}
           >
             {playgrounds.map((p) => (
               <PlaygroundCard

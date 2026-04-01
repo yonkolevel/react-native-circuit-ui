@@ -39,7 +39,9 @@ export function createMockSample(overrides?: Partial<Sample>): Sample {
   };
 }
 
-export function createMockSoundBank(overrides?: Partial<SoundBankRef>): SoundBankRef {
+export function createMockSoundBank(
+  overrides?: Partial<SoundBankRef>
+): SoundBankRef {
   return {
     slug: 'analog-rytm-808',
     name: 'Analog Rytm 808 Drums',
@@ -102,14 +104,54 @@ export function createMockDrumClip(overrides?: Partial<Clip>): Clip {
       createMockNote({ noteNumber: 36, position: 2, duration: 0.25 }),
       createMockNote({ noteNumber: 38, position: 1, duration: 0.25 }),
       createMockNote({ noteNumber: 38, position: 3, duration: 0.25 }),
-      createMockNote({ noteNumber: 42, position: 0, duration: 0.25, velocity: 80 }),
-      createMockNote({ noteNumber: 42, position: 0.5, duration: 0.25, velocity: 60 }),
-      createMockNote({ noteNumber: 42, position: 1, duration: 0.25, velocity: 80 }),
-      createMockNote({ noteNumber: 42, position: 1.5, duration: 0.25, velocity: 60 }),
-      createMockNote({ noteNumber: 42, position: 2, duration: 0.25, velocity: 80 }),
-      createMockNote({ noteNumber: 42, position: 2.5, duration: 0.25, velocity: 60 }),
-      createMockNote({ noteNumber: 42, position: 3, duration: 0.25, velocity: 80 }),
-      createMockNote({ noteNumber: 42, position: 3.5, duration: 0.25, velocity: 60 }),
+      createMockNote({
+        noteNumber: 42,
+        position: 0,
+        duration: 0.25,
+        velocity: 80,
+      }),
+      createMockNote({
+        noteNumber: 42,
+        position: 0.5,
+        duration: 0.25,
+        velocity: 60,
+      }),
+      createMockNote({
+        noteNumber: 42,
+        position: 1,
+        duration: 0.25,
+        velocity: 80,
+      }),
+      createMockNote({
+        noteNumber: 42,
+        position: 1.5,
+        duration: 0.25,
+        velocity: 60,
+      }),
+      createMockNote({
+        noteNumber: 42,
+        position: 2,
+        duration: 0.25,
+        velocity: 80,
+      }),
+      createMockNote({
+        noteNumber: 42,
+        position: 2.5,
+        duration: 0.25,
+        velocity: 60,
+      }),
+      createMockNote({
+        noteNumber: 42,
+        position: 3,
+        duration: 0.25,
+        velocity: 80,
+      }),
+      createMockNote({
+        noteNumber: 42,
+        position: 3.5,
+        duration: 0.25,
+        velocity: 60,
+      }),
     ],
     ...overrides,
   });
@@ -136,9 +178,19 @@ export function createMockTrack(overrides?: Partial<Track>): Track {
   return {
     id,
     type,
-    title: type === 'drum' ? 'Drums' : type === 'melodic' ? 'Keys' : type === 'bass' ? 'Bass' : 'Audio',
+    title:
+      type === 'drum'
+        ? 'Drums'
+        : type === 'melodic'
+          ? 'Keys'
+          : type === 'bass'
+            ? 'Bass'
+            : 'Audio',
     colorHex: INSTRUMENT_COLORS[type],
-    soundBank: createMockSoundBank({ slug: `${type}-default`, name: `Default ${type}` }),
+    soundBank: createMockSoundBank({
+      slug: `${type}-default`,
+      name: `Default ${type}`,
+    }),
     clips: [],
     volume: 90,
     pan: 0,
@@ -150,20 +202,28 @@ export function createMockTrack(overrides?: Partial<Track>): Track {
 
 // ─── Song Factory ───────────────────────────────────────────────────────────
 
-export function createMockSong(overrides?: Partial<SongViewState>): SongViewState {
+export function createMockSong(
+  overrides?: Partial<SongViewState>
+): SongViewState {
   const section1 = createMockSection({ id: 1, name: 'Intro' });
   const section2 = createMockSection({ id: 2, name: 'Verse' });
 
   const drumTrack = createMockTrack({
-    id: 1, type: 'drum', title: 'Drums',
+    id: 1,
+    type: 'drum',
+    title: 'Drums',
     clips: [createMockDrumClip({ trackID: 1, sectionID: section1.id })],
   });
   const keysTrack = createMockTrack({
-    id: 2, type: 'melodic', title: 'Keys',
+    id: 2,
+    type: 'melodic',
+    title: 'Keys',
     clips: [createMockMelodyClip({ trackID: 2, sectionID: section1.id })],
   });
   const bassTrack = createMockTrack({
-    id: 3, type: 'bass', title: 'Bass',
+    id: 3,
+    type: 'bass',
+    title: 'Bass',
   });
 
   return {
@@ -172,7 +232,8 @@ export function createMockSong(overrides?: Partial<SongViewState>): SongViewStat
     tempo: 120,
     isLoopEnabled: true,
     isMetronomeEnabled: false,
-    isRecording: false, isRecordingArmed: false,
+    isRecording: false,
+    isRecordingArmed: false,
     sections: [section1, section2],
     currentSectionId: section1.id,
     tracks: [drumTrack, keysTrack, bassTrack],
@@ -186,7 +247,8 @@ export function createMockSong(overrides?: Partial<SongViewState>): SongViewStat
     redoStacks: {},
     liveRecordingNotes: {},
     isClipSettingsVisible: false,
-    showPianoNoteNames: false, recordingCountIn: null,
+    showPianoNoteNames: false,
+    recordingCountIn: null,
     // UI-only state
     currentView: 'song',
     zoomLevel: 1,
@@ -201,7 +263,9 @@ export function createMockSong(overrides?: Partial<SongViewState>): SongViewStat
 
 // ─── Playground Factory ─────────────────────────────────────────────────────
 
-export function createMockPlayground(overrides?: Partial<PlaygroundState>): PlaygroundState {
+export function createMockPlayground(
+  overrides?: Partial<PlaygroundState>
+): PlaygroundState {
   return {
     id: `playground-${++_id}`,
     name: 'My First Beat',
@@ -212,11 +276,23 @@ export function createMockPlayground(overrides?: Partial<PlaygroundState>): Play
   };
 }
 
-export function createMockPlaygroundsList(count: number = 4): PlaygroundState[] {
-  const names = ['My First Beat', 'Sunset Vibes', 'Lo-Fi Chill', 'Drum & Bass Experiment'];
+export function createMockPlaygroundsList(
+  count: number = 4
+): PlaygroundState[] {
+  const names = [
+    'My First Beat',
+    'Sunset Vibes',
+    'Lo-Fi Chill',
+    'Drum & Bass Experiment',
+  ];
   return Array.from({ length: count }, (_, i) =>
-    createMockPlayground({ id: `playground-${i + 1}`, name: names[i % names.length]! })
+    createMockPlayground({
+      id: `playground-${i + 1}`,
+      name: names[i % names.length]!,
+    })
   );
 }
 
-export function resetMockIds(): void { _id = 0; }
+export function resetMockIds(): void {
+  _id = 0;
+}

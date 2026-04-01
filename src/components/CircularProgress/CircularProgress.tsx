@@ -181,11 +181,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = memo(
             </Text>
           )}
           {clamped === 1 && showCheckMark && !showPercentage && (
-            <Text
-              variant="h3"
-              color={colors.mcGreen2}
-              style={styles.checkmark}
-            >
+            <Text variant="h3" color={colors.mcGreen2} style={styles.checkmark}>
               ✓
             </Text>
           )}

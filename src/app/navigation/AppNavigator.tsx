@@ -8,7 +8,6 @@
  */
 import { memo, useState } from 'react';
 
-
 // Feature screens
 import { WelcomeView } from '../../features/welcome';
 import { DashboardScreen } from '../../features/dashboard/screens/DashboardScreen';
@@ -33,9 +32,7 @@ export const AppNavigator = memo(function AppNavigator() {
       );
 
     case 'playground':
-      return (
-        <PlaygroundScreen onBack={() => setScreen('dashboard')} />
-      );
+      return <PlaygroundScreen onBack={() => setScreen('dashboard')} />;
 
     case 'dashboard':
     default:

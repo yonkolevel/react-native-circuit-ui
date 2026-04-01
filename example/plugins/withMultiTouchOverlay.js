@@ -5,16 +5,33 @@ const fs = require('fs');
 module.exports = function withMultiTouchOverlay(config) {
   return withXcodeProject(config, async (config) => {
     const project = config.modResults;
-    const sourceDir = path.join(__dirname, '..', '..', 'ios', 'MultiTouchOverlay');
-    const targetDir = path.join(config.modRequest.platformProjectRoot, 'example');
-    const files = ['RCTMultiTouchOverlay.swift', 'RCTMultiTouchOverlayManager.swift', 'RCTMultiTouchOverlayManager.m'];
+    const sourceDir = path.join(
+      __dirname,
+      '..',
+      '..',
+      'ios',
+      'MultiTouchOverlay'
+    );
+    const targetDir = path.join(
+      config.modRequest.platformProjectRoot,
+      'example'
+    );
+    const files = [
+      'RCTMultiTouchOverlay.swift',
+      'RCTMultiTouchOverlayManager.swift',
+      'RCTMultiTouchOverlayManager.m',
+    ];
 
     for (const file of files) {
       const src = path.join(sourceDir, file);
       const dst = path.join(targetDir, file);
       if (fs.existsSync(src)) {
         fs.copyFileSync(src, dst);
-        project.addSourceFile('example/' + file, null, project.getFirstProject().uuid);
+        project.addSourceFile(
+          'example/' + file,
+          null,
+          project.getFirstProject().uuid
+        );
       }
     }
     return config;

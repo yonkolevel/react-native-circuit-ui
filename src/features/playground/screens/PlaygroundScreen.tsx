@@ -13,22 +13,56 @@ import type { SongStore } from '../stores/playgroundStore';
 
 const noop = (() => {}) as any;
 
-interface Props { onBack?: () => void; }
+interface Props {
+  onBack?: () => void;
+}
 
-export const PlaygroundScreen = memo(function PlaygroundScreen({ onBack }: Props) {
+export const PlaygroundScreen = memo(function PlaygroundScreen({
+  onBack,
+}: Props) {
   const { colors } = useTheme();
   const mockSong = createMockSong();
 
   const useMockStore = create<SongStore>()(() => ({
     ...mockSong,
-    setPlaying: noop, setRecording: noop, setTempo: noop, toggleMetronome: noop, toggleLoop: noop,
-    setCurrentSection: noop, addSection: noop, renameSection: noop,
-    setTrackVolume: noop, setTrackPan: noop, toggleTrackMute: noop, toggleTrackSolo: noop,
-    addNote: noop, removeNote: noop, updateNote: noop, setClipNotes: noop,
-    createClip: noop, setClipLength: noop,
-    addNewTrack: noop, removeTrack: noop,
-    showSongView: noop, showAddTrackMenu: noop, showSoundBankPicker: noop, fetchSoundBanks: async () => {}, selectSoundBank: noop, previewSoundBank: noop, stopPreview: noop, confirmSoundBank: noop, undoClipEdit: noop, redoClipEdit: noop, liveNoteOn: noop, liveNoteOff: noop, showClipSettings: noop, hideClipSettings: noop, togglePianoNoteNames: noop,
-    openClipEditor: noop, setCurrentTab: noop, setMasterVolume: noop,
+    setPlaying: noop,
+    setRecording: noop,
+    setTempo: noop,
+    toggleMetronome: noop,
+    toggleLoop: noop,
+    setCurrentSection: noop,
+    addSection: noop,
+    renameSection: noop,
+    setTrackVolume: noop,
+    setTrackPan: noop,
+    toggleTrackMute: noop,
+    toggleTrackSolo: noop,
+    addNote: noop,
+    removeNote: noop,
+    updateNote: noop,
+    setClipNotes: noop,
+    createClip: noop,
+    setClipLength: noop,
+    addNewTrack: noop,
+    removeTrack: noop,
+    showSongView: noop,
+    showAddTrackMenu: noop,
+    showSoundBankPicker: noop,
+    fetchSoundBanks: async () => {},
+    selectSoundBank: noop,
+    previewSoundBank: noop,
+    stopPreview: noop,
+    confirmSoundBank: noop,
+    undoClipEdit: noop,
+    redoClipEdit: noop,
+    liveNoteOn: noop,
+    liveNoteOff: noop,
+    showClipSettings: noop,
+    hideClipSettings: noop,
+    togglePianoNoteNames: noop,
+    openClipEditor: noop,
+    setCurrentTab: noop,
+    setMasterVolume: noop,
   }));
 
   return (

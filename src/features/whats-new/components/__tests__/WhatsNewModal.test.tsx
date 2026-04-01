@@ -37,7 +37,11 @@ describe('WhatsNewModal', () => {
 
   it('renders the default title "What\'s New"', () => {
     const { getByText } = render(
-      <WhatsNewModal visible={true} items={mockItems} onDismiss={mockOnDismiss} />
+      <WhatsNewModal
+        visible={true}
+        items={mockItems}
+        onDismiss={mockOnDismiss}
+      />
     );
 
     expect(getByText("What's New")).toBeTruthy();
@@ -58,7 +62,11 @@ describe('WhatsNewModal', () => {
 
   it('renders all feature item titles', () => {
     const { getByText } = render(
-      <WhatsNewModal visible={true} items={mockItems} onDismiss={mockOnDismiss} />
+      <WhatsNewModal
+        visible={true}
+        items={mockItems}
+        onDismiss={mockOnDismiss}
+      />
     );
 
     expect(getByText('New Sound Banks')).toBeTruthy();
@@ -68,17 +76,29 @@ describe('WhatsNewModal', () => {
 
   it('renders all feature item descriptions (as subtitles)', () => {
     const { getByText } = render(
-      <WhatsNewModal visible={true} items={mockItems} onDismiss={mockOnDismiss} />
+      <WhatsNewModal
+        visible={true}
+        items={mockItems}
+        onDismiss={mockOnDismiss}
+      />
     );
 
-    expect(getByText('Explore 5 new sound banks with premium samples.')).toBeTruthy();
+    expect(
+      getByText('Explore 5 new sound banks with premium samples.')
+    ).toBeTruthy();
     expect(getByText('Lower latency and better performance.')).toBeTruthy();
-    expect(getByText('Save your favourite circuits for quick access.')).toBeTruthy();
+    expect(
+      getByText('Save your favourite circuits for quick access.')
+    ).toBeTruthy();
   });
 
   it('renders the default "Continue" action button', () => {
     const { getByText } = render(
-      <WhatsNewModal visible={true} items={mockItems} onDismiss={mockOnDismiss} />
+      <WhatsNewModal
+        visible={true}
+        items={mockItems}
+        onDismiss={mockOnDismiss}
+      />
     );
 
     expect(getByText('Continue')).toBeTruthy();
@@ -99,7 +119,11 @@ describe('WhatsNewModal', () => {
 
   it('calls onDismiss when Continue button is pressed', () => {
     const { getByTestId } = render(
-      <WhatsNewModal visible={true} items={mockItems} onDismiss={mockOnDismiss} />
+      <WhatsNewModal
+        visible={true}
+        items={mockItems}
+        onDismiss={mockOnDismiss}
+      />
     );
 
     fireEvent.press(getByTestId('whats-new-primary-action'));
@@ -108,7 +132,11 @@ describe('WhatsNewModal', () => {
 
   it('renders nothing visible when visible is false', () => {
     const { queryByText } = render(
-      <WhatsNewModal visible={false} items={mockItems} onDismiss={mockOnDismiss} />
+      <WhatsNewModal
+        visible={false}
+        items={mockItems}
+        onDismiss={mockOnDismiss}
+      />
     );
 
     // Modal with visible=false doesn't render children
@@ -126,7 +154,11 @@ describe('WhatsNewModal', () => {
     ];
 
     const { getByText } = render(
-      <WhatsNewModal visible={true} items={singleItem} onDismiss={mockOnDismiss} />
+      <WhatsNewModal
+        visible={true}
+        items={singleItem}
+        onDismiss={mockOnDismiss}
+      />
     );
 
     expect(getByText('One Feature')).toBeTruthy();
@@ -144,7 +176,11 @@ describe('WhatsNewModal', () => {
 
   it('renders icon placeholders for each item', () => {
     const { getAllByTestId } = render(
-      <WhatsNewModal visible={true} items={mockItems} onDismiss={mockOnDismiss} />
+      <WhatsNewModal
+        visible={true}
+        items={mockItems}
+        onDismiss={mockOnDismiss}
+      />
     );
 
     const icons = getAllByTestId('whats-new-icon');

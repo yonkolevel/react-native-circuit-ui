@@ -19,18 +19,37 @@ export interface FeaturedCardProps {
 }
 
 export const FeaturedCard = memo(function FeaturedCard({
-  title, description, imageUrl, textColor, onPress,
+  title,
+  description,
+  imageUrl,
+  textColor,
+  onPress,
 }: FeaturedCardProps) {
   const { colors } = useTheme();
   const tColor = textColor || colors.mcWhite;
 
   return (
-    <Pressable onPress={onPress} style={styles.container} accessibilityRole="button" accessibilityLabel={title}>
-      <ImageBackground source={{ uri: imageUrl }} style={styles.bg} resizeMode="cover">
+    <Pressable
+      onPress={onPress}
+      style={styles.container}
+      accessibilityRole="button"
+      accessibilityLabel={title}
+    >
+      <ImageBackground
+        source={{ uri: imageUrl }}
+        style={styles.bg}
+        resizeMode="cover"
+      >
         <View style={styles.content}>
-          <Text variant="h4" color={tColor} style={styles.title}>{title}</Text>
-          <Text variant="labelRegular3" color={tColor}>{description}</Text>
-          <Text variant="buttonLabelSemiBold" color={colors.mcBlue}>LEARN MORE</Text>
+          <Text variant="h4" color={tColor} style={styles.title}>
+            {title}
+          </Text>
+          <Text variant="labelRegular3" color={tColor}>
+            {description}
+          </Text>
+          <Text variant="buttonLabelSemiBold" color={colors.mcBlue}>
+            LEARN MORE
+          </Text>
         </View>
       </ImageBackground>
     </Pressable>

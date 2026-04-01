@@ -48,7 +48,15 @@ export interface ChapterStep {
   contentBlocks: ContentBlock[];
 }
 
-export type ContentBlockType = 'text' | 'image' | 'video' | 'audio' | 'pianoRoll' | 'pianoKeys' | 'drumPads' | 'question';
+export type ContentBlockType =
+  | 'text'
+  | 'image'
+  | 'video'
+  | 'audio'
+  | 'pianoRoll'
+  | 'pianoKeys'
+  | 'drumPads'
+  | 'question';
 
 export interface ContentBlock {
   id: string;

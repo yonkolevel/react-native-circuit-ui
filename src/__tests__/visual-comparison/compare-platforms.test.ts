@@ -65,7 +65,7 @@ const COMPARISONS: ComparisonConfig[] = [
     iosFile: '03-songview.png',
     androidFile: 'songview_current.png',
     // Raised: SongView/SongToolbar/SongMixerTabBar migrated to useSongContext — recapture screenshots
-    threshold: 0.30,
+    threshold: 0.3,
   },
   {
     name: 'clipeditor-drum',
@@ -89,7 +89,7 @@ const COMPARISONS: ComparisonConfig[] = [
     iosFile: '05-dashboard.png',
     androidFile: 'dashboard_current.png',
     // Raised: SongViewState type gained currentTab field — recapture screenshots
-    threshold: 0.20,
+    threshold: 0.2,
   },
   {
     name: 'noteprecision-panel',

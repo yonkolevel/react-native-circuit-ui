@@ -15,16 +15,23 @@ import { SongStoreProvider } from '../../../stores/playgroundStore';
 import type { SongStore } from '../../../stores/playgroundStore';
 import { createMockSong, resetMockIds } from '../../../mocks';
 
-function createTestStore(overrides: Partial<ReturnType<typeof createMockSong>> = {}) {
+function createTestStore(
+  overrides: Partial<ReturnType<typeof createMockSong>> = {}
+) {
   const song = createMockSong(overrides);
   return create<SongStore>()((set) => ({
     ...song,
     currentTab: (overrides as any).currentTab ?? 'song',
     // Actions
-    setRecording: jest.fn(), setPlaying: jest.fn((playing) => set({ isPlaying: playing })),
+    setRecording: jest.fn(),
+    setPlaying: jest.fn((playing) => set({ isPlaying: playing })),
     setTempo: jest.fn(),
-    toggleMetronome: jest.fn(() => set((s) => ({ isMetronomeEnabled: !s.isMetronomeEnabled }))),
-    toggleLoop: jest.fn(() => set((s) => ({ isLoopEnabled: !s.isLoopEnabled }))),
+    toggleMetronome: jest.fn(() =>
+      set((s) => ({ isMetronomeEnabled: !s.isMetronomeEnabled }))
+    ),
+    toggleLoop: jest.fn(() =>
+      set((s) => ({ isLoopEnabled: !s.isLoopEnabled }))
+    ),
     setCurrentSection: jest.fn(),
     addSection: jest.fn(),
     renameSection: jest.fn(),
@@ -47,19 +54,27 @@ function createTestStore(overrides: Partial<ReturnType<typeof createMockSong>> =
     selectSoundBank: jest.fn(),
     previewSoundBank: jest.fn(),
     stopPreview: jest.fn(),
-    confirmSoundBank: jest.fn(), undoClipEdit: jest.fn(), redoClipEdit: jest.fn(), liveNoteOn: jest.fn(), liveNoteOff: jest.fn(), showClipSettings: jest.fn(), hideClipSettings: jest.fn(), togglePianoNoteNames: jest.fn(),
+    confirmSoundBank: jest.fn(),
+    undoClipEdit: jest.fn(),
+    redoClipEdit: jest.fn(),
+    liveNoteOn: jest.fn(),
+    liveNoteOff: jest.fn(),
+    showClipSettings: jest.fn(),
+    hideClipSettings: jest.fn(),
+    togglePianoNoteNames: jest.fn(),
     openClipEditor: jest.fn(),
     setCurrentTab: jest.fn((tab: string) => set({ currentTab: tab as any })),
     setMasterVolume: jest.fn(),
   }));
 }
 
-function renderWithStore(ui: React.ReactElement, store: ReturnType<typeof createTestStore>) {
+function renderWithStore(
+  ui: React.ReactElement,
+  store: ReturnType<typeof createTestStore>
+) {
   return render(
     <ThemeProvider initialMode="dark">
-      <SongStoreProvider store={store as any}>
-        {ui}
-      </SongStoreProvider>
+      <SongStoreProvider store={store as any}>{ui}</SongStoreProvider>
     </ThemeProvider>
   );
 }

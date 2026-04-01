@@ -37,7 +37,11 @@ export interface DiscoverViewProps {
 }
 
 export const DiscoverView = memo(function DiscoverView({
-  status, feed, onRetry: _onRetry, renderCircuitCard, renderFeatured,
+  status,
+  feed,
+  onRetry: _onRetry,
+  renderCircuitCard,
+  renderFeatured,
 }: DiscoverViewProps) {
   const { colors } = useTheme();
 
@@ -52,7 +56,9 @@ export const DiscoverView = memo(function DiscoverView({
   if (status === 'error') {
     return (
       <View style={styles.centered}>
-        <Text variant="body" color={colors.mcWhite2}>Unable to load content</Text>
+        <Text variant="body" color={colors.mcWhite2}>
+          Unable to load content
+        </Text>
       </View>
     );
   }
@@ -65,8 +71,14 @@ export const DiscoverView = memo(function DiscoverView({
       {/* Recommended */}
       {feed.recommended.length > 0 && (
         <View style={styles.section}>
-          <Text variant="h4" style={styles.sectionTitle}>Recommended</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalList}>
+          <Text variant="h4" style={styles.sectionTitle}>
+            Recommended
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalList}
+          >
             {feed.recommended.map((circuit, i) => (
               <View key={circuit.id || i}>{renderCircuitCard?.(circuit)}</View>
             ))}
@@ -77,8 +89,14 @@ export const DiscoverView = memo(function DiscoverView({
       {/* Popular */}
       {feed.popular.length > 0 && (
         <View style={styles.section}>
-          <Text variant="h4" style={styles.sectionTitle}>Popular</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalList}>
+          <Text variant="h4" style={styles.sectionTitle}>
+            Popular
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalList}
+          >
             {feed.popular.map((circuit, i) => (
               <View key={circuit.id || i}>{renderCircuitCard?.(circuit)}</View>
             ))}

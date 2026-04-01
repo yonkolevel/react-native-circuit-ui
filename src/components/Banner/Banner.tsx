@@ -5,12 +5,7 @@
  * SwiftUI uses .mask(RoundBottomShape(radius: 10)) and maxHeight: 370.
  */
 import React, { memo, useState } from 'react';
-import {
-  View,
-  Image,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Image, StyleSheet, ActivityIndicator } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { useTheme } from '../../theme';
 

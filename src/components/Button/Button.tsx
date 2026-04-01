@@ -6,12 +6,7 @@
  * Press-state color inversion matches SwiftUI ButtonStyle implementations.
  */
 import React, { memo, useCallback } from 'react';
-import {
-  Pressable,
-  StyleSheet,
-  ActivityIndicator,
-  View,
-} from 'react-native';
+import { Pressable, StyleSheet, ActivityIndicator, View } from 'react-native';
 import type { PressableProps, StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../Text';
 import { useTheme } from '../../theme';
@@ -29,7 +24,10 @@ export type ButtonVariant =
 
 export type ButtonSize = 'medium' | 'large';
 
-export interface ButtonProps extends Omit<PressableProps, 'style' | 'children'> {
+export interface ButtonProps extends Omit<
+  PressableProps,
+  'style' | 'children'
+> {
   /** Button variant — matches SwiftUI ButtonPrimaryStyle etc. */
   variant?: ButtonVariant;
   /** Size — medium matches standard padding, large matches ButtonPrimaryLargeStyle */
@@ -82,9 +80,10 @@ export const Button: React.FC<ButtonProps> = memo(function Button({
       // Background
       let bg: string;
       if (isDisabled) {
-        bg = variant === 'secondary' || variant === 'outline'
-          ? 'transparent'
-          : colors.mcBlack2;
+        bg =
+          variant === 'secondary' || variant === 'outline'
+            ? 'transparent'
+            : colors.mcBlack2;
       } else {
         switch (variant) {
           case 'primary':
@@ -94,9 +93,7 @@ export const Button: React.FC<ButtonProps> = memo(function Button({
             bg = pressed ? buttonColor : 'transparent';
             break;
           case 'normal':
-            bg = pressed
-              ? hexToRgba(colors.mcBlack4, 0.8)
-              : colors.mcBlack4;
+            bg = pressed ? hexToRgba(colors.mcBlack4, 0.8) : colors.mcBlack4;
             break;
           case 'outline':
             bg = 'transparent';

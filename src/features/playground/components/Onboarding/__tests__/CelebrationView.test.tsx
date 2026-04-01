@@ -27,7 +27,11 @@ describe('CelebrationView', () => {
 
   it('renders custom title', () => {
     const { getByText } = render(
-      <CelebrationView visible={true} title="Amazing!" onDismiss={mockOnDismiss} />
+      <CelebrationView
+        visible={true}
+        title="Amazing!"
+        onDismiss={mockOnDismiss}
+      />
     );
     expect(getByText('Amazing!')).toBeTruthy();
   });
@@ -41,7 +45,11 @@ describe('CelebrationView', () => {
 
   it('renders custom subtitle', () => {
     const { getByText } = render(
-      <CelebrationView visible={true} subtitle="Well done champ" onDismiss={mockOnDismiss} />
+      <CelebrationView
+        visible={true}
+        subtitle="Well done champ"
+        onDismiss={mockOnDismiss}
+      />
     );
     expect(getByText('Well done champ')).toBeTruthy();
   });
@@ -55,7 +63,11 @@ describe('CelebrationView', () => {
 
   it('renders custom button title', () => {
     const { getByText } = render(
-      <CelebrationView visible={true} buttonTitle="Let's Go" onDismiss={mockOnDismiss} />
+      <CelebrationView
+        visible={true}
+        buttonTitle="Let's Go"
+        onDismiss={mockOnDismiss}
+      />
     );
     expect(getByText("Let's Go")).toBeTruthy();
   });

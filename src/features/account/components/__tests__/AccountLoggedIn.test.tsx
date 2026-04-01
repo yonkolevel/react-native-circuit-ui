@@ -45,39 +45,46 @@ describe('AccountLoggedIn', () => {
   });
 
   it('displays profile name', () => {
-    const { getByText } = renderWithTheme(<AccountLoggedIn {...defaultProps} />);
+    const { getByText } = renderWithTheme(
+      <AccountLoggedIn {...defaultProps} />
+    );
     expect(getByText('Test User')).toBeTruthy();
   });
 
   it('displays profile email', () => {
-    const { getByText } = renderWithTheme(<AccountLoggedIn {...defaultProps} />);
+    const { getByText } = renderWithTheme(
+      <AccountLoggedIn {...defaultProps} />
+    );
     expect(getByText('test@example.com')).toBeTruthy();
   });
 
   it('displays stats with correct values', () => {
-    const { getByLabelText } = renderWithTheme(<AccountLoggedIn {...defaultProps} />);
+    const { getByLabelText } = renderWithTheme(
+      <AccountLoggedIn {...defaultProps} />
+    );
     expect(getByLabelText('Circuits: 5')).toBeTruthy();
     expect(getByLabelText('Lessons: 12')).toBeTruthy();
     expect(getByLabelText('Trophies: 3')).toBeTruthy();
   });
 
   it('displays section labels', () => {
-    const { getByText } = renderWithTheme(<AccountLoggedIn {...defaultProps} />);
+    const { getByText } = renderWithTheme(
+      <AccountLoggedIn {...defaultProps} />
+    );
     expect(getByText('ID')).toBeTruthy();
     expect(getByText('PROGRESS SUMMARY')).toBeTruthy();
   });
 
   it('displays Profile header', () => {
-    const { getByText } = renderWithTheme(<AccountLoggedIn {...defaultProps} />);
+    const { getByText } = renderWithTheme(
+      <AccountLoggedIn {...defaultProps} />
+    );
     expect(getByText('Profile')).toBeTruthy();
   });
 
   it('renders without optional callbacks', () => {
     const { getByText } = renderWithTheme(
-      <AccountLoggedIn
-        profile={mockProfile}
-        achievements={mockAchievements}
-      />
+      <AccountLoggedIn profile={mockProfile} achievements={mockAchievements} />
     );
     expect(getByText('Test User')).toBeTruthy();
   });
@@ -100,7 +107,11 @@ describe('AccountLoggedIn', () => {
     const { getByLabelText } = renderWithTheme(
       <AccountLoggedIn
         {...defaultProps}
-        achievements={{ completedCircuitCount: 0, completedLessonsCount: 0, achievedTrophyCount: 0 }}
+        achievements={{
+          completedCircuitCount: 0,
+          completedLessonsCount: 0,
+          achievedTrophyCount: 0,
+        }}
       />
     );
     expect(getByLabelText('Circuits: 0')).toBeTruthy();
@@ -112,7 +123,11 @@ describe('AccountLoggedIn', () => {
     const { getByLabelText } = renderWithTheme(
       <AccountLoggedIn
         {...defaultProps}
-        achievements={{ completedCircuitCount: 100, completedLessonsCount: 500, achievedTrophyCount: 50 }}
+        achievements={{
+          completedCircuitCount: 100,
+          completedLessonsCount: 500,
+          achievedTrophyCount: 50,
+        }}
       />
     );
     expect(getByLabelText('Circuits: 100')).toBeTruthy();
