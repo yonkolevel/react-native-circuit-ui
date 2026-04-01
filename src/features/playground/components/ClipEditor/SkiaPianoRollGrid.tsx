@@ -325,6 +325,10 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
         const pitchIdx = totalPitches - 1 - rowIdx;
         if (pitchIdx >= 0 && pitchIdx < totalPitches) {
           const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
+          // Debug: log drum note mapping
+          if (isDrum) {
+            console.log(`[DrumDebug] Tap row=${rowIdx}, pitchIdx=${pitchIdx}, noteNumber=${noteNumber}, sample=${(samples ?? [])[pitchIdx]?.name ?? 'N/A'}`);
+          }
           onGridTap(noteNumber, position);
         }
       }
