@@ -33,9 +33,6 @@ import {
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withRepeat,
-  withTiming,
-  Easing,
   runOnJS,
 } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
@@ -218,50 +215,28 @@ const getNoteName = (pitch: number): string => {
   return `${noteName}${octave}`;
 };
 
-// ─── Playhead (UI thread, 60fps via useFrameCallback) ───────────────────────
+// ─── Playhead ───────────────────────────────────────────────────────────────
 
 /**
- * Smooth playhead — fire-and-forget native animation.
+ * Playhead driven by the sequencer clock. One source of truth.
  *
- * Uses withRepeat(withTiming(..., linear)) — the native animation driver
- * handles all interpolation. Zero worklets, zero frame callbacks, zero
- * main thread work during animation. Gestures are never blocked.
+ * Playhead driven by the transport clock (DAW-style frame-pull model).
  *
- * One loop = playhead travels from left edge to right edge of the clip.
- * Duration = (clipBeats / (tempo/60)) * 1000 ms.
+ * The parent runs a requestAnimationFrame loop that reads the transport
+ * clock at display frame rate (~60fps) and writes the pixel position
+ * directly to a SharedValue. No React props updated at 60fps, no
+ * withTiming interpolation, no events from the audio engine.
+ *
+ * The playhead position IS the sequencer position — direct and accurate.
  */
 const PlayheadLine = memo(function PlayheadLine({
-  beatWidth,
-  clipBeats,
-  isPlaying,
-  tempo,
+  posX,
   color,
 }: {
-  beatWidth: number;
-  clipBeats: number;
-  isPlaying?: boolean;
-  tempo: number;
+  /** Pixel X position driven by rAF loop reading the transport clock. */
+  posX: Animated.SharedValue<number>;
   color: string;
 }) {
-  const posX = useSharedValue(0);
-
-  const maxX = clipBeats * beatWidth;
-  const loopMs =
-    clipBeats > 0 && tempo > 0 ? (clipBeats / (tempo / 60)) * 1000 : 1000;
-
-  useEffect(() => {
-    if (isPlaying && maxX > 0) {
-      posX.value = 0;
-      posX.value = withRepeat(
-        withTiming(maxX, { duration: loopMs, easing: Easing.linear }),
-        -1, // infinite
-        false // don't reverse — jump back to 0
-      );
-    } else {
-      posX.value = 0;
-    }
-  }, [isPlaying, maxX, loopMs]);
-
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: posX.value }],
   }));
@@ -325,7 +300,7 @@ const PianoRollGrid = memo(function PianoRollGrid({
 
   // Calculate pitch range: drums use sample count, melodic/bass use fixed 2-octave range
   const totalPitches = isDrum
-    ? (samples ?? []).length || 12  // Use exact sample count (no minimum)
+    ? (samples ?? []).length || 12 // Use exact sample count (no minimum)
     : MELODIC_PITCH_COUNT;
 
   // iOS: baseWidth = availableGridWidth / 16 (steps per bar)
@@ -873,7 +848,10 @@ export interface ClipEditorViewProps {
   isPlaying?: boolean;
   isRecording?: boolean;
   isMetronomeEnabled?: boolean;
-  playheadPosition?: number;
+  /** Returns current playhead beat position from the transport clock.
+   *  Called at ~60fps by internal rAF loop during playback.
+   *  Replaces the old beatPosition event-driven prop with DAW-style frame-pull. */
+  getBeatPosition?: () => number;
   canUndo?: boolean;
   canRedo?: boolean;
   callbacks?: ClipEditorCallbacks;
@@ -912,6 +890,7 @@ export const ClipEditorView = memo(function ClipEditorView({
   isPlaying,
   isRecording,
   isMetronomeEnabled,
+  getBeatPosition,
   canUndo = false,
   canRedo = false,
   callbacks,
@@ -944,6 +923,32 @@ export const ClipEditorView = memo(function ClipEditorView({
   const beatWidth = ((screenWidth - LABEL_COL_WIDTH) / 16) * zoom * 4;
   const trackColor = clip.colorHex;
   const samplesList = samples || [];
+
+  // ── Playhead transport clock (DAW-style frame-pull) ──────────────────────
+  // The playhead reads the transport clock at display frame rate via rAF,
+  // writing the pixel position directly to a SharedValue. No React props
+  // at 60fps, no withTiming interpolation, no audio engine events.
+  const clipBeats = clip.activeLengthInBars * 4;
+  const playheadPosX = useSharedValue(0);
+
+  useEffect(() => {
+    if (!isPlaying || !getBeatPosition) {
+      playheadPosX.value = 0;
+      return;
+    }
+
+    let rafId: number;
+    const tick = () => {
+      const beat = getBeatPosition();
+      const wrapped = clipBeats > 0 ? beat % clipBeats : 0;
+      playheadPosX.value = wrapped * beatWidth;
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(rafId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- playheadPosX is a stable SharedValue ref
+  }, [isPlaying, getBeatPosition, clipBeats, beatWidth]);
 
   // iOS: PerformanceControlsView visible when config.isPerformanceControlsVisible && !isExpanded
   const shouldShowPerformanceControls =
@@ -1013,13 +1018,7 @@ export const ClipEditorView = memo(function ClipEditorView({
             onZoomChange={(z) => setZoom(Math.max(1, Math.min(3, z)))}
             showNoteLabels={showPianoNoteNames}
           />
-          <PlayheadLine
-            beatWidth={beatWidth}
-            clipBeats={clip.activeLengthInBars * 4}
-            isPlaying={isPlaying}
-            tempo={tempo}
-            color={colors.mcWhite}
-          />
+          <PlayheadLine posX={playheadPosX} color={colors.mcWhite} />
         </View>
 
         {/* Clip Length Bar */}

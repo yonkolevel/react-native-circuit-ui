@@ -43,7 +43,7 @@ describe('ClipEditorView snapshots', () => {
         clip={clip}
         instrumentType="drum"
         isPlaying
-        playheadPosition={2.5}
+        getBeatPosition={() => 2.5}
       />
     );
     expect(tree.toJSON()).toMatchSnapshot();
