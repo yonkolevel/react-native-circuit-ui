@@ -10,7 +10,6 @@
  *   const { isVisible, items, didFinish } = useWhatsNewStore();
  *   <WhatsNewModal visible={isVisible} items={items} onDismiss={didFinish} />
  */
-import React from 'react';
 import { Modal } from 'react-native';
 import type { WhatsNewItem, WhatsNew as WhatsNewModel } from '../types';
 import { WhatsNewView } from './WhatsNewView';

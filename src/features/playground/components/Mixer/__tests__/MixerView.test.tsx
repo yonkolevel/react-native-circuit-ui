@@ -22,6 +22,7 @@ function createTestStore(tracks: ReturnType<typeof createMockTrack>[]) {
     setCurrentSection: noop,
     addSection: noop,
     renameSection: noop,
+    removeSection: noop,
     setTrackVolume: noop,
     setTrackPan: noop,
     toggleTrackMute: noop,

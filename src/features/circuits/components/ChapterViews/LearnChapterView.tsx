@@ -2,7 +2,7 @@
  * LearnChapterView — Renders a learn chapter step by step.
  * Each step has content blocks rendered via ContentBlockRenderer.
  */
-import React, { memo, useState } from 'react';
+import { memo, useState } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { makeSpacing } from '../../../../theme/spacing';

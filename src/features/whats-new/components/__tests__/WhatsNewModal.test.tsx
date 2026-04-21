@@ -2,7 +2,6 @@
  * Tests for WhatsNewModal — legacy simple API.
  * Verifies backward compatibility with whatsNewStore's WhatsNewItem interface.
  */
-import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { WhatsNewModal } from '../WhatsNewModal';
 import type { WhatsNewItem } from '../../types';

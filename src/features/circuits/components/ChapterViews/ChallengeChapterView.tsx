@@ -1,7 +1,7 @@
 /**
  * ChallengeChapterView — Quiz/challenge with multiple choice questions.
  */
-import React, { memo, useState } from 'react';
+import { memo, useState } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { makeSpacing } from '../../../../theme/spacing';
@@ -79,7 +79,6 @@ export const ChallengeChapterView = memo(function ChallengeChapterView({
 
   const handleNext = () => {
     if (isLast) {
-      const finalScore = score + (isCorrect ? 0 : 0); // score already updated
       setFinished(true);
     } else {
       setQIndex(qIndex + 1);

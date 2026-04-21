@@ -1,4 +1,3 @@
-import React from 'react';
 import { Text } from 'react-native';
 import TestRenderer from 'react-test-renderer';
 import { TrophyAwardedModal } from '../TrophyAwardedModal';

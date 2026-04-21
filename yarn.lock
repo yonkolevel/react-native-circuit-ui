@@ -2270,26 +2270,37 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*":
-  version "22.13.10"
-  dependencies:
-    undici-types "~6.20.0"
-
-"@types/node@20.5.1":
+"@types/node@*", "@types/node@20.5.1":
   version "20.5.1"
 
 "@types/normalize-package-data@^2.4.0", "@types/normalize-package-data@^2.4.3":
   version "2.4.4"
 
-"@types/pixelmatch@*":
+"@types/pixelmatch@*", "@types/pixelmatch@^5.2.6":
   version "5.2.6"
+  resolved "https://registry.npmjs.org/@types/pixelmatch/-/pixelmatch-5.2.6.tgz"
+  integrity sha512-wC83uexE5KGuUODn6zkm9gMzTwdY5L0chiK+VrKcDfEjzxh1uadlWTvOmAbCpnM9zx/Ww3f8uKlYQVnO/TrqVg==
+  dependencies:
+    "@types/node" "*"
+
+"@types/pngjs@^6.0.5":
+  version "6.0.5"
+  resolved "https://registry.npmjs.org/@types/pngjs/-/pngjs-6.0.5.tgz"
+  integrity sha512-0k5eKfrA83JOZPppLtS2C7OUtyNAl2wKNxfyYl9Q5g9lPkgBl/9hNyAu6HuEH2J4XmIv2znEpkDd0SaZVxW6iQ==
   dependencies:
     "@types/node" "*"
 
 "@types/prop-types@*":
   version "15.7.14"
 
-"@types/react@^18.2.44":
+"@types/react-test-renderer@^18.3.1":
+  version "18.3.1"
+  resolved "https://registry.npmjs.org/@types/react-test-renderer/-/react-test-renderer-18.3.1.tgz"
+  integrity sha512-vAhnk0tG2eGa37lkU9+s5SoroCsRI08xnsWFiAXOuPH2jqzMbcXvKExXViPi1P5fIklDeCvXqyrdmipFaSkZrA==
+  dependencies:
+    "@types/react" "^18"
+
+"@types/react@^18", "@types/react@^18.2.44":
   version "18.3.18"
   dependencies:
     "@types/prop-types" "*"

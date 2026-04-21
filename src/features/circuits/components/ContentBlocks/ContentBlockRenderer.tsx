@@ -2,7 +2,7 @@
  * ContentBlockRenderer — Renders a ContentBlock by type.
  * Maps the discriminated union to the correct component.
  */
-import React, { memo, useState } from 'react';
+import { memo, useState } from 'react';
 import { View, Image, Pressable, StyleSheet } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { makeSpacing } from '../../../../theme/spacing';
@@ -116,7 +116,7 @@ const ImageBlock = memo(function ImageBlock({
 
 // ── Video (placeholder) ─────────────────────────────────────────────────────
 
-const VideoBlock = memo(function VideoBlock({ path }: { path: string }) {
+const VideoBlock = memo(function VideoBlock(_props: { path: string }) {
   return (
     <View style={styles.videoPlaceholder} accessibilityLabel="Video">
       <Text style={styles.videoIcon}>▶</Text>

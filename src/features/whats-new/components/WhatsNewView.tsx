@@ -16,7 +16,7 @@
  *     onDismiss={() => setVisible(false)}
  *   />
  */
-import React, { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -203,16 +203,19 @@ export function WhatsNewView({
   onDismiss,
 }: WhatsNewViewProps) {
   const layout = resolveLayout(layoutOverride);
-  const primary: Required<WhatsNewPrimaryAction> = {
-    title: whatsNew.primaryAction?.title ?? DEFAULT_PRIMARY_TITLE,
-    backgroundColor:
-      whatsNew.primaryAction?.backgroundColor ?? DEFAULT_PRIMARY_BG,
-    foregroundColor:
-      whatsNew.primaryAction?.foregroundColor ?? DEFAULT_PRIMARY_FG,
-    hapticFeedback:
-      whatsNew.primaryAction?.hapticFeedback ?? (undefined as any),
-    onDismiss: whatsNew.primaryAction?.onDismiss ?? (undefined as any),
-  };
+  const primary: Required<WhatsNewPrimaryAction> = useMemo(
+    () => ({
+      title: whatsNew.primaryAction?.title ?? DEFAULT_PRIMARY_TITLE,
+      backgroundColor:
+        whatsNew.primaryAction?.backgroundColor ?? DEFAULT_PRIMARY_BG,
+      foregroundColor:
+        whatsNew.primaryAction?.foregroundColor ?? DEFAULT_PRIMARY_FG,
+      hapticFeedback:
+        whatsNew.primaryAction?.hapticFeedback ?? (undefined as any),
+      onDismiss: whatsNew.primaryAction?.onDismiss ?? (undefined as any),
+    }),
+    [whatsNew.primaryAction]
+  );
 
   const handlePrimaryPress = useCallback(() => {
     // Fire-and-forget async work (haptics + persistence)

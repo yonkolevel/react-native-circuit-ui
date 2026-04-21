@@ -1,7 +1,6 @@
 /**
  * Tests for WhatsNewView — full WhatsNewKit-style component.
  */
-import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { WhatsNewView } from '../WhatsNewView';
 import { createInMemoryVersionStore } from '../../store/AsyncStorageVersionStore';

@@ -4,7 +4,7 @@
  * MDC-271: Full-screen modal with confetti effect, emoji, title,
  * subtitle, and dismiss button.
  */
-import React, { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-interface CelebrationViewProps {
+export interface CelebrationViewProps {
   /** Whether the modal is visible */
   visible: boolean;
   /** Title text. Default: "You did it! 🎉" */

@@ -6,7 +6,6 @@
 import type {
   WhatsNew,
   WhatsNewCollection,
-  WhatsNewVersion,
   WhatsNewVersionStore,
 } from '../types';
 import { compareVersions } from './WhatsNewVersion';

@@ -13,7 +13,6 @@
  *     <App />
  *   </WhatsNewSheet>
  */
-import React from 'react';
 import { Modal } from 'react-native';
 import type { WhatsNewSheetProps } from '../types';
 import { WhatsNewView } from './WhatsNewView';

@@ -4,4 +4,4 @@ export type {
   OnboardingCelebrationProps,
 } from './OnboardingSheet';
 export { CelebrationView } from './CelebrationView';
-export type { default as CelebrationViewProps } from './CelebrationView';
+export type { CelebrationViewProps } from './CelebrationView';

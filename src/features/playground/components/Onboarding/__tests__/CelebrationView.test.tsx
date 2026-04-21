@@ -2,7 +2,6 @@
  * Tests for CelebrationView — playground onboarding celebration modal.
  * MDC-271: Modal with confetti, title, subtitle, and dismiss button.
  */
-import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { CelebrationView } from '../CelebrationView';
 

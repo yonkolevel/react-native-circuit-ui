@@ -1,7 +1,6 @@
 /**
  * Tests for WhatsNewSheet — auto-presenting modal wrapper.
  */
-import React from 'react';
 import { render } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import { WhatsNewSheet } from '../WhatsNewSheet';

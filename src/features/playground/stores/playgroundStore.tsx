@@ -47,6 +47,7 @@ export interface SongActions {
   setCurrentSection: (sectionId: number) => void;
   addSection: () => void;
   renameSection: (sectionId: number, name: string) => void;
+  removeSection: (sectionId: number) => void;
 
   // Mixer
   setTrackVolume: (trackId: number, volume: number) => void;

@@ -33,6 +33,7 @@ export const PlaygroundScreen = memo(function PlaygroundScreen({
     setCurrentSection: noop,
     addSection: noop,
     renameSection: noop,
+    removeSection: noop,
     setTrackVolume: noop,
     setTrackPan: noop,
     toggleTrackMute: noop,

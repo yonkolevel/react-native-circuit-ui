@@ -48,6 +48,7 @@ function createMockStore(song: ReturnType<typeof createMockSong>) {
     setCurrentSection: noop,
     addSection: noop,
     renameSection: noop,
+    removeSection: noop,
     setTrackVolume: noop,
     setTrackPan: noop,
     toggleTrackMute: noop,

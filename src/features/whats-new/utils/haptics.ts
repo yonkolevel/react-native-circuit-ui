@@ -5,7 +5,10 @@
  */
 import type { WhatsNewHapticFeedback } from '../types';
 
-let Haptics: typeof import('expo-haptics') | null = null;
+// Typed as `any` so consumers don't have to install expo-haptics at build
+// time. The package is an optional peer dep — if present at runtime the
+// require() succeeds, otherwise we no-op.
+let Haptics: any = null;
 
 try {
   Haptics = require('expo-haptics');

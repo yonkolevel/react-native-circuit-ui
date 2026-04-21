@@ -1,4 +1,3 @@
-import React from 'react';
 import { Text } from 'react-native';
 import TestRenderer from 'react-test-renderer';
 import { TrophyDetailModal } from '../TrophyDetailModal';
@@ -62,7 +61,7 @@ describe('TrophyDetailModal', () => {
     const pressables = renderer.root.findAllByProps({
       accessibilityLabel: 'Previous trophy',
     });
-    expect(pressables[0].props.disabled).toBe(true);
+    expect(pressables[0]?.props.disabled).toBe(true);
   });
 
   it('disables next when hasNext is false', () => {
@@ -80,7 +79,7 @@ describe('TrophyDetailModal', () => {
     const pressables = renderer.root.findAllByProps({
       accessibilityLabel: 'Next trophy',
     });
-    expect(pressables[0].props.disabled).toBe(true);
+    expect(pressables[0]?.props.disabled).toBe(true);
   });
 
   it('returns null when trophy is null', () => {

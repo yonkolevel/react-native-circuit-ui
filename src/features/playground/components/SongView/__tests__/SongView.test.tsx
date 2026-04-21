@@ -35,6 +35,7 @@ function createTestStore(
     setCurrentSection: jest.fn(),
     addSection: jest.fn(),
     renameSection: jest.fn(),
+    removeSection: jest.fn(),
     setTrackVolume: jest.fn(),
     setTrackPan: jest.fn(),
     toggleTrackMute: jest.fn(),
