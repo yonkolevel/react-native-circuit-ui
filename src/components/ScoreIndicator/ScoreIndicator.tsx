@@ -27,12 +27,13 @@ export interface ScoreIndicatorProps {
   color?: string;
   /** Custom style for the container */
   style?: StyleProp<ViewStyle>;
+  a11yId?: string;
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export const ScoreIndicator: React.FC<ScoreIndicatorProps> = memo(
-  function ScoreIndicator({ score, max = 3, size = 20, color, style }) {
+  function ScoreIndicator({ score, max = 3, size = 20, color, style, a11yId }) {
     const { colors } = useTheme();
     const starColor = color || colors.mcWhite;
 
@@ -69,6 +70,7 @@ export const ScoreIndicator: React.FC<ScoreIndicatorProps> = memo(
           now: score ?? 0,
           text: accessibilityText,
         }}
+        testID={a11yId}
       >
         {stars}
       </View>

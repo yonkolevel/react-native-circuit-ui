@@ -31,17 +31,29 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 // ─── Props ──────────────────────────────────────────────────────────────────
 
+export interface SongToolbarTestIDs {
+  container?: string;
+  playButton?: string;
+  loopButton?: string;
+  metronomeButton?: string;
+  backButton?: string;
+  settingsButton?: string;
+  bpmButton?: string;
+}
+
 export interface SongToolbarProps {
   /** Called when the back button is pressed (navigation is outside store scope) */
   onBack?: () => void;
   /** Container style override */
   style?: StyleProp<ViewStyle>;
+  /** Override testID for sub-elements */
+  testIDs?: SongToolbarTestIDs;
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export const SongToolbar: React.FC<SongToolbarProps> = memo(
-  function SongToolbar({ onBack, style }) {
+  function SongToolbar({ onBack, style, testIDs }) {
     const { colors } = useTheme();
 
     // State — fine-grained selectors, re-render only when these change
@@ -84,17 +96,17 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
     const handlePlayPause = useCallback(() => {
       bounce(playScale);
       setPlaying(!isPlaying);
-    }, [isPlaying, setPlaying]);
+    }, [isPlaying, setPlaying, playScale]);
 
     const handleToggleLoop = useCallback(() => {
       bounce(loopScale);
       toggleLoop();
-    }, [toggleLoop]);
+    }, [toggleLoop, loopScale]);
 
     const handleToggleMetronome = useCallback(() => {
       bounce(metroScale);
       toggleMetronome();
-    }, [toggleMetronome]);
+    }, [toggleMetronome, metroScale]);
 
     const handleSettings = useCallback(() => {
       setCurrentTab('settings');
@@ -113,7 +125,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
         ]}
         accessibilityRole="toolbar"
         accessibilityLabel="Song toolbar"
-        testID="song-toolbar"
+        testID={testIDs?.container ?? 'song-toolbar'}
       >
         {/* Back button */}
         <Pressable
@@ -121,7 +133,9 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Back"
+          accessibilityHint="Return to previous screen"
           style={[styles.backButton, { backgroundColor: colors.mcBlack3 }]}
+          testID={testIDs?.backButton}
         >
           <Icon icon={Icons.back} size={22} color={colors.mcWhite} />
         </Pressable>
@@ -136,9 +150,10 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
+            accessibilityHint="Toggle playback"
             accessibilityState={{ selected: isPlaying }}
             style={[styles.transportButton, playStyle]}
-            testID="transport-play-pause"
+            testID={testIDs?.playButton ?? 'transport-play-pause'}
           >
             {isPlaying ? (
               <Icon icon={Icons.pause} size={22} color={colors.mcWhite} />
@@ -153,9 +168,10 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Loop"
+            accessibilityHint="Toggle loop"
             accessibilityState={{ selected: isLoopEnabled }}
             style={[styles.transportButton, loopStyle]}
-            testID="transport-loop"
+            testID={testIDs?.loopButton ?? 'transport-loop'}
           >
             <Icon icon={Icons.loop} size={22} color={loopColor} />
           </AnimatedPressable>
@@ -166,9 +182,10 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Metronome"
+            accessibilityHint="Toggle metronome"
             accessibilityState={{ selected: isMetronomeEnabled }}
             style={[styles.transportButton, metroStyle]}
-            testID="transport-metronome"
+            testID={testIDs?.metronomeButton ?? 'transport-metronome'}
           >
             <Icon
               icon={isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff}
@@ -184,8 +201,9 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel={`${Math.round(tempo)} BPM`}
+          accessibilityHint="Adjust tempo"
           style={styles.bpmButton}
-          testID="transport-bpm"
+          testID={testIDs?.bpmButton ?? 'transport-bpm'}
         >
           <Text style={[styles.bpmText, { color: colors.mcWhite }]}>
             {Math.round(tempo)}
@@ -199,11 +217,12 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Settings"
+            accessibilityHint="Open song settings"
             style={({ pressed }) => [
               styles.settingsButton,
               { opacity: pressed ? 0.6 : 1 },
             ]}
-            testID="transport-settings"
+            testID={testIDs?.settingsButton ?? 'transport-settings'}
           >
             <Icon icon={Icons.settings} size={22} color={colors.mcWhite} />
           </Pressable>

@@ -40,6 +40,7 @@ export interface InputProps extends Omit<TextInputProps, 'style'> {
   style?: StyleProp<ViewStyle>;
   /** Input field style */
   inputStyle?: StyleProp<ViewStyle>;
+  a11yId?: string;
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -56,6 +57,7 @@ export const Input: React.FC<InputProps> = memo(function Input({
   onFocus,
   onBlur,
   accessibilityLabel: accessibilityLabelProp,
+  a11yId,
   ...rest
 }) {
   const { colors, isDark } = useTheme();
@@ -135,7 +137,9 @@ export const Input: React.FC<InputProps> = memo(function Input({
           onBlur={handleBlur}
           accessibilityLabel={accessibilityLabelProp || label}
           accessibilityState={{ disabled }}
+          accessibilityRole="text"
           accessibilityHint={error || helperText}
+          testID={a11yId}
           {...rest}
         />
 

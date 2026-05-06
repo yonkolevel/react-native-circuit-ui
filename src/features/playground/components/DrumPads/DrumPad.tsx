@@ -21,6 +21,7 @@ export interface DrumPadProps {
   highlightColor: string;
   onPress?: (sampleIndex: number) => void;
   onRelease?: (sampleIndex: number) => void;
+  a11yId?: string;
 }
 
 export const DrumPad = memo(function DrumPad({
@@ -30,6 +31,7 @@ export const DrumPad = memo(function DrumPad({
   highlightColor,
   onPress,
   onRelease,
+  a11yId,
 }: DrumPadProps) {
   const { colors } = useTheme();
   const [isDown, setIsDown] = useState(false);
@@ -64,6 +66,8 @@ export const DrumPad = memo(function DrumPad({
       accessibilityRole="button"
       accessibilityLabel={`Drum pad: ${sample.fileName}`}
       accessibilityState={{ selected: isActive }}
+      accessibilityHint="Double tap to play"
+      testID={a11yId}
     >
       {/* Matches Swift: .font(.system(size: 8, weight: .medium)) .foregroundStyle(Color.white.opacity(0.5)) */}
       <Text

@@ -32,6 +32,7 @@ export interface ProgressBarProps {
   animated?: boolean;
   /** Accessibility label. Default: 'Progress'. */
   accessibilityLabel?: string;
+  a11yId?: string;
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = memo(
@@ -43,6 +44,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = memo(
     animationDuration = 300,
     animated = true,
     accessibilityLabel = 'Progress',
+    a11yId,
   }) {
     const { colors, isDark } = useTheme();
     const progress = useSharedValue(0);
@@ -84,6 +86,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = memo(
           now: clampedValue,
           text: `${clampedValue}%`,
         }}
+        testID={a11yId}
       >
         {/* Track — matches SwiftUI Rectangle().foregroundColor(.mcBlack) */}
         <View style={[styles.track, { backgroundColor: colors.mcBlack }]} />

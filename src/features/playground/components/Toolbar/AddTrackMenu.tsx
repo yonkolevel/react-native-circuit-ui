@@ -13,39 +13,60 @@ const TRACK_OPTIONS: { type: InstrumentType; label: string; icon: any }[] = [
   { type: 'audio', label: 'Audio Track', icon: Icons.audioTrack }, // mic.fill
 ];
 
+export interface AddTrackMenuTestIDs {
+  container?: string;
+  drumButton?: string;
+  melodicButton?: string;
+  bassButton?: string;
+  audioButton?: string;
+}
+
 export interface AddTrackMenuProps {
   onSelect?: (type: InstrumentType) => void;
   onClose?: () => void;
+  testIDs?: AddTrackMenuTestIDs;
 }
 
 export const AddTrackMenu = memo(function AddTrackMenu({
   onSelect,
   onClose: _onClose,
+  testIDs,
 }: AddTrackMenuProps) {
   const { colors } = useTheme();
   return (
     <View
       style={[styles.container, { backgroundColor: colors.mcBlack3 }]}
       accessibilityLabel="Add track"
+      testID={testIDs?.container}
     >
       <Text variant="h5" uppercase color={colors.mcWhite3} style={styles.title}>
         Add Track
       </Text>
 
-      {TRACK_OPTIONS.map((opt) => (
-        <Pressable
-          key={opt.type}
-          onPress={() => onSelect?.(opt.type)}
-          style={[styles.option, { backgroundColor: colors.mcWhite4 }]}
-          accessibilityRole="button"
-          accessibilityLabel={`Add ${opt.label}`}
-        >
-          <Icon icon={opt.icon} size={18} color={colors.mcWhite} />
-          <Text variant="label" color={colors.mcWhite}>
-            {opt.label}
-          </Text>
-        </Pressable>
-      ))}
+      {TRACK_OPTIONS.map((opt) => {
+        const idMap: Record<InstrumentType, string | undefined> = {
+          drum: testIDs?.drumButton,
+          melodic: testIDs?.melodicButton,
+          bass: testIDs?.bassButton,
+          audio: testIDs?.audioButton,
+        };
+        return (
+          <Pressable
+            key={opt.type}
+            onPress={() => onSelect?.(opt.type)}
+            style={[styles.option, { backgroundColor: colors.mcWhite4 }]}
+            accessibilityRole="button"
+            accessibilityLabel={`Add ${opt.label}`}
+            accessibilityHint={`Add a ${opt.type} track`}
+            testID={idMap[opt.type]}
+          >
+            <Icon icon={opt.icon} size={18} color={colors.mcWhite} />
+            <Text variant="label" color={colors.mcWhite}>
+              {opt.label}
+            </Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 });

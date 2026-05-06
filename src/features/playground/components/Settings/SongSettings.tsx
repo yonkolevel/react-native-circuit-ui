@@ -22,11 +22,13 @@ try {
 export interface SongSettingsProps {
   onExportAudio?: () => void;
   onExportBundle?: () => void;
+  a11yId?: string;
 }
 
 export const SongSettings = memo(function SongSettings({
   onExportAudio,
   onExportBundle,
+  a11yId,
 }: SongSettingsProps) {
   const { colors } = useTheme();
 
@@ -46,7 +48,11 @@ export const SongSettings = memo(function SongSettings({
   const volumeValue = volumeDisplay ?? masterVolume;
 
   return (
-    <View style={styles.container} accessibilityLabel="Song settings">
+    <View
+      style={styles.container}
+      accessibilityLabel="Song settings"
+      testID={a11yId}
+    >
       {/* Tempo */}
       <SettingRow label="TEMPO" value={`${Math.round(tempoValue)} BPM`}>
         {SliderComponent ? (
@@ -65,6 +71,13 @@ export const SongSettings = memo(function SongSettings({
             maximumTrackTintColor={colors.mcBlack4}
             thumbTintColor={colors.mcWhite}
             accessibilityLabel="Tempo"
+            accessibilityRole="adjustable"
+            accessibilityValue={{
+              min: 40,
+              max: 240,
+              now: Math.round(tempo),
+              text: `${Math.round(tempo)} BPM`,
+            }}
           />
         ) : (
           <Text variant="label" color={colors.mcWhite}>
@@ -91,6 +104,13 @@ export const SongSettings = memo(function SongSettings({
             maximumTrackTintColor={colors.mcBlack4}
             thumbTintColor={colors.mcWhite}
             accessibilityLabel="Master volume"
+            accessibilityRole="adjustable"
+            accessibilityValue={{
+              min: 0,
+              max: 100,
+              now: Math.round(masterVolume),
+              text: `${Math.round(masterVolume)}%`,
+            }}
           />
         ) : (
           <Text variant="label" color={colors.mcWhite}>

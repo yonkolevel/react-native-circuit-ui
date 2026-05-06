@@ -24,10 +24,8 @@ export type ButtonVariant =
 
 export type ButtonSize = 'medium' | 'large';
 
-export interface ButtonProps extends Omit<
-  PressableProps,
-  'style' | 'children'
-> {
+export interface ButtonProps
+  extends Omit<PressableProps, 'style' | 'children'> {
   /** Button variant — matches SwiftUI ButtonPrimaryStyle etc. */
   variant?: ButtonVariant;
   /** Size — medium matches standard padding, large matches ButtonPrimaryLargeStyle */
@@ -48,6 +46,7 @@ export interface ButtonProps extends Omit<
   color?: string;
   /** Custom style for the outer pressable */
   style?: StyleProp<ViewStyle>;
+  a11yId?: string;
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -64,6 +63,7 @@ export const Button: React.FC<ButtonProps> = memo(function Button({
   disabled = false,
   color,
   style,
+  a11yId,
   onPress,
   ...rest
 }) {
@@ -175,6 +175,7 @@ export const Button: React.FC<ButtonProps> = memo(function Button({
         disabled: disabled || loading,
         busy: loading,
       }}
+      testID={a11yId}
       style={({ pressed }) => {
         const s = getStyles(pressed);
         return [

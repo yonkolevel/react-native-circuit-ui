@@ -23,6 +23,9 @@ export interface ToolbarButtonProps {
   color?: string;
   /** Container style. */
   style?: StyleProp<ViewStyle>;
+  /** Accessibility hint describing action result. */
+  accessibilityHint?: string;
+  a11yId?: string;
 }
 
 const ICON_MAP = {
@@ -31,7 +34,15 @@ const ICON_MAP = {
 };
 
 export const ToolbarButton: React.FC<ToolbarButtonProps> = memo(
-  function ToolbarButton({ type, onPress, size = 24, color, style }) {
+  function ToolbarButton({
+    type,
+    onPress,
+    size = 24,
+    color,
+    style,
+    accessibilityHint,
+    a11yId,
+  }) {
     const { colors } = useTheme();
     const iconDef = ICON_MAP[type];
     const iconColor = color || colors.mcWhite2;
@@ -42,11 +53,13 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = memo(
         hitSlop={8}
         accessibilityRole="button"
         accessibilityLabel={type === 'back' ? 'Go back' : 'Toggle sidebar'}
+        accessibilityHint={accessibilityHint}
         style={({ pressed }) => [
           styles.button,
           { opacity: pressed ? 0.6 : 1 },
           style,
         ]}
+        testID={a11yId}
       >
         <Icon icon={iconDef} size={size} color={iconColor} />
       </Pressable>

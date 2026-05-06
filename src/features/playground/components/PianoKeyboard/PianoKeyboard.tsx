@@ -49,6 +49,7 @@ export interface PianoKeyboardProps {
   externalPressedNotes?: Set<number>;
   highlightColor?: string;
   showNoteNames?: boolean;
+  a11yId?: string;
 }
 
 export const PianoKeyboard = memo(function PianoKeyboard({
@@ -58,6 +59,7 @@ export const PianoKeyboard = memo(function PianoKeyboard({
   externalPressedNotes = new Set(),
   highlightColor = palette.mcGreen,
   showNoteNames = false,
+  a11yId,
 }: PianoKeyboardProps) {
   const { width: screenW } = useWindowDimensions();
   const isPhone = screenW < 768;
@@ -202,6 +204,7 @@ export const PianoKeyboard = memo(function PianoKeyboard({
     <View
       style={[isPhone ? styles.vCont : styles.hCont, styles.relative]}
       accessibilityLabel="Piano keyboard"
+      testID={a11yId}
     >
       {octaves.map(renderOctave)}
 
