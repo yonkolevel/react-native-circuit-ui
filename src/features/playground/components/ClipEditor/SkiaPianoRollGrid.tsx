@@ -66,13 +66,9 @@ const NOTE_NAMES = [
 const getNoteName = (pitch: number): string =>
   `${NOTE_NAMES[pitch % 12]}${Math.floor(pitch / 12) + 1}`;
 
-// Font for note labels inside the grid — small, semi-bold
-// Use monospace font for cross-platform (Android/iOS) compatibility (same as NotePrecisionPanel)
-const noteFont = matchFont({
-  fontFamily: 'monospace',
-  fontSize: 9,
-  fontWeight: '600',
-});
+// noteFont is computed inside the component (useMemo) so matchFont() runs
+// after Skia/CanvasKit is initialized — avoids a crash on web where the
+// WASM module hasn't loaded yet at module evaluation time.
 
 export interface SkiaPianoRollGridProps {
   notes: ClipNote[];
@@ -125,11 +121,17 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 }: SkiaPianoRollGridProps) {
   const { colors } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
+  // Computed here (not module scope) so CanvasKit is ready when matchFont runs
+  const noteFont = useMemo(
+    () =>
+      matchFont({ fontFamily: 'monospace', fontSize: 9, fontWeight: '600' }),
+    []
+  );
 
   const isDrum = instrumentType === 'drum';
   const basePitch = isDrum ? 0 : (melodicMinPitch ?? DEFAULT_MELODIC_MIN_PITCH);
   const totalPitches = isDrum
-    ? (samples ?? []).length || 12  // Use exact sample count (no minimum)
+    ? (samples ?? []).length || 12 // Use exact sample count (no minimum)
     : MELODIC_PITCH_COUNT;
 
   // Measure available height for expanded mode
@@ -313,6 +315,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const dragOrigDur = useSharedValue(0);
 
   // --- JS callbacks (must use runOnJS from gesture worklets) ---
+  /* eslint-disable react-hooks/exhaustive-deps */
   const handleTap = useCallback(
     (x: number, y: number) => {
       const hit = hitTestNote(x, y);
@@ -327,7 +330,9 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
           const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
           // Debug: log drum note mapping
           if (isDrum) {
-            console.log(`[DrumDebug] Tap row=${rowIdx}, pitchIdx=${pitchIdx}, noteNumber=${noteNumber}, sample=${(samples ?? [])[pitchIdx]?.name ?? 'N/A'}`);
+            console.log(
+              `[DrumDebug] Tap row=${rowIdx}, pitchIdx=${pitchIdx}, noteNumber=${noteNumber}, sample=${(samples ?? [])[pitchIdx]?.name ?? 'N/A'}`
+            );
           }
           onGridTap(noteNumber, position);
         }
@@ -343,7 +348,9 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       pitchToMidi,
     ]
   );
+  /* eslint-enable react-hooks/exhaustive-deps */
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   const handleDragStart = useCallback(
     (x: number, y: number) => {
       const hit = hitTestNote(x, y);
@@ -384,6 +391,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const rhRef = effectiveRowHeight;
   const tpRef = totalPitches;
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   const handleDragEnd = useCallback(
     (x: number, y: number) => {
       const ds = dragState.current;
@@ -427,6 +435,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       onNoteMove,
     ]
   );
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   // --- Gestures (UI thread → runOnJS for callbacks) ---
   const tapGesture = Gesture.Tap()

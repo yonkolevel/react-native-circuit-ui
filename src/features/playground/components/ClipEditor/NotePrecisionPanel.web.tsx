@@ -1,13 +1,7 @@
 /**
- * NotePrecisionPanel — matches iOS NotePrecisionPanel.swift + VelocityHandle.swift
- *
- * Handle shape (inverted L):
- *   [vel##]┃
- *          ┃ stem
- *          ┃
- *   ───────┃─── baseline
- *
- * Handle RIGHT edge = stem LEFT edge. Handle extends LEFT.
+ * NotePrecisionPanel — Web implementation (no Skia Canvas).
+ * Identical props, state, and gesture logic to NotePrecisionPanel.tsx.
+ * All Skia Canvas drawing replaced with absolute-positioned Views.
  */
 import React, { memo, useMemo, useCallback, useRef, useState } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
@@ -16,15 +10,6 @@ import {
   Gesture,
   GestureDetector,
 } from 'react-native-gesture-handler';
-import {
-  Canvas,
-  Rect,
-  RoundedRect,
-  Line,
-  vec,
-  Text as SkiaText,
-  matchFont,
-} from '@shopify/react-native-skia';
 import { runOnJS } from 'react-native-reanimated';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
@@ -35,15 +20,12 @@ const LABEL_COL = 60;
 const BEAT_LABEL_H = 16;
 const NOTE_AREA_H = 36;
 const STEP_W = 24;
-const HANDLE_W = STEP_W; // matches 1/16th note width
+const HANDLE_W = STEP_W;
 const HANDLE_H = 16;
 const STEM_W = 2;
-const BOTTOM_PAD = 32; // space below velocity 0 — keeps handles reachable
+const BOTTOM_PAD = 32;
 const BEATS_PER_BAR = 4;
 const STEPS_PER_BEAT = 4;
-
-// velFont computed inside component (see NotePrecisionPanel body) — keeps
-// matchFont() out of module scope so CanvasKit is ready when it runs on web.
 
 const VEL_LEVELS = [
   { vel: 127, label: '127' },
@@ -78,12 +60,6 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
   onDurationChange,
 }: NotePrecisionPanelProps) {
   const { colors } = useTheme();
-  // Computed here so CanvasKit is ready when matchFont runs (avoids web crash)
-  const velFont = useMemo(
-    () =>
-      matchFont({ fontFamily: 'monospace', fontSize: 8, fontWeight: '600' }),
-    []
-  );
 
   const notesAtPitch = useMemo(
     () =>
@@ -107,12 +83,12 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
   const dragIdxRef = useRef(-1);
   const dragVelRef = useRef(0);
 
-  // Position drag state (horizontal drag on note block body)
+  // Position drag state
   const [posBlockDragIdx, setPosBlockDragIdx] = useState(-1);
   const [posBlockDragDx, setPosBlockDragDx] = useState(0);
   const posBlockStartX = useRef(0);
 
-  // Duration drag state (horizontal drag on note block right edge)
+  // Duration drag state
   const [durBlockDragIdx, setDurBlockDragIdx] = useState(-1);
   const [durBlockDragDx, setDurBlockDragDx] = useState(0);
   const durBlockStartX = useRef(0);
@@ -155,7 +131,6 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
     setDragIdx(-1);
   }, [notesAtPitch, onVelocityChange]);
 
-  // Position drag handlers
   const handlePosBlockDragStart = useCallback((idx: number, x: number) => {
     setPosBlockDragIdx(idx);
     setPosBlockDragDx(0);
@@ -179,7 +154,6 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
     [posBlockDragIdx, notesAtPitch, onPositionChange]
   );
 
-  // Duration drag handlers
   const handleDurBlockDragStart = useCallback((idx: number, x: number) => {
     setDurBlockDragIdx(idx);
     setDurBlockDragDx(0);
@@ -203,20 +177,17 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
     [durBlockDragIdx, notesAtPitch, onDurationChange]
   );
 
-  /** Compute handle + stem geometry for a note (matches native VelocityHandle positioning) */
   const noteGeom = useCallback(
     (note: ClipNote, vel: number) => {
       const fraction = vel / 127;
-      const baseline = velAreaH - BOTTOM_PAD; // velocity 0 sits here
-      const usableH = baseline - HANDLE_H; // range from vel 0 to vel 127
+      const baseline = velAreaH - BOTTOM_PAD;
+      const usableH = baseline - HANDLE_H;
       const stemH = Math.max(0, fraction * usableH);
-
       const noteStartX = (note.position / 0.25) * STEP_W;
       const handleX = noteStartX;
       const stemX = noteStartX + HANDLE_W;
       const handleY = baseline - stemH - HANDLE_H;
       const stemTop = baseline - stemH;
-
       return {
         noteStartX,
         stemX,
@@ -256,9 +227,7 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
             { width: LABEL_COL, backgroundColor: colors.mcBlack2 },
           ]}
         >
-          {/* Spacer for beat labels */}
           <View style={{ height: BEAT_LABEL_H }} />
-          {/* NOTES label */}
           <View style={{ height: NOTE_AREA_H, justifyContent: 'center' }}>
             <Text
               variant="extraSmall"
@@ -269,14 +238,12 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
               NOTES
             </Text>
           </View>
-          {/* Velocity ruler */}
           <View
             style={{ flex: 1 }}
             onLayout={(e) =>
               setVelAreaH(Math.max(60, e.nativeEvent.layout.height))
             }
           >
-            {/* VEL label at top */}
             <Text
               variant="extraSmall"
               color={colors.mcWhite3}
@@ -285,7 +252,6 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
             >
               VEL
             </Text>
-            {/* Level ticks — positioned to match handle Y for each velocity */}
             {VEL_LEVELS.map((l) => {
               const fraction = l.vel / 127;
               const baseline = velAreaH - BOTTOM_PAD;
@@ -308,7 +274,7 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
           </View>
         </View>
 
-        {/* Scrollable timeline — SINGLE ScrollView for everything */}
+        {/* Scrollable timeline */}
         <GHScrollView
           horizontal
           showsHorizontalScrollIndicator
@@ -333,22 +299,27 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
               ))}
             </View>
 
-            {/* Note blocks — draggable for position + duration */}
+            {/* Note blocks area */}
             <View style={{ height: NOTE_AREA_H }}>
-              <Canvas style={StyleSheet.absoluteFill} pointerEvents="none">
+              {/* Grid lines */}
+              <View style={StyleSheet.absoluteFill} pointerEvents="none">
                 {Array.from({ length: totalSteps + 1 }, (_, s) => (
-                  <Line
+                  <View
                     key={s}
-                    p1={vec(s * STEP_W, 0)}
-                    p2={vec(s * STEP_W, NOTE_AREA_H)}
-                    color={
-                      s % STEPS_PER_BEAT === 0
-                        ? 'rgba(255,255,255,0.2)'
-                        : 'rgba(255,255,255,0.06)'
-                    }
-                    strokeWidth={0.5}
+                    style={{
+                      position: 'absolute',
+                      left: s * STEP_W,
+                      top: 0,
+                      bottom: 0,
+                      width: s % STEPS_PER_BEAT === 0 ? 1 : 0.5,
+                      backgroundColor:
+                        s % STEPS_PER_BEAT === 0
+                          ? 'rgba(255,255,255,0.2)'
+                          : 'rgba(255,255,255,0.06)',
+                    }}
                   />
                 ))}
+                {/* Note blocks */}
                 {notesAtPitch.map(({ note }, i) => {
                   const dx = i === posBlockDragIdx ? posBlockDragDx : 0;
                   const dw = i === durBlockDragIdx ? durBlockDragDx : 0;
@@ -359,27 +330,35 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
                   );
                   const velOpacity = 0.4 + 0.6 * (note.velocity / 127);
                   return (
-                    <React.Fragment key={i}>
-                      <RoundedRect
-                        x={x}
-                        y={2}
-                        width={w}
-                        height={NOTE_AREA_H - 4}
-                        r={3}
-                        color={trackColor}
-                        opacity={velOpacity}
+                    <View
+                      key={i}
+                      style={{
+                        position: 'absolute',
+                        left: x,
+                        top: 2,
+                        width: w,
+                        height: NOTE_AREA_H - 4,
+                        borderRadius: 3,
+                        backgroundColor: trackColor,
+                        opacity: velOpacity,
+                      }}
+                    >
+                      <View
+                        style={{
+                          position: 'absolute',
+                          right: 2,
+                          top: 6,
+                          bottom: 6,
+                          width: 2,
+                          backgroundColor: 'rgba(0,0,0,0.4)',
+                        }}
                       />
-                      <Line
-                        p1={vec(x + w - 2, 6)}
-                        p2={vec(x + w - 2, NOTE_AREA_H - 6)}
-                        color="rgba(0,0,0,0.4)"
-                        strokeWidth={2}
-                      />
-                    </React.Fragment>
+                    </View>
                   );
                 })}
-              </Canvas>
-              {/* Gesture targets: body = position drag, right edge = duration drag */}
+              </View>
+
+              {/* Drag gesture targets */}
               {notesAtPitch.map(({ note }, i) => {
                 const x = (note.position / 0.25) * STEP_W;
                 const w = Math.max((note.duration / 0.25) * STEP_W, STEP_W);
@@ -407,6 +386,7 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
                   </React.Fragment>
                 );
               })}
+
               {notesAtPitch.length === 0 && (
                 <View style={styles.emptyState}>
                   <Text variant="small" color={colors.mcWhite3}>
@@ -416,10 +396,10 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
               )}
             </View>
 
-            {/* Velocity area — canvas + handles + labels ALL inside the scroll */}
+            {/* Velocity area */}
             <View style={{ height: velAreaH }}>
-              <Canvas style={StyleSheet.absoluteFill}>
-                {/* Grid lines — aligned with handle center positions */}
+              {/* Grid lines at each vel level */}
+              <View style={StyleSheet.absoluteFill} pointerEvents="none">
                 {VEL_LEVELS.map((l) => {
                   const fraction = l.vel / 127;
                   const baseline = velAreaH - BOTTOM_PAD;
@@ -427,81 +407,81 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
                   const stemH = fraction * usableH;
                   const y = baseline - stemH - HANDLE_H / 2;
                   return (
-                    <Line
+                    <View
                       key={l.label}
-                      p1={vec(0, y)}
-                      p2={vec(totalWidth, y)}
-                      color="rgba(255,255,255,0.08)"
-                      strokeWidth={0.5}
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        right: 0,
+                        top: y,
+                        height: 0.5,
+                        backgroundColor: 'rgba(255,255,255,0.08)',
+                      }}
                     />
                   );
                 })}
                 {/* Baseline at velocity 0 */}
-                <Line
-                  p1={vec(0, velAreaH - BOTTOM_PAD)}
-                  p2={vec(totalWidth, velAreaH - BOTTOM_PAD)}
-                  color="rgba(255,255,255,0.15)"
-                  strokeWidth={0.5}
+                <View
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    top: velAreaH - BOTTOM_PAD,
+                    height: 0.5,
+                    backgroundColor: 'rgba(255,255,255,0.15)',
+                  }}
                 />
 
-                {/* Stems — thin line from handle down to baseline */}
+                {/* Stems + handles for each note */}
                 {notesAtPitch.map(({ note }, i) => {
                   const vel = i === dragIdx ? dragVel : note.velocity;
                   const g = noteGeom(note, vel);
+                  const velOpacity = 0.3 + 0.7 * g.fraction;
                   return (
-                    <Rect
-                      key={`s${i}`}
-                      x={g.stemX - STEM_W / 2}
-                      y={g.stemTop}
-                      width={STEM_W}
-                      height={g.stemH}
-                      color={trackColor}
-                      opacity={0.4}
-                    />
-                  );
-                })}
-
-                {/* Handles — square rect with velocity number inside (all Skia, same GPU frame) */}
-                {notesAtPitch.map(({ note }, i) => {
-                  const vel = i === dragIdx ? dragVel : note.velocity;
-                  const g = noteGeom(note, vel);
-                  const velStr = String(vel);
-                  // Center text in handle: measure width, offset to center
-                  const textW = velFont.measureText(velStr).width;
-                  const textX = g.handleX + (HANDLE_W - textW) / 2;
-                  const textY = g.handleY + HANDLE_H - 4; // baseline offset
-                  return (
-                    <React.Fragment key={`h${i}`}>
-                      <Rect
-                        x={g.handleX}
-                        y={g.handleY}
-                        width={HANDLE_W}
-                        height={HANDLE_H}
-                        color={trackColor}
-                        opacity={0.3 + 0.7 * g.fraction}
+                    <React.Fragment key={`vh${i}`}>
+                      {/* Stem */}
+                      <View
+                        style={{
+                          position: 'absolute',
+                          left: g.stemX - STEM_W / 2,
+                          top: g.stemTop,
+                          width: STEM_W,
+                          height: g.stemH,
+                          backgroundColor: trackColor,
+                          opacity: 0.4,
+                        }}
                       />
-                      <Rect
-                        x={g.handleX}
-                        y={g.handleY}
-                        width={HANDLE_W}
-                        height={HANDLE_H}
-                        color="rgba(255,255,255,0.3)"
-                        style="stroke"
-                        strokeWidth={0.5}
-                      />
-                      <SkiaText
-                        x={textX}
-                        y={textY}
-                        text={velStr}
-                        font={velFont}
-                        color="white"
-                      />
+                      {/* Handle rect */}
+                      <View
+                        style={{
+                          position: 'absolute',
+                          left: g.handleX,
+                          top: g.handleY,
+                          width: HANDLE_W,
+                          height: HANDLE_H,
+                          borderRadius: 2,
+                          backgroundColor: trackColor,
+                          opacity: velOpacity,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          borderWidth: 0.5,
+                          borderColor: 'rgba(255,255,255,0.3)',
+                        }}
+                      >
+                        <Text
+                          variant="extraSmall"
+                          color="white"
+                          style={{ fontSize: 8, fontWeight: '600' }}
+                        >
+                          {vel}
+                        </Text>
+                      </View>
                     </React.Fragment>
                   );
                 })}
-              </Canvas>
+              </View>
 
-              {/* Drag touch targets — INSIDE the scroll container */}
+              {/* Velocity drag targets */}
               {notesAtPitch.map(({ note }, i) => {
                 const vel = i === dragIdx ? dragVel : note.velocity;
                 const g = noteGeom(note, vel);
@@ -525,7 +505,6 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
   );
 });
 
-/** Drag target for note block position or duration adjustment */
 const PrecisionBlockDrag = memo(function PrecisionBlockDrag({
   index,
   x,
