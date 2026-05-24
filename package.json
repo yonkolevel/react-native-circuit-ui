@@ -46,7 +46,7 @@
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli lib",
-    "prepare": "command -v bob >/dev/null 2>&1 && bob build || echo 'Skipping bob build; using checked-in lib output'",
+    "prepare": "bob build",
     "release": "release-it"
   },
   "keywords": [
