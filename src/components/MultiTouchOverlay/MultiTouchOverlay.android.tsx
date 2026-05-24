@@ -81,6 +81,7 @@ export const MultiTouchOverlay = memo(function MultiTouchOverlay({
         }
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- touchToCell depends on columns/rows which are already listed
     [columns, rows, onPadPress, onPadRelease]
   );
 

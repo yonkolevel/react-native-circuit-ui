@@ -423,6 +423,7 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
   testID="song-toolbar"
 >
   <View
+    accessibilityHint="Return to previous screen"
     accessibilityLabel="Back"
     accessibilityRole="button"
     accessibilityState={
@@ -496,6 +497,7 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
     }
   >
     <View
+      accessibilityHint="Toggle playback"
       accessibilityLabel="Pause"
       accessibilityRole="button"
       accessibilityState={
@@ -555,6 +557,7 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
       </View>
     </View>
     <View
+      accessibilityHint="Toggle loop"
       accessibilityLabel="Loop"
       accessibilityRole="button"
       accessibilityState={
@@ -614,6 +617,7 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
       </View>
     </View>
     <View
+      accessibilityHint="Toggle metronome"
       accessibilityLabel="Metronome"
       accessibilityRole="button"
       accessibilityState={
@@ -674,6 +678,68 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
     </View>
   </View>
   <View
+    accessibilityHint="Adjust tempo"
+    accessibilityLabel="120 BPM"
+    accessibilityRole="button"
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    hitSlop={8}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "marginLeft": 8,
+        "paddingHorizontal": 8,
+        "paddingVertical": 4,
+      }
+    }
+    testID="transport-bpm"
+  >
+    <Text
+      style={
+        [
+          {
+            "fontSize": 14,
+            "fontVariant": [
+              "tabular-nums",
+            ],
+            "fontWeight": "600",
+          },
+          {
+            "color": "#F7F7F7",
+          },
+        ]
+      }
+    >
+      120
+    </Text>
+  </View>
+  <View
     style={
       {
         "alignItems": "flex-end",
@@ -682,6 +748,7 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
     }
   >
     <View
+      accessibilityHint="Open song settings"
       accessibilityLabel="Settings"
       accessibilityRole="button"
       accessibilityState={
@@ -763,6 +830,7 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
   testID="song-toolbar"
 >
   <View
+    accessibilityHint="Return to previous screen"
     accessibilityLabel="Back"
     accessibilityRole="button"
     accessibilityState={
@@ -836,6 +904,7 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
     }
   >
     <View
+      accessibilityHint="Toggle playback"
       accessibilityLabel="Play"
       accessibilityRole="button"
       accessibilityState={
@@ -895,6 +964,7 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
       </View>
     </View>
     <View
+      accessibilityHint="Toggle loop"
       accessibilityLabel="Loop"
       accessibilityRole="button"
       accessibilityState={
@@ -954,6 +1024,7 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
       </View>
     </View>
     <View
+      accessibilityHint="Toggle metronome"
       accessibilityLabel="Metronome"
       accessibilityRole="button"
       accessibilityState={
@@ -1014,6 +1085,68 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
     </View>
   </View>
   <View
+    accessibilityHint="Adjust tempo"
+    accessibilityLabel="120 BPM"
+    accessibilityRole="button"
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    hitSlop={8}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "marginLeft": 8,
+        "paddingHorizontal": 8,
+        "paddingVertical": 4,
+      }
+    }
+    testID="transport-bpm"
+  >
+    <Text
+      style={
+        [
+          {
+            "fontSize": 14,
+            "fontVariant": [
+              "tabular-nums",
+            ],
+            "fontWeight": "600",
+          },
+          {
+            "color": "#F7F7F7",
+          },
+        ]
+      }
+    >
+      120
+    </Text>
+  </View>
+  <View
     style={
       {
         "alignItems": "flex-end",
@@ -1022,6 +1155,7 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
     }
   >
     <View
+      accessibilityHint="Open song settings"
       accessibilityLabel="Settings"
       accessibilityRole="button"
       accessibilityState={
@@ -1116,6 +1250,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
     testID="song-toolbar"
   >
     <View
+      accessibilityHint="Return to previous screen"
       accessibilityLabel="Back"
       accessibilityRole="button"
       accessibilityState={
@@ -1189,6 +1324,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
       }
     >
       <View
+        accessibilityHint="Toggle playback"
         accessibilityLabel="Play"
         accessibilityRole="button"
         accessibilityState={
@@ -1248,6 +1384,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
         </View>
       </View>
       <View
+        accessibilityHint="Toggle loop"
         accessibilityLabel="Loop"
         accessibilityRole="button"
         accessibilityState={
@@ -1307,6 +1444,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
         </View>
       </View>
       <View
+        accessibilityHint="Toggle metronome"
         accessibilityLabel="Metronome"
         accessibilityRole="button"
         accessibilityState={
@@ -1367,6 +1505,68 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
       </View>
     </View>
     <View
+      accessibilityHint="Adjust tempo"
+      accessibilityLabel="120 BPM"
+      accessibilityRole="button"
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      hitSlop={8}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "marginLeft": 8,
+          "paddingHorizontal": 8,
+          "paddingVertical": 4,
+        }
+      }
+      testID="transport-bpm"
+    >
+      <Text
+        style={
+          [
+            {
+              "fontSize": 14,
+              "fontVariant": [
+                "tabular-nums",
+              ],
+              "fontWeight": "600",
+            },
+            {
+              "color": "#F7F7F7",
+            },
+          ]
+        }
+      >
+        120
+      </Text>
+    </View>
+    <View
       style={
         {
           "alignItems": "flex-end",
@@ -1375,6 +1575,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
       }
     >
       <View
+        accessibilityHint="Open song settings"
         accessibilityLabel="Settings"
         accessibilityRole="button"
         accessibilityState={
@@ -3094,6 +3295,7 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
     testID="song-toolbar"
   >
     <View
+      accessibilityHint="Return to previous screen"
       accessibilityLabel="Back"
       accessibilityRole="button"
       accessibilityState={
@@ -3167,6 +3369,7 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
       }
     >
       <View
+        accessibilityHint="Toggle playback"
         accessibilityLabel="Play"
         accessibilityRole="button"
         accessibilityState={
@@ -3226,6 +3429,7 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
         </View>
       </View>
       <View
+        accessibilityHint="Toggle loop"
         accessibilityLabel="Loop"
         accessibilityRole="button"
         accessibilityState={
@@ -3285,6 +3489,7 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
         </View>
       </View>
       <View
+        accessibilityHint="Toggle metronome"
         accessibilityLabel="Metronome"
         accessibilityRole="button"
         accessibilityState={
@@ -3345,6 +3550,68 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
       </View>
     </View>
     <View
+      accessibilityHint="Adjust tempo"
+      accessibilityLabel="120 BPM"
+      accessibilityRole="button"
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      hitSlop={8}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "marginLeft": 8,
+          "paddingHorizontal": 8,
+          "paddingVertical": 4,
+        }
+      }
+      testID="transport-bpm"
+    >
+      <Text
+        style={
+          [
+            {
+              "fontSize": 14,
+              "fontVariant": [
+                "tabular-nums",
+              ],
+              "fontWeight": "600",
+            },
+            {
+              "color": "#F7F7F7",
+            },
+          ]
+        }
+      >
+        120
+      </Text>
+    </View>
+    <View
       style={
         {
           "alignItems": "flex-end",
@@ -3353,6 +3620,7 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
       }
     >
       <View
+        accessibilityHint="Open song settings"
         accessibilityLabel="Settings"
         accessibilityRole="button"
         accessibilityState={
@@ -3491,6 +3759,15 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
           >
             <RNCSlider
               accessibilityLabel="Tempo"
+              accessibilityRole="adjustable"
+              accessibilityValue={
+                {
+                  "max": 240,
+                  "min": 40,
+                  "now": 120,
+                  "text": "120 BPM",
+                }
+              }
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
@@ -3615,6 +3892,15 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
           >
             <RNCSlider
               accessibilityLabel="Master volume"
+              accessibilityRole="adjustable"
+              accessibilityValue={
+                {
+                  "max": 100,
+                  "min": 0,
+                  "now": 90,
+                  "text": "90%",
+                }
+              }
               disabled={false}
               inverted={false}
               lowerLimit={-9007199254740991}
@@ -3932,6 +4218,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
     testID="song-toolbar"
   >
     <View
+      accessibilityHint="Return to previous screen"
       accessibilityLabel="Back"
       accessibilityRole="button"
       accessibilityState={
@@ -4005,6 +4292,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
       }
     >
       <View
+        accessibilityHint="Toggle playback"
         accessibilityLabel="Play"
         accessibilityRole="button"
         accessibilityState={
@@ -4064,6 +4352,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
         </View>
       </View>
       <View
+        accessibilityHint="Toggle loop"
         accessibilityLabel="Loop"
         accessibilityRole="button"
         accessibilityState={
@@ -4123,6 +4412,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
         </View>
       </View>
       <View
+        accessibilityHint="Toggle metronome"
         accessibilityLabel="Metronome"
         accessibilityRole="button"
         accessibilityState={
@@ -4183,6 +4473,68 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
       </View>
     </View>
     <View
+      accessibilityHint="Adjust tempo"
+      accessibilityLabel="120 BPM"
+      accessibilityRole="button"
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      hitSlop={8}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "marginLeft": 8,
+          "paddingHorizontal": 8,
+          "paddingVertical": 4,
+        }
+      }
+      testID="transport-bpm"
+    >
+      <Text
+        style={
+          [
+            {
+              "fontSize": 14,
+              "fontVariant": [
+                "tabular-nums",
+              ],
+              "fontWeight": "600",
+            },
+            {
+              "color": "#F7F7F7",
+            },
+          ]
+        }
+      >
+        120
+      </Text>
+    </View>
+    <View
       style={
         {
           "alignItems": "flex-end",
@@ -4191,6 +4543,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
       }
     >
       <View
+        accessibilityHint="Open song settings"
         accessibilityLabel="Settings"
         accessibilityRole="button"
         accessibilityState={
@@ -4591,6 +4944,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
               }
             >
               <View
+                accessibilityLabel="Section Intro"
+                accessibilityRole="button"
                 accessibilityState={
                   {
                     "busy": undefined,
@@ -4659,6 +5014,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                 </Text>
               </View>
               <View
+                accessibilityLabel="Section Verse"
+                accessibilityRole="button"
                 accessibilityState={
                   {
                     "busy": undefined,

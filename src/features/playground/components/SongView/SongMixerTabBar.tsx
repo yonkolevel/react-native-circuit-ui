@@ -110,6 +110,7 @@ const TabButton: React.FC<TabButtonProps> = memo(function TabButton({
       withSpring(1, { damping: 10, stiffness: 200 })
     );
     onPress(tab.key);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- scale is a Reanimated SharedValue (stable ref)
   }, [onPress, tab.key]);
 
   return (

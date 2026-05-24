@@ -129,7 +129,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const isDrum = instrumentType === 'drum';
   const basePitch = isDrum ? 0 : (melodicMinPitch ?? DEFAULT_MELODIC_MIN_PITCH);
   const totalPitches = isDrum
-    ? (samples ?? []).length || 12  // Use exact sample count (no minimum)
+    ? (samples ?? []).length || 12 // Use exact sample count (no minimum)
     : MELODIC_PITCH_COUNT;
 
   // Measure available height for expanded mode
@@ -327,12 +327,15 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
           const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
           // Debug: log drum note mapping
           if (isDrum) {
-            console.log(`[DrumDebug] Tap row=${rowIdx}, pitchIdx=${pitchIdx}, noteNumber=${noteNumber}, sample=${(samples ?? [])[pitchIdx]?.name ?? 'N/A'}`);
+            console.log(
+              `[DrumDebug] Tap row=${rowIdx}, pitchIdx=${pitchIdx}, noteNumber=${noteNumber}, sample=${(samples ?? [])[pitchIdx]?.name ?? 'N/A'}`
+            );
           }
           onGridTap(noteNumber, position);
         }
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- isDrum/samples are stable or intentionally stale
     [
       hitTestNote,
       onNotePress,
@@ -373,6 +376,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       dragOrigDur.value = note.duration;
       dragOpacity.value = 1;
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Reanimated SharedValues are stable refs
     [hitTestNote, notes]
   );
 
@@ -417,6 +421,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       dragOpacity.value = 0;
       setActiveNoteIdx(-1);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Reanimated SharedValues are stable refs
     [
       beatWidth,
       stepWidth,

@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~4.0.1",
+    "@react-native-community/slider": "^4.5.5",
+    "@shopify/react-native-skia": "^2.5.3",
     "expo": "~52.0.38",
     "expo-status-bar": "~2.0.1",
     "expo-symbols": "~0.2.2",

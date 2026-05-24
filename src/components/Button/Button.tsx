@@ -24,8 +24,10 @@ export type ButtonVariant =
 
 export type ButtonSize = 'medium' | 'large';
 
-export interface ButtonProps
-  extends Omit<PressableProps, 'style' | 'children'> {
+export interface ButtonProps extends Omit<
+  PressableProps,
+  'style' | 'children'
+> {
   /** Button variant — matches SwiftUI ButtonPrimaryStyle etc. */
   variant?: ButtonVariant;
   /** Size — medium matches standard padding, large matches ButtonPrimaryLargeStyle */

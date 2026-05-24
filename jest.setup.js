@@ -187,6 +187,80 @@ jest.mock('lucide-react-native', () => {
   );
 });
 
+// ---------------------------------------------------------------------------
+// Mock: @shopify/react-native-skia
+// ---------------------------------------------------------------------------
+// Skia requires a native module that doesn't exist in Jest.
+// Mock Canvas, drawing primitives, and the Skia API so components render as Views.
+jest.mock('@shopify/react-native-skia', () => {
+  const mockReact = require('react');
+  const { View } = require('react-native');
+
+  const createSkiaComponent = (name) => {
+    const Component = mockReact.forwardRef((props, ref) =>
+      mockReact.createElement(View, {
+        ...props,
+        ref,
+        testID: props.testID || name,
+      })
+    );
+    Component.displayName = name;
+    return Component;
+  };
+
+  return {
+    __esModule: true,
+    Canvas: createSkiaComponent('Canvas'),
+    Group: createSkiaComponent('Group'),
+    Path: createSkiaComponent('SkiaPath'),
+    Rect: createSkiaComponent('SkiaRect'),
+    Line: createSkiaComponent('SkiaLine'),
+    Circle: createSkiaComponent('SkiaCircle'),
+    Oval: createSkiaComponent('SkiaOval'),
+    Text: createSkiaComponent('SkiaText'),
+    TextPath: createSkiaComponent('SkiaTextPath'),
+    Image: createSkiaComponent('SkiaImage'),
+    Paint: createSkiaComponent('Paint'),
+    Blur: createSkiaComponent('Blur'),
+    Shadow: createSkiaComponent('Shadow'),
+    Mask: createSkiaComponent('SkiaMask'),
+    RoundedRect: createSkiaComponent('RoundedRect'),
+    Opacity: createSkiaComponent('Opacity'),
+    ClipPath: createSkiaComponent('SkiaClipPath'),
+    LinearGradient: createSkiaComponent('SkiaLinearGradient'),
+    RadialGradient: createSkiaComponent('SkiaRadialGradient'),
+    SweepGradient: createSkiaComponent('SkiaSweepGradient'),
+    Turbulence: createSkiaComponent('Turbulence'),
+    Vertices: createSkiaComponent('Vertices'),
+    Points: createSkiaComponent('Points'),
+    Patch: createSkiaComponent('Patch'),
+    useFont: () => null,
+    vec: (x, y) => ({ x, y }),
+    useFonts: () => [null],
+    useImage: () => null,
+    Skia: {
+      Path: {
+        Make: () => ({
+          moveTo: () => ({}),
+          lineTo: () => ({}),
+          close: () => ({}),
+          cubicTo: () => ({}),
+          quadTo: () => ({}),
+          arcTo: () => ({}),
+          addRect: () => ({}),
+          addOval: () => ({}),
+          addCircle: () => ({}),
+          addRRect: () => ({}),
+        }),
+      },
+      Paint: () => ({}),
+      Matrix: () => [],
+    },
+    useSharedValue: (init) => ({ value: init }),
+    matchFont: () => ({}),
+  };
+});
+
 // Mock react-native-gesture-handler
 jest.mock('react-native-gesture-handler', () => {
   const { ScrollView, View } = require('react-native');
@@ -201,6 +275,7 @@ jest.mock('react-native-gesture-handler', () => {
     GestureDetector: ({ children }) => children,
     Gesture: {
       Pan: chainable,
+      Pinch: chainable,
       Tap: chainable,
       LongPress: chainable,
       Simultaneous: (...args) => args[0] || chainable(),

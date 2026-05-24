@@ -48,6 +48,7 @@ const MuteButton = memo(function MuteButton({
       withSpring(1, { damping: 10, stiffness: 200 })
     );
     onToggle?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- scale is a Reanimated SharedValue (stable ref)
   }, [onToggle]);
 
   return (
@@ -93,6 +94,7 @@ const SoloButton = memo(function SoloButton({
       withSpring(1, { damping: 10, stiffness: 200 })
     );
     onToggle?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- scale is a Reanimated SharedValue (stable ref)
   }, [onToggle]);
 
   return (

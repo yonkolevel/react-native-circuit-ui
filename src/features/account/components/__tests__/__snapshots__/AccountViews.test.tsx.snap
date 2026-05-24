@@ -78,6 +78,7 @@ exports[`CreateAccountView matches snapshot 1`] = `
     >
       <TextInput
         accessibilityLabel="Name"
+        accessibilityRole="text"
         accessibilityState={
           {
             "disabled": false,
@@ -149,6 +150,7 @@ exports[`CreateAccountView matches snapshot 1`] = `
     >
       <TextInput
         accessibilityLabel="Email"
+        accessibilityRole="text"
         accessibilityState={
           {
             "disabled": false,
@@ -222,6 +224,7 @@ exports[`CreateAccountView matches snapshot 1`] = `
     >
       <TextInput
         accessibilityLabel="Password"
+        accessibilityRole="text"
         accessibilityState={
           {
             "disabled": false,
@@ -421,6 +424,7 @@ exports[`SignInView matches snapshot 1`] = `
     >
       <TextInput
         accessibilityLabel="Email"
+        accessibilityRole="text"
         accessibilityState={
           {
             "disabled": false,
@@ -494,6 +498,7 @@ exports[`SignInView matches snapshot 1`] = `
     >
       <TextInput
         accessibilityLabel="Password"
+        accessibilityRole="text"
         accessibilityState={
           {
             "disabled": false,

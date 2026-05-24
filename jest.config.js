@@ -10,7 +10,7 @@ module.exports = {
     '\\.svg$': '<rootDir>/src/__mocks__/svgMock.js',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|react-native-svg|lucide-react-native)/)',
+    'node_modules/(?!(react-native|@react-native|react-native-svg|lucide-react-native|@shopify/react-native-skia)/)',
   ],
   projects: [
     {
@@ -26,7 +26,7 @@ module.exports = {
         '\\.svg$': '<rootDir>/src/__mocks__/svgMock.js',
       },
       transformIgnorePatterns: [
-        'node_modules/(?!(react-native|@react-native|react-native-svg|lucide-react-native)/)',
+        'node_modules/(?!(react-native|@react-native|react-native-svg|lucide-react-native|@shopify/react-native-skia)/)',
       ],
       testPathIgnorePatterns: [
         '<rootDir>/src/__tests__/visual-regression',
@@ -46,7 +46,7 @@ module.exports = {
         '\\.svg$': '<rootDir>/src/__mocks__/svgMock.js',
       },
       transformIgnorePatterns: [
-        'node_modules/(?!(react-native|@react-native|react-native-svg|lucide-react-native)/)',
+        'node_modules/(?!(react-native|@react-native|react-native-svg|lucide-react-native|@shopify/react-native-skia)/)',
       ],
       testMatch: [
         '<rootDir>/src/__tests__/visual-regression/**/*.test.ts',
