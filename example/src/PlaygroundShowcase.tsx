@@ -186,7 +186,7 @@ function ShowcaseContent() {
           </Section>
 
           <Section title="ClipEditor (Piano Roll)">
-            <View style={{ height: 500 }}>
+            <View style={styles.clipEditor}>
               <ClipEditorView
                 clip={drumClip}
                 instrumentType="drum"
@@ -201,7 +201,7 @@ function ShowcaseContent() {
               <Text
                 variant="body"
                 color={colors.mcWhite3}
-                style={{ padding: 16 }}
+                style={styles.scroll}
               >
                 Panel content goes here
               </Text>
@@ -246,7 +246,7 @@ function ShowcaseContent() {
 
 export default function PlaygroundShowcase() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.container}>
       <ThemeProvider initialMode="dark">
         <ShowcaseContent />
       </ThemeProvider>
@@ -266,5 +266,6 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(247,247,247,0.1)',
     paddingBottom: 8,
   },
+  clipEditor: { height: 500 },
   footer: { height: 40 },
 });

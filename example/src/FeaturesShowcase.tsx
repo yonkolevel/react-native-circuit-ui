@@ -176,7 +176,7 @@ function ShowcaseContent() {
             variant="small"
             center
             color={colors.mcWhite3}
-            style={{ marginTop: 8 }}
+            style={styles.marginTop}
           >
             Active: {dashTab}
           </Text>
@@ -184,7 +184,7 @@ function ShowcaseContent() {
 
         {/* Welcome */}
         <Section title="Welcome Screen">
-          <View style={{ height: 400 }}>
+          <View style={styles.featureHeight}>
             <WelcomeView onGetStarted={() => {}} onSignIn={() => {}} />
           </View>
         </Section>
@@ -278,5 +278,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(247,247,247,0.1)',
     paddingBottom: 8,
   },
+  marginTop: { marginTop: 8 },
+  featureHeight: { height: 400 },
   footer: { height: 40 },
 });

@@ -2,8 +2,8 @@ const { withXcodeProject } = require('@expo/config-plugins');
 const path = require('path');
 const fs = require('fs');
 
-module.exports = function withMultiTouchOverlay(config) {
-  return withXcodeProject(config, async (config) => {
+module.exports = function withMultiTouchOverlay(expoConfig) {
+  return withXcodeProject(expoConfig, async (config) => {
     const project = config.modResults;
     const sourceDir = path.join(
       __dirname,

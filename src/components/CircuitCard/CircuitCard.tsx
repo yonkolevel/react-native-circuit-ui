@@ -273,10 +273,8 @@ export const CircuitCard: React.FC<CircuitCardProps> = ({
             <View
               style={[
                 styles.imageContainer,
-                {
-                  width: dimensions.imageWidth,
-                  height: '100%',
-                },
+                styles.horizontalImageContainer as object,
+                { width: dimensions.imageWidth },
               ]}
             >
               <Image
@@ -623,6 +621,9 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     overflow: 'hidden',
+  },
+  horizontalImageContainer: {
+    height: '100%',
   },
   image: {
     width: '100%',

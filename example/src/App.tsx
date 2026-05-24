@@ -98,7 +98,7 @@ export default function App() {
 
   if (screen === 'playground') {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
         <PlaygroundShowcase />
         <View style={navStyles.navBar}>
           <Pressable
@@ -120,7 +120,7 @@ export default function App() {
 
   if (screen === 'features') {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
         <FeaturesShowcase />
         <View style={navStyles.navBar}>
           <Pressable
@@ -142,7 +142,7 @@ export default function App() {
 
   return (
     <ThemeProvider initialMode="dark">
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
         <AppContent />
         <View style={navStyles.navBar}>
           <Pressable
