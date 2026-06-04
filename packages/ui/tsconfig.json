@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "paths": {
+      "@circuit-ui/core": ["./src/index"],
+      "@circuit-ui/tokens": ["../tokens/src/index"]
+    }
+  }
+}

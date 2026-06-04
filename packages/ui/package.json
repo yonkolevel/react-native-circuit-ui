@@ -1,0 +1,325 @@
+{
+  "name": "@circuit-ui/core",
+  "version": "0.3.2",
+  "description": "UI Kit for building React Native apps at Yonko Level",
+  "source": "./src/index.tsx",
+  "main": "./lib/commonjs/index.js",
+  "module": "./lib/module/index.js",
+  "exports": {
+    ".": {
+      "source": "./src/index.tsx",
+      "import": {
+        "types": "./lib/typescript/module/src/index.d.ts",
+        "default": "./lib/module/index.js"
+      },
+      "require": {
+        "types": "./lib/typescript/commonjs/src/index.d.ts",
+        "default": "./lib/commonjs/index.js"
+      }
+    },
+    "./Avatar": {
+      "source": "./src/components/Avatar/index.ts",
+      "import": "./lib/module/components/Avatar/index.js",
+      "require": "./lib/commonjs/components/Avatar/index.js"
+    },
+    "./Banner": {
+      "source": "./src/components/Banner/index.ts",
+      "import": "./lib/module/components/Banner/index.js",
+      "require": "./lib/commonjs/components/Banner/index.js"
+    },
+    "./Button": {
+      "source": "./src/components/Button/index.ts",
+      "import": "./lib/module/components/Button/index.js",
+      "require": "./lib/commonjs/components/Button/index.js"
+    },
+    "./CircuitCard": {
+      "source": "./src/components/CircuitCard/index.ts",
+      "import": "./lib/module/components/CircuitCard/index.js",
+      "require": "./lib/commonjs/components/CircuitCard/index.js"
+    },
+    "./CircularLoadingView": {
+      "source": "./src/components/CircularLoadingView/index.ts",
+      "import": "./lib/module/components/CircularLoadingView/index.js",
+      "require": "./lib/commonjs/components/CircularLoadingView/index.js"
+    },
+    "./CircularProgress": {
+      "source": "./src/components/CircularProgress/index.ts",
+      "import": "./lib/module/components/CircularProgress/index.js",
+      "require": "./lib/commonjs/components/CircularProgress/index.js"
+    },
+    "./ConnectedInstrument": {
+      "source": "./src/components/ConnectedInstrument/index.ts",
+      "import": "./lib/module/components/ConnectedInstrument/index.js",
+      "require": "./lib/commonjs/components/ConnectedInstrument/index.js"
+    },
+    "./DeviceLabel": {
+      "source": "./src/components/DeviceLabel/index.ts",
+      "import": "./lib/module/components/DeviceLabel/index.js",
+      "require": "./lib/commonjs/components/DeviceLabel/index.js"
+    },
+    "./DurationLabel": {
+      "source": "./src/components/DurationLabel/index.ts",
+      "import": "./lib/module/components/DurationLabel/index.js",
+      "require": "./lib/commonjs/components/DurationLabel/index.js"
+    },
+    "./GradientCover": {
+      "source": "./src/components/GradientCover/index.ts",
+      "import": "./lib/module/components/GradientCover/index.js",
+      "require": "./lib/commonjs/components/GradientCover/index.js"
+    },
+    "./HintBubble": {
+      "source": "./src/components/HintBubble/index.ts",
+      "import": "./lib/module/components/HintBubble/index.js",
+      "require": "./lib/commonjs/components/HintBubble/index.js"
+    },
+    "./InfoSheet": {
+      "source": "./src/components/InfoSheet/index.ts",
+      "import": "./lib/module/components/InfoSheet/index.js",
+      "require": "./lib/commonjs/components/InfoSheet/index.js"
+    },
+    "./Input": {
+      "source": "./src/components/Input/index.ts",
+      "import": "./lib/module/components/Input/index.js",
+      "require": "./lib/commonjs/components/Input/index.js"
+    },
+    "./LearningPathCard": {
+      "source": "./src/components/LearningPathCard/index.ts",
+      "import": "./lib/module/components/LearningPathCard/index.js",
+      "require": "./lib/commonjs/components/LearningPathCard/index.js"
+    },
+    "./LevelIndicator": {
+      "source": "./src/components/LevelIndicator/index.ts",
+      "import": "./lib/module/components/LevelIndicator/index.js",
+      "require": "./lib/commonjs/components/LevelIndicator/index.js"
+    },
+    "./LoadingView": {
+      "source": "./src/components/LoadingView/index.ts",
+      "import": "./lib/module/components/LoadingView/index.js",
+      "require": "./lib/commonjs/components/LoadingView/index.js"
+    },
+    "./MenuLabel": {
+      "source": "./src/components/MenuLabel/index.ts",
+      "import": "./lib/module/components/MenuLabel/index.js",
+      "require": "./lib/commonjs/components/MenuLabel/index.js"
+    },
+    "./Modal": {
+      "source": "./src/components/Modal/index.ts",
+      "import": "./lib/module/components/Modal/index.js",
+      "require": "./lib/commonjs/components/Modal/index.js"
+    },
+    "./MultiTouchOverlay": {
+      "source": "./src/components/MultiTouchOverlay/index.ts",
+      "import": "./lib/module/components/MultiTouchOverlay/index.js",
+      "require": "./lib/commonjs/components/MultiTouchOverlay/index.js"
+    },
+    "./NotePrecisionPanel": {
+      "source": "./src/components/NotePrecisionPanel/index.ts",
+      "import": "./lib/module/components/NotePrecisionPanel/index.js",
+      "require": "./lib/commonjs/components/NotePrecisionPanel/index.js"
+    },
+    "./PianoRoll": {
+      "source": "./src/components/PianoRoll/index.ts",
+      "import": "./lib/module/components/PianoRoll/index.js",
+      "require": "./lib/commonjs/components/PianoRoll/index.js"
+    },
+    "./PlaceholderView": {
+      "source": "./src/components/PlaceholderView/index.ts",
+      "import": "./lib/module/components/PlaceholderView/index.js",
+      "require": "./lib/commonjs/components/PlaceholderView/index.js"
+    },
+    "./PopAnimation": {
+      "source": "./src/components/PopAnimation/index.ts",
+      "import": "./lib/module/components/PopAnimation/index.js",
+      "require": "./lib/commonjs/components/PopAnimation/index.js"
+    },
+    "./PreviewLabel": {
+      "source": "./src/components/PreviewLabel/index.ts",
+      "import": "./lib/module/components/PreviewLabel/index.js",
+      "require": "./lib/commonjs/components/PreviewLabel/index.js"
+    },
+    "./ProgressBar": {
+      "source": "./src/components/ProgressBar/index.ts",
+      "import": "./lib/module/components/ProgressBar/index.js",
+      "require": "./lib/commonjs/components/ProgressBar/index.js"
+    },
+    "./ScoreIndicator": {
+      "source": "./src/components/ScoreIndicator/index.ts",
+      "import": "./lib/module/components/ScoreIndicator/index.js",
+      "require": "./lib/commonjs/components/ScoreIndicator/index.js"
+    },
+    "./ScreenContainer": {
+      "source": "./src/components/ScreenContainer/index.ts",
+      "import": "./lib/module/components/ScreenContainer/index.js",
+      "require": "./lib/commonjs/components/ScreenContainer/index.js"
+    },
+    "./SegmentedProgressBar": {
+      "source": "./src/components/SegmentedProgressBar/index.ts",
+      "import": "./lib/module/components/SegmentedProgressBar/index.js",
+      "require": "./lib/commonjs/components/SegmentedProgressBar/index.js"
+    },
+    "./SFSymbol": {
+      "source": "./src/components/SFSymbol/index.ts",
+      "import": "./lib/module/components/SFSymbol/index.js",
+      "require": "./lib/commonjs/components/SFSymbol/index.js"
+    },
+    "./Text": {
+      "source": "./src/components/Text/index.ts",
+      "import": "./lib/module/components/Text/index.js",
+      "require": "./lib/commonjs/components/Text/index.js"
+    },
+    "./ToolbarButton": {
+      "source": "./src/components/ToolbarButton/index.ts",
+      "import": "./lib/module/components/ToolbarButton/index.js",
+      "require": "./lib/commonjs/components/ToolbarButton/index.js"
+    },
+    "./src/*": "./src/*"
+  },
+  "files": [
+    "src",
+    "lib",
+    "android",
+    "ios",
+    "cpp",
+    "*.podspec",
+    "react-native.config.js",
+    "!ios/build",
+    "!android/build",
+    "!android/gradle",
+    "!android/gradlew",
+    "!android/gradlew.bat",
+    "!android/local.properties",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "!**/.*"
+  ],
+  "scripts": {
+    "test": "jest",
+    "test:visual": "jest --selectProjects visual",
+    "test:unit": "jest --selectProjects unit",
+    "typecheck": "tsc",
+    "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
+    "clean": "del-cli lib",
+    "prepare": "bob build",
+    "release": "release-it"
+  },
+  "keywords": [
+    "react-native",
+    "ios",
+    "android"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/txbrown/react-native-circuit-ui.git"
+  },
+  "author": "txbrown <ricardo@yonkolevel.com> (https://github.com/txbrown)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/txbrown/react-native-circuit-ui/issues"
+  },
+  "homepage": "https://github.com/txbrown/react-native-circuit-ui#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@circuit-ui/tokens": "workspace:*",
+    "lucide-react-native": "^0.481.0",
+    "zustand": "^5.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^17.0.2",
+    "@evilmartians/lefthook": "^1.5.0",
+    "@react-native-community/slider": "^4.5.5",
+    "@react-native/eslint-config": "^0.73.1",
+    "@release-it/conventional-changelog": "^9.0.2",
+    "@shopify/react-native-skia": "^2.5.3",
+    "@testing-library/react-native": "^13.3.3",
+    "@types/jest": "^29.5.5",
+    "@types/jest-image-snapshot": "^6.4.1",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
+    "@types/react": "^18.2.44",
+    "@types/react-test-renderer": "^18.3.1",
+    "commitlint": "^17.0.2",
+    "conventional-changelog-angular": "^8.0.0",
+    "del-cli": "^5.1.0",
+    "eslint": "^8.51.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "jest": "^29.7.0",
+    "jest-image-snapshot": "^6.5.2",
+    "pixelmatch": "5.3.0",
+    "prettier": "^3.0.3",
+    "react": "18.3.1",
+    "react-native": "0.76.7",
+    "react-native-builder-bob": "^0.37.0",
+    "react-native-gesture-handler": "^2.20.2",
+    "react-native-reanimated": "^3.17.4",
+    "react-native-svg": "^15.11.2",
+    "react-test-renderer": "18.3.1",
+    "release-it": "^17.10.0",
+    "typescript": "^5.2.2"
+  },
+  "resolutions": {
+    "@types/react": "^18.2.44"
+  },
+  "peerDependencies": {
+    "@react-native-community/slider": ">=4.0.0",
+    "@shopify/react-native-skia": ">=2.0.0",
+    "react": "*",
+    "react-native": "*",
+    "react-native-gesture-handler": ">=2.0.0",
+    "react-native-reanimated": ">=3.0.0",
+    "react-native-svg": ">=15.0.0"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      [
+        "commonjs",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json",
+          "esm": true
+        }
+      ]
+    ]
+  },
+  "create-react-native-library": {
+    "languages": "js",
+    "type": "library",
+    "version": "0.48.3"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release ${version}",
+      "tagName": "v${version}"
+    },
+    "npm": {
+      "publish": true
+    },
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": {
+          "name": "angular"
+        },
+        "infile": "CHANGELOG.md"
+      }
+    }
+  }
+}

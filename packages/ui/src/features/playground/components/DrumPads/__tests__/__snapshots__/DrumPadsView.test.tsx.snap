@@ -1,0 +1,1415 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DrumPadsView snapshots matches snapshot with custom highlight color 1`] = `
+<View
+  accessibilityLabel="Drum pads"
+  style={
+    {
+      "flex": 1,
+      "position": "relative",
+    }
+  }
+>
+  <View
+    style={
+      [
+        {
+          "flex": 1,
+          "gap": 1,
+        },
+        {
+          "pointerEvents": "none",
+        },
+      ]
+    }
+  >
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Shaker
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Perc 1
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Perc 2
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          FX
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Cymbal
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Ride
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Rim
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Cowbell
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Clap
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Tom Low
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Tom Mid
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Tom High
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Kick
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Snare
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Closed HH
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Open HH
+        </Text>
+      </View>
+    </View>
+  </View>
+  <View
+    columns={4}
+    onPadPress={[Function]}
+    onPadRelease={[Function]}
+    rows={4}
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="MultiTouchOverlay"
+  />
+</View>
+`;
+
+exports[`DrumPadsView snapshots matches snapshot with default samples 1`] = `
+<View
+  accessibilityLabel="Drum pads"
+  style={
+    {
+      "flex": 1,
+      "position": "relative",
+    }
+  }
+>
+  <View
+    style={
+      [
+        {
+          "flex": 1,
+          "gap": 1,
+        },
+        {
+          "pointerEvents": "none",
+        },
+      ]
+    }
+  >
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Shaker
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Perc 1
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Perc 2
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          FX
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Cymbal
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Ride
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Rim
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Cowbell
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Clap
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Tom Low
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Tom Mid
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Tom High
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flex": 1,
+          "flexDirection": "row",
+          "gap": 1,
+        }
+      }
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Kick
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Snare
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Closed HH
+        </Text>
+      </View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "backgroundColor": "#25272B",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          numberOfLines={2}
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 8,
+                "fontWeight": "400",
+                "lineHeight": 12,
+              },
+              {
+                "color": "rgba(255,255,255,0.5)",
+              },
+              {
+                "fontSize": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
+          Open HH
+        </Text>
+      </View>
+    </View>
+  </View>
+  <View
+    columns={4}
+    onPadPress={[Function]}
+    onPadRelease={[Function]}
+    rows={4}
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="MultiTouchOverlay"
+  />
+</View>
+`;

@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "rootDir": ".",
+    "paths": {
+      "@circuit-ui/core": ["./src/index"]
+    }
+  },
+  "exclude": [
+    "lib",
+    "**/__tests__/**",
+    "**/__mocks__/**",
+    "**/__fixtures__/**",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}

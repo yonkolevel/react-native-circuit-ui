@@ -1,10 +1,8 @@
 /** @type {import('jest').Config} */
 module.exports = {
   preset: 'react-native',
-  rootDir: './packages/ui',
-  // Note: run tests via `yarn workspace react-native-circuit-ui test:unit`
-  // which uses packages/ui/jest.config.js (co-located with node_modules)
-  setupFiles: ['<rootDir>/../../jest.setup.js'],
+  rootDir: '.',
+  setupFiles: ['<rootDir>/jest.setup.js'],
   modulePathIgnorePatterns: [
     '<rootDir>/../../example/node_modules',
     '<rootDir>/lib/',
@@ -20,7 +18,7 @@ module.exports = {
     {
       displayName: 'unit',
       preset: 'react-native',
-      setupFiles: ['<rootDir>/../../jest.setup.js'],
+      setupFiles: ['<rootDir>/jest.setup.js'],
       modulePathIgnorePatterns: [
         '<rootDir>/../../example/node_modules',
         '<rootDir>/lib/',
@@ -40,7 +38,7 @@ module.exports = {
     {
       displayName: 'visual',
       preset: 'react-native',
-      setupFiles: ['<rootDir>/../../jest.setup.js'],
+      setupFiles: ['<rootDir>/jest.setup.js'],
       modulePathIgnorePatterns: [
         '<rootDir>/../../example/node_modules',
         '<rootDir>/lib/',

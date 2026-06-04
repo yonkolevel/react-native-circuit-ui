@@ -1,0 +1,204 @@
+/**
+ * CircuitUI Typography System
+ *
+ * Exact match of MidicircuitKit/Sources/StyleGuide/Typography.swift
+ *
+ * SwiftUI uses custom Barlow font (Regular, SemiBold, Bold).
+ * When Barlow is loaded via expo-font or react-native config plugin,
+ * set `CircuitUITypography.configure({ fontFamily: { ... } })`.
+ *
+ * Until configured, falls back to platform system fonts.
+ */
+import type { TextStyle } from 'react-native';
+import { Platform } from 'react-native';
+import {
+  fontSize,
+  fontWeight,
+  lineHeight,
+} from '@circuit-ui/tokens';
+import type { FontWeight } from '@circuit-ui/tokens';
+
+export { fontSize, fontWeight, lineHeight };
+export type { FontWeight };
+
+// ─── Font Family Registry ───────────────────────────────────────────────────
+
+export interface FontFamilyConfig {
+  regular: string;
+  semiBold: string;
+  bold: string;
+}
+
+const defaultFontFamily: FontFamilyConfig = {
+  regular: Platform.select({
+    ios: 'System',
+    android: 'sans-serif',
+    default: 'System',
+  })!,
+  semiBold: Platform.select({
+    ios: 'System',
+    android: 'sans-serif-medium',
+    default: 'System',
+  })!,
+  bold: Platform.select({
+    ios: 'System',
+    android: 'sans-serif-bold',
+    default: 'System',
+  })!,
+};
+
+// Mutable config — set via configure()
+let _fontFamily: FontFamilyConfig = { ...defaultFontFamily };
+
+/**
+ * Configure custom fonts (e.g. Barlow after loading with expo-font).
+ *
+ * @example
+ * ```ts
+ * configureTypography({
+ *   fontFamily: {
+ *     regular: 'Barlow-Regular',
+ *     semiBold: 'Barlow-SemiBold',
+ *     bold: 'Barlow-Bold',
+ *   },
+ * });
+ * ```
+ */
+export function configureTypography(opts: {
+  fontFamily: FontFamilyConfig;
+}): void {
+  _fontFamily = { ...opts.fontFamily };
+}
+
+export function getFontFamily(): Readonly<FontFamilyConfig> {
+  return _fontFamily;
+}
+
+// ─── Style Factory ──────────────────────────────────────────────────────────
+
+const createTextStyle = (
+  size: number,
+  familyKey: keyof FontFamilyConfig,
+  weight: FontWeight,
+  lineHeightMultiplier: number = lineHeight.normal
+): TextStyle => ({
+  fontFamily: _fontFamily[familyKey],
+  fontSize: size,
+  fontWeight: weight,
+  lineHeight: Math.round(size * lineHeightMultiplier),
+});
+
+// ─── Typography Scale ───────────────────────────────────────────────────────
+// Matches every Font.mc* and Text extension in Typography.swift
+
+export const typography = {
+  // Headings
+  h1: createTextStyle(
+    fontSize.h1,
+    'semiBold',
+    fontWeight.semiBold,
+    lineHeight.tight
+  ),
+  h1Regular: createTextStyle(
+    fontSize.h1,
+    'regular',
+    fontWeight.regular,
+    lineHeight.tight
+  ),
+  h2: createTextStyle(
+    fontSize.h2,
+    'semiBold',
+    fontWeight.semiBold,
+    lineHeight.tight
+  ),
+  h3: createTextStyle(
+    fontSize.h3,
+    'semiBold',
+    fontWeight.semiBold,
+    lineHeight.tight
+  ),
+  h3Regular: createTextStyle(
+    fontSize.h3,
+    'regular',
+    fontWeight.regular,
+    lineHeight.tight
+  ),
+  h4: createTextStyle(
+    fontSize.h4,
+    'semiBold',
+    fontWeight.semiBold,
+    lineHeight.tight
+  ),
+  h5: createTextStyle(
+    fontSize.h5,
+    'semiBold',
+    fontWeight.semiBold,
+    lineHeight.normal
+  ),
+
+  // Body / Labels
+  body: createTextStyle(fontSize.body, 'regular', fontWeight.regular),
+  label: createTextStyle(fontSize.label, 'semiBold', fontWeight.semiBold),
+  labelBold: createTextStyle(fontSize.label, 'bold', fontWeight.bold),
+  labelRegular: createTextStyle(fontSize.label, 'regular', fontWeight.regular),
+  labelRegular2: createTextStyle(fontSize.quote, 'regular', fontWeight.regular), // 22pt regular
+  labelRegular3: createTextStyle(fontSize.body, 'regular', fontWeight.regular), // 14pt regular
+
+  // Quote
+  quote: createTextStyle(fontSize.quote, 'semiBold', fontWeight.semiBold),
+  quoteBold: createTextStyle(fontSize.quote, 'bold', fontWeight.bold),
+
+  // Caption (11pt) — iOS .system(size: 11, weight: .medium)
+  caption: createTextStyle(fontSize.caption, 'semiBold', fontWeight.semiBold),
+  captionRegular: createTextStyle(
+    fontSize.caption,
+    'regular',
+    fontWeight.regular
+  ),
+
+  // Small / Caption
+  small: createTextStyle(fontSize.small, 'regular', fontWeight.regular),
+
+  // Button labels
+  buttonLabelBold: createTextStyle(fontSize.small, 'bold', fontWeight.bold),
+  buttonLabelSemiBold: createTextStyle(
+    fontSize.small,
+    'semiBold',
+    fontWeight.semiBold
+  ),
+
+  // Extra small
+  extraSmall: createTextStyle(
+    fontSize.extraSmall,
+    'regular',
+    fontWeight.regular
+  ),
+  extraSmallSemiBold: createTextStyle(
+    fontSize.extraSmall,
+    'semiBold',
+    fontWeight.semiBold
+  ),
+  extraSmall10: createTextStyle(
+    fontSize.extraSmall10,
+    'regular',
+    fontWeight.regular
+  ),
+  extraSmall10SemiBold: createTextStyle(
+    fontSize.extraSmall10,
+    'semiBold',
+    fontWeight.semiBold
+  ),
+} as const;
+
+// ─── Type exports ───────────────────────────────────────────────────────────
+
+export type TypographyVariant = keyof typeof typography;
+
+export default {
+  fontSize,
+  fontWeight,
+  lineHeight,
+  typography,
+  configureTypography,
+  getFontFamily,
+};

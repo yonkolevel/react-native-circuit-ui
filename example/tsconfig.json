@@ -1,6 +1,9 @@
 {
   "extends": "../tsconfig",
   "compilerOptions": {
-    // Avoid expo-cli auto-generating a tsconfig
+    "paths": {
+      "@circuit-ui/core": ["../packages/ui/src/index"],
+      "@circuit-ui/tokens": ["../packages/tokens/src/index"]
+    }
   }
 }

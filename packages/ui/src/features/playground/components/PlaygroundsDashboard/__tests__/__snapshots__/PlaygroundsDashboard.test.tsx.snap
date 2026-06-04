@@ -1,0 +1,1569 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PlaygroundsDashboard snapshots matches snapshot empty state 1`] = `
+<View
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#000000",
+      },
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "justifyContent": "space-between",
+          "paddingBottom": 8,
+        },
+        {
+          "paddingHorizontal": 24,
+          "paddingTop": 24,
+        },
+      ]
+    }
+  >
+    <Text
+      accessibilityRole="text"
+      style={
+        [
+          {
+            "fontFamily": "System",
+            "fontSize": 38,
+            "fontWeight": "600",
+            "lineHeight": 46,
+          },
+          {
+            "color": "#F7F7F7",
+          },
+        ]
+      }
+    >
+      Playgrounds
+    </Text>
+  </View>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flex": 1,
+        "gap": 48,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      accessibilityRole="text"
+      style={
+        [
+          {
+            "fontFamily": "System",
+            "fontSize": 22,
+            "fontWeight": "400",
+            "lineHeight": 33,
+          },
+          {
+            "color": "#FF5C24",
+          },
+          {
+            "textAlign": "center",
+          },
+        ]
+      }
+    >
+      You haven't created a Playground yet
+    </Text>
+    <View
+      style={
+        {
+          "marginTop": 0,
+        }
+      }
+    >
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          [
+            {
+              "borderRadius": 6,
+              "paddingHorizontal": 20,
+              "paddingVertical": 10,
+            },
+            {
+              "backgroundColor": "#FF5C24",
+            },
+          ]
+        }
+      >
+        <Text
+          accessibilityRole="text"
+          style={
+            [
+              {
+                "fontFamily": "System",
+                "fontSize": 16,
+                "fontWeight": "600",
+                "lineHeight": 24,
+              },
+              {
+                "color": "#F7F7F7",
+              },
+            ]
+          }
+        >
+          + New
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`PlaygroundsDashboard snapshots matches snapshot loading state 1`] = `
+<View
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#000000",
+      },
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "justifyContent": "space-between",
+          "paddingBottom": 8,
+        },
+        {
+          "paddingHorizontal": 24,
+          "paddingTop": 24,
+        },
+      ]
+    }
+  >
+    <Text
+      accessibilityRole="text"
+      style={
+        [
+          {
+            "fontFamily": "System",
+            "fontSize": 38,
+            "fontWeight": "600",
+            "lineHeight": 46,
+          },
+          {
+            "color": "#F7F7F7",
+          },
+        ]
+      }
+    >
+      Playgrounds
+    </Text>
+  </View>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <ActivityIndicator
+      color="#FF5C24"
+      size="large"
+    />
+    <Text
+      accessibilityRole="text"
+      style={
+        [
+          {
+            "fontFamily": "System",
+            "fontSize": 12,
+            "fontWeight": "400",
+            "lineHeight": 18,
+          },
+          {
+            "color": "rgba(247, 247, 247, 0.60)",
+          },
+          {
+            "marginTop": 8,
+          },
+        ]
+      }
+    >
+      Loading playgrounds…
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`PlaygroundsDashboard snapshots matches snapshot refresh with playgrounds 1`] = `
+<View
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#000000",
+      },
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "justifyContent": "space-between",
+          "paddingBottom": 8,
+        },
+        {
+          "paddingHorizontal": 24,
+          "paddingTop": 24,
+        },
+      ]
+    }
+  >
+    <Text
+      accessibilityRole="text"
+      style={
+        [
+          {
+            "fontFamily": "System",
+            "fontSize": 38,
+            "fontWeight": "600",
+            "lineHeight": 46,
+          },
+          {
+            "color": "#F7F7F7",
+          },
+        ]
+      }
+    >
+      Playgrounds
+    </Text>
+    <View
+      accessibilityLabel="Create new playground"
+      accessibilityRole="button"
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        [
+          {
+            "borderRadius": 6,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          {
+            "backgroundColor": "#FF5C24",
+          },
+        ]
+      }
+    >
+      <Text
+        accessibilityRole="text"
+        style={
+          [
+            {
+              "fontFamily": "System",
+              "fontSize": 16,
+              "fontWeight": "600",
+              "lineHeight": 24,
+            },
+            {
+              "color": "#F7F7F7",
+            },
+          ]
+        }
+      >
+        + New
+      </Text>
+    </View>
+  </View>
+  <View
+    style={
+      {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "paddingVertical": 8,
+        }
+      }
+    >
+      <ActivityIndicator
+        color="#FF5C24"
+        size="small"
+      />
+    </View>
+    <RCTScrollView
+      contentContainerStyle={
+        [
+          {
+            "gap": 0,
+          },
+          {
+            "paddingHorizontal": 24,
+          },
+        ]
+      }
+    >
+      <View>
+        <View
+          accessibilityLabel="Playground: My First Beat"
+          accessibilityRole="none"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "flexDirection": "row",
+                "paddingVertical": 12,
+              },
+              {
+                "opacity": 1,
+              },
+            ]
+          }
+        >
+          <View
+            style={
+              [
+                {
+                  "height": 88,
+                  "width": 88,
+                },
+                undefined,
+              ]
+            }
+          >
+            <View
+              height={88}
+              testID="Svg"
+              width={88}
+            >
+              <View
+                testID="Defs"
+              >
+                <View
+                  id="grad"
+                  testID="LinearGradient"
+                  x1="0"
+                  x2="0"
+                  y1="0"
+                  y2="1"
+                >
+                  <View
+                    offset="0"
+                    stopColor="#FF245B"
+                    stopOpacity="1"
+                    testID="Stop"
+                  />
+                  <View
+                    offset="1"
+                    stopColor="#FF5C24"
+                    stopOpacity="1"
+                    testID="Stop"
+                  />
+                </View>
+              </View>
+              <View
+                fill="url(#grad)"
+                height={88}
+                testID="Rect"
+                width={88}
+              />
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "flex": 1,
+                "gap": 2,
+                "marginLeft": 12,
+              }
+            }
+          >
+            <Text
+              accessibilityRole="text"
+              numberOfLines={1}
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 16,
+                    "fontWeight": "600",
+                    "lineHeight": 24,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              My First Beat
+            </Text>
+            <Text
+              accessibilityRole="text"
+              numberOfLines={1}
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              Ricardo
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              15/01/2025, 21:00
+            </Text>
+          </View>
+          <View
+            accessibilityLabel="More options"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": undefined,
+                "expanded": undefined,
+                "selected": undefined,
+              }
+            }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            collapsable={false}
+            focusable={true}
+            hitSlop={12}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "padding": 12,
+              }
+            }
+          >
+            <View>
+              <View
+                color="rgba(247, 247, 247, 0.60)"
+                size={20}
+                testID="lucide-MoreHorizontal"
+              />
+            </View>
+          </View>
+        </View>
+        <View
+          accessibilityLabel="Playground: Sunset Vibes"
+          accessibilityRole="none"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "flexDirection": "row",
+                "paddingVertical": 12,
+              },
+              {
+                "opacity": 1,
+              },
+            ]
+          }
+        >
+          <View
+            style={
+              [
+                {
+                  "height": 88,
+                  "width": 88,
+                },
+                undefined,
+              ]
+            }
+          >
+            <View
+              height={88}
+              testID="Svg"
+              width={88}
+            >
+              <View
+                testID="Defs"
+              >
+                <View
+                  id="grad"
+                  testID="LinearGradient"
+                  x1="0"
+                  x2="0"
+                  y1="0"
+                  y2="1"
+                >
+                  <View
+                    offset="0"
+                    stopColor="#8557FF"
+                    stopOpacity="1"
+                    testID="Stop"
+                  />
+                  <View
+                    offset="1"
+                    stopColor="#2496FF"
+                    stopOpacity="1"
+                    testID="Stop"
+                  />
+                </View>
+              </View>
+              <View
+                fill="url(#grad)"
+                height={88}
+                testID="Rect"
+                width={88}
+              />
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "flex": 1,
+                "gap": 2,
+                "marginLeft": 12,
+              }
+            }
+          >
+            <Text
+              accessibilityRole="text"
+              numberOfLines={1}
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 16,
+                    "fontWeight": "600",
+                    "lineHeight": 24,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              Sunset Vibes
+            </Text>
+            <Text
+              accessibilityRole="text"
+              numberOfLines={1}
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              Ricardo
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              15/01/2025, 21:00
+            </Text>
+          </View>
+          <View
+            accessibilityLabel="More options"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": undefined,
+                "expanded": undefined,
+                "selected": undefined,
+              }
+            }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            collapsable={false}
+            focusable={true}
+            hitSlop={12}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "padding": 12,
+              }
+            }
+          >
+            <View>
+              <View
+                color="rgba(247, 247, 247, 0.60)"
+                size={20}
+                testID="lucide-MoreHorizontal"
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+    </RCTScrollView>
+  </View>
+</View>
+`;
+
+exports[`PlaygroundsDashboard snapshots matches snapshot with playgrounds 1`] = `
+<View
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#000000",
+      },
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "justifyContent": "space-between",
+          "paddingBottom": 8,
+        },
+        {
+          "paddingHorizontal": 24,
+          "paddingTop": 24,
+        },
+      ]
+    }
+  >
+    <Text
+      accessibilityRole="text"
+      style={
+        [
+          {
+            "fontFamily": "System",
+            "fontSize": 38,
+            "fontWeight": "600",
+            "lineHeight": 46,
+          },
+          {
+            "color": "#F7F7F7",
+          },
+        ]
+      }
+    >
+      Playgrounds
+    </Text>
+    <View
+      accessibilityLabel="Create new playground"
+      accessibilityRole="button"
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        [
+          {
+            "borderRadius": 6,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          {
+            "backgroundColor": "#FF5C24",
+          },
+        ]
+      }
+    >
+      <Text
+        accessibilityRole="text"
+        style={
+          [
+            {
+              "fontFamily": "System",
+              "fontSize": 16,
+              "fontWeight": "600",
+              "lineHeight": 24,
+            },
+            {
+              "color": "#F7F7F7",
+            },
+          ]
+        }
+      >
+        + New
+      </Text>
+    </View>
+  </View>
+  <View
+    style={
+      {
+        "flex": 1,
+      }
+    }
+  >
+    <RCTScrollView
+      contentContainerStyle={
+        [
+          {
+            "gap": 0,
+          },
+          {
+            "paddingHorizontal": 24,
+          },
+        ]
+      }
+    >
+      <View>
+        <View
+          accessibilityLabel="Playground: My First Beat"
+          accessibilityRole="none"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "flexDirection": "row",
+                "paddingVertical": 12,
+              },
+              {
+                "opacity": 1,
+              },
+            ]
+          }
+        >
+          <View
+            style={
+              [
+                {
+                  "height": 88,
+                  "width": 88,
+                },
+                undefined,
+              ]
+            }
+          >
+            <View
+              height={88}
+              testID="Svg"
+              width={88}
+            >
+              <View
+                testID="Defs"
+              >
+                <View
+                  id="grad"
+                  testID="LinearGradient"
+                  x1="0"
+                  x2="0"
+                  y1="0"
+                  y2="1"
+                >
+                  <View
+                    offset="0"
+                    stopColor="#FF245B"
+                    stopOpacity="1"
+                    testID="Stop"
+                  />
+                  <View
+                    offset="1"
+                    stopColor="#FF5C24"
+                    stopOpacity="1"
+                    testID="Stop"
+                  />
+                </View>
+              </View>
+              <View
+                fill="url(#grad)"
+                height={88}
+                testID="Rect"
+                width={88}
+              />
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "flex": 1,
+                "gap": 2,
+                "marginLeft": 12,
+              }
+            }
+          >
+            <Text
+              accessibilityRole="text"
+              numberOfLines={1}
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 16,
+                    "fontWeight": "600",
+                    "lineHeight": 24,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              My First Beat
+            </Text>
+            <Text
+              accessibilityRole="text"
+              numberOfLines={1}
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              Ricardo
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              15/01/2025, 21:00
+            </Text>
+          </View>
+          <View
+            accessibilityLabel="More options"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": undefined,
+                "expanded": undefined,
+                "selected": undefined,
+              }
+            }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            collapsable={false}
+            focusable={true}
+            hitSlop={12}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "padding": 12,
+              }
+            }
+          >
+            <View>
+              <View
+                color="rgba(247, 247, 247, 0.60)"
+                size={20}
+                testID="lucide-MoreHorizontal"
+              />
+            </View>
+          </View>
+        </View>
+        <View
+          accessibilityLabel="Playground: Sunset Vibes"
+          accessibilityRole="none"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "flexDirection": "row",
+                "paddingVertical": 12,
+              },
+              {
+                "opacity": 1,
+              },
+            ]
+          }
+        >
+          <View
+            style={
+              [
+                {
+                  "height": 88,
+                  "width": 88,
+                },
+                undefined,
+              ]
+            }
+          >
+            <View
+              height={88}
+              testID="Svg"
+              width={88}
+            >
+              <View
+                testID="Defs"
+              >
+                <View
+                  id="grad"
+                  testID="LinearGradient"
+                  x1="0"
+                  x2="0"
+                  y1="0"
+                  y2="1"
+                >
+                  <View
+                    offset="0"
+                    stopColor="#8557FF"
+                    stopOpacity="1"
+                    testID="Stop"
+                  />
+                  <View
+                    offset="1"
+                    stopColor="#2496FF"
+                    stopOpacity="1"
+                    testID="Stop"
+                  />
+                </View>
+              </View>
+              <View
+                fill="url(#grad)"
+                height={88}
+                testID="Rect"
+                width={88}
+              />
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "flex": 1,
+                "gap": 2,
+                "marginLeft": 12,
+              }
+            }
+          >
+            <Text
+              accessibilityRole="text"
+              numberOfLines={1}
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 16,
+                    "fontWeight": "600",
+                    "lineHeight": 24,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              Sunset Vibes
+            </Text>
+            <Text
+              accessibilityRole="text"
+              numberOfLines={1}
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              Ricardo
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              15/01/2025, 21:00
+            </Text>
+          </View>
+          <View
+            accessibilityLabel="More options"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": undefined,
+                "expanded": undefined,
+                "selected": undefined,
+              }
+            }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            collapsable={false}
+            focusable={true}
+            hitSlop={12}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "padding": 12,
+              }
+            }
+          >
+            <View>
+              <View
+                color="rgba(247, 247, 247, 0.60)"
+                size={20}
+                testID="lucide-MoreHorizontal"
+              />
+            </View>
+          </View>
+        </View>
+        <View
+          accessibilityLabel="Playground: Lo-Fi Chill"
+          accessibilityRole="none"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "flexDirection": "row",
+                "paddingVertical": 12,
+              },
+              {
+                "opacity": 1,
+              },
+            ]
+          }
+        >
+          <View
+            style={
+              [
+                {
+                  "height": 88,
+                  "width": 88,
+                },
+                undefined,
+              ]
+            }
+          >
+            <View
+              height={88}
+              testID="Svg"
+              width={88}
+            >
+              <View
+                testID="Defs"
+              >
+                <View
+                  id="grad"
+                  testID="LinearGradient"
+                  x1="0"
+                  x2="0"
+                  y1="0"
+                  y2="1"
+                >
+                  <View
+                    offset="0"
+                    stopColor="#FF5C24"
+                    stopOpacity="1"
+                    testID="Stop"
+                  />
+                  <View
+                    offset="1"
+                    stopColor="#2496FF"
+                    stopOpacity="1"
+                    testID="Stop"
+                  />
+                </View>
+              </View>
+              <View
+                fill="url(#grad)"
+                height={88}
+                testID="Rect"
+                width={88}
+              />
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "flex": 1,
+                "gap": 2,
+                "marginLeft": 12,
+              }
+            }
+          >
+            <Text
+              accessibilityRole="text"
+              numberOfLines={1}
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 16,
+                    "fontWeight": "600",
+                    "lineHeight": 24,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              Lo-Fi Chill
+            </Text>
+            <Text
+              accessibilityRole="text"
+              numberOfLines={1}
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              Ricardo
+            </Text>
+            <Text
+              accessibilityRole="text"
+              style={
+                [
+                  {
+                    "fontFamily": "System",
+                    "fontSize": 12,
+                    "fontWeight": "400",
+                    "lineHeight": 18,
+                  },
+                  {
+                    "color": "#F7F7F7",
+                  },
+                ]
+              }
+            >
+              15/01/2025, 21:00
+            </Text>
+          </View>
+          <View
+            accessibilityLabel="More options"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": undefined,
+                "expanded": undefined,
+                "selected": undefined,
+              }
+            }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            collapsable={false}
+            focusable={true}
+            hitSlop={12}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "padding": 12,
+              }
+            }
+          >
+            <View>
+              <View
+                color="rgba(247, 247, 247, 0.60)"
+                size={20}
+                testID="lucide-MoreHorizontal"
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+    </RCTScrollView>
+  </View>
+</View>
+`;
