@@ -13,7 +13,13 @@ import { SongToolbar } from '../SongToolbar';
 import { SongMixerTabBar } from '../SongMixerTabBar';
 import { SongStoreProvider } from '../../../stores/playgroundStore';
 import type { SongStore } from '../../../stores/playgroundStore';
-import { createMockSong, resetMockIds } from '../../../mocks';
+import {
+  createMockClip,
+  createMockNote,
+  createMockSong,
+  createMockTrack,
+  resetMockIds,
+} from '../../../mocks';
 
 function createTestStore(
   overrides: Partial<ReturnType<typeof createMockSong>> = {}
@@ -177,5 +183,83 @@ describe('SongMixerTabBar behavior', () => {
     const { getByTestId } = renderWithStore(<SongMixerTabBar />, store);
     fireEvent.press(getByTestId('tab-mixer'));
     expect(store.getState().setCurrentTab).toHaveBeenCalledWith('mixer');
+  });
+});
+
+describe('SongView export audio availability', () => {
+  it('disables export audio when every track is empty', () => {
+    const onExportAudio = jest.fn();
+    const emptyClip = createMockClip({ notes: [] });
+    const emptyTrack = createMockTrack({ id: 1, clips: [emptyClip] });
+    const store = createTestStore({
+      currentTab: 'settings',
+      tracks: [emptyTrack],
+    } as any);
+
+    const { getByLabelText } = renderWithStore(
+      <SongView onExportAudio={onExportAudio} />,
+      store
+    );
+
+    const exportButton = getByLabelText('EXPORT AUDIO');
+    expect(exportButton.props.accessibilityState).toMatchObject({
+      disabled: true,
+    });
+
+    fireEvent.press(exportButton);
+    expect(onExportAudio).not.toHaveBeenCalled();
+  });
+
+  it('enables export audio when a clip contains MIDI notes', () => {
+    const onExportAudio = jest.fn();
+    const clipWithNotes = createMockClip({ notes: [createMockNote()] });
+    const track = createMockTrack({ id: 1, clips: [clipWithNotes] });
+    const store = createTestStore({
+      currentTab: 'settings',
+      tracks: [track],
+    } as any);
+
+    const { getByLabelText } = renderWithStore(
+      <SongView onExportAudio={onExportAudio} />,
+      store
+    );
+
+    const exportButton = getByLabelText('EXPORT AUDIO');
+    expect(exportButton.props.accessibilityState).toMatchObject({
+      disabled: false,
+    });
+
+    fireEvent.press(exportButton);
+    expect(onExportAudio).toHaveBeenCalledTimes(1);
+  });
+
+  it('enables export audio when an audio clip has a file reference', () => {
+    const onExportAudio = jest.fn();
+    const audioClip = createMockClip({
+      notes: [],
+      audioFileReference: 'recordings/take-1.wav',
+    });
+    const audioTrack = createMockTrack({
+      id: 1,
+      type: 'audio',
+      clips: [audioClip],
+    });
+    const store = createTestStore({
+      currentTab: 'settings',
+      tracks: [audioTrack],
+    } as any);
+
+    const { getByLabelText } = renderWithStore(
+      <SongView onExportAudio={onExportAudio} />,
+      store
+    );
+
+    const exportButton = getByLabelText('EXPORT AUDIO');
+    expect(exportButton.props.accessibilityState).toMatchObject({
+      disabled: false,
+    });
+
+    fireEvent.press(exportButton);
+    expect(onExportAudio).toHaveBeenCalledTimes(1);
   });
 });
