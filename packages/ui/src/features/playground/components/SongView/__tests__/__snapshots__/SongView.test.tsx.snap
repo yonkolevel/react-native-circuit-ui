@@ -4037,7 +4037,7 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
             {
               "busy": undefined,
               "checked": undefined,
-              "disabled": undefined,
+              "disabled": false,
               "expanded": undefined,
               "selected": undefined,
             }
@@ -4110,7 +4110,7 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
             {
               "busy": undefined,
               "checked": undefined,
-              "disabled": undefined,
+              "disabled": false,
               "expanded": undefined,
               "selected": undefined,
             }

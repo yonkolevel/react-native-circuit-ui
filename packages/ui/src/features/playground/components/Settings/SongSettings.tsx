@@ -12,6 +12,7 @@ import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
 import { useSongContext, useSongActions } from '../../stores/playgroundStore';
+import type { Track } from '../../types';
 
 // Slider imported dynamically — available when @react-native-community/slider is installed.
 let SliderComponent: any = null;
@@ -25,6 +26,18 @@ export interface SongSettingsProps {
   a11yId?: string;
 }
 
+export function hasExportableAudioContent(tracks: Track[]): boolean {
+  return tracks.some((track) =>
+    track.clips.some((clip) => {
+      const hasMidiNotes = clip.notes.length > 0;
+      const hasAudioFile =
+        typeof clip.audioFileReference === 'string' &&
+        clip.audioFileReference.trim().length > 0;
+      return hasMidiNotes || hasAudioFile;
+    })
+  );
+}
+
 export const SongSettings = memo(function SongSettings({
   onExportAudio,
   onExportBundle,
@@ -36,6 +49,8 @@ export const SongSettings = memo(function SongSettings({
   const tempo = useSongContext((s) => s.tempo);
   const masterVolume = useSongContext((s) => s.masterVolume);
   const isMetronomeEnabled = useSongContext((s) => s.isMetronomeEnabled);
+  const tracks = useSongContext((s) => s.tracks);
+  const canExportAudio = hasExportableAudioContent(tracks);
 
   // Actions — stable refs, no subscription
   const { setTempo, setMasterVolume, toggleMetronome } = useSongActions();
@@ -135,6 +150,7 @@ export const SongSettings = memo(function SongSettings({
           icon={Icons.audioTrack}
           label="EXPORT AUDIO"
           onPress={onExportAudio}
+          disabled={!canExportAudio}
         />
         <ActionButton
           icon={Icons.settings}
@@ -179,18 +195,26 @@ function ActionButton({
   icon,
   label,
   onPress,
+  disabled = false,
 }: {
   icon: any;
   label: string;
   onPress?: () => void;
+  disabled?: boolean;
 }) {
   const { colors } = useTheme();
   return (
     <Pressable
       onPress={onPress}
-      style={[styles.actionButton, { backgroundColor: colors.mcWhite4 }]}
+      disabled={disabled}
+      style={[
+        styles.actionButton,
+        { backgroundColor: colors.mcWhite4 },
+        ...(disabled ? [styles.actionButtonDisabled] : []),
+      ]}
       accessibilityRole="button"
       accessibilityLabel={label}
+      accessibilityState={{ disabled }}
     >
       <Icon icon={icon} size={16} color={colors.mcWhite} />
       <Text variant="label" color={colors.mcWhite}>
@@ -231,5 +255,8 @@ const styles = StyleSheet.create({
     gap: 10,
     padding: makeSpacing(3),
     borderRadius: 6,
+  },
+  actionButtonDisabled: {
+    opacity: 0.4,
   },
 });
