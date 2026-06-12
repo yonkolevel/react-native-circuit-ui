@@ -1,5 +1,5 @@
 /**
- * SoloButton — 32×32 toggle button displaying "S"
+ * SoloButton — 32×32 visual toggle with a 44×44 hit region displaying "S"
  *
  * Matches SwiftUI SoloButtonView:
  * - Active: white text on #00FF9E (mcGreen)
@@ -42,8 +42,9 @@ export const SoloButton: React.FC<SoloButtonProps> = memo(function SoloButton({
     <Pressable
       testID={testID}
       onPress={handlePress}
+      hitSlop={6}
       accessibilityRole="button"
-      accessibilityLabel="Solo"
+      accessibilityLabel="Solo track"
       accessibilityState={{ selected: isSoloed }}
       style={[styles.button, { backgroundColor }]}
     >

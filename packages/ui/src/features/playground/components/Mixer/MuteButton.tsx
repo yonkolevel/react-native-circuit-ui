@@ -1,5 +1,5 @@
 /**
- * MuteButton — 32×32 toggle button displaying "M"
+ * MuteButton — 32×32 visual toggle with a 44×44 hit region displaying "M"
  *
  * Matches SwiftUI MuteButtonView:
  * - Active: white text on #FF5C24 (mcOrange)
@@ -42,8 +42,9 @@ export const MuteButton: React.FC<MuteButtonProps> = memo(function MuteButton({
     <Pressable
       testID={testID}
       onPress={handlePress}
+      hitSlop={6}
       accessibilityRole="button"
-      accessibilityLabel="Mute"
+      accessibilityLabel="Mute track"
       accessibilityState={{ selected: isMuted }}
       style={[styles.button, { backgroundColor }]}
     >

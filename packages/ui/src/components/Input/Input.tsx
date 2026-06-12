@@ -2,7 +2,7 @@
  * Input — Matches LabeledTextField.swift
  *
  * SwiftUI implementation:
- * - Height: 36pt
+ * - Height: 44pt HIG-compliant hit region
  * - Left padding: 16pt
  * - Border: mcWhite2 at 0.6 opacity
  * - Corner radius: 6
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: layout.inputHeight, // 36pt — matches SwiftUI
+    height: layout.inputHeight, // 44pt — HIG-compliant hit region
     borderWidth: 1,
     borderRadius: borderRadius.md, // 6pt
     paddingHorizontal: layout.inputPaddingHorizontal, // 16pt

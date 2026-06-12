@@ -54,13 +54,14 @@ const MuteButton = memo(function MuteButton({
   return (
     <AnimatedPressable
       onPress={handlePress}
+      hitSlop={6}
       style={[
         styles.muteBtn,
         { backgroundColor: isMuted ? colors.mcOrange : colors.mcBlack3 },
         animStyle,
       ]}
       accessibilityRole="button"
-      accessibilityLabel="Mute"
+      accessibilityLabel="Mute track"
       accessibilityState={{ selected: isMuted }}
     >
       <Text
@@ -100,13 +101,14 @@ const SoloButton = memo(function SoloButton({
   return (
     <AnimatedPressable
       onPress={handlePress}
+      hitSlop={6}
       style={[
         styles.soloBtn,
         { backgroundColor: isSoloed ? colors.mcGreen : colors.mcBlack3 },
         animStyle,
       ]}
       accessibilityRole="button"
-      accessibilityLabel="Solo"
+      accessibilityLabel="Solo track"
       accessibilityState={{ selected: isSoloed }}
     >
       <Text

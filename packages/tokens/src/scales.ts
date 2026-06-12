@@ -81,7 +81,7 @@ export const layout = {
   buttonPaddingHorizontalLarge: 22,
   inputPaddingHorizontal: spacing.lg,
   inputPaddingVertical: spacing.sm,
-  inputHeight: 36,
+  inputHeight: 44,
 } as const;
 
 // ─── Border Radius ──────────────────────────────────────────────────────────
