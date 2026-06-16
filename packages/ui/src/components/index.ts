@@ -39,6 +39,9 @@ export type { ScoreIndicatorProps } from './ScoreIndicator';
 export { HintBubble } from './HintBubble';
 export type { HintBubbleProps } from './HintBubble';
 
+export { WithHint, HintProvider, HintContext, useHintContext, HintIDs } from './Hint';
+export type { WithHintProps, HintContextValue } from './Hint';
+
 export { DurationLabel } from './DurationLabel';
 export type { DurationLabelProps } from './DurationLabel';
 

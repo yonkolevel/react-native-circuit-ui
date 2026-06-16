@@ -45,6 +45,7 @@ import { DrumPadsView } from '../DrumPads/DrumPadsView';
 import { PianoKeyboard } from '../PianoKeyboard/PianoKeyboard';
 import { SkiaPianoRollGrid } from '../../../../components/PianoRoll';
 import { NotePrecisionPanel } from '../../../../components/NotePrecisionPanel';
+import { WithHint, HintIDs } from '../../../../components/Hint';
 import type {
   Clip,
   ClipNote,
@@ -981,8 +982,9 @@ export const ClipEditorView = memo(function ClipEditorView({
         />
 
         {/* Piano Roll (Skia GPU-rendered) + Playhead */}
-        <View style={{ flex: 1, position: 'relative' }}>
-          <SkiaPianoRollGrid
+        <WithHint hintID={HintIDs.pianoRoll} style={{ flex: 1 }}>
+          <View style={{ flex: 1, position: 'relative' }}>
+            <SkiaPianoRollGrid
             notes={clip.notes}
             samples={samplesList}
             instrumentType={instrumentType}
@@ -1018,8 +1020,9 @@ export const ClipEditorView = memo(function ClipEditorView({
             onZoomChange={(z) => setZoom(Math.max(1, Math.min(3, z)))}
             showNoteLabels={showPianoNoteNames}
           />
-          <PlayheadLine posX={playheadPosX} color={colors.mcWhite} />
-        </View>
+            <PlayheadLine posX={playheadPosX} color={colors.mcWhite} />
+          </View>
+        </WithHint>
 
         {/* Clip Length Bar */}
         {!isExpanded && (

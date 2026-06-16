@@ -23,6 +23,7 @@ import Animated, {
   withSequence,
 } from 'react-native-reanimated';
 import { Icon, Icons } from '../../../../components/SFSymbol';
+import { WithHint, HintIDs } from '../../../../components/Hint';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
 import { useSongContext, useSongActions } from '../../stores/playgroundStore';
@@ -145,22 +146,24 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
         {/* Transport Controls — centered */}
         <View style={styles.transportGroup}>
           {/* Play / Pause — bounce on tap */}
-          <AnimatedPressable
-            onPress={handlePlayPause}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
-            accessibilityHint="Toggle playback"
-            accessibilityState={{ selected: isPlaying }}
-            style={[styles.transportButton, playStyle]}
-            testID={testIDs?.playButton ?? 'transport-play-pause'}
-          >
-            {isPlaying ? (
-              <Icon icon={Icons.pause} size={22} color={colors.mcWhite} />
-            ) : (
-              <Icon icon={Icons.play} size={22} color={colors.mcWhite} />
-            )}
-          </AnimatedPressable>
+          <WithHint hintID={HintIDs.playButton}>
+            <AnimatedPressable
+              onPress={handlePlayPause}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
+              accessibilityHint="Toggle playback"
+              accessibilityState={{ selected: isPlaying }}
+              style={[styles.transportButton, playStyle]}
+              testID={testIDs?.playButton ?? 'transport-play-pause'}
+            >
+              {isPlaying ? (
+                <Icon icon={Icons.pause} size={22} color={colors.mcWhite} />
+              ) : (
+                <Icon icon={Icons.play} size={22} color={colors.mcWhite} />
+              )}
+            </AnimatedPressable>
+          </WithHint>
 
           {/* Loop — bounce on tap */}
           <AnimatedPressable

@@ -13,6 +13,7 @@ import { View, ScrollView, Pressable, Alert, StyleSheet } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
+import { WithHint, HintIDs } from '../../../../components/Hint';
 import { useTheme } from '../../../../theme';
 import { SongToolbar } from './SongToolbar';
 import { SongMixerTabBar } from './SongMixerTabBar';
@@ -305,7 +306,9 @@ export const SongView = memo(function SongView({
                     <Icon icon={Icons.plus} size={16} color={colors.mcBlack5} />
                   </Pressable>
                 </View>
-                <View style={s.clipRows}>
+                {/* Hint anchor for the "tap a clip" tour step lives on the
+                 * clips grid; the reducer decides when it shows. */}
+                <WithHint hintID={HintIDs.firstClipView} style={s.clipRows}>
                   {tracks.map((t) => (
                     <View key={t.id} style={s.clipRow}>
                       {sections.map((sec) => {
@@ -342,7 +345,7 @@ export const SongView = memo(function SongView({
                       })}
                     </View>
                   ))}
-                </View>
+                </WithHint>
               </View>
             </ScrollView>
           </View>
