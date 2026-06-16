@@ -8,7 +8,7 @@
  * - Fixed track labels column (80px wide, left side)
  * - Horizontally scrollable section headers + clips (right side)
  */
-import { memo } from 'react';
+import { Fragment, memo } from 'react';
 import { View, ScrollView, Pressable, Alert, StyleSheet } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../../../../components/Text';
@@ -306,18 +306,15 @@ export const SongView = memo(function SongView({
                     <Icon icon={Icons.plus} size={16} color={colors.mcBlack5} />
                   </Pressable>
                 </View>
-                {/* Hint anchor for the "tap a clip" tour step lives on the
-                 * clips grid; the reducer decides when it shows. */}
-                <WithHint hintID={HintIDs.firstClipView} style={s.clipRows}>
-                  {tracks.map((t) => (
+                <View style={s.clipRows}>
+                  {tracks.map((t, trackIndex) => (
                     <View key={t.id} style={s.clipRow}>
-                      {sections.map((sec) => {
+                      {sections.map((sec, sectionIndex) => {
                         const clip = t.clips.find(
                           (c) => c.sectionID === sec.id
                         );
-                        return (
+                        const cell = (
                           <ClipCell
-                            key={sec.id}
                             clip={clip}
                             color={INSTRUMENT_COLORS[t.type] || '#fff'}
                             instrumentType={t.type}
@@ -342,10 +339,18 @@ export const SongView = memo(function SongView({
                             }}
                           />
                         );
+
+                        return trackIndex === 0 && sectionIndex === 0 ? (
+                          <WithHint key={sec.id} hintID={HintIDs.firstClipView}>
+                            {cell}
+                          </WithHint>
+                        ) : (
+                          <Fragment key={sec.id}>{cell}</Fragment>
+                        );
                       })}
                     </View>
                   ))}
-                </WithHint>
+                </View>
               </View>
             </ScrollView>
           </View>
