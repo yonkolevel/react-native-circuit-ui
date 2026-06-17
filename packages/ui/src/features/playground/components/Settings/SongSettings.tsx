@@ -12,7 +12,10 @@ import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
 import { useSongContext, useSongActions } from '../../stores/playgroundStore';
-import type { Track } from '../../types';
+
+// Re-exported for backward compatibility. The canonical definition now lives in
+// playground/utils so the export view and native side share one rule.
+export { hasExportableAudioContent } from '../../utils/hasExportableAudioContent';
 
 // Slider imported dynamically — available when @react-native-community/slider is installed.
 let SliderComponent: any = null;
@@ -21,21 +24,14 @@ try {
 } catch {}
 
 export interface SongSettingsProps {
+  /**
+   * Opens the export-audio view. Mirrors iOS, where the Settings row is plain
+   * navigation into ExportAudioView — the actual disabled/empty guard lives
+   * inside that view, not on this row. Always enabled.
+   */
   onExportAudio?: () => void;
   onExportBundle?: () => void;
   a11yId?: string;
-}
-
-export function hasExportableAudioContent(tracks: Track[]): boolean {
-  return tracks.some((track) =>
-    track.clips.some((clip) => {
-      const hasMidiNotes = clip.notes.length > 0;
-      const hasAudioFile =
-        typeof clip.audioFileReference === 'string' &&
-        clip.audioFileReference.trim().length > 0;
-      return hasMidiNotes || hasAudioFile;
-    })
-  );
 }
 
 export const SongSettings = memo(function SongSettings({
@@ -49,9 +45,6 @@ export const SongSettings = memo(function SongSettings({
   const tempo = useSongContext((s) => s.tempo);
   const masterVolume = useSongContext((s) => s.masterVolume);
   const isMetronomeEnabled = useSongContext((s) => s.isMetronomeEnabled);
-  const tracks = useSongContext((s) => s.tracks);
-  const canExportAudio = hasExportableAudioContent(tracks);
-
   // Actions — stable refs, no subscription
   const { setTempo, setMasterVolume, toggleMetronome } = useSongActions();
 
@@ -150,7 +143,6 @@ export const SongSettings = memo(function SongSettings({
           icon={Icons.audioTrack}
           label="EXPORT AUDIO"
           onPress={onExportAudio}
-          disabled={!canExportAudio}
         />
         <ActionButton
           icon={Icons.settings}

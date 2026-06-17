@@ -8,7 +8,7 @@
  * - Fixed track labels column (80px wide, left side)
  * - Horizontally scrollable section headers + clips (right side)
  */
-import { Fragment, memo } from 'react';
+import { Fragment, memo, useState } from 'react';
 import { View, ScrollView, Pressable, Alert, StyleSheet } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../../../../components/Text';
@@ -19,6 +19,7 @@ import { SongToolbar } from './SongToolbar';
 import { SongMixerTabBar } from './SongMixerTabBar';
 import { MixerView } from '../Mixer';
 import { SongSettings } from '../Settings';
+import { ExportAudioView } from '../ExportAudio';
 import { useSongContext, useSongActions } from '../../stores/playgroundStore';
 import { useShallow } from 'zustand/react/shallow';
 import type { Clip, InstrumentType } from '../../types';
@@ -142,9 +143,20 @@ const ClipCell = memo(function ClipCell({
 export interface SongViewProps {
   /** Navigation back — lives outside the song store */
   onBack?: () => void;
-  /** Export callbacks — wired from PlaygroundScreen to native StorageBridge */
-  onExportAudio?: () => void;
+  /**
+   * The actual export-audio action — wired from PlaygroundScreen to the native
+   * StorageBridge/share flow. Invoked by the primary button inside the export
+   * view (not the Settings row), matching iOS. May be async.
+   */
+  onExportAudio?: () => void | Promise<void>;
+  /** Export bundle — still invoked directly from the Settings row. */
   onExportBundle?: () => void;
+  /** Playground name shown in the export view. */
+  playgroundName?: string;
+  /** Artist/author name shown in the export view. */
+  artistName?: string;
+  /** Optional cover image URL for the export view. */
+  coverImageUrl?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -152,9 +164,13 @@ export const SongView = memo(function SongView({
   onBack,
   onExportAudio,
   onExportBundle,
+  playgroundName,
+  artistName,
+  coverImageUrl,
   style,
 }: SongViewProps) {
   const { colors } = useTheme();
+  const [exportVisible, setExportVisible] = useState(false);
 
   // State — fine-grained selectors
   const currentTab = useSongContext((s) => s.currentTab);
@@ -358,13 +374,22 @@ export const SongView = memo(function SongView({
         {currentTab === 'mixer' && <MixerView />}
         {currentTab === 'settings' && (
           <SongSettings
-            onExportAudio={onExportAudio}
+            onExportAudio={() => setExportVisible(true)}
             onExportBundle={onExportBundle}
           />
         )}
       </View>
 
       {showTab && <SongMixerTabBar />}
+
+      <ExportAudioView
+        visible={exportVisible}
+        onClose={() => setExportVisible(false)}
+        onExport={() => onExportAudio?.()}
+        playgroundName={playgroundName}
+        artistName={artistName}
+        coverImageUrl={coverImageUrl}
+      />
     </View>
   );
 });

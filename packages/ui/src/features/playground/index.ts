@@ -1,6 +1,9 @@
 // Types
 export * from './types';
 
+// Utils
+export * from './utils';
+
 // Store (contract + provider + selectors)
 export {
   SongStoreProvider,
@@ -33,6 +36,7 @@ export * from './components/PianoKeyboard';
 export * from './components/BottomPanel';
 export * from './components/Sections';
 export * from './components/Settings';
+export * from './components/ExportAudio';
 export * from './components/SoundBank';
 export * from './components/PlaygroundsDashboard';
 export * from './components/Toolbar';

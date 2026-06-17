@@ -186,11 +186,34 @@ describe('SongMixerTabBar behavior', () => {
   });
 });
 
-describe('SongView export audio availability', () => {
-  it('disables export audio when every track is empty', () => {
+describe('SongView export audio flow', () => {
+  // Settings row mirrors iOS: it is always enabled and navigates into the
+  // export view. The export guard lives inside that view, not on the row.
+
+  it('Settings export row is always enabled, even for an empty playground', () => {
+    const emptyTrack = createMockTrack({
+      id: 1,
+      clips: [createMockClip({ notes: [] })],
+    });
+    const store = createTestStore({
+      currentTab: 'settings',
+      tracks: [emptyTrack],
+    } as any);
+
+    const { getByLabelText } = renderWithStore(<SongView />, store);
+
+    const settingsRow = getByLabelText('EXPORT AUDIO');
+    expect(settingsRow.props.accessibilityState).toMatchObject({
+      disabled: false,
+    });
+  });
+
+  it('opens the export view and disables the export button when empty', () => {
     const onExportAudio = jest.fn();
-    const emptyClip = createMockClip({ notes: [] });
-    const emptyTrack = createMockTrack({ id: 1, clips: [emptyClip] });
+    const emptyTrack = createMockTrack({
+      id: 1,
+      clips: [createMockClip({ notes: [] })],
+    });
     const store = createTestStore({
       currentTab: 'settings',
       tracks: [emptyTrack],
@@ -201,7 +224,10 @@ describe('SongView export audio availability', () => {
       store
     );
 
-    const exportButton = getByLabelText('EXPORT AUDIO');
+    // Open the export view from the Settings row.
+    fireEvent.press(getByLabelText('EXPORT AUDIO'));
+
+    const exportButton = getByLabelText('Export Audio');
     expect(exportButton.props.accessibilityState).toMatchObject({
       disabled: true,
     });
@@ -210,10 +236,12 @@ describe('SongView export audio availability', () => {
     expect(onExportAudio).not.toHaveBeenCalled();
   });
 
-  it('enables export audio when a clip contains MIDI notes', () => {
+  it('enables the export button once a clip has MIDI notes', () => {
     const onExportAudio = jest.fn();
-    const clipWithNotes = createMockClip({ notes: [createMockNote()] });
-    const track = createMockTrack({ id: 1, clips: [clipWithNotes] });
+    const track = createMockTrack({
+      id: 1,
+      clips: [createMockClip({ notes: [createMockNote()] })],
+    });
     const store = createTestStore({
       currentTab: 'settings',
       tracks: [track],
@@ -224,37 +252,9 @@ describe('SongView export audio availability', () => {
       store
     );
 
-    const exportButton = getByLabelText('EXPORT AUDIO');
-    expect(exportButton.props.accessibilityState).toMatchObject({
-      disabled: false,
-    });
+    fireEvent.press(getByLabelText('EXPORT AUDIO'));
 
-    fireEvent.press(exportButton);
-    expect(onExportAudio).toHaveBeenCalledTimes(1);
-  });
-
-  it('enables export audio when an audio clip has a file reference', () => {
-    const onExportAudio = jest.fn();
-    const audioClip = createMockClip({
-      notes: [],
-      audioFileReference: 'recordings/take-1.wav',
-    });
-    const audioTrack = createMockTrack({
-      id: 1,
-      type: 'audio',
-      clips: [audioClip],
-    });
-    const store = createTestStore({
-      currentTab: 'settings',
-      tracks: [audioTrack],
-    } as any);
-
-    const { getByLabelText } = renderWithStore(
-      <SongView onExportAudio={onExportAudio} />,
-      store
-    );
-
-    const exportButton = getByLabelText('EXPORT AUDIO');
+    const exportButton = getByLabelText('Export Audio');
     expect(exportButton.props.accessibilityState).toMatchObject({
       disabled: false,
     });
