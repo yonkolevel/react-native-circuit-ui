@@ -39,7 +39,7 @@ import {
   Gesture,
   GestureDetector,
 } from 'react-native-gesture-handler';
-import { runOnJS, useSharedValue } from 'react-native-reanimated';
+import { runOnJS, useSharedValue, type SharedValue } from 'react-native-reanimated';
 import { Text } from '../Text';
 import { Icon, Icons } from '../SFSymbol';
 import { useTheme, hexToRgba } from '../../theme';
@@ -91,6 +91,14 @@ export interface SkiaPianoRollGridProps {
   onZoomOut?: () => void;
   onZoomChange?: (zoom: number) => void;
   showNoteLabels?: boolean;
+  /** Active loop region (1-based, inclusive bars). Drawn with the track color
+   *  over the looped bars inside the grid. null/undefined = no region. */
+  loopRange?: { start: number; end: number } | null;
+  /** Playhead X in grid coordinates (px from grid origin). Rendered inside the
+   *  canvas so it scrolls with the content and loops within the region. */
+  playheadX?: SharedValue<number>;
+  /** Playhead visibility (0 hidden, 1 shown) — driven on the UI thread. */
+  playheadOpacity?: SharedValue<number>;
 }
 
 export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
@@ -114,6 +122,9 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   onZoomOut,
   onZoomChange,
   showNoteLabels = false,
+  loopRange,
+  playheadX,
+  playheadOpacity,
 }: SkiaPianoRollGridProps) {
   const { colors } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
@@ -594,6 +605,39 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   )
                 )}
 
+                {/* Loop region — track-color highlight over the looped bars
+                 *  (grid coords, so it scrolls with the content and aligns with
+                 *  bar lines). */}
+                {loopRange && (() => {
+                  const loopX = (loopRange.start - 1) * 4 * beatWidth;
+                  const loopW =
+                    (loopRange.end - loopRange.start + 1) * 4 * beatWidth;
+                  return (
+                    <>
+                      <Rect
+                        x={loopX}
+                        y={0}
+                        width={loopW}
+                        height={gridHeight}
+                        color={trackColor}
+                        opacity={0.12}
+                      />
+                      <Line
+                        p1={vec(loopX, 0)}
+                        p2={vec(loopX, gridHeight)}
+                        color={trackColor}
+                        strokeWidth={2}
+                      />
+                      <Line
+                        p1={vec(loopX + loopW, 0)}
+                        p2={vec(loopX + loopW, gridHeight)}
+                        color={trackColor}
+                        strokeWidth={2}
+                      />
+                    </>
+                  );
+                })()}
+
                 {/* Notes — styled to match AudioKit PianoRoll */}
                 {notes.map((note, idx) => {
                   let pitchIdx: number;
@@ -676,6 +720,19 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                     </React.Fragment>
                   );
                 })}
+
+                {/* Playhead — grid coordinates, so it scrolls with the content
+                 *  and loops within the selected region. Driven on the UI thread. */}
+                {playheadX && (
+                  <Rect
+                    x={playheadX}
+                    y={0}
+                    width={2}
+                    height={gridHeight}
+                    color="white"
+                    opacity={playheadOpacity ?? 1}
+                  />
+                )}
               </Canvas>
 
               {/* Touch overlay — gesture handler for tap/drag/resize */}

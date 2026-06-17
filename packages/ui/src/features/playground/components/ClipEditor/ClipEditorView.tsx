@@ -217,49 +217,13 @@ const getNoteName = (pitch: number): string => {
 };
 
 // ─── Playhead ───────────────────────────────────────────────────────────────
-
-/**
- * Playhead driven by the sequencer clock. One source of truth.
- *
- * Playhead driven by the transport clock (DAW-style frame-pull model).
- *
- * The parent runs a requestAnimationFrame loop that reads the transport
- * clock at display frame rate (~60fps) and writes the pixel position
- * directly to a SharedValue. No React props updated at 60fps, no
- * withTiming interpolation, no events from the audio engine.
- *
- * The playhead position IS the sequencer position — direct and accurate.
- */
-const PlayheadLine = memo(function PlayheadLine({
-  posX,
-  color,
-}: {
-  /** Pixel X position driven by rAF loop reading the transport clock. */
-  posX: Animated.SharedValue<number>;
-  color: string;
-}) {
-  const animStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: posX.value }],
-  }));
-
-  return (
-    <Animated.View
-      pointerEvents="none"
-      style={[
-        {
-          position: 'absolute',
-          left: LABEL_COL_WIDTH,
-          top: 0,
-          bottom: 0,
-          width: 2,
-          backgroundColor: color,
-          zIndex: 10,
-        },
-        animStyle,
-      ]}
-    />
-  );
-});
+//
+// The playhead is rendered inside the Skia piano-roll canvas (see
+// SkiaPianoRollGrid `playheadX`/`playheadOpacity`) so it lives in grid
+// coordinates — scrolling with the content and looping within the selected
+// region. The parent runs a requestAnimationFrame loop that reads the transport
+// clock at display frame rate (~60fps) and writes the grid-space pixel position
+// directly to a SharedValue. No React props updated at 60fps.
 
 // ─── PianoRoll Grid ─────────────────────────────────────────────────────────
 
@@ -531,20 +495,29 @@ const PianoRollGrid = memo(function PianoRollGrid({
 // Orange bar: "— | 1  2  3  4 | +"
 
 /**
- * ClipLengthBar — Matches iOS ClipLengthBar exactly.
+ * ClipLengthBar — bar strip with resize (±) and loop-region selection.
  *
- * iOS layout: HStack(spacing:0) { minus | ForEach bars { barButton } | plus }
- * - Minus/Plus: mcOrange icon on mcBlack bg, 34x34
- * - Active bars: mcOrange bg, mcBlack text (mcExtraSmallSemiBold)
- * - Inactive bars: mcBlack3 bg, mcWhite3 text
- * - Current playing bar: mcOrange2 bg with bottom accent line
+ * Layout: HStack(spacing:0) { minus | ForEach bars { barButton } | plus }
+ * - Minus/Plus: mcOrange icon on mcBlack bg, 34x34 — add/remove bars (resize).
+ * - Tap a bar  → loop only that bar (isolate); tap the sole looped bar to clear.
+ * - Drag across bars → loop that contiguous region.
+ * - Selected loop region: mcOrange bg, mcBlack text.
+ * - Unselected bars: disabled mcBlack3 bg, mcWhite3 text.
+ * - No explicit loop region means the whole active clip is selected.
+ * - Current playing bar: bottom accent line.
+ * - Leading/trailing triangles mark the draggable loop handles.
  * - Height: 34
  */
+type LoopRange = { start: number; end: number };
+
 interface ClipLengthBarProps {
   lengthInBars: number;
   activeLengthInBars: number;
   currentBarIndex?: number;
-  onSetActiveLength?: (barIndex: number) => void;
+  /** Active loop region (1-based, inclusive), or null when looping the whole clip. */
+  loopRange?: LoopRange | null;
+  /** Set/clear the loop region. A single-bar range isolates that bar. */
+  onSetLoopRange?: (range: LoopRange | null) => void;
   onDecrease?: () => void;
   onIncrease?: () => void;
 }
@@ -556,7 +529,8 @@ const ClipLengthBar = memo(function ClipLengthBar({
   lengthInBars,
   activeLengthInBars,
   currentBarIndex,
-  onSetActiveLength,
+  loopRange,
+  onSetLoopRange,
   onDecrease,
   onIncrease,
 }: ClipLengthBarProps) {
@@ -566,9 +540,62 @@ const ClipLengthBar = memo(function ClipLengthBar({
   const canAdd = barCount < 16;
   const canRemove = barCount > 1;
 
+  // Drag-to-select the loop region: capture the bar-row width on layout and
+  // map the gesture's x position to a 1-based bar index on the UI thread.
+  // Keep the initial touch x separately from Pan.onStart: onStart fires only
+  // after activeOffsetX, so left drags would otherwise anchor one bar too far
+  // left after the finger has already crossed the activation threshold.
+  const rowWidth = useSharedValue(0);
+  const dragTouchStartX = useSharedValue(0);
+  const dragStartBar = useSharedValue(0);
+
+  const emitRange = useCallback(
+    (a: number, b: number) => {
+      onSetLoopRange?.({ start: Math.min(a, b), end: Math.max(a, b) });
+    },
+    [onSetLoopRange]
+  );
+
+  const handleBarTap = useCallback(
+    (barIndex: number) => {
+      const isSoleLoop =
+        loopRange != null &&
+        loopRange.start === barIndex &&
+        loopRange.end === barIndex;
+      onSetLoopRange?.(isSoleLoop ? null : { start: barIndex, end: barIndex });
+    },
+    [loopRange, onSetLoopRange]
+  );
+
+  // activeOffsetX makes the pan wait for horizontal movement, so simple taps
+  // still reach the per-bar Pressables (tap = isolate, drag = region).
+  const dragGesture = Gesture.Pan()
+    .activeOffsetX([-12, 12])
+    .onBegin((e) => {
+      'worklet';
+      dragTouchStartX.value = e.x;
+    })
+    .onStart(() => {
+      'worklet';
+      const w = rowWidth.value;
+      const idx =
+        w > 0
+          ? Math.min(Math.max(1, Math.floor((dragTouchStartX.value / w) * barCount) + 1), barCount)
+          : 1;
+      dragStartBar.value = idx;
+      runOnJS(emitRange)(idx, idx);
+    })
+    .onUpdate((e) => {
+      'worklet';
+      const w = rowWidth.value;
+      const idx =
+        w > 0 ? Math.min(Math.max(1, Math.floor((e.x / w) * barCount) + 1), barCount) : 1;
+      runOnJS(emitRange)(dragStartBar.value, idx);
+    });
+
   return (
     <View style={[styles.clipLengthBar, { backgroundColor: colors.mcBlack }]}>
-      {/* Minus button */}
+      {/* Minus button — resize (remove bar) */}
       <Pressable
         onPress={onDecrease}
         disabled={!canRemove}
@@ -581,48 +608,78 @@ const ClipLengthBar = memo(function ClipLengthBar({
         <Icon icon={Icons.minus} size={12} color={colors.mcOrange} />
       </Pressable>
 
-      {/* Bar buttons */}
-      <View style={styles.clipLengthNumbers}>
-        {Array.from({ length: barCount }, (_, i) => {
-          const barIndex = i + 1;
-          const isActive = barIndex <= activeCount;
-          const isCurrent = currentBarIndex === barIndex;
-          return (
-            <Pressable
-              key={barIndex}
-              onPress={() => onSetActiveLength?.(barIndex)}
-              style={[
-                styles.clipLengthNum,
-                {
-                  backgroundColor: isCurrent
-                    ? colors.mcOrange2
-                    : isActive
-                      ? colors.mcOrange
-                      : colors.mcBlack3,
-                },
-              ]}
-            >
-              <Text
-                variant="extraSmall10SemiBold"
-                color={isActive ? colors.mcBlack : colors.mcWhite3}
-                center
+      {/* Bar buttons — tap to loop a bar, drag to loop a region */}
+      <GestureDetector gesture={dragGesture}>
+        <View
+          style={styles.clipLengthNumbers}
+          onLayout={(e) => {
+            rowWidth.value = e.nativeEvent.layout.width;
+          }}
+        >
+          {Array.from({ length: barCount }, (_, i) => {
+            const barIndex = i + 1;
+            const isCurrent = currentBarIndex === barIndex;
+            const selectedStart = loopRange?.start ?? 1;
+            const selectedEnd = loopRange?.end ?? activeCount;
+            const isLooped =
+              barIndex >= selectedStart &&
+              barIndex <= selectedEnd &&
+              barIndex <= activeCount;
+            const isExplicitLoop = loopRange != null;
+            const isLoopStart = isExplicitLoop && barIndex === selectedStart;
+            const isLoopEnd = isExplicitLoop && barIndex === selectedEnd;
+            const backgroundColor = isLooped ? colors.mcOrange : colors.mcBlack3;
+            return (
+              <Pressable
+                key={barIndex}
+                onPress={() => handleBarTap(barIndex)}
+                style={[styles.clipLengthNum, { backgroundColor }]}
+                accessibilityLabel={
+                  isExplicitLoop && isLooped
+                    ? `Bar ${barIndex}, looping`
+                    : `Loop bar ${barIndex}`
+                }
               >
-                {barIndex}
-              </Text>
-              {isCurrent && (
-                <View
-                  style={[
-                    styles.clipLengthAccent,
-                    { backgroundColor: colors.mcOrange5 },
-                  ]}
-                />
-              )}
-            </Pressable>
-          );
-        })}
-      </View>
+                {isLoopStart && (
+                  <View
+                    accessibilityLabel="Loop region start handle"
+                    style={[
+                      styles.loopStartHandle,
+                      { borderLeftColor: colors.mcBlack },
+                    ]}
+                  />
+                )}
+                {isLoopEnd && (
+                  <View
+                    accessibilityLabel="Loop region end handle"
+                    style={[
+                      styles.loopEndHandle,
+                      { borderRightColor: colors.mcBlack },
+                    ]}
+                  />
+                )}
+                <Text
+                  variant="extraSmall10SemiBold"
+                  color={isLooped ? colors.mcBlack : colors.mcWhite3}
+                  center
+                >
+                  {barIndex}
+                </Text>
+                {isCurrent && (
+                  <View
+                    style={[
+                      styles.clipLengthAccent,
+                      { backgroundColor: isLooped ? colors.mcOrange5 : colors.mcWhite5 },
+                    ]}
+                  />
+                )}
+              </Pressable>
+            );
+          })}
+        </View>
+      </GestureDetector>
 
-      {/* Plus button */}
+      {/* Plus button — resize (add bar) */}
       <Pressable
         onPress={onIncrease}
         disabled={!canAdd}
@@ -873,6 +930,10 @@ export interface ClipEditorViewProps {
   onClipLengthIncrease?: () => void;
   onClipLengthDecrease?: () => void;
   onClipLengthSet?: (bars: number) => void;
+  /** Active loop region (1-based, inclusive bars), or null to loop the whole clip. */
+  loopRange?: { start: number; end: number } | null;
+  /** Set/clear the loop region. A single-bar range isolates that bar. */
+  onSetLoopRange?: (range: { start: number; end: number } | null) => void;
   onShowSettings?: () => void;
   /** Recording count-in remaining (3, 2, 1, null) */
   recordingCountIn?: number | null;
@@ -906,7 +967,8 @@ export const ClipEditorView = memo(function ClipEditorView({
   onToggleMetronome,
   onClipLengthIncrease,
   onClipLengthDecrease,
-  onClipLengthSet,
+  loopRange,
+  onSetLoopRange,
   recordingCountIn,
   tempo = 120,
   showPianoNoteNames = false,
@@ -929,27 +991,37 @@ export const ClipEditorView = memo(function ClipEditorView({
   // The playhead reads the transport clock at display frame rate via rAF,
   // writing the pixel position directly to a SharedValue. No React props
   // at 60fps, no withTiming interpolation, no audio engine events.
-  const clipBeats = clip.activeLengthInBars * 4;
+  // When a loop region is active the engine loops only that span, so the
+  // transport beat runs [0, loopBeats). Offset the playhead by the region's
+  // start bar so it sweeps the looped bars on the full piano roll (rather than
+  // restarting at bar 1). With no region it sweeps the whole clip.
+  const loopStartBeat = loopRange ? (loopRange.start - 1) * 4 : 0;
+  const loopBeats = loopRange
+    ? (loopRange.end - loopRange.start + 1) * 4
+    : clip.activeLengthInBars * 4;
   const playheadPosX = useSharedValue(0);
+  const playheadOpacity = useSharedValue(0);
 
   useEffect(() => {
     if (!isPlaying || !getBeatPosition) {
-      playheadPosX.value = 0;
+      playheadOpacity.value = 0;
+      playheadPosX.value = loopStartBeat * beatWidth;
       return;
     }
 
+    playheadOpacity.value = 1;
     let rafId: number;
     const tick = () => {
       const beat = getBeatPosition();
-      const wrapped = clipBeats > 0 ? beat % clipBeats : 0;
-      playheadPosX.value = wrapped * beatWidth;
+      const wrapped = loopBeats > 0 ? beat % loopBeats : 0;
+      playheadPosX.value = (loopStartBeat + wrapped) * beatWidth;
       rafId = requestAnimationFrame(tick);
     };
     rafId = requestAnimationFrame(tick);
 
     return () => cancelAnimationFrame(rafId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- playheadPosX is a stable SharedValue ref
-  }, [isPlaying, getBeatPosition, clipBeats, beatWidth]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- playhead SharedValues are stable refs
+  }, [isPlaying, getBeatPosition, loopStartBeat, loopBeats, beatWidth]);
 
   // iOS: PerformanceControlsView visible when config.isPerformanceControlsVisible && !isExpanded
   const shouldShowPerformanceControls =
@@ -994,6 +1066,9 @@ export const ClipEditorView = memo(function ClipEditorView({
             isExpanded={isExpanded}
             selectedPitchIndex={selectedPitchIndex}
             melodicMinPitch={melodicMinPitch}
+            loopRange={loopRange}
+            playheadX={playheadPosX}
+            playheadOpacity={playheadOpacity}
             onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
             onNoteResize={(idx, newDuration) =>
               callbacks?.onNoteResize?.(idx, newDuration)
@@ -1020,7 +1095,6 @@ export const ClipEditorView = memo(function ClipEditorView({
             onZoomChange={(z) => setZoom(Math.max(1, Math.min(3, z)))}
             showNoteLabels={showPianoNoteNames}
           />
-            <PlayheadLine posX={playheadPosX} color={colors.mcWhite} />
           </View>
         </WithHint>
 
@@ -1029,9 +1103,10 @@ export const ClipEditorView = memo(function ClipEditorView({
           <ClipLengthBar
             lengthInBars={clip.lengthInBars}
             activeLengthInBars={clip.activeLengthInBars}
+            loopRange={loopRange}
+            onSetLoopRange={onSetLoopRange}
             onIncrease={onClipLengthIncrease}
             onDecrease={onClipLengthDecrease}
-            onSetActiveLength={onClipLengthSet}
           />
         )}
       </View>
@@ -1249,6 +1324,30 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 2,
+  },
+  loopStartHandle: {
+    position: 'absolute',
+    left: 3,
+    top: 11,
+    width: 0,
+    height: 0,
+    borderTopWidth: 6,
+    borderBottomWidth: 6,
+    borderLeftWidth: 8,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+  },
+  loopEndHandle: {
+    position: 'absolute',
+    right: 3,
+    top: 11,
+    width: 0,
+    height: 0,
+    borderTopWidth: 6,
+    borderBottomWidth: 6,
+    borderRightWidth: 8,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
   },
 
   // Velocity lane
