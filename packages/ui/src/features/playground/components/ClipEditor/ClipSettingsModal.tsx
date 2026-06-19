@@ -72,17 +72,18 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
             />
           </View>
 
-          {/* Tempo */}
-          <View style={[styles.row, { borderBottomColor: colors.mcBlack4 }]}>
-            <Text variant="label" color={colors.mcWhite}>
-              Tempo
-            </Text>
-            <Text variant="label" color={colors.mcWhite3}>
-              {Math.round(tempoValue)} BPM
-            </Text>
-          </View>
-          {SliderComponent && (
-            <View style={styles.sliderRow}>
+          {/* Tempo — label, value and slider grouped so the divider sits below
+              the whole control, not between the label and its slider. */}
+          <View style={[styles.tempoGroup, { borderBottomColor: colors.mcBlack4 }]}>
+            <View style={styles.tempoHeader}>
+              <Text variant="label" color={colors.mcWhite}>
+                Tempo
+              </Text>
+              <Text variant="label" color={colors.mcWhite3}>
+                {Math.round(tempoValue)} BPM
+              </Text>
+            </View>
+            {SliderComponent && (
               <SliderComponent
                 style={styles.slider}
                 minimumValue={40}
@@ -98,8 +99,8 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
                 maximumTrackTintColor={colors.mcBlack4}
                 thumbTintColor={colors.mcWhite}
               />
-            </View>
-          )}
+            )}
+          </View>
 
           {/* Show Note Labels on Piano Roll Notes */}
           <View
@@ -154,11 +155,18 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingRight: makeSpacing(2),
   },
-  sliderRow: {
-    paddingVertical: makeSpacing(2),
+  tempoGroup: {
+    paddingVertical: makeSpacing(4),
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  tempoHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   slider: {
-    flex: 1,
+    width: '100%',
     height: 36,
+    marginTop: makeSpacing(2),
   },
 });
