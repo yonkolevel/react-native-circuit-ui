@@ -222,6 +222,7 @@ export const Icons = {
   apple: { sf: 'apple.logo', fallback: Apple, android: 'apple' },
   google: { sf: 'g.circle', fallback: UserCircle, android: 'google' },
   envelope: { sf: 'envelope', fallback: Mail, android: 'email-outline' },
+  feedback: { sf: 'bubble.left.fill', fallback: Mail, android: 'message-text' },
 } as const satisfies Record<string, IconDef>;
 
 export type IconName = keyof typeof Icons;

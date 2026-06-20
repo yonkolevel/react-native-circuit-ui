@@ -72,23 +72,25 @@ export const FeedbackView = memo(function FeedbackView({
         <Text variant="small" color={colors.mcWhite3} style={styles.sectionHint}>
           Pick as many as you like
         </Text>
+        {/* 5-column grid, matching the native FeedbackView (LazyVGrid). */}
         <View style={styles.emojiGrid}>
           {FEEDBACK_EMOJIS.map((emoji) => {
             const isSelected = selected.includes(emoji);
             return (
-              <Pressable
-                key={emoji}
-                onPress={() => toggleEmoji(emoji)}
-                accessibilityRole="button"
-                accessibilityState={{ selected: isSelected }}
-                accessibilityLabel={`${emoji}${isSelected ? ', selected' : ''}`}
-                style={[
-                  styles.emojiCell,
-                  isSelected && { backgroundColor: colors.mcWhite4 },
-                ]}
-              >
-                <Text variant="h3" color={colors.mcWhite}>{emoji}</Text>
-              </Pressable>
+              <View key={emoji} style={styles.emojiCell}>
+                <Pressable
+                  onPress={() => toggleEmoji(emoji)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: isSelected }}
+                  accessibilityLabel={`${emoji}${isSelected ? ', selected' : ''}`}
+                  style={[
+                    styles.emojiCircle,
+                    isSelected && { backgroundColor: colors.mcWhite4 },
+                  ]}
+                >
+                  <Text variant="h3" color={colors.mcWhite}>{emoji}</Text>
+                </Pressable>
+              </View>
             );
           })}
         </View>
@@ -143,11 +145,15 @@ const styles = StyleSheet.create({
   emojiGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: makeSpacing(2),
+    rowGap: makeSpacing(3),
     marginBottom: makeSpacing(3),
   },
+  // Five even columns, left-aligned — same as the native LazyVGrid.
   emojiCell: {
+    width: '20%',
+    alignItems: 'center',
+  },
+  emojiCircle: {
     width: 44,
     height: 44,
     borderRadius: 22,
