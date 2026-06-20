@@ -132,3 +132,6 @@ export type { SkiaPianoRollGridProps } from './PianoRoll';
 
 export { NotePrecisionPanel } from './NotePrecisionPanel';
 export type { NotePrecisionPanelProps } from './NotePrecisionPanel';
+
+export { FeedbackView, FEEDBACK_EMOJIS } from './FeedbackView';
+export type { FeedbackViewProps } from './FeedbackView';
