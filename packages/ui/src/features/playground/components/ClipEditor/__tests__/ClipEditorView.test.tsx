@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { ThemeProvider } from '../../../../../theme';
-import { ClipEditorView } from '../ClipEditorView';
+import { StyleSheet } from 'react-native';
+import { ThemeProvider, palette } from '../../../../../theme';
+import { ClipEditorView, ClipLengthBar } from '../ClipEditorView';
 import {
   createMockDrumClip,
   createMockMelodyClip,
@@ -55,6 +56,41 @@ describe('ClipEditorView snapshots', () => {
       <ClipEditorView clip={clip} instrumentType="drum" isRecording />
     );
     expect(tree.toJSON()).toMatchSnapshot();
+  });
+});
+
+describe('ClipLengthBar', () => {
+  it('renders the selected loop region orange and unselected bars disabled', () => {
+    const { getByLabelText } = renderWithTheme(
+      <ClipLengthBar
+        lengthInBars={4}
+        activeLengthInBars={4}
+        loopRange={{ start: 2, end: 3 }}
+      />
+    );
+
+    const bar1Style = StyleSheet.flatten(getByLabelText('Loop bar 1').props.style);
+    const bar2Style = StyleSheet.flatten(getByLabelText('Bar 2, looping').props.style);
+    const bar3Style = StyleSheet.flatten(getByLabelText('Bar 3, looping').props.style);
+    const bar4Style = StyleSheet.flatten(getByLabelText('Loop bar 4').props.style);
+
+    expect(bar1Style.backgroundColor).toBe(palette.mcBlack3);
+    expect(bar2Style.backgroundColor).toBe(palette.mcOrange);
+    expect(bar3Style.backgroundColor).toBe(palette.mcOrange);
+    expect(bar4Style.backgroundColor).toBe(palette.mcBlack3);
+  });
+
+  it('shows leading and trailing loop handle affordances', () => {
+    const { getByLabelText } = renderWithTheme(
+      <ClipLengthBar
+        lengthInBars={4}
+        activeLengthInBars={4}
+        loopRange={{ start: 2, end: 3 }}
+      />
+    );
+
+    expect(getByLabelText('Loop region start handle')).toBeTruthy();
+    expect(getByLabelText('Loop region end handle')).toBeTruthy();
   });
 });
 
