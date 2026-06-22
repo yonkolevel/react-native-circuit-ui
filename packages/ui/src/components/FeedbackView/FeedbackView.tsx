@@ -88,7 +88,7 @@ export const FeedbackView = memo(function FeedbackView({
                     isSelected && { backgroundColor: colors.mcWhite4 },
                   ]}
                 >
-                  <Text variant="h3" color={colors.mcWhite}>{emoji}</Text>
+                  <Text variant="body" color={colors.mcWhite} style={styles.emojiText}>{emoji}</Text>
                 </Pressable>
               </View>
             );
@@ -133,7 +133,7 @@ export const FeedbackView = memo(function FeedbackView({
 });
 
 const styles = StyleSheet.create({
-  container: { padding: makeSpacing(4), gap: makeSpacing(3) },
+  container: { padding: makeSpacing(5), gap: makeSpacing(5) },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -141,12 +141,12 @@ const styles = StyleSheet.create({
     gap: makeSpacing(2),
   },
   headerTitle: { flex: 1 },
-  sectionHint: { marginBottom: makeSpacing(2) },
+  sectionHint: { marginBottom: makeSpacing(4) },
   emojiGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    rowGap: makeSpacing(3),
-    marginBottom: makeSpacing(3),
+    rowGap: makeSpacing(4),
+    marginBottom: makeSpacing(5),
   },
   // Five even columns, left-aligned — same as the native LazyVGrid.
   emojiCell: {
@@ -154,20 +154,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emojiCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  textHeader: { marginBottom: makeSpacing(2) },
+  // Smaller than the native title font so the emojis read like iOS, not chunky.
+  emojiText: { fontSize: 22, lineHeight: 28 },
+  textHeader: { marginBottom: makeSpacing(3) },
   textInput: {
-    height: 140,
+    height: 150,
     borderWidth: 1,
     borderRadius: 6,
     padding: makeSpacing(3),
     fontSize: 16,
   },
-  sendButton: { marginTop: makeSpacing(2) },
-  emailDirectly: { alignItems: 'center', paddingVertical: makeSpacing(1) },
+  sendButton: { marginTop: makeSpacing(3) },
+  emailDirectly: { alignItems: 'center', paddingVertical: makeSpacing(2) },
 });
