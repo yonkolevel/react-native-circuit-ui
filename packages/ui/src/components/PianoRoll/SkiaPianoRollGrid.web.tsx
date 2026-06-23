@@ -64,6 +64,10 @@ export interface SkiaPianoRollGridProps {
   onZoomOut?: () => void;
   onZoomChange?: (zoom: number) => void;
   showNoteLabels?: boolean;
+  /** Optional per-MIDI-note colors for note bodies and pitch labels. */
+  noteColors?: Record<number, string>;
+  /** Show built-in expand/zoom controls. */
+  showControls?: boolean;
 }
 
 export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
@@ -87,6 +91,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   onZoomOut,
   onZoomChange,
   showNoteLabels = false,
+  noteColors,
+  showControls = true,
 }: SkiaPianoRollGridProps) {
   const { colors } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
@@ -109,9 +115,10 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     const el = containerRef.current;
     if (!el) return;
     const handleWheel = (ev: WheelEvent) => {
-      if (!ev.ctrlKey && !ev.metaKey) return;
+      const wheel = ev as WheelEvent & { ctrlKey?: boolean; metaKey?: boolean; deltaY?: number };
+      if (!wheel.ctrlKey && !wheel.metaKey) return;
       ev.preventDefault();
-      const delta = ev.deltaY > 0 ? -0.25 : 0.25;
+      const delta = (wheel.deltaY ?? 0) > 0 ? -0.25 : 0.25;
       onZoomChange?.(Math.max(1, Math.min(3, zoomLevel + delta)));
     };
     el.addEventListener('wheel', handleWheel, { passive: false });
@@ -173,6 +180,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
           <View style={[styles.labels, { width: LABEL_COL_WIDTH }]}>
             {Array.from({ length: totalPitches }, (_, i) => {
               const pitchIdx = totalPitches - 1 - i;
+              const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
+              const pitchColor = noteColors?.[noteNumber] ?? trackColor;
               const hasName = !getPitchLabel(pitchIdx).startsWith('Note ');
               return (
                 <Pressable
@@ -186,8 +195,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                         selectedPitchIndex === pitchIdx
                           ? colors.mcOrange
                           : hasName
-                            ? trackColor
-                            : hexToRgba(trackColor, 0.6),
+                            ? pitchColor
+                            : hexToRgba(pitchColor, 0.6),
                     },
                   ]}
                 >
@@ -286,6 +295,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                 const y = rowIdx * effectiveRowHeight + 1;
                 const w = Math.max(note.duration * beatWidth - 1, stepWidth);
                 const h = effectiveRowHeight - 2;
+                const noteColor = noteColors?.[note.noteNumber] ?? trackColor;
 
                 return (
                   <Pressable
@@ -297,7 +307,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                       top: y,
                       width: w,
                       height: h,
-                      backgroundColor: trackColor,
+                      backgroundColor: noteColor,
                       borderRadius: 3,
                       opacity: 0.85,
                       justifyContent: 'center',
@@ -341,26 +351,28 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       </ScrollView>
 
       {/* Zoom controls */}
-      <View style={styles.zoomControls} pointerEvents="box-none">
-        <Pressable onPress={onToggleExpand} style={styles.zoomBtn}>
-          <Icon
-            icon={isExpanded ? Icons.collapse : Icons.expand}
-            size={14}
-            color="white"
-          />
-        </Pressable>
-        <Pressable onPress={onZoomIn} style={styles.zoomBtn}>
-          <Icon icon={Icons.zoomIn} size={14} color="white" />
-        </Pressable>
-        <View style={styles.zoomLabel}>
-          <Text variant="extraSmall10" color="white" center>
-            {Math.round(zoomLevel * 100)}%
-          </Text>
+      {showControls && (
+        <View style={styles.zoomControls} pointerEvents="box-none">
+          <Pressable onPress={onToggleExpand} style={styles.zoomBtn}>
+            <Icon
+              icon={isExpanded ? Icons.collapse : Icons.expand}
+              size={14}
+              color="white"
+            />
+          </Pressable>
+          <Pressable onPress={onZoomIn} style={styles.zoomBtn}>
+            <Icon icon={Icons.zoomIn} size={14} color="white" />
+          </Pressable>
+          <View style={styles.zoomLabel}>
+            <Text variant="extraSmall10" color="white" center>
+              {Math.round(zoomLevel * 100)}%
+            </Text>
+          </View>
+          <Pressable onPress={onZoomOut} style={styles.zoomBtn}>
+            <Icon icon={Icons.zoomOut} size={14} color="white" />
+          </Pressable>
         </View>
-        <Pressable onPress={onZoomOut} style={styles.zoomBtn}>
-          <Icon icon={Icons.zoomOut} size={14} color="white" />
-        </Pressable>
-      </View>
+      )}
     </View>
   );
 });

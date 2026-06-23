@@ -39,7 +39,8 @@ import {
   Gesture,
   GestureDetector,
 } from 'react-native-gesture-handler';
-import { runOnJS, useSharedValue } from 'react-native-reanimated';
+import { useSharedValue } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { Text } from '../Text';
 import { Icon, Icons } from '../SFSymbol';
 import { useTheme, hexToRgba } from '../../theme';
@@ -91,6 +92,10 @@ export interface SkiaPianoRollGridProps {
   onZoomOut?: () => void;
   onZoomChange?: (zoom: number) => void;
   showNoteLabels?: boolean;
+  /** Optional per-MIDI-note colors for note bodies and pitch labels. */
+  noteColors?: Record<number, string>;
+  /** Show built-in expand/zoom controls. */
+  showControls?: boolean;
 }
 
 export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
@@ -114,6 +119,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   onZoomOut,
   onZoomChange,
   showNoteLabels = false,
+  noteColors,
+  showControls = true,
 }: SkiaPianoRollGridProps) {
   const { colors } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
@@ -164,23 +171,24 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 
   // Build the grid path once — memoized on dimensions only (not notes)
   const gridPath = useMemo(() => {
-    const path = Skia.Path.Make();
+    // PathBuilder exists in the app's Skia runtime; the UI package's local
+    // Skia types can lag the app version, so keep this narrowed escape hatch
+    // local to the migration away from deprecated SkPath mutations.
+    const builder = (Skia as any).PathBuilder.Make();
 
     // Horizontal row lines
     for (let i = 0; i <= totalPitches; i++) {
       const y = i * effectiveRowHeight;
-      path.moveTo(0, y);
-      path.lineTo(gridWidth, y);
+      builder.moveTo(0, y).lineTo(gridWidth, y);
     }
 
     // Vertical step lines
     for (let i = 0; i <= totalSteps; i++) {
       const x = i * stepWidth;
-      path.moveTo(x, 0);
-      path.lineTo(x, gridHeight);
+      builder.moveTo(x, 0).lineTo(x, gridHeight);
     }
 
-    return path;
+    return builder.detach();
   }, [
     totalPitches,
     effectiveRowHeight,
@@ -310,7 +318,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const dragOrigPos = useSharedValue(0);
   const dragOrigDur = useSharedValue(0);
 
-  // --- JS callbacks (must use runOnJS from gesture worklets) ---
+  // --- JS callbacks (scheduled from gesture worklets onto the React Native JS runtime) ---
   const handleTap = useCallback(
     (x: number, y: number) => {
       const hit = hitTestNote(x, y);
@@ -431,19 +439,19 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     ]
   );
 
-  // --- Gestures (UI thread → runOnJS for callbacks) ---
+  // --- Gestures (UI thread → scheduleOnRN for callbacks) ---
   const tapGesture = Gesture.Tap()
     .maxDuration(200)
     .onEnd((e) => {
       'worklet';
-      runOnJS(handleTap)(e.x, e.y);
+      scheduleOnRN(handleTap, e.x, e.y);
     });
 
   const panGesture = Gesture.Pan()
     .activateAfterLongPress(150)
     .onStart((e) => {
       'worklet';
-      runOnJS(handleDragStart)(e.x, e.y);
+      scheduleOnRN(handleDragStart, e.x, e.y);
     })
     .onUpdate((e) => {
       'worklet';
@@ -471,7 +479,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     })
     .onEnd((e) => {
       'worklet';
-      runOnJS(handleDragEnd)(e.x, e.y);
+      scheduleOnRN(handleDragEnd, e.x, e.y);
     });
 
   // Pinch-to-zoom — matches iOS MagnificationGesture behavior
@@ -490,7 +498,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     })
     .onUpdate((e) => {
       'worklet';
-      runOnJS(handlePinchZoom)(pinchStartZoom.value * e.scale);
+      scheduleOnRN(handlePinchZoom, pinchStartZoom.value * e.scale);
     });
 
   const composedGesture = Gesture.Simultaneous(
@@ -506,6 +514,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
           <View style={[styles.labels, { width: LABEL_COL_WIDTH }]}>
             {Array.from({ length: totalPitches }, (_, i) => {
               const pitchIdx = totalPitches - 1 - i;
+              const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
+              const pitchColor = noteColors?.[noteNumber] ?? trackColor;
               const hasName = !getPitchLabel(pitchIdx).startsWith('Note ');
               return (
                 <Pressable
@@ -519,8 +529,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                         selectedPitchIndex === pitchIdx
                           ? colors.mcOrange
                           : hasName
-                            ? trackColor
-                            : hexToRgba(trackColor, 0.6),
+                            ? pitchColor
+                            : hexToRgba(pitchColor, 0.6),
                     },
                   ]}
                 >
@@ -612,6 +622,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   const h = effectiveRowHeight - 2;
                   const r = 3;
                   const isDragging = idx === activeNoteIdx;
+                  const noteColor = noteColors?.[note.noteNumber] ?? trackColor;
 
                   return (
                     <React.Fragment key={`n${idx}`}>
@@ -633,7 +644,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                         width={isDragging ? dragW : w}
                         height={h}
                         r={r}
-                        color={trackColor}
+                        color={noteColor}
                         opacity={isDragging ? 1 : 0.85}
                       />
                       {/* Resize handle */}
@@ -688,26 +699,28 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       </ScrollView>
 
       {/* Zoom controls */}
-      <View style={styles.zoomControls}>
-        <Pressable onPress={onToggleExpand} style={styles.zoomBtn}>
-          <Icon
-            icon={isExpanded ? Icons.collapse : Icons.expand}
-            size={14}
-            color="white"
-          />
-        </Pressable>
-        <Pressable onPress={onZoomIn} style={styles.zoomBtn}>
-          <Icon icon={Icons.zoomIn} size={14} color="white" />
-        </Pressable>
-        <View style={styles.zoomLabel}>
-          <Text variant="extraSmall10" color="white" center>
-            {Math.round(zoomLevel * 100)}%
-          </Text>
+      {showControls && (
+        <View style={styles.zoomControls}>
+          <Pressable onPress={onToggleExpand} style={styles.zoomBtn}>
+            <Icon
+              icon={isExpanded ? Icons.collapse : Icons.expand}
+              size={14}
+              color="white"
+            />
+          </Pressable>
+          <Pressable onPress={onZoomIn} style={styles.zoomBtn}>
+            <Icon icon={Icons.zoomIn} size={14} color="white" />
+          </Pressable>
+          <View style={styles.zoomLabel}>
+            <Text variant="extraSmall10" color="white" center>
+              {Math.round(zoomLevel * 100)}%
+            </Text>
+          </View>
+          <Pressable onPress={onZoomOut} style={styles.zoomBtn}>
+            <Icon icon={Icons.zoomOut} size={14} color="white" />
+          </Pressable>
         </View>
-        <Pressable onPress={onZoomOut} style={styles.zoomBtn}>
-          <Icon icon={Icons.zoomOut} size={14} color="white" />
-        </Pressable>
-      </View>
+      )}
     </View>
   );
 });
