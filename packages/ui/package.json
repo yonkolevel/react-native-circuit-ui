@@ -256,6 +256,7 @@
     "react-native-gesture-handler": "^2.20.2",
     "react-native-reanimated": "^3.17.4",
     "react-native-svg": "^15.11.2",
+    "react-native-worklets": "0.8.3",
     "react-test-renderer": "18.3.1",
     "release-it": "^17.10.0",
     "typescript": "^5.2.2"
@@ -270,8 +271,8 @@
     "react-native": "*",
     "react-native-gesture-handler": ">=2.0.0",
     "react-native-reanimated": ">=3.0.0",
-    "react-native-worklets": ">=0.8.0",
-    "react-native-svg": ">=15.0.0"
+    "react-native-svg": ">=15.0.0",
+    "react-native-worklets": ">=0.8.0"
   },
   "react-native-builder-bob": {
     "source": "src",

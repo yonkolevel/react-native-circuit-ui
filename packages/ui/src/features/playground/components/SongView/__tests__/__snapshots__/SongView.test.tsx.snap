@@ -497,63 +497,75 @@ exports[`SongToolbar snapshots matches snapshot when playing 1`] = `
     }
   >
     <View
-      accessibilityHint="Toggle playback"
-      accessibilityLabel="Pause"
-      accessibilityRole="button"
-      accessibilityState={
-        {
-          "busy": undefined,
-          "checked": undefined,
-          "disabled": undefined,
-          "expanded": undefined,
-          "selected": true,
-        }
-      }
-      accessibilityValue={
-        {
-          "max": undefined,
-          "min": undefined,
-          "now": undefined,
-          "text": undefined,
-        }
-      }
-      accessible={true}
-      collapsable={false}
-      focusable={true}
-      hitSlop={8}
-      onBlur={[Function]}
-      onClick={[Function]}
-      onFocus={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         [
           {
-            "alignItems": "center",
-            "justifyContent": "center",
-            "padding": 4,
+            "position": "relative",
           },
-          {
-            "transform": [
-              {
-                "scale": 1,
-              },
-            ],
-          },
+          false,
+          undefined,
         ]
       }
-      testID="transport-play-pause"
     >
-      <View>
-        <View
-          color="#F7F7F7"
-          size={22}
-          testID="lucide-Pause"
-        />
+      <View
+        accessibilityHint="Toggle playback"
+        accessibilityLabel="Pause"
+        accessibilityRole="button"
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": true,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        hitSlop={8}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          [
+            {
+              "alignItems": "center",
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
+            },
+          ]
+        }
+        testID="transport-play-pause"
+      >
+        <View>
+          <View
+            color="#F7F7F7"
+            size={22}
+            testID="lucide-Pause"
+          />
+        </View>
       </View>
     </View>
     <View
@@ -904,63 +916,75 @@ exports[`SongToolbar snapshots matches snapshot when stopped 1`] = `
     }
   >
     <View
-      accessibilityHint="Toggle playback"
-      accessibilityLabel="Play"
-      accessibilityRole="button"
-      accessibilityState={
-        {
-          "busy": undefined,
-          "checked": undefined,
-          "disabled": undefined,
-          "expanded": undefined,
-          "selected": false,
-        }
-      }
-      accessibilityValue={
-        {
-          "max": undefined,
-          "min": undefined,
-          "now": undefined,
-          "text": undefined,
-        }
-      }
-      accessible={true}
-      collapsable={false}
-      focusable={true}
-      hitSlop={8}
-      onBlur={[Function]}
-      onClick={[Function]}
-      onFocus={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         [
           {
-            "alignItems": "center",
-            "justifyContent": "center",
-            "padding": 4,
+            "position": "relative",
           },
-          {
-            "transform": [
-              {
-                "scale": 1,
-              },
-            ],
-          },
+          false,
+          undefined,
         ]
       }
-      testID="transport-play-pause"
     >
-      <View>
-        <View
-          color="#F7F7F7"
-          size={22}
-          testID="lucide-Play"
-        />
+      <View
+        accessibilityHint="Toggle playback"
+        accessibilityLabel="Play"
+        accessibilityRole="button"
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": false,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        hitSlop={8}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          [
+            {
+              "alignItems": "center",
+              "justifyContent": "center",
+              "padding": 4,
+            },
+            {
+              "transform": [
+                {
+                  "scale": 1,
+                },
+              ],
+            },
+          ]
+        }
+        testID="transport-play-pause"
+      >
+        <View>
+          <View
+            color="#F7F7F7"
+            size={22}
+            testID="lucide-Play"
+          />
+        </View>
       </View>
     </View>
     <View
@@ -1324,63 +1348,75 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
       }
     >
       <View
-        accessibilityHint="Toggle playback"
-        accessibilityLabel="Play"
-        accessibilityRole="button"
-        accessibilityState={
-          {
-            "busy": undefined,
-            "checked": undefined,
-            "disabled": undefined,
-            "expanded": undefined,
-            "selected": false,
-          }
-        }
-        accessibilityValue={
-          {
-            "max": undefined,
-            "min": undefined,
-            "now": undefined,
-            "text": undefined,
-          }
-        }
-        accessible={true}
-        collapsable={false}
-        focusable={true}
-        hitSlop={8}
-        onBlur={[Function]}
-        onClick={[Function]}
-        onFocus={[Function]}
-        onResponderGrant={[Function]}
-        onResponderMove={[Function]}
-        onResponderRelease={[Function]}
-        onResponderTerminate={[Function]}
-        onResponderTerminationRequest={[Function]}
-        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "alignItems": "center",
-              "justifyContent": "center",
-              "padding": 4,
+              "position": "relative",
             },
-            {
-              "transform": [
-                {
-                  "scale": 1,
-                },
-              ],
-            },
+            false,
+            undefined,
           ]
         }
-        testID="transport-play-pause"
       >
-        <View>
-          <View
-            color="#F7F7F7"
-            size={22}
-            testID="lucide-Play"
-          />
+        <View
+          accessibilityHint="Toggle playback"
+          accessibilityLabel="Play"
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": false,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          hitSlop={8}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "justifyContent": "center",
+                "padding": 4,
+              },
+              {
+                "transform": [
+                  {
+                    "scale": 1,
+                  },
+                ],
+              },
+            ]
+          }
+          testID="transport-play-pause"
+        >
+          <View>
+            <View
+              color="#F7F7F7"
+              size={22}
+              testID="lucide-Play"
+            />
+          </View>
         </View>
       </View>
       <View
@@ -1736,7 +1772,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
               }
             >
               <View
-                accessibilityLabel="Mute"
+                accessibilityLabel="Mute track"
                 accessibilityRole="button"
                 accessibilityState={
                   {
@@ -1758,6 +1794,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 accessible={true}
                 collapsable={false}
                 focusable={true}
+                hitSlop={6}
                 onBlur={[Function]}
                 onClick={[Function]}
                 onFocus={[Function]}
@@ -1809,7 +1846,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 </Text>
               </View>
               <View
-                accessibilityLabel="Solo"
+                accessibilityLabel="Solo track"
                 accessibilityRole="button"
                 accessibilityState={
                   {
@@ -1831,6 +1868,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 accessible={true}
                 collapsable={false}
                 focusable={true}
+                hitSlop={6}
                 onBlur={[Function]}
                 onClick={[Function]}
                 onFocus={[Function]}
@@ -2201,7 +2239,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
               }
             >
               <View
-                accessibilityLabel="Mute"
+                accessibilityLabel="Mute track"
                 accessibilityRole="button"
                 accessibilityState={
                   {
@@ -2223,6 +2261,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 accessible={true}
                 collapsable={false}
                 focusable={true}
+                hitSlop={6}
                 onBlur={[Function]}
                 onClick={[Function]}
                 onFocus={[Function]}
@@ -2274,7 +2313,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 </Text>
               </View>
               <View
-                accessibilityLabel="Solo"
+                accessibilityLabel="Solo track"
                 accessibilityRole="button"
                 accessibilityState={
                   {
@@ -2296,6 +2335,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 accessible={true}
                 collapsable={false}
                 focusable={true}
+                hitSlop={6}
                 onBlur={[Function]}
                 onClick={[Function]}
                 onFocus={[Function]}
@@ -2666,7 +2706,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
               }
             >
               <View
-                accessibilityLabel="Mute"
+                accessibilityLabel="Mute track"
                 accessibilityRole="button"
                 accessibilityState={
                   {
@@ -2688,6 +2728,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 accessible={true}
                 collapsable={false}
                 focusable={true}
+                hitSlop={6}
                 onBlur={[Function]}
                 onClick={[Function]}
                 onFocus={[Function]}
@@ -2739,7 +2780,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 </Text>
               </View>
               <View
-                accessibilityLabel="Solo"
+                accessibilityLabel="Solo track"
                 accessibilityRole="button"
                 accessibilityState={
                   {
@@ -2761,6 +2802,7 @@ exports[`SongView snapshots matches snapshot for mixer view 1`] = `
                 accessible={true}
                 collapsable={false}
                 focusable={true}
+                hitSlop={6}
                 onBlur={[Function]}
                 onClick={[Function]}
                 onFocus={[Function]}
@@ -3369,63 +3411,75 @@ exports[`SongView snapshots matches snapshot for settings view 1`] = `
       }
     >
       <View
-        accessibilityHint="Toggle playback"
-        accessibilityLabel="Play"
-        accessibilityRole="button"
-        accessibilityState={
-          {
-            "busy": undefined,
-            "checked": undefined,
-            "disabled": undefined,
-            "expanded": undefined,
-            "selected": false,
-          }
-        }
-        accessibilityValue={
-          {
-            "max": undefined,
-            "min": undefined,
-            "now": undefined,
-            "text": undefined,
-          }
-        }
-        accessible={true}
-        collapsable={false}
-        focusable={true}
-        hitSlop={8}
-        onBlur={[Function]}
-        onClick={[Function]}
-        onFocus={[Function]}
-        onResponderGrant={[Function]}
-        onResponderMove={[Function]}
-        onResponderRelease={[Function]}
-        onResponderTerminate={[Function]}
-        onResponderTerminationRequest={[Function]}
-        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "alignItems": "center",
-              "justifyContent": "center",
-              "padding": 4,
+              "position": "relative",
             },
-            {
-              "transform": [
-                {
-                  "scale": 1,
-                },
-              ],
-            },
+            false,
+            undefined,
           ]
         }
-        testID="transport-play-pause"
       >
-        <View>
-          <View
-            color="#F7F7F7"
-            size={22}
-            testID="lucide-Play"
-          />
+        <View
+          accessibilityHint="Toggle playback"
+          accessibilityLabel="Play"
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": false,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          hitSlop={8}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "justifyContent": "center",
+                "padding": 4,
+              },
+              {
+                "transform": [
+                  {
+                    "scale": 1,
+                  },
+                ],
+              },
+            ]
+          }
+          testID="transport-play-pause"
+        >
+          <View>
+            <View
+              color="#F7F7F7"
+              size={22}
+              testID="lucide-Play"
+            />
+          </View>
         </View>
       </View>
       <View
@@ -4292,63 +4346,75 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
       }
     >
       <View
-        accessibilityHint="Toggle playback"
-        accessibilityLabel="Play"
-        accessibilityRole="button"
-        accessibilityState={
-          {
-            "busy": undefined,
-            "checked": undefined,
-            "disabled": undefined,
-            "expanded": undefined,
-            "selected": false,
-          }
-        }
-        accessibilityValue={
-          {
-            "max": undefined,
-            "min": undefined,
-            "now": undefined,
-            "text": undefined,
-          }
-        }
-        accessible={true}
-        collapsable={false}
-        focusable={true}
-        hitSlop={8}
-        onBlur={[Function]}
-        onClick={[Function]}
-        onFocus={[Function]}
-        onResponderGrant={[Function]}
-        onResponderMove={[Function]}
-        onResponderRelease={[Function]}
-        onResponderTerminate={[Function]}
-        onResponderTerminationRequest={[Function]}
-        onStartShouldSetResponder={[Function]}
         style={
           [
             {
-              "alignItems": "center",
-              "justifyContent": "center",
-              "padding": 4,
+              "position": "relative",
             },
-            {
-              "transform": [
-                {
-                  "scale": 1,
-                },
-              ],
-            },
+            false,
+            undefined,
           ]
         }
-        testID="transport-play-pause"
       >
-        <View>
-          <View
-            color="#F7F7F7"
-            size={22}
-            testID="lucide-Play"
-          />
+        <View
+          accessibilityHint="Toggle playback"
+          accessibilityLabel="Play"
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": false,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          hitSlop={8}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "justifyContent": "center",
+                "padding": 4,
+              },
+              {
+                "transform": [
+                  {
+                    "scale": 1,
+                  },
+                ],
+              },
+            ]
+          }
+          testID="transport-play-pause"
+        >
+          <View>
+            <View
+              color="#F7F7F7"
+              size={22}
+              testID="lucide-Play"
+            />
+          </View>
         </View>
       </View>
       <View
@@ -5154,221 +5220,233 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                 }
               >
                 <View
-                  accessibilityState={
-                    {
-                      "busy": undefined,
-                      "checked": undefined,
-                      "disabled": undefined,
-                      "expanded": undefined,
-                      "selected": undefined,
-                    }
-                  }
-                  accessibilityValue={
-                    {
-                      "max": undefined,
-                      "min": undefined,
-                      "now": undefined,
-                      "text": undefined,
-                    }
-                  }
-                  accessible={true}
-                  collapsable={false}
-                  focusable={true}
-                  onBlur={[Function]}
-                  onClick={[Function]}
-                  onFocus={[Function]}
-                  onResponderGrant={[Function]}
-                  onResponderMove={[Function]}
-                  onResponderRelease={[Function]}
-                  onResponderTerminate={[Function]}
-                  onResponderTerminationRequest={[Function]}
-                  onStartShouldSetResponder={[Function]}
                   style={
                     [
                       {
-                        "alignItems": "center",
-                        "height": 60,
-                        "justifyContent": "center",
-                        "padding": 4,
-                        "width": 80,
+                        "position": "relative",
                       },
-                      {
-                        "backgroundColor": "#1AFFA8",
-                        "borderRadius": 6,
-                      },
+                      false,
+                      undefined,
                     ]
                   }
                 >
                   <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
                     style={
                       [
                         {
-                          "flex": 1,
-                          "position": "relative",
-                          "width": "100%",
+                          "alignItems": "center",
+                          "height": 60,
+                          "justifyContent": "center",
+                          "padding": 4,
+                          "width": 80,
                         },
                         {
-                          "padding": 2,
+                          "backgroundColor": "#1AFFA8",
+                          "borderRadius": 6,
                         },
                       ]
                     }
                   >
                     <View
                       style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 3.6,
-                          "left": 0,
-                          "position": "absolute",
-                          "top": 44,
-                          "width": 2,
-                        }
+                        [
+                          {
+                            "flex": 1,
+                            "position": "relative",
+                            "width": "100%",
+                          },
+                          {
+                            "padding": 2,
+                          },
+                        ]
                       }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 3.6,
-                          "left": 8.5,
-                          "position": "absolute",
-                          "top": 44,
-                          "width": 2,
+                    >
+                      <View
+                        style={
+                          {
+                            "backgroundColor": "rgba(26,28,32,0.4)",
+                            "borderRadius": 2,
+                            "height": 3.6,
+                            "left": 0,
+                            "position": "absolute",
+                            "top": 44,
+                            "width": 2,
+                          }
                         }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 3.6,
-                          "left": 4.25,
-                          "position": "absolute",
-                          "top": 36,
-                          "width": 2,
+                      />
+                      <View
+                        style={
+                          {
+                            "backgroundColor": "rgba(26,28,32,0.4)",
+                            "borderRadius": 2,
+                            "height": 3.6,
+                            "left": 8.5,
+                            "position": "absolute",
+                            "top": 44,
+                            "width": 2,
+                          }
                         }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 3.6,
-                          "left": 12.75,
-                          "position": "absolute",
-                          "top": 36,
-                          "width": 2,
+                      />
+                      <View
+                        style={
+                          {
+                            "backgroundColor": "rgba(26,28,32,0.4)",
+                            "borderRadius": 2,
+                            "height": 3.6,
+                            "left": 4.25,
+                            "position": "absolute",
+                            "top": 36,
+                            "width": 2,
+                          }
                         }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 3.6,
-                          "left": 0,
-                          "position": "absolute",
-                          "top": 20,
-                          "width": 2,
+                      />
+                      <View
+                        style={
+                          {
+                            "backgroundColor": "rgba(26,28,32,0.4)",
+                            "borderRadius": 2,
+                            "height": 3.6,
+                            "left": 12.75,
+                            "position": "absolute",
+                            "top": 36,
+                            "width": 2,
+                          }
                         }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 3.6,
-                          "left": 2.125,
-                          "position": "absolute",
-                          "top": 20,
-                          "width": 2,
+                      />
+                      <View
+                        style={
+                          {
+                            "backgroundColor": "rgba(26,28,32,0.4)",
+                            "borderRadius": 2,
+                            "height": 3.6,
+                            "left": 0,
+                            "position": "absolute",
+                            "top": 20,
+                            "width": 2,
+                          }
                         }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 3.6,
-                          "left": 4.25,
-                          "position": "absolute",
-                          "top": 20,
-                          "width": 2,
+                      />
+                      <View
+                        style={
+                          {
+                            "backgroundColor": "rgba(26,28,32,0.4)",
+                            "borderRadius": 2,
+                            "height": 3.6,
+                            "left": 2.125,
+                            "position": "absolute",
+                            "top": 20,
+                            "width": 2,
+                          }
                         }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 3.6,
-                          "left": 6.375,
-                          "position": "absolute",
-                          "top": 20,
-                          "width": 2,
+                      />
+                      <View
+                        style={
+                          {
+                            "backgroundColor": "rgba(26,28,32,0.4)",
+                            "borderRadius": 2,
+                            "height": 3.6,
+                            "left": 4.25,
+                            "position": "absolute",
+                            "top": 20,
+                            "width": 2,
+                          }
                         }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 3.6,
-                          "left": 8.5,
-                          "position": "absolute",
-                          "top": 20,
-                          "width": 2,
+                      />
+                      <View
+                        style={
+                          {
+                            "backgroundColor": "rgba(26,28,32,0.4)",
+                            "borderRadius": 2,
+                            "height": 3.6,
+                            "left": 6.375,
+                            "position": "absolute",
+                            "top": 20,
+                            "width": 2,
+                          }
                         }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 3.6,
-                          "left": 10.625,
-                          "position": "absolute",
-                          "top": 20,
-                          "width": 2,
+                      />
+                      <View
+                        style={
+                          {
+                            "backgroundColor": "rgba(26,28,32,0.4)",
+                            "borderRadius": 2,
+                            "height": 3.6,
+                            "left": 8.5,
+                            "position": "absolute",
+                            "top": 20,
+                            "width": 2,
+                          }
                         }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 3.6,
-                          "left": 12.75,
-                          "position": "absolute",
-                          "top": 20,
-                          "width": 2,
+                      />
+                      <View
+                        style={
+                          {
+                            "backgroundColor": "rgba(26,28,32,0.4)",
+                            "borderRadius": 2,
+                            "height": 3.6,
+                            "left": 10.625,
+                            "position": "absolute",
+                            "top": 20,
+                            "width": 2,
+                          }
                         }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 3.6,
-                          "left": 14.875,
-                          "position": "absolute",
-                          "top": 20,
-                          "width": 2,
+                      />
+                      <View
+                        style={
+                          {
+                            "backgroundColor": "rgba(26,28,32,0.4)",
+                            "borderRadius": 2,
+                            "height": 3.6,
+                            "left": 12.75,
+                            "position": "absolute",
+                            "top": 20,
+                            "width": 2,
+                          }
                         }
-                      }
-                    />
+                      />
+                      <View
+                        style={
+                          {
+                            "backgroundColor": "rgba(26,28,32,0.4)",
+                            "borderRadius": 2,
+                            "height": 3.6,
+                            "left": 14.875,
+                            "position": "absolute",
+                            "top": 20,
+                            "width": 2,
+                          }
+                        }
+                      />
+                    </View>
                   </View>
                 </View>
                 <View

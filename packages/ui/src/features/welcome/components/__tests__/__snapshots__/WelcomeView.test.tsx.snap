@@ -121,6 +121,7 @@ exports[`WelcomeView snapshots matches snapshot 1`] = `
             "alignItems": "center",
             "flexDirection": "row",
             "justifyContent": "center",
+            "minHeight": 44,
           },
           {
             "paddingHorizontal": 16,
@@ -210,6 +211,7 @@ exports[`WelcomeView snapshots matches snapshot 1`] = `
             "alignItems": "center",
             "flexDirection": "row",
             "justifyContent": "center",
+            "minHeight": 44,
           },
           {
             "paddingHorizontal": 16,

@@ -64,6 +64,16 @@ jest.mock('react-native-svg', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Mock: react-native-worklets
+// ---------------------------------------------------------------------------
+// Keep PianoRoll tests on the JS thread in Jest. The real package ships ESM
+// that Jest does not transform by default.
+jest.mock('react-native-worklets', () => ({
+  __esModule: true,
+  scheduleOnRN: (fn) => fn,
+}));
+
+// ---------------------------------------------------------------------------
 // Mock: react-native-reanimated
 // ---------------------------------------------------------------------------
 // Manual mock for react-native-reanimated v3+ providing the most common APIs
@@ -208,6 +218,23 @@ jest.mock('@shopify/react-native-skia', () => {
     return Component;
   };
 
+  const createPath = () => {
+    const path = {
+      moveTo: () => path,
+      lineTo: () => path,
+      close: () => path,
+      cubicTo: () => path,
+      quadTo: () => path,
+      arcTo: () => path,
+      addRect: () => path,
+      addOval: () => path,
+      addCircle: () => path,
+      addRRect: () => path,
+      detach: () => path,
+    };
+    return path;
+  };
+
   return {
     __esModule: true,
     Canvas: createSkiaComponent('Canvas'),
@@ -240,18 +267,10 @@ jest.mock('@shopify/react-native-skia', () => {
     useImage: () => null,
     Skia: {
       Path: {
-        Make: () => ({
-          moveTo: () => ({}),
-          lineTo: () => ({}),
-          close: () => ({}),
-          cubicTo: () => ({}),
-          quadTo: () => ({}),
-          arcTo: () => ({}),
-          addRect: () => ({}),
-          addOval: () => ({}),
-          addCircle: () => ({}),
-          addRRect: () => ({}),
-        }),
+        Make: createPath,
+      },
+      PathBuilder: {
+        Make: createPath,
       },
       Paint: () => ({}),
       Matrix: () => [],

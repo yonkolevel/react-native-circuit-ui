@@ -65,7 +65,7 @@ exports[`CreateAccountView matches snapshot 1`] = `
             "borderRadius": 6,
             "borderWidth": 1,
             "flexDirection": "row",
-            "height": 36,
+            "height": 44,
             "paddingHorizontal": 16,
           },
           {
@@ -137,7 +137,7 @@ exports[`CreateAccountView matches snapshot 1`] = `
             "borderRadius": 6,
             "borderWidth": 1,
             "flexDirection": "row",
-            "height": 36,
+            "height": 44,
             "paddingHorizontal": 16,
           },
           {
@@ -211,7 +211,7 @@ exports[`CreateAccountView matches snapshot 1`] = `
             "borderRadius": 6,
             "borderWidth": 1,
             "flexDirection": "row",
-            "height": 36,
+            "height": 44,
             "paddingHorizontal": 16,
           },
           {
@@ -292,6 +292,7 @@ exports[`CreateAccountView matches snapshot 1`] = `
           "alignItems": "center",
           "flexDirection": "row",
           "justifyContent": "center",
+          "minHeight": 44,
         },
         {
           "paddingHorizontal": 16,
@@ -411,7 +412,7 @@ exports[`SignInView matches snapshot 1`] = `
             "borderRadius": 6,
             "borderWidth": 1,
             "flexDirection": "row",
-            "height": 36,
+            "height": 44,
             "paddingHorizontal": 16,
           },
           {
@@ -485,7 +486,7 @@ exports[`SignInView matches snapshot 1`] = `
             "borderRadius": 6,
             "borderWidth": 1,
             "flexDirection": "row",
-            "height": 36,
+            "height": 44,
             "paddingHorizontal": 16,
           },
           {
@@ -566,6 +567,7 @@ exports[`SignInView matches snapshot 1`] = `
           "alignItems": "center",
           "flexDirection": "row",
           "justifyContent": "center",
+          "minHeight": 44,
         },
         {
           "paddingHorizontal": 16,
@@ -655,6 +657,7 @@ exports[`SignInView matches snapshot 1`] = `
           "alignItems": "center",
           "flexDirection": "row",
           "justifyContent": "center",
+          "minHeight": 44,
         },
         {
           "paddingHorizontal": 16,
