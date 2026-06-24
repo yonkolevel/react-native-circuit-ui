@@ -985,41 +985,41 @@ export const ClipEditorView = memo(function ClipEditorView({
         <WithHint hintID={HintIDs.pianoRoll} style={{ flex: 1 }}>
           <View style={{ flex: 1, position: 'relative' }}>
             <SkiaPianoRollGrid
-            notes={clip.notes}
-            samples={samplesList}
-            instrumentType={instrumentType}
-            trackColor={trackColor}
-            lengthInBeats={clip.activeLengthInBars * 4}
-            zoomLevel={zoom}
-            isExpanded={isExpanded}
-            selectedPitchIndex={selectedPitchIndex}
-            melodicMinPitch={melodicMinPitch}
-            onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
-            onNoteResize={(idx, newDuration) =>
-              callbacks?.onNoteResize?.(idx, newDuration)
-            }
-            onNoteMove={(idx, newPos, newNote) =>
-              callbacks?.onNoteMove?.(idx, newPos, newNote)
-            }
-            onGridTap={(noteNumber, position) => {
-              callbacks?.onNoteAdd?.({
-                noteNumber,
-                velocity: 100,
-                position,
-                duration: 0.25,
-              });
-            }}
-            onPitchLabelTap={(pitch) => {
-              setSelectedPitchIndex(
-                selectedPitchIndex === pitch ? null : pitch
-              );
-            }}
-            onToggleExpand={() => setIsExpanded(!isExpanded)}
-            onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
-            onZoomOut={() => setZoom(Math.max(zoom - 0.25, 1))}
-            onZoomChange={(z) => setZoom(Math.max(1, Math.min(3, z)))}
-            showNoteLabels={showPianoNoteNames}
-          />
+              notes={clip.notes}
+              samples={samplesList}
+              instrumentType={instrumentType}
+              trackColor={trackColor}
+              lengthInBeats={clip.activeLengthInBars * 4}
+              zoomLevel={zoom}
+              isExpanded={isExpanded}
+              selectedPitchIndex={selectedPitchIndex}
+              melodicMinPitch={melodicMinPitch}
+              onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
+              onNoteResize={(idx, newDuration) =>
+                callbacks?.onNoteResize?.(idx, newDuration)
+              }
+              onNoteMove={(idx, newPos, newNote) =>
+                callbacks?.onNoteMove?.(idx, newPos, newNote)
+              }
+              onGridTap={(noteNumber, position) => {
+                callbacks?.onNoteAdd?.({
+                  noteNumber,
+                  velocity: 100,
+                  position,
+                  duration: 0.25,
+                });
+              }}
+              onPitchLabelTap={(pitch) => {
+                setSelectedPitchIndex(
+                  selectedPitchIndex === pitch ? null : pitch
+                );
+              }}
+              onToggleExpand={() => setIsExpanded(!isExpanded)}
+              onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
+              onZoomOut={() => setZoom(Math.max(zoom - 0.25, 1))}
+              onZoomChange={(z) => setZoom(Math.max(1, Math.min(3, z)))}
+              showNoteLabels={showPianoNoteNames}
+            />
             <PlayheadLine posX={playheadPosX} color={colors.mcWhite} />
           </View>
         </WithHint>

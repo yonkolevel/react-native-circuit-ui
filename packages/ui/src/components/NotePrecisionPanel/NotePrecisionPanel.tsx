@@ -78,7 +78,8 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
 
   // Computed here so CanvasKit is ready when matchFont runs (avoids web crash)
   const velFont = useMemo(
-    () => matchFont({ fontFamily: 'monospace', fontSize: 8, fontWeight: '600' }),
+    () =>
+      matchFont({ fontFamily: 'monospace', fontSize: 8, fontWeight: '600' }),
     []
   );
 

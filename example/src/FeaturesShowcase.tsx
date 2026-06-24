@@ -12,15 +12,15 @@ import {
 } from 'react-native-circuit-ui';
 
 // Feature imports
-import { DashboardTabBar } from '../../src/features/dashboard';
-import type { DashboardTab } from '../../src/features/dashboard';
-import { WelcomeView } from '../../src/features/welcome';
-import { ProfileCard, SignInView } from '../../src/features/account';
-import { FeaturedCard } from '../../src/features/discover';
-import { TrophiesView } from '../../src/features/trophies';
-import type { Trophy } from '../../src/features/trophies';
-import { MyCircuitsView } from '../../src/features/circuits';
-import type { MyCircuitsState } from '../../src/features/circuits';
+import { DashboardTabBar } from '../../packages/ui/src/features/dashboard';
+import type { DashboardTab } from '../../packages/ui/src/features/dashboard';
+import { WelcomeView } from '../../packages/ui/src/features/welcome';
+import { ProfileCard, SignInView } from '../../packages/ui/src/features/account';
+import { FeaturedCard } from '../../packages/ui/src/features/discover';
+import { TrophiesView } from '../../packages/ui/src/features/trophies';
+import type { Trophy } from '../../packages/ui/src/features/trophies';
+import { MyCircuitsView } from '../../packages/ui/src/features/circuits';
+import type { MyCircuitsState } from '../../packages/ui/src/features/circuits';
 
 const Section = ({
   title,

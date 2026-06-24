@@ -74,7 +74,9 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
 
           {/* Tempo — label, value and slider grouped so the divider sits below
               the whole control, not between the label and its slider. */}
-          <View style={[styles.tempoGroup, { borderBottomColor: colors.mcBlack4 }]}>
+          <View
+            style={[styles.tempoGroup, { borderBottomColor: colors.mcBlack4 }]}
+          >
             <View style={styles.tempoHeader}>
               <Text variant="label" color={colors.mcWhite}>
                 Tempo

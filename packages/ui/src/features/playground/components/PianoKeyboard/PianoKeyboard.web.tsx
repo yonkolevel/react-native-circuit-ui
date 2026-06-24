@@ -15,11 +15,22 @@ const SQUARE_SHARPS = new Set([8, 20]);
 const HAS_LEFT = new Set([1, 6, 13, 18]);
 const HAS_RIGHT = new Set([3, 10, 15, 22]);
 const NOTE_NAMES: Record<number, string> = {
-  0: 'C', 2: 'D', 4: 'E', 5: 'F', 7: 'G', 9: 'A', 11: 'B',
+  0: 'C',
+  2: 'D',
+  4: 'E',
+  5: 'F',
+  7: 'G',
+  9: 'A',
+  11: 'B',
 };
 const NOTE_COLORS: Record<number, string> = {
-  0: palette.mcOrange, 2: palette.mcBlue,  4: palette.mcGreen,
-  5: palette.mcPink,   7: palette.mcPurple, 9: palette.mcYellow, 11: palette.mcBlue,
+  0: palette.mcOrange,
+  2: palette.mcBlue,
+  4: palette.mcGreen,
+  5: palette.mcPink,
+  7: palette.mcPurple,
+  9: palette.mcYellow,
+  11: palette.mcBlue,
 };
 const SHARP_H = 56;
 
@@ -27,8 +38,24 @@ const SHARP_H = 56;
 // Lower octave: A W S E D F T G Y H U J
 // Upper octave: K O L P ; '
 const QWERTY_KEY_MAP: Record<string, number> = {
-  a: 0, w: 1, s: 2, e: 3, d: 4, f: 5, t: 6, g: 7, y: 8, h: 9, u: 10, j: 11,
-  k: 12, o: 13, l: 14, p: 15, ';': 16, "'": 17,
+  'a': 0,
+  'w': 1,
+  's': 2,
+  'e': 3,
+  'd': 4,
+  'f': 5,
+  't': 6,
+  'g': 7,
+  'y': 8,
+  'h': 9,
+  'u': 10,
+  'j': 11,
+  'k': 12,
+  'o': 13,
+  'l': 14,
+  'p': 15,
+  ';': 16,
+  "'": 17,
 };
 
 function isTypingTarget(): boolean {
@@ -61,18 +88,34 @@ export const PianoKeyboard = memo(function PianoKeyboard({
   const [pressed, setPressed] = useState<Set<number>>(new Set());
 
   const totalKeys = numberOfOctaves * 12;
-  const keys = useMemo(() => Array.from({ length: totalKeys }, (_, i) => i), [totalKeys]);
-  const octaves = useMemo(() => Array.from({ length: numberOfOctaves }, (_, i) => i), [numberOfOctaves]);
+  const keys = useMemo(
+    () => Array.from({ length: totalKeys }, (_, i) => i),
+    [totalKeys]
+  );
+  const octaves = useMemo(
+    () => Array.from({ length: numberOfOctaves }, (_, i) => i),
+    [numberOfOctaves]
+  );
 
-  const handlePress = useCallback((k: number) => {
-    setPressed(prev => new Set(prev).add(k));
-    onNoteOn?.(k);
-  }, [onNoteOn]);
+  const handlePress = useCallback(
+    (k: number) => {
+      setPressed((prev) => new Set(prev).add(k));
+      onNoteOn?.(k);
+    },
+    [onNoteOn]
+  );
 
-  const handleRelease = useCallback((k: number) => {
-    setPressed(prev => { const s = new Set(prev); s.delete(k); return s; });
-    onNoteOff?.(k);
-  }, [onNoteOff]);
+  const handleRelease = useCallback(
+    (k: number) => {
+      setPressed((prev) => {
+        const s = new Set(prev);
+        s.delete(k);
+        return s;
+      });
+      onNoteOff?.(k);
+    },
+    [onNoteOff]
+  );
 
   // QWERTY keyboard input
   useEffect(() => {
@@ -103,7 +146,7 @@ export const PianoKeyboard = memo(function PianoKeyboard({
       window.removeEventListener('keydown', onDown);
       window.removeEventListener('keyup', onUp);
       // Release any held keys on unmount to prevent stuck notes
-      held.forEach(key => {
+      held.forEach((key) => {
         const idx = QWERTY_KEY_MAP[key];
         if (idx !== undefined) handleRelease(idx);
       });
@@ -112,8 +155,12 @@ export const PianoKeyboard = memo(function PianoKeyboard({
 
   const renderOctave = (octave: number) => {
     const start = octave * 12;
-    const sk = keys.filter(k => k >= start && k < start + 12 && ALL_SHARP.has(k));
-    const nk = keys.filter(k => k >= start && k < start + 12 && !ALL_SHARP.has(k));
+    const sk = keys.filter(
+      (k) => k >= start && k < start + 12 && ALL_SHARP.has(k)
+    );
+    const nk = keys.filter(
+      (k) => k >= start && k < start + 12 && !ALL_SHARP.has(k)
+    );
 
     return (
       <View key={octave} style={styles.octave}>
@@ -128,7 +175,11 @@ export const PianoKeyboard = memo(function PianoKeyboard({
                 style={[
                   styles.sharpKey,
                   sq ? styles.sharpSq : styles.sharpRect,
-                  { backgroundColor: active ? highlightColor : 'rgba(247,247,247,0.8)' },
+                  {
+                    backgroundColor: active
+                      ? highlightColor
+                      : 'rgba(247,247,247,0.8)',
+                  },
                 ]}
                 onPressIn={() => handlePress(k)}
                 onPressOut={() => handleRelease(k)}
@@ -153,14 +204,25 @@ export const PianoKeyboard = memo(function PianoKeyboard({
                 key={k}
                 style={[
                   styles.natKey,
-                  { backgroundColor: active ? highlightColor : 'rgba(247,247,247,0.8)' },
+                  {
+                    backgroundColor: active
+                      ? highlightColor
+                      : 'rgba(247,247,247,0.8)',
+                  },
                 ]}
                 onPressIn={() => handlePress(k)}
                 onPressOut={() => handleRelease(k)}
               >
                 {showNoteNames && NOTE_NAMES[s] && NOTE_COLORS[s] && (
-                  <View style={[styles.badge, { backgroundColor: NOTE_COLORS[s] }]}>
-                    <Text variant="extraSmall" color="#FFF" bold style={styles.badgeTxt}>
+                  <View
+                    style={[styles.badge, { backgroundColor: NOTE_COLORS[s] }]}
+                  >
+                    <Text
+                      variant="extraSmall"
+                      color="#FFF"
+                      bold
+                      style={styles.badgeTxt}
+                    >
                       {NOTE_NAMES[s]}
                     </Text>
                   </View>
@@ -191,10 +253,25 @@ const styles = StyleSheet.create({
   octave: { flex: 1 },
   sharpRow: { flexDirection: 'row', height: SHARP_H },
   sharpKey: { borderWidth: 1, borderColor: palette.mcBlack },
-  sharpRect: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 12 },
+  sharpRect: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
   sharpSq: { minWidth: 56, justifyContent: 'center', alignItems: 'center' },
-  sharpContent: { flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'center' },
-  circle: { width: 34, height: 34, borderRadius: 17, backgroundColor: palette.mcBlack },
+  sharpContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  circle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: palette.mcBlack,
+  },
   spacer: { flex: 1 },
   natRow: { flexDirection: 'row', flex: 1 },
   natKey: {
@@ -205,6 +282,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 4,
   },
-  badge: { width: 20, height: 20, borderRadius: 4, justifyContent: 'center', alignItems: 'center' },
+  badge: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   badgeTxt: { fontSize: 10 },
 });

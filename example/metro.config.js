@@ -23,13 +23,38 @@ config.server = {
   port: 8083,
 };
 
+const defaultResolveRequest = config.resolver?.resolveRequest;
+
 // Allow Metro to resolve workspace packages hoisted to root node_modules
 config.resolver = {
   ...config.resolver,
+  extraNodeModules: {
+    ...(config.resolver.extraNodeModules ?? {}),
+    'react-native-circuit-ui': path.resolve(repoRoot, 'packages/ui/src'),
+    '@circuit-ui/tokens': path.resolve(repoRoot, 'packages/tokens/src'),
+  },
   nodeModulesPaths: [
     path.resolve(repoRoot, 'node_modules'),
     path.resolve(__dirname, 'node_modules'),
   ],
+  resolveRequest(context, moduleName, platform) {
+    if (moduleName === 'react-native-circuit-ui') {
+      return {
+        type: 'sourceFile',
+        filePath: path.resolve(repoRoot, 'packages/ui/src/index.tsx'),
+      };
+    }
+
+    if (moduleName === '@circuit-ui/tokens') {
+      return {
+        type: 'sourceFile',
+        filePath: path.resolve(repoRoot, 'packages/tokens/src/index.ts'),
+      };
+    }
+
+    const resolver = defaultResolveRequest ?? context.resolveRequest;
+    return resolver(context, moduleName, platform);
+  },
 };
 
 // Watch packages/tokens so hot reload works when token values change

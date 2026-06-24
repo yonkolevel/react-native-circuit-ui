@@ -44,7 +44,11 @@ import { scheduleOnRN } from 'react-native-worklets';
 import { Text } from '../Text';
 import { Icon, Icons } from '../SFSymbol';
 import { useTheme, hexToRgba } from '../../theme';
-import type { ClipNote, InstrumentType, Sample } from '../../features/playground/types';
+import type {
+  ClipNote,
+  InstrumentType,
+  Sample,
+} from '../../features/playground/types';
 
 const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
@@ -127,7 +131,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 
   // Computed here (not module scope) so CanvasKit is ready when matchFont runs
   const noteFont = useMemo(
-    () => matchFont({ fontFamily: 'monospace', fontSize: 9, fontWeight: '600' }),
+    () =>
+      matchFont({ fontFamily: 'monospace', fontSize: 9, fontWeight: '600' }),
     []
   );
 

@@ -54,8 +54,7 @@ export interface ExportAudioViewProps {
 
 const READY_COPY = 'Ready to export';
 const EMPTY_COPY = 'Nothing to export';
-const DISABLED_REASON =
-  'Disabled until the playground contains notes or audio';
+const DISABLED_REASON = 'Disabled until the playground contains notes or audio';
 
 export const ExportAudioView = memo(function ExportAudioView({
   visible,
@@ -78,7 +77,8 @@ export const ExportAudioView = memo(function ExportAudioView({
 
   const exportDisabled = !canExport || isExporting;
   const gradientId = coverId ?? songId ?? 'export-cover';
-  const hasName = typeof playgroundName === 'string' && playgroundName.length > 0;
+  const hasName =
+    typeof playgroundName === 'string' && playgroundName.length > 0;
 
   const handleExport = async () => {
     if (exportDisabled) return;
