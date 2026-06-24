@@ -510,6 +510,7 @@ exports[`EditProfileView matches snapshot (dark mode, visible) 1`] = `
                         "alignItems": "center",
                         "flexDirection": "row",
                         "justifyContent": "center",
+                        "minHeight": 44,
                       },
                       {
                         "paddingHorizontal": 16,
@@ -758,6 +759,7 @@ exports[`EditProfileView matches snapshot (dark mode, visible) 1`] = `
                         "alignItems": "center",
                         "flexDirection": "row",
                         "justifyContent": "center",
+                        "minHeight": 44,
                       },
                       {
                         "paddingHorizontal": 16,
@@ -857,6 +859,7 @@ exports[`EditProfileView matches snapshot (dark mode, visible) 1`] = `
                       "alignItems": "center",
                       "flexDirection": "row",
                       "justifyContent": "center",
+                      "minHeight": 44,
                     },
                     {
                       "paddingHorizontal": 16,
@@ -1427,6 +1430,7 @@ exports[`EditProfileView matches snapshot (light mode, visible) 1`] = `
                         "alignItems": "center",
                         "flexDirection": "row",
                         "justifyContent": "center",
+                        "minHeight": 44,
                       },
                       {
                         "paddingHorizontal": 16,
@@ -1675,6 +1679,7 @@ exports[`EditProfileView matches snapshot (light mode, visible) 1`] = `
                         "alignItems": "center",
                         "flexDirection": "row",
                         "justifyContent": "center",
+                        "minHeight": 44,
                       },
                       {
                         "paddingHorizontal": 16,
@@ -1774,6 +1779,7 @@ exports[`EditProfileView matches snapshot (light mode, visible) 1`] = `
                       "alignItems": "center",
                       "flexDirection": "row",
                       "justifyContent": "center",
+                      "minHeight": 44,
                     },
                     {
                       "paddingHorizontal": 16,

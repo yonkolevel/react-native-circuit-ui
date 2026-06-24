@@ -8,9 +8,9 @@
   "packageManager": "yarn@3.6.1",
   "scripts": {
     "build": "yarn workspaces foreach -A run prepare",
-    "test": "yarn workspace @circuit-ui test:unit",
-    "test:visual": "yarn workspace @circuit-ui test:visual",
-    "test:unit": "yarn workspace @circuit-ui test:unit",
+    "test": "yarn workspace @circuit-ui/core test:unit",
+    "test:visual": "yarn workspace @circuit-ui/core test:visual",
+    "test:unit": "yarn workspace @circuit-ui/core test:unit",
     "test:screenshots": "./scripts/capture-screenshots.sh",
     "typecheck": "yarn workspaces foreach -A run typecheck",
     "lint": "eslint \"packages/*/src/**/*.{js,ts,tsx}\"",

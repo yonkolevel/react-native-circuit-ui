@@ -98,7 +98,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
           }
         >
           <View
-            accessibilityLabel="Mute"
+            accessibilityLabel="Mute track"
             accessibilityRole="button"
             accessibilityState={
               {
@@ -120,6 +120,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             accessible={true}
             collapsable={false}
             focusable={true}
+            hitSlop={6}
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
@@ -171,7 +172,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             </Text>
           </View>
           <View
-            accessibilityLabel="Solo"
+            accessibilityLabel="Solo track"
             accessibilityRole="button"
             accessibilityState={
               {
@@ -193,6 +194,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             accessible={true}
             collapsable={false}
             focusable={true}
+            hitSlop={6}
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
@@ -563,7 +565,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
           }
         >
           <View
-            accessibilityLabel="Mute"
+            accessibilityLabel="Mute track"
             accessibilityRole="button"
             accessibilityState={
               {
@@ -585,6 +587,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             accessible={true}
             collapsable={false}
             focusable={true}
+            hitSlop={6}
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
@@ -636,7 +639,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             </Text>
           </View>
           <View
-            accessibilityLabel="Solo"
+            accessibilityLabel="Solo track"
             accessibilityRole="button"
             accessibilityState={
               {
@@ -658,6 +661,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             accessible={true}
             collapsable={false}
             focusable={true}
+            hitSlop={6}
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
@@ -1028,7 +1032,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
           }
         >
           <View
-            accessibilityLabel="Mute"
+            accessibilityLabel="Mute track"
             accessibilityRole="button"
             accessibilityState={
               {
@@ -1050,6 +1054,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             accessible={true}
             collapsable={false}
             focusable={true}
+            hitSlop={6}
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
@@ -1101,7 +1106,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             </Text>
           </View>
           <View
-            accessibilityLabel="Solo"
+            accessibilityLabel="Solo track"
             accessibilityRole="button"
             accessibilityState={
               {
@@ -1123,6 +1128,7 @@ exports[`MixerView snapshots matches snapshot with 3 tracks 1`] = `
             accessible={true}
             collapsable={false}
             focusable={true}
+            hitSlop={6}
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
@@ -1520,7 +1526,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
           }
         >
           <View
-            accessibilityLabel="Mute"
+            accessibilityLabel="Mute track"
             accessibilityRole="button"
             accessibilityState={
               {
@@ -1542,6 +1548,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
             accessible={true}
             collapsable={false}
             focusable={true}
+            hitSlop={6}
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
@@ -1593,7 +1600,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
             </Text>
           </View>
           <View
-            accessibilityLabel="Solo"
+            accessibilityLabel="Solo track"
             accessibilityRole="button"
             accessibilityState={
               {
@@ -1615,6 +1622,7 @@ exports[`MixerView snapshots matches snapshot with muted track 1`] = `
             accessible={true}
             collapsable={false}
             focusable={true}
+            hitSlop={6}
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
@@ -2012,7 +2020,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
           }
         >
           <View
-            accessibilityLabel="Mute"
+            accessibilityLabel="Mute track"
             accessibilityRole="button"
             accessibilityState={
               {
@@ -2034,6 +2042,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             accessible={true}
             collapsable={false}
             focusable={true}
+            hitSlop={6}
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
@@ -2085,7 +2094,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             </Text>
           </View>
           <View
-            accessibilityLabel="Solo"
+            accessibilityLabel="Solo track"
             accessibilityRole="button"
             accessibilityState={
               {
@@ -2107,6 +2116,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             accessible={true}
             collapsable={false}
             focusable={true}
+            hitSlop={6}
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
@@ -2477,7 +2487,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
           }
         >
           <View
-            accessibilityLabel="Mute"
+            accessibilityLabel="Mute track"
             accessibilityRole="button"
             accessibilityState={
               {
@@ -2499,6 +2509,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             accessible={true}
             collapsable={false}
             focusable={true}
+            hitSlop={6}
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
@@ -2550,7 +2561,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             </Text>
           </View>
           <View
-            accessibilityLabel="Solo"
+            accessibilityLabel="Solo track"
             accessibilityRole="button"
             accessibilityState={
               {
@@ -2572,6 +2583,7 @@ exports[`MixerView snapshots matches snapshot with soloed track 1`] = `
             accessible={true}
             collapsable={false}
             focusable={true}
+            hitSlop={6}
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
