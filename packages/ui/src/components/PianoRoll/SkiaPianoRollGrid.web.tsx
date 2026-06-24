@@ -19,7 +19,11 @@ import {
 import { Text } from '../Text';
 import { Icon, Icons } from '../SFSymbol';
 import { useTheme, hexToRgba } from '../../theme';
-import type { ClipNote, InstrumentType, Sample } from '../../features/playground/types';
+import type {
+  ClipNote,
+  InstrumentType,
+  Sample,
+} from '../../features/playground/types';
 
 const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
@@ -56,7 +60,11 @@ export interface SkiaPianoRollGridProps {
   melodicMinPitch?: number;
   onNotePress?: (index: number) => void;
   onNoteResize?: (index: number, newDuration: number) => void;
-  onNoteMove?: (index: number, newPosition: number, newNoteNumber: number) => void;
+  onNoteMove?: (
+    index: number,
+    newPosition: number,
+    newNoteNumber: number
+  ) => void;
   onGridTap?: (noteNumber: number, position: number) => void;
   onPitchLabelTap?: (pitch: number) => void;
   onToggleExpand?: () => void;
@@ -115,7 +123,11 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     const el = containerRef.current;
     if (!el) return;
     const handleWheel = (ev: WheelEvent) => {
-      const wheel = ev as WheelEvent & { ctrlKey?: boolean; metaKey?: boolean; deltaY?: number };
+      const wheel = ev as WheelEvent & {
+        ctrlKey?: boolean;
+        metaKey?: boolean;
+        deltaY?: number;
+      };
       if (!wheel.ctrlKey && !wheel.metaKey) return;
       ev.preventDefault();
       const delta = (wheel.deltaY ?? 0) > 0 ? -0.25 : 0.25;
@@ -173,7 +185,11 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   );
 
   return (
-    <View ref={containerRef} style={styles.container} onLayout={onContainerLayout}>
+    <View
+      ref={containerRef}
+      style={styles.container}
+      onLayout={onContainerLayout}
+    >
       <ScrollView style={styles.scrollV}>
         <View style={styles.row}>
           {/* Pitch labels */}

@@ -7,7 +7,13 @@
  * iOS and Android so both platforms stay at parity.
  */
 import { memo, useState } from 'react';
-import { View, ScrollView, TextInput, Pressable, StyleSheet } from 'react-native';
+import {
+  View,
+  ScrollView,
+  TextInput,
+  Pressable,
+  StyleSheet,
+} from 'react-native';
 import { Text } from '../Text';
 import { Button } from '../Button';
 import { Icon, Icons } from '../SFSymbol';
@@ -16,7 +22,17 @@ import { makeSpacing } from '../../theme/spacing';
 
 /** Same emoji set as the native FeedbackView, same order. */
 export const FEEDBACK_EMOJIS = [
-  '🥵', '😒', '🤨', '😎', '🤩', '🤘', '🎉', '🤯', '🔥', '🚀', '💡',
+  '🥵',
+  '😒',
+  '🤨',
+  '😎',
+  '🤩',
+  '🤘',
+  '🎉',
+  '🤯',
+  '🔥',
+  '🚀',
+  '💡',
 ] as const;
 
 export interface FeedbackViewProps {
@@ -44,14 +60,18 @@ export const FeedbackView = memo(function FeedbackView({
 
   const toggleEmoji = (emoji: string) =>
     setSelected((prev) =>
-      prev.includes(emoji) ? prev.filter((e) => e !== emoji) : [...prev, emoji],
+      prev.includes(emoji) ? prev.filter((e) => e !== emoji) : [...prev, emoji]
     );
 
   // Allow sending once there's at least an emoji or some text.
   const canSend = selected.length > 0 || feedback.trim().length > 0;
 
   return (
-    <View style={styles.container} accessibilityLabel="Send feedback" testID={a11yId}>
+    <View
+      style={styles.container}
+      accessibilityLabel="Send feedback"
+      testID={a11yId}
+    >
       {/* Header */}
       <View style={styles.header}>
         <Text variant="body" color={colors.mcWhite} style={styles.headerTitle}>
@@ -67,9 +87,16 @@ export const FeedbackView = memo(function FeedbackView({
         </Pressable>
       </View>
 
-      <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         {/* Emoji multi-select */}
-        <Text variant="small" color={colors.mcWhite3} style={styles.sectionHint}>
+        <Text
+          variant="small"
+          color={colors.mcWhite3}
+          style={styles.sectionHint}
+        >
           Pick as many as you like
         </Text>
         {/* 5-column grid, matching the native FeedbackView (LazyVGrid). */}
@@ -88,7 +115,13 @@ export const FeedbackView = memo(function FeedbackView({
                     isSelected && { backgroundColor: colors.mcWhite4 },
                   ]}
                 >
-                  <Text variant="body" color={colors.mcWhite} style={styles.emojiText}>{emoji}</Text>
+                  <Text
+                    variant="body"
+                    color={colors.mcWhite}
+                    style={styles.emojiText}
+                  >
+                    {emoji}
+                  </Text>
                 </Pressable>
               </View>
             );
@@ -97,8 +130,12 @@ export const FeedbackView = memo(function FeedbackView({
 
         {/* Free text */}
         <View style={styles.textHeader}>
-          <Text variant="body" color={colors.mcWhite}>Anything we could do better?</Text>
-          <Text variant="small" color={colors.mcWhite3}>Every bit of feedback helps!</Text>
+          <Text variant="body" color={colors.mcWhite}>
+            Anything we could do better?
+          </Text>
+          <Text variant="small" color={colors.mcWhite3}>
+            Every bit of feedback helps!
+          </Text>
         </View>
         <TextInput
           value={feedback}
@@ -108,7 +145,10 @@ export const FeedbackView = memo(function FeedbackView({
           textAlignVertical="top"
           placeholder="Tell us anything…"
           placeholderTextColor={colors.mcWhite4}
-          style={[styles.textInput, { color: colors.mcWhite, borderColor: colors.mcWhite4 }]}
+          style={[
+            styles.textInput,
+            { color: colors.mcWhite, borderColor: colors.mcWhite4 },
+          ]}
           accessibilityLabel="Feedback message"
         />
       </ScrollView>
@@ -124,8 +164,15 @@ export const FeedbackView = memo(function FeedbackView({
         style={styles.sendButton}
       />
       {onEmailDirectly && (
-        <Pressable onPress={onEmailDirectly} hitSlop={8} style={styles.emailDirectly} accessibilityRole="button">
-          <Text variant="small" color={colors.mcWhite3}>Prefer to email us directly?</Text>
+        <Pressable
+          onPress={onEmailDirectly}
+          hitSlop={8}
+          style={styles.emailDirectly}
+          accessibilityRole="button"
+        >
+          <Text variant="small" color={colors.mcWhite3}>
+            Prefer to email us directly?
+          </Text>
         </Pressable>
       )}
     </View>

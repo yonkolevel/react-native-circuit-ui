@@ -8,53 +8,18 @@
   "packageManager": "yarn@3.6.1",
   "scripts": {
     "build": "yarn workspaces foreach -A run prepare",
+    "prepare": "yarn workspace @circuit-ui/tokens prepare && yarn workspace @circuit-ui/core prepare",
     "test": "yarn workspace @circuit-ui/core test:unit",
     "test:visual": "yarn workspace @circuit-ui/core test:visual",
     "test:unit": "yarn workspace @circuit-ui/core test:unit",
     "test:screenshots": "./scripts/capture-screenshots.sh",
     "typecheck": "yarn workspaces foreach -A run typecheck",
-    "lint": "eslint \"packages/*/src/**/*.{js,ts,tsx}\"",
-    "example": "yarn workspace @circuit-ui-example"
+    "lint": "yarn workspace @circuit-ui/core lint",
+    "example": "yarn workspace react-native-circuit-ui-example"
   },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ]
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@react-native",
-      "prettier"
-    ],
-    "rules": {
-      "react/react-in-jsx-scope": "off",
-      "prettier/prettier": [
-        "error",
-        {
-          "quoteProps": "consistent",
-          "singleQuote": true,
-          "tabWidth": 2,
-          "trailingComma": "es5",
-          "useTabs": false
-        }
-      ],
-      "react-native/no-inline-styles": "off",
-      "no-bitwise": "off",
-      "no-void": "off",
-      "no-shadow": "off",
-      "@typescript-eslint/no-shadow": "off"
-    }
-  },
-  "eslintIgnore": [
-    "node_modules/",
-    "packages/*/lib/"
-  ],
-  "prettier": {
-    "quoteProps": "consistent",
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5",
-    "useTabs": false
   }
 }

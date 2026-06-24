@@ -11,11 +11,7 @@
  */
 import type { TextStyle } from 'react-native';
 import { Platform } from 'react-native';
-import {
-  fontSize,
-  fontWeight,
-  lineHeight,
-} from '@circuit-ui/tokens';
+import { fontSize, fontWeight, lineHeight } from '@circuit-ui/tokens';
 import type { FontWeight } from '@circuit-ui/tokens';
 
 export { fontSize, fontWeight, lineHeight };

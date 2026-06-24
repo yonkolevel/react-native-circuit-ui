@@ -25,10 +25,22 @@ function visualToSample(visualIndex: number): number {
 
 // QWERTY → visual grid index (row-major, top-left = 0)
 const DRUM_KEY_MAP: Record<string, number> = {
-  q: 0, w: 1, e: 2, r: 3,
-  a: 4, s: 5, d: 6, f: 7,
-  z: 8, x: 9, c: 10, v: 11,
-  '1': 12, '2': 13, '3': 14, '4': 15,
+  'q': 0,
+  'w': 1,
+  'e': 2,
+  'r': 3,
+  'a': 4,
+  's': 5,
+  'd': 6,
+  'f': 7,
+  'z': 8,
+  'x': 9,
+  'c': 10,
+  'v': 11,
+  '1': 12,
+  '2': 13,
+  '3': 14,
+  '4': 15,
 };
 
 function isTypingTarget(): boolean {
@@ -105,7 +117,7 @@ export const DrumPadsView = memo(function DrumPadsView({
     return () => {
       window.removeEventListener('keydown', onDown);
       window.removeEventListener('keyup', onUp);
-      held.forEach(key => {
+      held.forEach((key) => {
         const visualIdx = DRUM_KEY_MAP[key];
         if (visualIdx !== undefined) handleNativeRelease(visualIdx);
       });

@@ -10,20 +10,20 @@ import { create } from 'zustand';
 import {
   SongToolbar,
   SongMixerTabBar,
-} from '../../src/features/playground/components/SongView';
-import { TrackView } from '../../src/features/playground/components/TrackView';
-import { MixerView } from '../../src/features/playground/components/Mixer';
-import { DrumPadsView } from '../../src/features/playground/components/DrumPads';
-import { PianoKeyboard } from '../../src/features/playground/components/PianoKeyboard';
-import { SongSectionsView } from '../../src/features/playground/components/Sections';
-import { SoundBankView } from '../../src/features/playground/components/SoundBank';
-import { PlaygroundsDashboard } from '../../src/features/playground/components/PlaygroundsDashboard';
-import { AddTrackMenu } from '../../src/features/playground/components/Toolbar';
-import { OnboardingSheet } from '../../src/features/playground/components/Onboarding';
-import { ClipEditorView } from '../../src/features/playground/components/ClipEditor';
-import { BottomPanel } from '../../src/features/playground/components/BottomPanel';
-import { SongStoreProvider } from '../../src/features/playground/stores/playgroundStore';
-import type { SongStore } from '../../src/features/playground/stores/playgroundStore';
+} from '../../packages/ui/src/features/playground/components/SongView';
+import { TrackView } from '../../packages/ui/src/features/playground/components/TrackView';
+import { MixerView } from '../../packages/ui/src/features/playground/components/Mixer';
+import { DrumPadsView } from '../../packages/ui/src/features/playground/components/DrumPads';
+import { PianoKeyboard } from '../../packages/ui/src/features/playground/components/PianoKeyboard';
+import { SongSectionsView } from '../../packages/ui/src/features/playground/components/Sections';
+import { SoundBankView } from '../../packages/ui/src/features/playground/components/SoundBank';
+import { PlaygroundsDashboard } from '../../packages/ui/src/features/playground/components/PlaygroundsDashboard';
+import { AddTrackMenu } from '../../packages/ui/src/features/playground/components/Toolbar';
+import { OnboardingSheet } from '../../packages/ui/src/features/playground/components/Onboarding';
+import { ClipEditorView } from '../../packages/ui/src/features/playground/components/ClipEditor';
+import { BottomPanel } from '../../packages/ui/src/features/playground/components/BottomPanel';
+import { SongStoreProvider } from '../../packages/ui/src/features/playground/stores/playgroundStore';
+import type { SongStore } from '../../packages/ui/src/features/playground/stores/playgroundStore';
 
 // Mock data
 import {
@@ -31,7 +31,7 @@ import {
   createMockPlaygroundsList,
   createMockDrumClip,
   createDrumSamples,
-} from '../../src/features/playground/mocks';
+} from '../../packages/ui/src/features/playground/mocks';
 
 // Create a mock store for showcase components that use useSongContext
 const noop = () => {};

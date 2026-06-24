@@ -48,7 +48,7 @@ export const WithHint = memo(function WithHint({
       if (dismissTimer.current) clearTimeout(dismissTimer.current);
       dismissTimer.current = setTimeout(
         () => setTooltipVisible(false),
-        TOOLTIP_DISMISS_MS,
+        TOOLTIP_DISMISS_MS
       );
     } else {
       setTooltipVisible(false);
@@ -66,7 +66,10 @@ export const WithHint = memo(function WithHint({
       {children}
 
       {active && (
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.bubbleLayer]}>
+        <View
+          pointerEvents="none"
+          style={[StyleSheet.absoluteFill, styles.bubbleLayer]}
+        >
           <HintBubble />
         </View>
       )}
@@ -76,7 +79,9 @@ export const WithHint = memo(function WithHint({
           pointerEvents="none"
           style={[
             styles.tooltipLayer,
-            tooltipPlacement === 'below' ? styles.tooltipBelow : styles.tooltipAbove,
+            tooltipPlacement === 'below'
+              ? styles.tooltipBelow
+              : styles.tooltipAbove,
           ]}
         >
           {tooltipPlacement === 'below' && (
@@ -88,7 +93,11 @@ export const WithHint = memo(function WithHint({
               { backgroundColor: tooltipBg, borderColor: tooltipBorder },
             ]}
           >
-            <Text variant="caption" color={colors.mcWhite} style={styles.tooltipText}>
+            <Text
+              variant="caption"
+              color={colors.mcWhite}
+              style={styles.tooltipText}
+            >
               {tip}
             </Text>
           </View>

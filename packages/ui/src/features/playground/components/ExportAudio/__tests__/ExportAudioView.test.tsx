@@ -94,7 +94,10 @@ describe('ExportAudioView', () => {
       id: 1,
       type: 'audio',
       clips: [
-        createMockClip({ notes: [], audioFileReference: 'recordings/take-1.wav' }),
+        createMockClip({
+          notes: [],
+          audioFileReference: 'recordings/take-1.wav',
+        }),
       ],
     });
     const store = createTestStore({ tracks: [audioTrack] } as any);
