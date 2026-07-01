@@ -16,12 +16,14 @@ import type { UserProfile } from '../types';
 export interface ProfileCardProps {
   profile: UserProfile;
   onEditProfile?: () => void;
+  onDeleteAccount?: () => void;
   onLogout?: () => void;
 }
 
 export const ProfileCard = memo(function ProfileCard({
   profile,
   onEditProfile,
+  onDeleteAccount,
   onLogout,
 }: ProfileCardProps) {
   const { colors, isDark } = useTheme();
@@ -44,18 +46,34 @@ export const ProfileCard = memo(function ProfileCard({
           {profile.email}
         </Text>
 
-        {onEditProfile && (
-          <Pressable
-            onPress={onEditProfile}
-            style={styles.link}
-            accessibilityRole="button"
-            accessibilityLabel="Edit profile"
-          >
-            <Text variant="small" color={colors.mcBlue}>
-              Edit Account
-            </Text>
-          </Pressable>
-        )}
+        <View style={styles.accountActions}>
+          {onEditProfile && (
+            <Pressable
+              onPress={onEditProfile}
+              style={styles.link}
+              accessibilityRole="button"
+              accessibilityLabel="Edit profile"
+            >
+              <Text variant="small" color={colors.mcBlue}>
+                Edit Account
+              </Text>
+            </Pressable>
+          )}
+
+          {onDeleteAccount && (
+            <Pressable
+              onPress={onDeleteAccount}
+              style={styles.link}
+              accessibilityRole="button"
+              accessibilityLabel="Delete account"
+              testID="account_deleteAccountButton"
+            >
+              <Text variant="small" color={colors.mcPink}>
+                Delete Account
+              </Text>
+            </Pressable>
+          )}
+        </View>
 
         {onLogout && (
           <Pressable
@@ -88,5 +106,10 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   info: { flex: 1, gap: makeSpacing(3) },
+  accountActions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: makeSpacing(3),
+  },
   link: { paddingVertical: 2 },
 });

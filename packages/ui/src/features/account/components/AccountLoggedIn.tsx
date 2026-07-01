@@ -42,6 +42,8 @@ export interface AccountLoggedInProps {
   achievements: UserAchievements;
   /** Called when user taps Edit Profile — store action */
   didTapEditProfile?: () => void;
+  /** Called when user taps Delete Account — store action */
+  didTapDeleteAccount?: () => void;
   /** Called when user taps Logout — store action */
   didTapLogout?: () => void;
   /** Called when user taps Settings — store action */
@@ -57,6 +59,7 @@ export const AccountLoggedIn = memo(function AccountLoggedIn({
   profile,
   achievements,
   didTapEditProfile,
+  didTapDeleteAccount,
   didTapLogout,
   didTapSettingsButton,
   testID,
@@ -99,6 +102,7 @@ export const AccountLoggedIn = memo(function AccountLoggedIn({
             <ProfileCard
               profile={profile}
               onEditProfile={didTapEditProfile}
+              onDeleteAccount={didTapDeleteAccount}
               onLogout={didTapLogout}
             />
           </View>

@@ -86,13 +86,6 @@ describe('EditProfileView', () => {
     expect(queryByText('Change Password')).toBeNull();
   });
 
-  it('displays Delete Account button', () => {
-    const { getByText } = renderWithTheme(
-      <EditProfileView {...defaultProps} />
-    );
-    expect(getByText('Delete Account')).toBeTruthy();
-  });
-
   it('displays error message when provided', () => {
     const { getByText } = renderWithTheme(
       <EditProfileView {...defaultProps} error="Something went wrong" />
@@ -117,12 +110,10 @@ describe('EditProfileView', () => {
       didDismiss: () => {},
       didChangeEmail: async () => true,
       didChangePassword: async () => true,
-      didDeleteAccount: async () => true,
     };
     expect(props.didDismiss).toBeDefined();
     expect(props.didChangeEmail).toBeDefined();
     expect(props.didChangePassword).toBeDefined();
-    expect(props.didDeleteAccount).toBeDefined();
   });
 
   it('renders input fields for email change', () => {

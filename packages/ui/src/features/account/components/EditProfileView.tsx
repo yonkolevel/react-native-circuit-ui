@@ -1,20 +1,19 @@
 /**
  * EditProfileView — Matches EditProfileView.swift
  *
- * Modal for editing profile: change email, change password, delete account.
+ * Modal for editing profile: change email and change password.
  *
  * Architecture: ALL actions come from the store. No local callbacks.
- * Action names match Swift: didChangeEmail, didChangePassword, didDeleteAccount.
+ * Action names match Swift: didChangeEmail, didChangePassword.
  *
  * iOS Reference:
  * - Modal with close button
  * - Profile header at top
  * - Change Email section (if not Apple auth)
  * - Change Password section (if not Apple auth)
- * - Delete Account section at bottom
  */
 import { memo, useState } from 'react';
-import { View, StyleSheet, TextInput, Alert } from 'react-native';
+import { View, StyleSheet, TextInput } from 'react-native';
 import { Text } from '../../../components/Text';
 import { Button } from '../../../components/Button';
 import { Modal } from '../../../components/Modal';
@@ -43,8 +42,6 @@ export interface EditProfileViewProps {
     oldPassword: string,
     newPassword: string
   ) => Promise<boolean>;
-  /** Called when user requests account deletion — store action */
-  didDeleteAccount?: () => Promise<boolean>;
   /** Called when modal closes — store action */
   didDismiss: () => void;
   /** Test ID for testing */
@@ -60,7 +57,6 @@ export const EditProfileView = memo(function EditProfileView({
   successMessage,
   didChangeEmail,
   didChangePassword,
-  didDeleteAccount,
   didDismiss,
   testID,
 }: EditProfileViewProps) {
@@ -76,7 +72,6 @@ export const EditProfileView = memo(function EditProfileView({
         successMessage={successMessage}
         didChangeEmail={didChangeEmail}
         didChangePassword={didChangePassword}
-        didDeleteAccount={didDeleteAccount}
         didDismiss={didDismiss}
         testID={testID}
       />
@@ -93,7 +88,6 @@ function EditProfileViewContent({
   successMessage,
   didChangeEmail,
   didChangePassword,
-  didDeleteAccount,
   didDismiss,
   testID,
 }: EditProfileViewProps) {
@@ -140,25 +134,6 @@ function EditProfileViewContent({
     await didChangePassword(oldPassword, newPassword);
     setOldPassword('');
     setNewPassword('');
-  };
-
-  const handleDeleteAccount = () => {
-    Alert.alert(
-      'Delete Account',
-      'Deleting your account will result in the permanent loss of your learning progress and trophies! Are you sure you want to delete your account?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete Account',
-          style: 'destructive',
-          onPress: async () => {
-            if (didDeleteAccount) {
-              await didDeleteAccount();
-            }
-          },
-        },
-      ]
-    );
   };
 
   const canSubmitEmail = validateEmail() && !isLoading;
@@ -258,15 +233,6 @@ function EditProfileViewContent({
           </View>
         )}
 
-        {/* Delete Account Section */}
-        <View style={styles.deleteSection}>
-          <Button
-            variant="outline"
-            label="Delete Account"
-            onPress={handleDeleteAccount}
-            disabled={isLoading}
-          />
-        </View>
       </View>
     </Modal>
   );
@@ -339,12 +305,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: makeSpacing(3),
   },
-  deleteSection: {
-    marginTop: 'auto',
-    paddingTop: makeSpacing(4),
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.2)',
-  },
+
 });
 
 const labeledInputStyles = StyleSheet.create({
