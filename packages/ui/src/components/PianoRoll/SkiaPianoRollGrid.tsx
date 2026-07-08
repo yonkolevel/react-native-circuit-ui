@@ -54,6 +54,20 @@ const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
 const MELODIC_PITCH_COUNT = 24;
 
+// Tap and drag share one boundary: a touch shorter than this is a tap
+// (add/delete), a hold this long becomes a drag. If the windows diverge,
+// touches falling between them are silently dropped.
+const DRAG_HOLD_MS = 250;
+
+// Optional peer dep — if present at runtime the require() succeeds,
+// otherwise haptics are a no-op (same pattern as whats-new/utils/haptics).
+let Haptics: any = null;
+try {
+  Haptics = require('expo-haptics');
+} catch {
+  // expo-haptics not installed — haptics are optional
+}
+
 const NOTE_NAMES = [
   'C',
   'C#',
@@ -336,12 +350,6 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
         const pitchIdx = totalPitches - 1 - rowIdx;
         if (pitchIdx >= 0 && pitchIdx < totalPitches) {
           const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
-          // Debug: log drum note mapping
-          if (isDrum) {
-            console.log(
-              `[DrumDebug] Tap row=${rowIdx}, pitchIdx=${pitchIdx}, noteNumber=${noteNumber}, sample=${(samples ?? [])[pitchIdx]?.name ?? 'N/A'}`
-            );
-          }
           onGridTap(noteNumber, position);
         }
       }
@@ -368,6 +376,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
         return;
       }
       setActiveNoteIdx(hit.idx);
+      // Confirm entering drag mode so a hold-then-move feels intentional.
+      Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle.Light);
       const note = notes[hit.idx]!;
       dragState.current = {
         type: hit.isResizeEdge ? 'resize' : 'move',
@@ -446,14 +456,14 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 
   // --- Gestures (UI thread → scheduleOnRN for callbacks) ---
   const tapGesture = Gesture.Tap()
-    .maxDuration(200)
+    .maxDuration(DRAG_HOLD_MS)
     .onEnd((e) => {
       'worklet';
       scheduleOnRN(handleTap, e.x, e.y);
     });
 
   const panGesture = Gesture.Pan()
-    .activateAfterLongPress(150)
+    .activateAfterLongPress(DRAG_HOLD_MS)
     .onStart((e) => {
       'worklet';
       scheduleOnRN(handleDragStart, e.x, e.y);
