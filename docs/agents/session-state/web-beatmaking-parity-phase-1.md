@@ -11,6 +11,7 @@ Work completed:
 - ✅ Rewired native `SkiaPianoRollGrid.tsx` and web `SkiaPianoRollGrid.web.tsx` to call the shared math for existing behavior.
 - ✅ Added unit coverage in `packages/ui/src/__tests__/piano-roll-math.test.ts`.
 - ✅ Ran targeted tests, changed-file ESLint, and build typecheck.
+- ✅ Review tweak: made native/web grid separators slightly more visible using neutral Midicircuit white-alpha lines after checking SwiftUI's original black grid stroke.
 
 Work remaining:
 - ⬜ Fix unrelated `AccountLoggedIn` snapshots or update them in a separate account UI task; full unit suite currently fails only there.

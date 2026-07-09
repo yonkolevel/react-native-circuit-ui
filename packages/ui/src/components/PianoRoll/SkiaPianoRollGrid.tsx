@@ -60,6 +60,12 @@ const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
 const MELODIC_PITCH_COUNT = 24;
 
+// SwiftUI uses black grid strokes, but the RN grid has black rows; these keep
+// the same neutral feel while making row/step boundaries readable on web.
+const GRID_LINE_COLOR = 'rgba(247,247,247,0.10)';
+const GRID_BEAT_COLOR = 'rgba(247,247,247,0.16)';
+const GRID_BAR_COLOR = 'rgba(247,247,247,0.30)';
+
 // Tap and drag share one boundary: a touch shorter than this is a tap
 // (add/delete), a hold this long becomes a drag. If the windows diverge,
 // touches falling between them are silently dropped.
@@ -537,7 +543,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                 {/* Grid lines — single path, one draw call */}
                 <SkiaPath
                   path={gridPath}
-                  color="rgba(255,255,255,0.06)"
+                  color={GRID_LINE_COLOR}
                   style="stroke"
                   strokeWidth={0.5}
                 />
@@ -550,7 +556,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                       key={`beat${i}`}
                       p1={vec(i * 4 * stepWidth, 0)}
                       p2={vec(i * 4 * stepWidth, gridHeight)}
-                      color="rgba(255,255,255,0.12)"
+                      color={GRID_BEAT_COLOR}
                       strokeWidth={1}
                     />
                   )
@@ -564,7 +570,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                       key={`bar${i}`}
                       p1={vec(i * 16 * stepWidth, 0)}
                       p2={vec(i * 16 * stepWidth, gridHeight)}
-                      color="rgba(255,255,255,0.25)"
+                      color={GRID_BAR_COLOR}
                       strokeWidth={1.5}
                     />
                   )

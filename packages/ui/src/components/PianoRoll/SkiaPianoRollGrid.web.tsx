@@ -30,6 +30,12 @@ const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
 const MELODIC_PITCH_COUNT = 24;
 
+// SwiftUI uses black grid strokes, but the RN grid has black rows; these keep
+// the same neutral feel while making row/step boundaries readable on web.
+const GRID_LINE_COLOR = 'rgba(247,247,247,0.10)';
+const GRID_BEAT_COLOR = 'rgba(247,247,247,0.16)';
+const GRID_BAR_COLOR = 'rgba(247,247,247,0.30)';
+
 const NOTE_NAMES = [
   'C',
   'C#',
@@ -307,7 +313,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                     backgroundColor:
                       rowIdx % 2 === 0 ? colors.mcBlack : colors.mcBlack2,
                     borderBottomWidth: 0.5,
-                    borderBottomColor: 'rgba(255,255,255,0.06)',
+                    borderBottomColor: GRID_LINE_COLOR,
                   }}
                 />
               ))}
@@ -326,10 +332,10 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                       width: isBar ? 1.5 : isBeat ? 1 : 0.5,
                       height: gridHeight,
                       backgroundColor: isBar
-                        ? 'rgba(255,255,255,0.25)'
+                        ? GRID_BAR_COLOR
                         : isBeat
-                          ? 'rgba(255,255,255,0.12)'
-                          : 'rgba(255,255,255,0.04)',
+                          ? GRID_BEAT_COLOR
+                          : GRID_LINE_COLOR,
                     }}
                   />
                 );
@@ -345,7 +351,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                     top: i * effectiveRowHeight,
                     width: gridWidth,
                     height: 0.5,
-                    backgroundColor: 'rgba(255,255,255,0.06)',
+                    backgroundColor: GRID_LINE_COLOR,
                   }}
                 />
               ))}
