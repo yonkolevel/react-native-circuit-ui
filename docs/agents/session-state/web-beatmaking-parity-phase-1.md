@@ -1,18 +1,22 @@
-## Session state: Web beatmaking parity phase 1
+## Session state: YON-301 web beatmaking parity
 
-Branch: main
+Branch: ricardo/yon-301-web-beatmaking-parity-piano-roll
 Last session: 2026-07-09
-Depth: small
+Depth: medium
 Work completed:
-- ✅ Resolved intent from `docs/web-beatmaking-parity-plan.md` phase 1: fix web piano-roll tap placement bug.
-- ✅ Added regression coverage for React Native Web mouse events missing `locationX`.
-- ✅ Updated `SkiaPianoRollGrid.web.tsx` to derive grid x from DOM coordinates before falling back to `locationX`.
-- ✅ Ran targeted Jest, build typecheck, and changed-file ESLint.
+- ✅ Resolved intent from Linear YON-301 and `Midicircuit/docs/web-beatmaking-parity-plan.md`.
+- ✅ Moved YON-301 to In Progress and created the Circuit UI branch.
+- ✅ Phase 1 was already present on `main`: web grid taps use DOM coordinates when RN Web omits `locationX`, with regression coverage.
+- ✅ Phase 2 shared native/web piano-roll tap, hit-test, move, and resize math in `packages/ui/src/components/PianoRoll/pianoRollMath.ts`.
+- ✅ Rewired native `SkiaPianoRollGrid.tsx` and web `SkiaPianoRollGrid.web.tsx` to call the shared math for existing behavior.
+- ✅ Added unit coverage in `packages/ui/src/__tests__/piano-roll-math.test.ts`.
+- ✅ Ran targeted tests, changed-file ESLint, and build typecheck.
 
 Work remaining:
-- ⬜ Operator approval to advance to Review.
-- ⬜ Manual PR-preview QA: click empty cell at bar 2 / C4, delete same note, zoom + scroll then place note.
-- ⬜ Phase 2: extract shared `pianoRollMath.ts` before implementing move/resize parity.
+- ⬜ Fix unrelated `AccountLoggedIn` snapshots or update them in a separate account UI task; full unit suite currently fails only there.
+- ⬜ Manual PR-preview QA for phase 1: click empty cell at bar 2 / C4, delete same note, zoom + scroll then place note.
+- ⬜ Phase 3: web pointer-event overlay for move/resize/add/delete/drag preview using `pianoRollMath.ts`.
+- ⬜ Phase 4: audit other `.web.tsx` forks and audio flow.
 
 PR: none
 Blockers: none

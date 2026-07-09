@@ -24,6 +24,7 @@ import type {
   InstrumentType,
   Sample,
 } from '../../features/playground/types';
+import { getGridPointNoteTarget } from './pianoRollMath';
 
 const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
@@ -198,19 +199,41 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     [isDrum, totalPitches, samples, basePitch]
   );
 
+  const pianoRollMathContext = useMemo(
+    () => ({
+      samples,
+      isDrum,
+      basePitch,
+      totalPitches,
+      beatWidth,
+      stepWidth,
+      rowHeight: effectiveRowHeight,
+      pitchToMidi,
+    }),
+    [
+      samples,
+      isDrum,
+      basePitch,
+      totalPitches,
+      beatWidth,
+      stepWidth,
+      effectiveRowHeight,
+      pitchToMidi,
+    ]
+  );
+
   // ── Grid tap handler ──────────────────────────────────────────────────
   const handleGridTap = useCallback(
     (rowIdx: number, locationX: number) => {
       if (!onGridTap) return;
-      const step = Math.floor(locationX / stepWidth);
-      const position = step * 0.25;
-      const pitchIdx = totalPitches - 1 - rowIdx;
-      if (pitchIdx >= 0 && pitchIdx < totalPitches) {
-        const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
-        onGridTap(noteNumber, position);
-      }
+      const target = getGridPointNoteTarget(
+        locationX,
+        rowIdx * effectiveRowHeight,
+        pianoRollMathContext
+      );
+      if (target) onGridTap(target.noteNumber, target.position);
     },
-    [onGridTap, stepWidth, totalPitches, pitchToMidi]
+    [onGridTap, effectiveRowHeight, pianoRollMathContext]
   );
 
   return (

@@ -49,6 +49,12 @@ import type {
   InstrumentType,
   Sample,
 } from '../../features/playground/types';
+import {
+  getGridPointNoteTarget,
+  getMovedNoteTarget,
+  getResizedNoteDuration,
+  hitTestPianoRollNote,
+} from './pianoRollMath';
 
 const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
@@ -246,66 +252,33 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     [isDrum, totalPitches, samples, basePitch]
   );
 
-  // --- Note hit testing ---
-  // Expanded touch target: 12px padding around the visual note rect.
-  // Resize handle zone: rightmost 20px (or half the note, whichever is smaller).
-  const hitTestNote = useCallback(
-    (x: number, y: number): { idx: number; isResizeEdge: boolean } | null => {
-      const TOUCH_PADDING = 12;
-      const MIN_RESIZE_ZONE = 20;
-      let bestIdx = -1;
-      let bestDist = Infinity;
-      let bestIsResize = false;
-
-      for (let idx = notes.length - 1; idx >= 0; idx--) {
-        const note = notes[idx]!;
-        let pitchIdx: number;
-        if (isDrum) {
-          const si = (samples ?? []).findIndex(
-            (s) => s.noteNumber === note.noteNumber
-          );
-          pitchIdx = si >= 0 ? si : 0;
-        } else {
-          pitchIdx = note.noteNumber - basePitch;
-        }
-        const rowIdx = totalPitches - 1 - pitchIdx;
-        const noteX = note.position * beatWidth;
-        const noteY = rowIdx * effectiveRowHeight + 1;
-        const noteW = Math.max(note.duration * beatWidth - 1, stepWidth);
-        const noteH = effectiveRowHeight - 2;
-
-        // Expanded hit area
-        if (
-          x >= noteX - TOUCH_PADDING &&
-          x <= noteX + noteW + TOUCH_PADDING &&
-          y >= noteY - TOUCH_PADDING &&
-          y <= noteY + noteH + TOUCH_PADDING
-        ) {
-          // Distance to note center — pick the closest note if overlapping
-          const cx = noteX + noteW / 2;
-          const cy = noteY + noteH / 2;
-          const dist = Math.abs(x - cx) + Math.abs(y - cy);
-          if (dist < bestDist) {
-            bestDist = dist;
-            bestIdx = idx;
-            const resizeZone = Math.min(MIN_RESIZE_ZONE, noteW / 2);
-            bestIsResize = x >= noteX + noteW - resizeZone;
-          }
-        }
-      }
-
-      return bestIdx >= 0 ? { idx: bestIdx, isResizeEdge: bestIsResize } : null;
-    },
-    [
-      notes,
-      isDrum,
+  const pianoRollMathContext = useMemo(
+    () => ({
       samples,
+      isDrum,
       basePitch,
       totalPitches,
       beatWidth,
-      effectiveRowHeight,
       stepWidth,
+      rowHeight: effectiveRowHeight,
+      pitchToMidi,
+    }),
+    [
+      samples,
+      isDrum,
+      basePitch,
+      totalPitches,
+      beatWidth,
+      stepWidth,
+      effectiveRowHeight,
+      pitchToMidi,
     ]
+  );
+
+  const hitTestNote = useCallback(
+    (x: number, y: number) =>
+      hitTestPianoRollNote(notes, x, y, pianoRollMathContext),
+    [notes, pianoRollMathContext]
   );
 
   // --- Gesture state ---
@@ -344,26 +317,11 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       if (hit) {
         onNotePress?.(hit.idx);
       } else if (onGridTap) {
-        const step = Math.floor(x / stepWidth);
-        const position = step * 0.25;
-        const rowIdx = Math.floor(y / effectiveRowHeight);
-        const pitchIdx = totalPitches - 1 - rowIdx;
-        if (pitchIdx >= 0 && pitchIdx < totalPitches) {
-          const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
-          onGridTap(noteNumber, position);
-        }
+        const target = getGridPointNoteTarget(x, y, pianoRollMathContext);
+        if (target) onGridTap(target.noteNumber, target.position);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- isDrum/samples are stable or intentionally stale
-    [
-      hitTestNote,
-      onNotePress,
-      onGridTap,
-      stepWidth,
-      effectiveRowHeight,
-      totalPitches,
-      pitchToMidi,
-    ]
+    [hitTestNote, onNotePress, onGridTap, pianoRollMathContext]
   );
 
   const handleDragStart = useCallback(
@@ -414,27 +372,28 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       const ds = dragState.current;
       if (!ds) return;
       const dx = x - ds.startX;
-      const dy = y - ds.startY;
 
       if (ds.type === 'resize') {
-        const newWidth = ds.origDuration * beatWidth + dx;
-        const steps = Math.max(1, Math.round(newWidth / stepWidth));
-        onNoteResize?.(ds.noteIdx, steps * 0.25);
-      } else {
-        const stepsDx = Math.round(dx / stepWidth);
-        const rowsDy = Math.round(dy / effectiveRowHeight);
-        const newPosition = Math.max(0, ds.origPosition + stepsDx * 0.25);
-        const newRowIdx = Math.floor(ds.startY / effectiveRowHeight) + rowsDy;
-        const newPitchIdx = Math.max(
-          0,
-          Math.min(totalPitches - 1, totalPitches - 1 - newRowIdx)
+        onNoteResize?.(
+          ds.noteIdx,
+          getResizedNoteDuration(ds.origDuration, dx, pianoRollMathContext)
         );
-        const newNoteNumber = pitchToMidi[newPitchIdx] ?? newPitchIdx;
+      } else {
+        const target = getMovedNoteTarget(
+          {
+            startX: ds.startX,
+            startY: ds.startY,
+            endX: x,
+            endY: y,
+            originalPosition: ds.origPosition,
+          },
+          pianoRollMathContext
+        );
         if (
-          newPosition !== ds.origPosition ||
-          newNoteNumber !== ds.origNoteNumber
+          target.position !== ds.origPosition ||
+          target.noteNumber !== ds.origNoteNumber
         ) {
-          onNoteMove?.(ds.noteIdx, newPosition, newNoteNumber);
+          onNoteMove?.(ds.noteIdx, target.position, target.noteNumber);
         }
       }
       dragState.current = null;
@@ -443,15 +402,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       setActiveNoteIdx(-1);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Reanimated SharedValues are stable refs
-    [
-      beatWidth,
-      stepWidth,
-      effectiveRowHeight,
-      totalPitches,
-      pitchToMidi,
-      onNoteResize,
-      onNoteMove,
-    ]
+    [pianoRollMathContext, onNoteResize, onNoteMove]
   );
 
   // --- Gestures (UI thread → scheduleOnRN for callbacks) ---
