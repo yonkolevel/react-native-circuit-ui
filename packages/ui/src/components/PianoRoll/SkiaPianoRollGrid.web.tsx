@@ -47,6 +47,35 @@ const NOTE_NAMES = [
 const getNoteName = (pitch: number): string =>
   `${NOTE_NAMES[pitch % 12]}${Math.floor(pitch / 12) + 1}`;
 
+type WebGridTapEvent = {
+  nativeEvent?: {
+    locationX?: number;
+    offsetX?: number;
+    clientX?: number;
+    pageX?: number;
+  };
+  currentTarget?: {
+    getBoundingClientRect?: () => { left: number };
+  };
+};
+
+export const getWebGridTapX = (event: WebGridTapEvent): number => {
+  const nativeEvent = event.nativeEvent ?? {};
+  const rect = event.currentTarget?.getBoundingClientRect?.();
+
+  if (typeof nativeEvent.clientX === 'number' && rect) {
+    return nativeEvent.clientX - rect.left;
+  }
+
+  if (typeof nativeEvent.offsetX === 'number') return nativeEvent.offsetX;
+  if (typeof nativeEvent.locationX === 'number') return nativeEvent.locationX;
+  if (typeof nativeEvent.pageX === 'number' && rect) {
+    return nativeEvent.pageX - rect.left;
+  }
+
+  return 0;
+};
+
 export interface SkiaPianoRollGridProps {
   notes: ClipNote[];
   samples?: Sample[];
@@ -241,7 +270,10 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                 <Pressable
                   key={`row-${rowIdx}`}
                   onPress={(e) =>
-                    handleGridTap(rowIdx, e.nativeEvent.locationX)
+                    handleGridTap(
+                      rowIdx,
+                      getWebGridTapX(e as unknown as WebGridTapEvent)
+                    )
                   }
                   style={{
                     position: 'absolute',
