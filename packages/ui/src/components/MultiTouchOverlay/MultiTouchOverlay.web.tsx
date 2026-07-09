@@ -2,10 +2,11 @@
  * MultiTouchOverlay — Web implementation.
  *
  * Uses the browser Pointer Events API to support true multi-touch and
- * drag-to-play, matching the Android JS responder implementation.
+ * drag-to-play for touch/pen input, matching the Android JS responder implementation.
+ * Mouse input stays click-only so desktop pads do not auto-trigger while dragging.
  *
  * Each pointer (finger, stylus, mouse button) is tracked independently
- * by pointerId. Moving a pointer across cell boundaries fires release on
+ * by pointerId. Moving a touch/pen pointer across cell boundaries fires release on
  * the old cell and press on the new one, enabling slide-to-play.
  */
 import { memo, useRef, useCallback } from 'react';
@@ -18,6 +19,9 @@ export interface MultiTouchOverlayProps extends ViewProps {
   onPadPress?: (index: number) => void;
   onPadRelease?: (index: number) => void;
 }
+
+export const shouldDragPointer = ({ pointerType }: { pointerType?: string }) =>
+  pointerType !== 'mouse';
 
 export const MultiTouchOverlay = memo(function MultiTouchOverlay({
   rows = 1,
@@ -79,6 +83,8 @@ export const MultiTouchOverlay = memo(function MultiTouchOverlay({
   const handlePointerMove = useCallback(
     (e: any) => {
       const nev = e.nativeEvent as PointerEvent;
+      if (!shouldDragPointer(nev)) return;
+
       const target = nev.currentTarget as Element | null;
       let x = nev.offsetX;
       let y = nev.offsetY;
