@@ -9,7 +9,7 @@
  *   Z X C V  →  third visual row  (samples 4–7)
  *   1 2 3 4  →  bottom visual row (samples 0–3)
  */
-import { memo, useState, useCallback, useEffect } from 'react';
+import { memo, useState, useCallback, useEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { MultiTouchOverlay } from '../../../../components/MultiTouchOverlay';
@@ -89,7 +89,13 @@ export const DrumPadsView = memo(function DrumPadsView({
     [onPadRelease]
   );
 
-  // QWERTY keyboard input
+  // QWERTY keyboard input.
+  // Handlers go through a ref so the effect mounts once — depending on the
+  // handlers directly re-runs the effect whenever a parent re-render changes
+  // their identity, and the cleanup would release held pads mid-press.
+  const keyHandlersRef = useRef({ handleNativePress, handleNativeRelease });
+  keyHandlersRef.current = { handleNativePress, handleNativeRelease };
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const held = new Set<string>();
@@ -101,7 +107,7 @@ export const DrumPadsView = memo(function DrumPadsView({
       const visualIdx = DRUM_KEY_MAP[key];
       if (visualIdx === undefined) return;
       held.add(key);
-      handleNativePress(visualIdx);
+      keyHandlersRef.current.handleNativePress(visualIdx);
     };
 
     const onUp = (e: KeyboardEvent) => {
@@ -109,7 +115,7 @@ export const DrumPadsView = memo(function DrumPadsView({
       held.delete(key);
       const visualIdx = DRUM_KEY_MAP[key];
       if (visualIdx === undefined) return;
-      handleNativeRelease(visualIdx);
+      keyHandlersRef.current.handleNativeRelease(visualIdx);
     };
 
     window.addEventListener('keydown', onDown);
@@ -119,10 +125,10 @@ export const DrumPadsView = memo(function DrumPadsView({
       window.removeEventListener('keyup', onUp);
       held.forEach((key) => {
         const visualIdx = DRUM_KEY_MAP[key];
-        if (visualIdx !== undefined) handleNativeRelease(visualIdx);
+        if (visualIdx !== undefined) keyHandlersRef.current.handleNativeRelease(visualIdx);
       });
     };
-  }, [handleNativePress, handleNativeRelease]);
+  }, []);
 
   const sampleIndexFromGrid = (row: number, col: number) => (3 - row) * 4 + col;
 

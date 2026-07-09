@@ -5,7 +5,7 @@
  * Pressable instead of using MultiTouchOverlay. Removes the row-height
  * mismatch that makes the overlay hit areas wrong on web.
  */
-import { memo, useState, useCallback, useMemo, useEffect } from 'react';
+import { memo, useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { View, StyleSheet, Pressable, useWindowDimensions } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { palette } from '../../../../theme/colors';
@@ -117,7 +117,14 @@ export const PianoKeyboard = memo(function PianoKeyboard({
     [onNoteOff]
   );
 
-  // QWERTY keyboard input
+  // QWERTY keyboard input.
+  // Handlers go through a ref so the effect mounts once — depending on the
+  // handlers directly re-runs the effect whenever a parent re-render changes
+  // their identity (e.g. lesson validation reacting to a note), and the
+  // cleanup would release held keys mid-press, cutting the note off.
+  const keyHandlersRef = useRef({ handlePress, handleRelease, numberOfOctaves });
+  keyHandlersRef.current = { handlePress, handleRelease, numberOfOctaves };
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const held = new Set<string>();
@@ -127,17 +134,17 @@ export const PianoKeyboard = memo(function PianoKeyboard({
       const key = e.key.toLowerCase();
       if (held.has(key)) return; // suppress OS key-repeat
       const idx = QWERTY_KEY_MAP[key];
-      if (idx === undefined || idx >= numberOfOctaves * 12) return;
+      if (idx === undefined || idx >= keyHandlersRef.current.numberOfOctaves * 12) return;
       held.add(key);
-      handlePress(idx);
+      keyHandlersRef.current.handlePress(idx);
     };
 
     const onUp = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
       held.delete(key);
       const idx = QWERTY_KEY_MAP[key];
-      if (idx === undefined || idx >= numberOfOctaves * 12) return;
-      handleRelease(idx);
+      if (idx === undefined || idx >= keyHandlersRef.current.numberOfOctaves * 12) return;
+      keyHandlersRef.current.handleRelease(idx);
     };
 
     window.addEventListener('keydown', onDown);
@@ -148,10 +155,10 @@ export const PianoKeyboard = memo(function PianoKeyboard({
       // Release any held keys on unmount to prevent stuck notes
       held.forEach((key) => {
         const idx = QWERTY_KEY_MAP[key];
-        if (idx !== undefined) handleRelease(idx);
+        if (idx !== undefined) keyHandlersRef.current.handleRelease(idx);
       });
     };
-  }, [handlePress, handleRelease, numberOfOctaves]);
+  }, []);
 
   const renderOctave = (octave: number) => {
     const start = octave * 12;
