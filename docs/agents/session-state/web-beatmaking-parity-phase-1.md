@@ -4,20 +4,19 @@ Branch: ricardo/yon-301-web-beatmaking-parity-piano-roll
 Last session: 2026-07-09
 Depth: medium
 Work completed:
-- ✅ Resolved intent from Linear YON-301 and `Midicircuit/docs/web-beatmaking-parity-plan.md`.
-- ✅ Moved YON-301 to In Progress and created the Circuit UI branch.
-- ✅ Phase 1 was already present on `main`: web grid taps use DOM coordinates when RN Web omits `locationX`, with regression coverage.
-- ✅ Phase 2 shared native/web piano-roll tap, hit-test, move, and resize math in `packages/ui/src/components/PianoRoll/pianoRollMath.ts`.
-- ✅ Rewired native `SkiaPianoRollGrid.tsx` and web `SkiaPianoRollGrid.web.tsx` to call the shared math for existing behavior.
-- ✅ Added unit coverage in `packages/ui/src/__tests__/piano-roll-math.test.ts`.
-- ✅ Ran targeted tests, changed-file ESLint, and build typecheck.
-- ✅ Review tweak: made native/web grid separators slightly more visible using neutral Midicircuit white-alpha lines after checking SwiftUI's original black grid stroke.
+- ✅ Phase 1: web piano-roll taps use content-relative DOM coordinates.
+- ✅ Phase 2: native/web piano-roll add, hit-test, move, and resize math is shared in `pianoRollMath.ts`.
+- ✅ Phase 3: web pointer overlay supports add, delete, mouse/touch move, resize, pointer capture, and live drag preview.
+- ✅ Fixed web drum-pad release on click end, pointer loss, mouse leave, blur, visibility change, and unmount; this restores live-recording note finalization.
+- ✅ Fixed drum/piano QWERTY held-note cleanup on blur/visibility change and prevents unmatched or duplicate releases.
+- ✅ Added interaction regression tests and refreshed intentional ClipEditor grid snapshots.
+- ✅ Browser QA on local Expo web: pad press/release/leave, grid placement, delete, note move, resize, preview, QWERTY blur cleanup, transport, and live drum recording.
+- ✅ Focused tests, changed-file lint, workspace/build typechecks, and Expo web export pass.
 
 Work remaining:
-- ⬜ Fix unrelated `AccountLoggedIn` snapshots or update them in a separate account UI task; full unit suite currently fails only there.
-- ⬜ Manual PR-preview QA for phase 1: click empty cell at bar 2 / C4, delete same note, zoom + scroll then place note.
-- ⬜ Phase 3: web pointer-event overlay for move/resize/add/delete/drag preview using `pianoRollMath.ts`.
-- ⬜ Phase 4: audit other `.web.tsx` forks and audio flow.
+- ⬜ Physical touch-device check for the 250 ms hold gesture and touch scrolling feel.
+- ⬜ Optional touch pinch zoom and playhead alignment while horizontally scrolled.
+- ⬜ Separate pre-existing `AccountLoggedIn` snapshot drift (the only remaining Circuit UI unit-suite failure).
 
-PR: none
+PR: https://github.com/yonkolevel/midicircuit-rn/pull/13
 Blockers: none

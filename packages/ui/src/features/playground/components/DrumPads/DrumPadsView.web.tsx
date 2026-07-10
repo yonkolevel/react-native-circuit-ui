@@ -99,6 +99,18 @@ export const DrumPadsView = memo(function DrumPadsView({
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const held = new Set<string>();
+    const releaseHeld = () => {
+      held.forEach((key) => {
+        const visualIdx = DRUM_KEY_MAP[key];
+        if (visualIdx !== undefined) {
+          keyHandlersRef.current.handleNativeRelease(visualIdx);
+        }
+      });
+      held.clear();
+    };
+    const onVisibilityChange = () => {
+      if (document.hidden) releaseHeld();
+    };
 
     const onDown = (e: KeyboardEvent) => {
       if (isTypingTarget()) return;
@@ -112,21 +124,23 @@ export const DrumPadsView = memo(function DrumPadsView({
 
     const onUp = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
-      held.delete(key);
+      if (!held.delete(key)) return;
       const visualIdx = DRUM_KEY_MAP[key];
-      if (visualIdx === undefined) return;
-      keyHandlersRef.current.handleNativeRelease(visualIdx);
+      if (visualIdx !== undefined) {
+        keyHandlersRef.current.handleNativeRelease(visualIdx);
+      }
     };
 
     window.addEventListener('keydown', onDown);
     window.addEventListener('keyup', onUp);
+    window.addEventListener('blur', releaseHeld);
+    document.addEventListener('visibilitychange', onVisibilityChange);
     return () => {
       window.removeEventListener('keydown', onDown);
       window.removeEventListener('keyup', onUp);
-      held.forEach((key) => {
-        const visualIdx = DRUM_KEY_MAP[key];
-        if (visualIdx !== undefined) keyHandlersRef.current.handleNativeRelease(visualIdx);
-      });
+      window.removeEventListener('blur', releaseHeld);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      releaseHeld();
     };
   }, []);
 
