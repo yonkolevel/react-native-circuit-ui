@@ -8,7 +8,15 @@
  * - Zoom controls, expand toggle
  * - Same row heights, colours, and sizing math as native
  */
-import { memo, useCallback, useMemo, useState, useEffect, useRef } from 'react';
+import {
+  Fragment,
+  memo,
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import {
   View,
   ScrollView,
@@ -16,6 +24,7 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
+import type { LayoutChangeEvent, ViewProps } from 'react-native';
 import { Text } from '../Text';
 import { Icon, Icons } from '../SFSymbol';
 import { useTheme, hexToRgba } from '../../theme';
@@ -24,10 +33,26 @@ import type {
   InstrumentType,
   Sample,
 } from '../../features/playground/types';
+import {
+  getGridPointNoteTarget,
+  getMovedNoteTarget,
+  getPianoRollNoteRect,
+  getResizedNoteDuration,
+  hitTestPianoRollNote,
+} from './pianoRollMath';
 
 const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
 const MELODIC_PITCH_COUNT = 24;
+
+// SwiftUI uses black grid strokes, but the RN grid has black rows; these keep
+// the same neutral feel while making row/step boundaries readable on web.
+const GRID_LINE_COLOR = 'rgba(247,247,247,0.10)';
+const GRID_BEAT_COLOR = 'rgba(247,247,247,0.16)';
+const GRID_BAR_COLOR = 'rgba(247,247,247,0.30)';
+
+const DRAG_THRESHOLD = 4;
+const TOUCH_DRAG_HOLD_MS = 250;
 
 const NOTE_NAMES = [
   'C',
@@ -59,6 +84,30 @@ type WebGridTapEvent = {
   };
 };
 
+type WebPointerEvent = {
+  nativeEvent: Pick<
+    PointerEvent,
+    'button' | 'clientX' | 'clientY' | 'pointerId' | 'pointerType'
+  >;
+  currentTarget: Element;
+  preventDefault?: () => void;
+};
+
+type WebKeyboardEvent = {
+  nativeEvent?: { key?: string; shiftKey?: boolean };
+  key?: string;
+  shiftKey?: boolean;
+  preventDefault?: () => void;
+};
+
+type WebPointerHandlers = {
+  onPointerDown: (event: WebPointerEvent) => void;
+  onPointerMove: (event: WebPointerEvent) => void;
+  onPointerUp: (event: WebPointerEvent) => void;
+  onPointerCancel: (event: WebPointerEvent) => void;
+  onLostPointerCapture: (event: WebPointerEvent) => void;
+};
+
 export const getWebGridTapX = (event: WebGridTapEvent): number => {
   const nativeEvent = event.nativeEvent ?? {};
   const rect = event.currentTarget?.getBoundingClientRect?.();
@@ -70,7 +119,11 @@ export const getWebGridTapX = (event: WebGridTapEvent): number => {
   if (typeof nativeEvent.offsetX === 'number') return nativeEvent.offsetX;
   if (typeof nativeEvent.locationX === 'number') return nativeEvent.locationX;
   if (typeof nativeEvent.pageX === 'number' && rect) {
-    return nativeEvent.pageX - rect.left;
+    return (
+      nativeEvent.pageX -
+      rect.left -
+      (typeof window === 'undefined' ? 0 : window.scrollX)
+    );
   }
 
   return 0;
@@ -119,8 +172,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   selectedPitchIndex,
   melodicMinPitch,
   onNotePress,
-  onNoteResize: _onNoteResize,
-  onNoteMove: _onNoteMove,
+  onNoteResize,
+  onNoteMove,
   onGridTap,
   onPitchLabelTap,
   onToggleExpand,
@@ -134,6 +187,28 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const { colors } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
   const containerRef = useRef<any>(null);
+  const pointerInteractionRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    noteIndex: number | null;
+    type: 'grid' | 'move' | 'resize';
+    dragging: boolean;
+    touchReady: boolean;
+    held: boolean;
+  } | null>(null);
+  const touchHoldTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [dragPreview, setDragPreview] = useState<{
+    noteIndex: number;
+    position: number;
+    noteNumber: number;
+    duration: number;
+  } | null>(null);
+  const [keyboardCursor, setKeyboardCursor] = useState({
+    pitchIndex: 0,
+    step: 0,
+  });
+  const [isKeyboardFocused, setIsKeyboardFocused] = useState(false);
 
   const isDrum = instrumentType === 'drum';
   const basePitch = isDrum ? 0 : (melodicMinPitch ?? DEFAULT_MELODIC_MIN_PITCH);
@@ -143,14 +218,14 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 
   // Measure container height for expanded mode
   const [containerH, setContainerH] = useState(0);
-  const onContainerLayout = useCallback((e: any) => {
+  const onContainerLayout = useCallback((e: LayoutChangeEvent) => {
     setContainerH(e.nativeEvent.layout.height);
   }, []);
 
   // Ctrl+scroll → zoom (trackpad pinch or mouse wheel with modifier)
   useEffect(() => {
     const el = containerRef.current;
-    if (!el) return;
+    if (!el?.addEventListener) return;
     const handleWheel = (ev: WheelEvent) => {
       const wheel = ev as WheelEvent & {
         ctrlKey?: boolean;
@@ -198,20 +273,309 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     [isDrum, totalPitches, samples, basePitch]
   );
 
-  // ── Grid tap handler ──────────────────────────────────────────────────
-  const handleGridTap = useCallback(
-    (rowIdx: number, locationX: number) => {
-      if (!onGridTap) return;
-      const step = Math.floor(locationX / stepWidth);
-      const position = step * 0.25;
-      const pitchIdx = totalPitches - 1 - rowIdx;
-      if (pitchIdx >= 0 && pitchIdx < totalPitches) {
-        const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
-        onGridTap(noteNumber, position);
+  const pianoRollMathContext = useMemo(
+    () => ({
+      samples,
+      isDrum,
+      basePitch,
+      totalPitches,
+      beatWidth,
+      stepWidth,
+      gridWidth,
+      rowHeight: effectiveRowHeight,
+      pitchToMidi,
+    }),
+    [
+      samples,
+      isDrum,
+      basePitch,
+      totalPitches,
+      beatWidth,
+      stepWidth,
+      gridWidth,
+      effectiveRowHeight,
+      pitchToMidi,
+    ]
+  );
+
+  const clearPointerInteraction = useCallback(() => {
+    if (touchHoldTimerRef.current) clearTimeout(touchHoldTimerRef.current);
+    touchHoldTimerRef.current = null;
+    pointerInteractionRef.current = null;
+    setDragPreview(null);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return clearPointerInteraction;
+    }
+    const handleVisibilityChange = () => {
+      if (document.hidden) clearPointerInteraction();
+    };
+    window.addEventListener('blur', clearPointerInteraction);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      window.removeEventListener('blur', clearPointerInteraction);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearPointerInteraction();
+    };
+  }, [clearPointerInteraction]);
+
+  const getPointerPoint = useCallback((e: WebPointerEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const nativeEvent = e.nativeEvent;
+    return {
+      x: getWebGridTapX(e as WebGridTapEvent),
+      y: nativeEvent.clientY - rect.top,
+    };
+  }, []);
+
+  const previewForPointer = useCallback(
+    (
+      interaction: NonNullable<typeof pointerInteractionRef.current>,
+      x: number,
+      y: number
+    ) => {
+      if (interaction.noteIndex == null) return null;
+      const note = notes[interaction.noteIndex];
+      if (!note) return null;
+
+      if (interaction.type === 'resize') {
+        return {
+          noteIndex: interaction.noteIndex,
+          position: note.position,
+          noteNumber: note.noteNumber,
+          duration: getResizedNoteDuration(
+            note.duration,
+            x - interaction.startX,
+            pianoRollMathContext,
+            note.position
+          ),
+        };
+      }
+
+      const moved = getMovedNoteTarget(
+        {
+          startX: interaction.startX,
+          startY: interaction.startY,
+          endX: x,
+          endY: y,
+          originalPosition: note.position,
+          originalDuration: note.duration,
+          originalNoteNumber: note.noteNumber,
+        },
+        pianoRollMathContext
+      );
+      return {
+        noteIndex: interaction.noteIndex,
+        position: moved.position,
+        noteNumber: moved.noteNumber,
+        duration: note.duration,
+      };
+    },
+    [notes, pianoRollMathContext]
+  );
+
+  const handlePointerDown = useCallback(
+    (e: WebPointerEvent) => {
+      const nativeEvent = e.nativeEvent;
+      const activeInteraction = pointerInteractionRef.current;
+      if (
+        activeInteraction &&
+        activeInteraction.pointerId !== nativeEvent.pointerId
+      ) {
+        return;
+      }
+      if (nativeEvent.button != null && nativeEvent.button !== 0) return;
+      const { x, y } = getPointerPoint(e);
+      const hit = hitTestPianoRollNote(notes, x, y, pianoRollMathContext);
+      const interaction = {
+        pointerId: nativeEvent.pointerId,
+        startX: x,
+        startY: y,
+        noteIndex: hit?.idx ?? null,
+        type: hit
+          ? hit.isResizeEdge
+            ? ('resize' as const)
+            : ('move' as const)
+          : ('grid' as const),
+        dragging: false,
+        touchReady: nativeEvent.pointerType !== 'touch',
+        held: false,
+      };
+      pointerInteractionRef.current = interaction;
+      e.currentTarget.setPointerCapture?.(nativeEvent.pointerId);
+      if (hit && nativeEvent.pointerType === 'touch') e.preventDefault?.();
+
+      if (!interaction.touchReady) {
+        touchHoldTimerRef.current = setTimeout(() => {
+          if (
+            pointerInteractionRef.current?.pointerId === interaction.pointerId
+          ) {
+            pointerInteractionRef.current.touchReady = true;
+            pointerInteractionRef.current.held = true;
+          }
+        }, TOUCH_DRAG_HOLD_MS);
       }
     },
-    [onGridTap, stepWidth, totalPitches, pitchToMidi]
+    [getPointerPoint, notes, pianoRollMathContext]
   );
+
+  const handlePointerMove = useCallback(
+    (e: WebPointerEvent) => {
+      const nativeEvent = e.nativeEvent;
+      const interaction = pointerInteractionRef.current;
+      if (!interaction || interaction.pointerId !== nativeEvent.pointerId)
+        return;
+      const { x, y } = getPointerPoint(e);
+      const distance = Math.hypot(
+        x - interaction.startX,
+        y - interaction.startY
+      );
+      if (!interaction.touchReady) {
+        if (distance >= DRAG_THRESHOLD) clearPointerInteraction();
+        return;
+      }
+      if (interaction.noteIndex == null) return;
+      if (!interaction.dragging && distance < DRAG_THRESHOLD) return;
+
+      interaction.dragging = true;
+      e.preventDefault?.();
+      setDragPreview(previewForPointer(interaction, x, y));
+    },
+    [clearPointerInteraction, getPointerPoint, previewForPointer]
+  );
+
+  const handlePointerUp = useCallback(
+    (e: WebPointerEvent) => {
+      const nativeEvent = e.nativeEvent;
+      const interaction = pointerInteractionRef.current;
+      if (!interaction || interaction.pointerId !== nativeEvent.pointerId)
+        return;
+      const { x, y } = getPointerPoint(e);
+      const distance = Math.hypot(
+        x - interaction.startX,
+        y - interaction.startY
+      );
+
+      if (interaction.dragging && interaction.noteIndex != null) {
+        const preview = previewForPointer(interaction, x, y);
+        const note = notes[interaction.noteIndex];
+        if (preview && note) {
+          if (interaction.type === 'resize') {
+            if (preview.duration !== note.duration) {
+              onNoteResize?.(interaction.noteIndex, preview.duration);
+            }
+          } else if (
+            preview.position !== note.position ||
+            preview.noteNumber !== note.noteNumber
+          ) {
+            onNoteMove?.(
+              interaction.noteIndex,
+              preview.position,
+              preview.noteNumber
+            );
+          }
+        }
+      } else if (
+        !interaction.held &&
+        interaction.noteIndex != null &&
+        distance < DRAG_THRESHOLD
+      ) {
+        onNotePress?.(interaction.noteIndex);
+      } else if (
+        !interaction.held &&
+        interaction.noteIndex == null &&
+        distance < DRAG_THRESHOLD
+      ) {
+        const target = getGridPointNoteTarget(x, y, pianoRollMathContext);
+        if (target) onGridTap?.(target.noteNumber, target.position);
+      }
+
+      clearPointerInteraction();
+    },
+    [
+      clearPointerInteraction,
+      getPointerPoint,
+      notes,
+      onGridTap,
+      onNoteMove,
+      onNotePress,
+      onNoteResize,
+      pianoRollMathContext,
+      previewForPointer,
+    ]
+  );
+
+  const handlePointerTermination = useCallback(
+    (e: WebPointerEvent) => {
+      if (
+        pointerInteractionRef.current?.pointerId === e.nativeEvent.pointerId
+      ) {
+        clearPointerInteraction();
+      }
+    },
+    [clearPointerInteraction]
+  );
+
+  const webPointerHandlers: WebPointerHandlers = {
+    onPointerDown: handlePointerDown,
+    onPointerMove: handlePointerMove,
+    onPointerUp: handlePointerUp,
+    onPointerCancel: handlePointerTermination,
+    onLostPointerCapture: handlePointerTermination,
+  };
+
+  const moveKeyboardCursor = useCallback(
+    (stepDelta: number, pitchDelta: number) => {
+      setKeyboardCursor((cursor) => ({
+        step: Math.max(0, Math.min(totalSteps - 1, cursor.step + stepDelta)),
+        pitchIndex: Math.max(
+          0,
+          Math.min(totalPitches - 1, cursor.pitchIndex + pitchDelta)
+        ),
+      }));
+    },
+    [totalPitches, totalSteps]
+  );
+
+  const addNoteAtKeyboardCursor = useCallback(() => {
+    const noteNumber =
+      pitchToMidi[keyboardCursor.pitchIndex] ?? keyboardCursor.pitchIndex;
+    onGridTap?.(noteNumber, keyboardCursor.step * 0.25);
+  }, [keyboardCursor, onGridTap, pitchToMidi]);
+
+  const handleGridKeyDown = useCallback(
+    (e: WebKeyboardEvent) => {
+      const key = e.nativeEvent?.key ?? e.key;
+      const movement =
+        key === 'ArrowLeft'
+          ? ([-1, 0] as const)
+          : key === 'ArrowRight'
+            ? ([1, 0] as const)
+            : key === 'ArrowUp'
+              ? ([0, 1] as const)
+              : key === 'ArrowDown'
+                ? ([0, -1] as const)
+                : null;
+      if (movement) {
+        e.preventDefault?.();
+        moveKeyboardCursor(movement[0], movement[1]);
+      } else if (key === 'Enter' || key === ' ') {
+        e.preventDefault?.();
+        addNoteAtKeyboardCursor();
+      }
+    },
+    [addNoteAtKeyboardCursor, moveKeyboardCursor]
+  );
+
+  const webGridHandlers = {
+    ...webPointerHandlers,
+    onKeyDown: handleGridKeyDown,
+    onFocus: () => setIsKeyboardFocused(true),
+    onBlur: () => setIsKeyboardFocused(false),
+    tabIndex: 0,
+  } as unknown as ViewProps;
 
   return (
     <View
@@ -232,6 +596,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                 <Pressable
                   key={pitchIdx}
                   onPress={() => onPitchLabelTap?.(pitchIdx)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Edit ${getPitchLabel(pitchIdx)} notes`}
                   style={[
                     styles.label,
                     {
@@ -265,16 +631,10 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
             style={styles.gridScroll}
           >
             <View style={{ width: gridWidth, height: gridHeight }}>
-              {/* Row backgrounds + tap targets */}
+              {/* Row backgrounds */}
               {Array.from({ length: totalPitches }, (_, rowIdx) => (
-                <Pressable
+                <View
                   key={`row-${rowIdx}`}
-                  onPress={(e) =>
-                    handleGridTap(
-                      rowIdx,
-                      getWebGridTapX(e as unknown as WebGridTapEvent)
-                    )
-                  }
                   style={{
                     position: 'absolute',
                     left: 0,
@@ -284,7 +644,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                     backgroundColor:
                       rowIdx % 2 === 0 ? colors.mcBlack : colors.mcBlack2,
                     borderBottomWidth: 0.5,
-                    borderBottomColor: 'rgba(255,255,255,0.06)',
+                    borderBottomColor: GRID_LINE_COLOR,
                   }}
                 />
               ))}
@@ -303,10 +663,10 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                       width: isBar ? 1.5 : isBeat ? 1 : 0.5,
                       height: gridHeight,
                       backgroundColor: isBar
-                        ? 'rgba(255,255,255,0.25)'
+                        ? GRID_BAR_COLOR
                         : isBeat
-                          ? 'rgba(255,255,255,0.12)'
-                          : 'rgba(255,255,255,0.04)',
+                          ? GRID_BEAT_COLOR
+                          : GRID_LINE_COLOR,
                     }}
                   />
                 );
@@ -322,77 +682,175 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                     top: i * effectiveRowHeight,
                     width: gridWidth,
                     height: 0.5,
-                    backgroundColor: 'rgba(255,255,255,0.06)',
+                    backgroundColor: GRID_LINE_COLOR,
                   }}
                 />
               ))}
 
               {/* Notes */}
               {notes.map((note, idx) => {
-                let pitchIdx: number;
-                if (isDrum) {
-                  const si = (samples ?? []).findIndex(
-                    (s) => s.noteNumber === note.noteNumber
-                  );
-                  pitchIdx = si >= 0 ? si : 0;
-                } else {
-                  pitchIdx = note.noteNumber - basePitch;
-                }
-                const rowIdx = totalPitches - 1 - pitchIdx;
-                const x = note.position * beatWidth;
-                const y = rowIdx * effectiveRowHeight + 1;
-                const w = Math.max(note.duration * beatWidth - 1, stepWidth);
-                const h = effectiveRowHeight - 2;
+                const preview =
+                  dragPreview?.noteIndex === idx ? dragPreview : null;
+                const displayedNote = preview
+                  ? {
+                      ...note,
+                      position: preview.position,
+                      noteNumber: preview.noteNumber,
+                      duration: preview.duration,
+                    }
+                  : note;
+                const rect = getPianoRollNoteRect(
+                  displayedNote,
+                  pianoRollMathContext
+                );
+                const originalRect = getPianoRollNoteRect(
+                  note,
+                  pianoRollMathContext
+                );
                 const noteColor = noteColors?.[note.noteNumber] ?? trackColor;
+                const pitchIndex = Math.max(
+                  0,
+                  pitchToMidi.indexOf(note.noteNumber)
+                );
+                const moveNote = (stepDelta: number, pitchDelta: number) => {
+                  const nextPitchIndex = Math.max(
+                    0,
+                    Math.min(totalPitches - 1, pitchIndex + pitchDelta)
+                  );
+                  const nextPosition = Math.max(
+                    0,
+                    Math.min(
+                      lengthInBeats - note.duration,
+                      note.position + stepDelta * 0.25
+                    )
+                  );
+                  onNoteMove?.(
+                    idx,
+                    nextPosition,
+                    pitchToMidi[nextPitchIndex] ?? note.noteNumber
+                  );
+                };
+                const resizeNote = (stepDelta: number) => {
+                  onNoteResize?.(
+                    idx,
+                    Math.max(
+                      0.25,
+                      Math.min(
+                        lengthInBeats - note.position,
+                        note.duration + stepDelta * 0.25
+                      )
+                    )
+                  );
+                };
+                const handleNoteKeyDown = (e: WebKeyboardEvent) => {
+                  const key = e.nativeEvent?.key ?? e.key;
+                  const shiftKey = e.nativeEvent?.shiftKey ?? e.shiftKey;
+                  if (shiftKey && key === 'ArrowLeft') resizeNote(-1);
+                  else if (shiftKey && key === 'ArrowRight') resizeNote(1);
+                  else if (key === 'ArrowLeft') moveNote(-1, 0);
+                  else if (key === 'ArrowRight') moveNote(1, 0);
+                  else if (key === 'ArrowUp') moveNote(0, 1);
+                  else if (key === 'ArrowDown') moveNote(0, -1);
+                  else return;
+                  e.preventDefault?.();
+                };
+                const noteKeyboardProps = {
+                  onKeyDown: handleNoteKeyDown,
+                } as unknown as ViewProps;
 
                 return (
-                  <Pressable
-                    key={`n${idx}`}
-                    onPress={() => onNotePress?.(idx)}
-                    style={{
-                      position: 'absolute',
-                      left: x,
-                      top: y,
-                      width: w,
-                      height: h,
-                      backgroundColor: noteColor,
-                      borderRadius: 3,
-                      opacity: 0.85,
-                      justifyContent: 'center',
-                      paddingHorizontal: 4,
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {/* Resize indicator */}
-                    <View
+                  <Fragment key={`n${idx}`}>
+                    {preview && (
+                      <View
+                        style={{
+                          position: 'absolute',
+                          left: originalRect.x,
+                          top: originalRect.y,
+                          width: originalRect.width,
+                          height: originalRect.height,
+                          backgroundColor: 'rgba(0,0,0,0.2)',
+                          borderRadius: 3,
+                        }}
+                      />
+                    )}
+                    <Pressable
+                      onPress={() => onNotePress?.(idx)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Delete note ${getNoteName(note.noteNumber)} at beat ${note.position}, duration ${note.duration}. Arrow keys move; Shift plus Left or Right resizes`}
+                      accessibilityHint="Press Enter to delete"
+                      {...noteKeyboardProps}
                       style={{
                         position: 'absolute',
-                        right: 2,
-                        top: 4,
-                        bottom: 4,
-                        width: 2,
-                        backgroundColor: 'rgba(0,0,0,0.3)',
-                        borderRadius: 1,
+                        left: rect.x,
+                        top: rect.y,
+                        width: rect.width,
+                        height: rect.height,
+                        backgroundColor: noteColor,
+                        borderRadius: 3,
+                        opacity: preview ? 1 : 0.85,
+                        justifyContent: 'center',
+                        paddingHorizontal: 4,
+                        overflow: 'hidden',
                       }}
-                    />
-                    {/* Note label */}
-                    {showNoteLabels && w > 18 && (
-                      <Text
-                        variant="extraSmall"
-                        color="rgba(0,0,0,0.6)"
-                        numberOfLines={1}
-                        style={{ fontSize: 9, fontWeight: '600' }}
-                      >
-                        {isDrum
-                          ? ((samples ?? [])
-                              .find((s) => s.noteNumber === note.noteNumber)
-                              ?.name?.slice(0, 6) ?? '')
-                          : getNoteName(note.noteNumber)}
-                      </Text>
-                    )}
-                  </Pressable>
+                    >
+                      {!preview && (
+                        <View
+                          style={{
+                            position: 'absolute',
+                            right: 2,
+                            top: 4,
+                            bottom: 4,
+                            width: 2,
+                            backgroundColor: 'rgba(0,0,0,0.3)',
+                            borderRadius: 1,
+                          }}
+                        />
+                      )}
+                      {showNoteLabels && !preview && rect.width > 18 && (
+                        <Text
+                          variant="extraSmall"
+                          color="rgba(0,0,0,0.6)"
+                          numberOfLines={1}
+                          style={{ fontSize: 9, fontWeight: '600' }}
+                        >
+                          {isDrum
+                            ? ((samples ?? [])
+                                .find((s) => s.noteNumber === note.noteNumber)
+                                ?.name?.slice(0, 6) ?? '')
+                            : getNoteName(note.noteNumber)}
+                        </Text>
+                      )}
+                    </Pressable>
+                  </Fragment>
                 );
               })}
+
+              {/* One interaction layer keeps pointer and keyboard editing in grid coordinates. */}
+              <View
+                style={StyleSheet.absoluteFill}
+                accessible
+                accessibilityRole="button"
+                accessibilityLabel={`Piano roll note grid, ${getPitchLabel(keyboardCursor.pitchIndex)} at beat ${keyboardCursor.step * 0.25}. Arrow keys move; Enter adds`}
+                accessibilityHint="Choose a pitch and beat, then add a note"
+                {...webGridHandlers}
+              >
+                {isKeyboardFocused && (
+                  <View
+                    pointerEvents="none"
+                    style={{
+                      position: 'absolute',
+                      left: keyboardCursor.step * stepWidth,
+                      top:
+                        (totalPitches - 1 - keyboardCursor.pitchIndex) *
+                        effectiveRowHeight,
+                      width: stepWidth,
+                      height: effectiveRowHeight,
+                      borderWidth: 2,
+                      borderColor: colors.mcOrange,
+                    }}
+                  />
+                )}
+              </View>
             </View>
           </ScrollView>
         </View>
@@ -401,14 +859,26 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       {/* Zoom controls */}
       {showControls && (
         <View style={styles.zoomControls} pointerEvents="box-none">
-          <Pressable onPress={onToggleExpand} style={styles.zoomBtn}>
+          <Pressable
+            onPress={onToggleExpand}
+            style={styles.zoomBtn}
+            accessibilityRole="button"
+            accessibilityLabel={
+              isExpanded ? 'Collapse piano roll' : 'Expand piano roll'
+            }
+          >
             <Icon
               icon={isExpanded ? Icons.collapse : Icons.expand}
               size={14}
               color="white"
             />
           </Pressable>
-          <Pressable onPress={onZoomIn} style={styles.zoomBtn}>
+          <Pressable
+            onPress={onZoomIn}
+            style={styles.zoomBtn}
+            accessibilityRole="button"
+            accessibilityLabel="Zoom in"
+          >
             <Icon icon={Icons.zoomIn} size={14} color="white" />
           </Pressable>
           <View style={styles.zoomLabel}>
@@ -416,7 +886,12 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
               {Math.round(zoomLevel * 100)}%
             </Text>
           </View>
-          <Pressable onPress={onZoomOut} style={styles.zoomBtn}>
+          <Pressable
+            onPress={onZoomOut}
+            style={styles.zoomBtn}
+            accessibilityRole="button"
+            accessibilityLabel="Zoom out"
+          >
             <Icon icon={Icons.zoomOut} size={14} color="white" />
           </Pressable>
         </View>

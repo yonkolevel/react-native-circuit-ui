@@ -9,7 +9,7 @@
  * by pointerId. Moving a touch/pen pointer across cell boundaries fires release on
  * the old cell and press on the new one, enabling slide-to-play.
  */
-import { memo, useRef, useCallback } from 'react';
+import { memo, useRef, useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import type { ViewProps, LayoutChangeEvent } from 'react-native';
 
@@ -23,6 +23,23 @@ export interface MultiTouchOverlayProps extends ViewProps {
 export const shouldDragPointer = ({ pointerType }: { pointerType?: string }) =>
   pointerType !== 'mouse';
 
+type WebPointerEvent = {
+  nativeEvent: Pick<
+    PointerEvent,
+    'clientX' | 'clientY' | 'pointerId' | 'pointerType'
+  >;
+  currentTarget: Element;
+};
+
+type WebPointerHandlers = {
+  onPointerDown: (event: WebPointerEvent) => void;
+  onPointerMove: (event: WebPointerEvent) => void;
+  onPointerUp: (event: WebPointerEvent) => void;
+  onPointerCancel: (event: WebPointerEvent) => void;
+  onPointerLeave: (event: WebPointerEvent) => void;
+  onLostPointerCapture: (event: WebPointerEvent) => void;
+};
+
 export const MultiTouchOverlay = memo(function MultiTouchOverlay({
   rows = 1,
   columns = 1,
@@ -34,6 +51,51 @@ export const MultiTouchOverlay = memo(function MultiTouchOverlay({
   const layoutRef = useRef({ width: 0, height: 0 });
   // Map from pointerId → current cell index
   const pointerCells = useRef<Map<number, number>>(new Map());
+  const callbacksRef = useRef({ onPadPress, onPadRelease });
+  callbacksRef.current = { onPadPress, onPadRelease };
+
+  const releasePointer = useCallback((pointerId: number) => {
+    const cell = pointerCells.current.get(pointerId);
+    if (cell === undefined) return;
+    pointerCells.current.delete(pointerId);
+    const stillHeld = Array.from(pointerCells.current.values()).includes(cell);
+    if (!stillHeld) callbacksRef.current.onPadRelease?.(cell);
+  }, []);
+
+  const pressPointer = useCallback((pointerId: number, cell: number) => {
+    const alreadyHeld = Array.from(pointerCells.current.values()).includes(
+      cell
+    );
+    pointerCells.current.set(pointerId, cell);
+    if (!alreadyHeld) callbacksRef.current.onPadPress?.(cell);
+  }, []);
+
+  const releaseAll = useCallback(() => {
+    const cells = new Set(pointerCells.current.values());
+    pointerCells.current.clear();
+    cells.forEach((cell) => callbacksRef.current.onPadRelease?.(cell));
+  }, []);
+
+  useEffect(() => {
+    if (
+      typeof window === 'undefined' ||
+      typeof document === 'undefined' ||
+      typeof window.addEventListener !== 'function' ||
+      typeof document.addEventListener !== 'function'
+    ) {
+      return releaseAll;
+    }
+    const handleVisibilityChange = () => {
+      if (document.hidden) releaseAll();
+    };
+    window.addEventListener('blur', releaseAll);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      window.removeEventListener('blur', releaseAll);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      releaseAll();
+    };
+  }, [releaseAll]);
 
   const onLayout = useCallback((e: LayoutChangeEvent) => {
     layoutRef.current = {
@@ -54,83 +116,71 @@ export const MultiTouchOverlay = memo(function MultiTouchOverlay({
     [columns, rows]
   );
 
-  const handlePointerDown = useCallback(
-    (e: any) => {
-      const nev = e.nativeEvent as PointerEvent;
-      // Capture so we receive move/up even after cursor leaves the element
-      (nev.currentTarget as Element | null)?.setPointerCapture?.(nev.pointerId);
-
-      // offsetX/Y is relative to the element's padding edge — exactly what we need
-      // Fall back to clientX - rect.left if offsetX is unavailable
-      const target = nev.currentTarget as Element | null;
-      let x = nev.offsetX;
-      let y = nev.offsetY;
-      if (x === undefined && target) {
-        const rect = target.getBoundingClientRect();
-        x = nev.clientX - rect.left;
-        y = nev.clientY - rect.top;
-      }
-
-      const cell = touchToCell(x, y);
-      if (cell !== null) {
-        pointerCells.current.set(nev.pointerId, cell);
-        onPadPress?.(cell);
-      }
+  const getPointerCell = useCallback(
+    (e: WebPointerEvent): number | null => {
+      const nev = e.nativeEvent;
+      const rect = e.currentTarget.getBoundingClientRect();
+      return touchToCell(nev.clientX - rect.left, nev.clientY - rect.top);
     },
-    [touchToCell, onPadPress]
+    [touchToCell]
+  );
+
+  const handlePointerDown = useCallback(
+    (e: WebPointerEvent) => {
+      const nev = e.nativeEvent;
+      e.currentTarget.setPointerCapture?.(nev.pointerId);
+
+      releasePointer(nev.pointerId);
+      const cell = getPointerCell(e);
+      if (cell !== null) pressPointer(nev.pointerId, cell);
+    },
+    [getPointerCell, pressPointer, releasePointer]
   );
 
   const handlePointerMove = useCallback(
-    (e: any) => {
-      const nev = e.nativeEvent as PointerEvent;
-      if (!shouldDragPointer(nev)) return;
-
-      const target = nev.currentTarget as Element | null;
-      let x = nev.offsetX;
-      let y = nev.offsetY;
-      if (x === undefined && target) {
-        const rect = target.getBoundingClientRect();
-        x = nev.clientX - rect.left;
-        y = nev.clientY - rect.top;
-      }
-
-      const newCell = touchToCell(x, y);
+    (e: WebPointerEvent) => {
+      const nev = e.nativeEvent;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const isOutside =
+        nev.clientX < rect.left ||
+        nev.clientX >= rect.right ||
+        nev.clientY < rect.top ||
+        nev.clientY >= rect.bottom;
+      const newCell = isOutside ? null : getPointerCell(e);
       const prevCell = pointerCells.current.get(nev.pointerId);
 
+      if (!shouldDragPointer(nev)) {
+        if (isOutside || newCell === null) releasePointer(nev.pointerId);
+        return;
+      }
+
       if (newCell !== prevCell) {
-        if (prevCell !== undefined) onPadRelease?.(prevCell);
-        if (newCell !== null) {
-          pointerCells.current.set(nev.pointerId, newCell);
-          onPadPress?.(newCell);
-        } else {
-          pointerCells.current.delete(nev.pointerId);
-        }
+        releasePointer(nev.pointerId);
+        if (newCell !== null) pressPointer(nev.pointerId, newCell);
       }
     },
-    [touchToCell, onPadPress, onPadRelease]
+    [getPointerCell, pressPointer, releasePointer]
   );
 
   const handlePointerUp = useCallback(
-    (e: any) => {
-      const nev = e.nativeEvent as PointerEvent;
-      const prevCell = pointerCells.current.get(nev.pointerId);
-      if (prevCell !== undefined) {
-        onPadRelease?.(prevCell);
-        pointerCells.current.delete(nev.pointerId);
-      }
-    },
-    [onPadRelease]
+    (e: WebPointerEvent) => releasePointer(e.nativeEvent.pointerId),
+    [releasePointer]
   );
+
+  const webPointerHandlers: WebPointerHandlers = {
+    onPointerDown: handlePointerDown,
+    onPointerMove: handlePointerMove,
+    onPointerUp: handlePointerUp,
+    onPointerCancel: handlePointerUp,
+    onPointerLeave: handlePointerUp,
+    onLostPointerCapture: handlePointerUp,
+  };
 
   return (
     <View
       style={style}
       onLayout={onLayout}
-      // @ts-ignore — RN Web forwards these to the DOM element
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
+      {...(webPointerHandlers as unknown as ViewProps)}
       {...rest}
     />
   );

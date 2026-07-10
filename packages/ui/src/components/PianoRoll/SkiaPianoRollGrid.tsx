@@ -49,10 +49,24 @@ import type {
   InstrumentType,
   Sample,
 } from '../../features/playground/types';
+import {
+  getGridPointNoteTarget,
+  getMovedGridTarget,
+  getMovedNoteTarget,
+  getPianoRollNoteRect,
+  getResizedNoteDuration,
+  hitTestPianoRollNote,
+} from './pianoRollMath';
 
 const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
 const MELODIC_PITCH_COUNT = 24;
+
+// SwiftUI uses black grid strokes, but the RN grid has black rows; these keep
+// the same neutral feel while making row/step boundaries readable on web.
+const GRID_LINE_COLOR = 'rgba(247,247,247,0.10)';
+const GRID_BEAT_COLOR = 'rgba(247,247,247,0.16)';
+const GRID_BAR_COLOR = 'rgba(247,247,247,0.30)';
 
 // Tap and drag share one boundary: a touch shorter than this is a tap
 // (add/delete), a hold this long becomes a drag. If the windows diverge,
@@ -246,66 +260,35 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     [isDrum, totalPitches, samples, basePitch]
   );
 
-  // --- Note hit testing ---
-  // Expanded touch target: 12px padding around the visual note rect.
-  // Resize handle zone: rightmost 20px (or half the note, whichever is smaller).
-  const hitTestNote = useCallback(
-    (x: number, y: number): { idx: number; isResizeEdge: boolean } | null => {
-      const TOUCH_PADDING = 12;
-      const MIN_RESIZE_ZONE = 20;
-      let bestIdx = -1;
-      let bestDist = Infinity;
-      let bestIsResize = false;
-
-      for (let idx = notes.length - 1; idx >= 0; idx--) {
-        const note = notes[idx]!;
-        let pitchIdx: number;
-        if (isDrum) {
-          const si = (samples ?? []).findIndex(
-            (s) => s.noteNumber === note.noteNumber
-          );
-          pitchIdx = si >= 0 ? si : 0;
-        } else {
-          pitchIdx = note.noteNumber - basePitch;
-        }
-        const rowIdx = totalPitches - 1 - pitchIdx;
-        const noteX = note.position * beatWidth;
-        const noteY = rowIdx * effectiveRowHeight + 1;
-        const noteW = Math.max(note.duration * beatWidth - 1, stepWidth);
-        const noteH = effectiveRowHeight - 2;
-
-        // Expanded hit area
-        if (
-          x >= noteX - TOUCH_PADDING &&
-          x <= noteX + noteW + TOUCH_PADDING &&
-          y >= noteY - TOUCH_PADDING &&
-          y <= noteY + noteH + TOUCH_PADDING
-        ) {
-          // Distance to note center — pick the closest note if overlapping
-          const cx = noteX + noteW / 2;
-          const cy = noteY + noteH / 2;
-          const dist = Math.abs(x - cx) + Math.abs(y - cy);
-          if (dist < bestDist) {
-            bestDist = dist;
-            bestIdx = idx;
-            const resizeZone = Math.min(MIN_RESIZE_ZONE, noteW / 2);
-            bestIsResize = x >= noteX + noteW - resizeZone;
-          }
-        }
-      }
-
-      return bestIdx >= 0 ? { idx: bestIdx, isResizeEdge: bestIsResize } : null;
-    },
-    [
-      notes,
-      isDrum,
+  const pianoRollMathContext = useMemo(
+    () => ({
       samples,
+      isDrum,
       basePitch,
       totalPitches,
       beatWidth,
-      effectiveRowHeight,
       stepWidth,
+      gridWidth,
+      rowHeight: effectiveRowHeight,
+      pitchToMidi,
+    }),
+    [
+      samples,
+      isDrum,
+      basePitch,
+      totalPitches,
+      beatWidth,
+      stepWidth,
+      gridWidth,
+      effectiveRowHeight,
+      pitchToMidi,
     ]
+  );
+
+  const hitTestNote = useCallback(
+    (x: number, y: number) =>
+      hitTestPianoRollNote(notes, x, y, pianoRollMathContext),
+    [notes, pianoRollMathContext]
   );
 
   // --- Gesture state ---
@@ -321,11 +304,9 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 
   // Live drag preview — Reanimated shared values read directly by Skia on UI thread.
   // No React re-renders during drag — GPU updates every frame.
-  const dragNoteIdx = useSharedValue(-1);
   const dragX = useSharedValue(0);
   const dragY = useSharedValue(0);
   const dragW = useSharedValue(0);
-  const dragOpacity = useSharedValue(0);
   // Which note index is currently being dragged (-1 = none).
   // React state — only set on drag start/end (2 renders per gesture, not per frame).
   const [activeNoteIdx, setActiveNoteIdx] = useState(-1);
@@ -336,6 +317,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const dragStartY = useSharedValue(0);
   const dragOrigPos = useSharedValue(0);
   const dragOrigDur = useSharedValue(0);
+  const dragOrigRow = useSharedValue(0);
 
   // --- JS callbacks (scheduled from gesture worklets onto the React Native JS runtime) ---
   const handleTap = useCallback(
@@ -344,26 +326,11 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       if (hit) {
         onNotePress?.(hit.idx);
       } else if (onGridTap) {
-        const step = Math.floor(x / stepWidth);
-        const position = step * 0.25;
-        const rowIdx = Math.floor(y / effectiveRowHeight);
-        const pitchIdx = totalPitches - 1 - rowIdx;
-        if (pitchIdx >= 0 && pitchIdx < totalPitches) {
-          const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
-          onGridTap(noteNumber, position);
-        }
+        const target = getGridPointNoteTarget(x, y, pianoRollMathContext);
+        if (target) onGridTap(target.noteNumber, target.position);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- isDrum/samples are stable or intentionally stale
-    [
-      hitTestNote,
-      onNotePress,
-      onGridTap,
-      stepWidth,
-      effectiveRowHeight,
-      totalPitches,
-      pitchToMidi,
-    ]
+    [hitTestNote, onNotePress, onGridTap, pianoRollMathContext]
   );
 
   const handleDragStart = useCallback(
@@ -390,12 +357,14 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       };
       // Mirror to shared values for worklet access
       dragType.value = hit.isResizeEdge ? 2 : 1;
-      dragNoteIdx.value = hit.idx;
       dragStartX.value = x;
       dragStartY.value = y;
       dragOrigPos.value = note.position;
       dragOrigDur.value = note.duration;
-      dragOpacity.value = 1;
+      dragOrigRow.value = getPianoRollNoteRect(
+        note,
+        pianoRollMathContext
+      ).rowIdx;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Reanimated SharedValues are stable refs
     [hitTestNote, notes]
@@ -408,50 +377,48 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const bwRef = beatWidth;
   const rhRef = effectiveRowHeight;
   const tpRef = totalPitches;
+  const lengthRef = lengthInBeats;
 
   const handleDragEnd = useCallback(
     (x: number, y: number) => {
       const ds = dragState.current;
       if (!ds) return;
       const dx = x - ds.startX;
-      const dy = y - ds.startY;
 
       if (ds.type === 'resize') {
-        const newWidth = ds.origDuration * beatWidth + dx;
-        const steps = Math.max(1, Math.round(newWidth / stepWidth));
-        onNoteResize?.(ds.noteIdx, steps * 0.25);
-      } else {
-        const stepsDx = Math.round(dx / stepWidth);
-        const rowsDy = Math.round(dy / effectiveRowHeight);
-        const newPosition = Math.max(0, ds.origPosition + stepsDx * 0.25);
-        const newRowIdx = Math.floor(ds.startY / effectiveRowHeight) + rowsDy;
-        const newPitchIdx = Math.max(
-          0,
-          Math.min(totalPitches - 1, totalPitches - 1 - newRowIdx)
+        onNoteResize?.(
+          ds.noteIdx,
+          getResizedNoteDuration(
+            ds.origDuration,
+            dx,
+            pianoRollMathContext,
+            ds.origPosition
+          )
         );
-        const newNoteNumber = pitchToMidi[newPitchIdx] ?? newPitchIdx;
+      } else {
+        const target = getMovedNoteTarget(
+          {
+            startX: ds.startX,
+            startY: ds.startY,
+            endX: x,
+            endY: y,
+            originalPosition: ds.origPosition,
+            originalDuration: ds.origDuration,
+            originalNoteNumber: ds.origNoteNumber,
+          },
+          pianoRollMathContext
+        );
         if (
-          newPosition !== ds.origPosition ||
-          newNoteNumber !== ds.origNoteNumber
+          target.position !== ds.origPosition ||
+          target.noteNumber !== ds.origNoteNumber
         ) {
-          onNoteMove?.(ds.noteIdx, newPosition, newNoteNumber);
+          onNoteMove?.(ds.noteIdx, target.position, target.noteNumber);
         }
       }
       dragState.current = null;
-      dragNoteIdx.value = -1;
-      dragOpacity.value = 0;
       setActiveNoteIdx(-1);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- Reanimated SharedValues are stable refs
-    [
-      beatWidth,
-      stepWidth,
-      effectiveRowHeight,
-      totalPitches,
-      pitchToMidi,
-      onNoteResize,
-      onNoteMove,
-    ]
+    [pianoRollMathContext, onNoteResize, onNoteMove]
   );
 
   // --- Gestures (UI thread → scheduleOnRN for callbacks) ---
@@ -477,18 +444,26 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       if (dragType.value === 2) {
         // Resize
         dragX.value = dragOrigPos.value * bwRef;
-        dragW.value = Math.max(swRef, dragOrigDur.value * bwRef + dx);
+        dragW.value = Math.min(
+          (lengthRef - dragOrigPos.value) * bwRef,
+          Math.max(swRef, dragOrigDur.value * bwRef + dx)
+        );
         const origRow = Math.floor(dragStartY.value / rhRef);
         dragY.value = origRow * rhRef + 1;
       } else {
         // Move
-        const stepsDx = Math.round(dx / swRef);
-        const rowsDy = Math.round(dy / rhRef);
-        const newPos = Math.max(0, dragOrigPos.value + stepsDx * 0.25);
-        const newRowIdx = Math.floor(dragStartY.value / rhRef) + rowsDy;
-        const clampedRow = Math.max(0, Math.min(tpRef - 1, newRowIdx));
-        dragX.value = newPos * bwRef;
-        dragY.value = clampedRow * rhRef + 1;
+        const target = getMovedGridTarget(
+          dx,
+          dy,
+          dragOrigPos.value,
+          dragOrigRow.value,
+          swRef,
+          rhRef,
+          tpRef,
+          lengthRef - dragOrigDur.value
+        );
+        dragX.value = target.position * bwRef;
+        dragY.value = target.rowIdx * rhRef + 1;
         dragW.value = dragOrigDur.value * bwRef - 1;
       }
     })
@@ -586,7 +561,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                 {/* Grid lines — single path, one draw call */}
                 <SkiaPath
                   path={gridPath}
-                  color="rgba(255,255,255,0.06)"
+                  color={GRID_LINE_COLOR}
                   style="stroke"
                   strokeWidth={0.5}
                 />
@@ -599,7 +574,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                       key={`beat${i}`}
                       p1={vec(i * 4 * stepWidth, 0)}
                       p2={vec(i * 4 * stepWidth, gridHeight)}
-                      color="rgba(255,255,255,0.12)"
+                      color={GRID_BEAT_COLOR}
                       strokeWidth={1}
                     />
                   )
@@ -613,7 +588,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                       key={`bar${i}`}
                       p1={vec(i * 16 * stepWidth, 0)}
                       p2={vec(i * 16 * stepWidth, gridHeight)}
-                      color="rgba(255,255,255,0.25)"
+                      color={GRID_BAR_COLOR}
                       strokeWidth={1.5}
                     />
                   )

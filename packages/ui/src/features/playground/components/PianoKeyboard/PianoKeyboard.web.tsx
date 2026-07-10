@@ -122,41 +122,56 @@ export const PianoKeyboard = memo(function PianoKeyboard({
   // handlers directly re-runs the effect whenever a parent re-render changes
   // their identity (e.g. lesson validation reacting to a note), and the
   // cleanup would release held keys mid-press, cutting the note off.
-  const keyHandlersRef = useRef({ handlePress, handleRelease, numberOfOctaves });
+  const keyHandlersRef = useRef({
+    handlePress,
+    handleRelease,
+    numberOfOctaves,
+  });
   keyHandlersRef.current = { handlePress, handleRelease, numberOfOctaves };
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const held = new Set<string>();
+    const held = new Map<string, number>();
+    const releaseHeld = () => {
+      held.forEach((idx) => keyHandlersRef.current.handleRelease(idx));
+      held.clear();
+    };
+    const onVisibilityChange = () => {
+      if (document.hidden) releaseHeld();
+    };
 
     const onDown = (e: KeyboardEvent) => {
       if (isTypingTarget()) return;
       const key = e.key.toLowerCase();
       if (held.has(key)) return; // suppress OS key-repeat
       const idx = QWERTY_KEY_MAP[key];
-      if (idx === undefined || idx >= keyHandlersRef.current.numberOfOctaves * 12) return;
-      held.add(key);
+      if (
+        idx === undefined ||
+        idx >= keyHandlersRef.current.numberOfOctaves * 12
+      )
+        return;
+      held.set(key, idx);
       keyHandlersRef.current.handlePress(idx);
     };
 
     const onUp = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
+      const idx = held.get(key);
+      if (idx === undefined) return;
       held.delete(key);
-      const idx = QWERTY_KEY_MAP[key];
-      if (idx === undefined || idx >= keyHandlersRef.current.numberOfOctaves * 12) return;
       keyHandlersRef.current.handleRelease(idx);
     };
 
     window.addEventListener('keydown', onDown);
     window.addEventListener('keyup', onUp);
+    window.addEventListener('blur', releaseHeld);
+    document.addEventListener('visibilitychange', onVisibilityChange);
     return () => {
       window.removeEventListener('keydown', onDown);
       window.removeEventListener('keyup', onUp);
-      // Release any held keys on unmount to prevent stuck notes
-      held.forEach((key) => {
-        const idx = QWERTY_KEY_MAP[key];
-        if (idx !== undefined) keyHandlersRef.current.handleRelease(idx);
-      });
+      window.removeEventListener('blur', releaseHeld);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      releaseHeld();
     };
   }, []);
 

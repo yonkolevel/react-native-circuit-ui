@@ -1372,7 +1372,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           y={374}
                         />
                         <View
-                          color="rgba(255,255,255,0.06)"
+                          color="rgba(247,247,247,0.10)"
                           path={
                             {
                               "addCircle": [Function],
@@ -1393,7 +1393,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaPath"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 0,
@@ -1410,7 +1410,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 172.5,
@@ -1427,7 +1427,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 345,
@@ -1444,7 +1444,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 517.5,
@@ -1461,7 +1461,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 690,
@@ -1478,7 +1478,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 862.5,
@@ -1495,7 +1495,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1035,
@@ -1512,7 +1512,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1207.5,
@@ -1529,7 +1529,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1380,
@@ -1546,7 +1546,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1552.5,
@@ -1563,7 +1563,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1725,
@@ -1580,7 +1580,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1897.5,
@@ -1597,7 +1597,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2070,
@@ -1614,7 +1614,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2242.5,
@@ -1631,7 +1631,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2415,
@@ -1648,7 +1648,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2587.5,
@@ -1665,7 +1665,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2760,
@@ -1682,7 +1682,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 0,
@@ -1699,7 +1699,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 690,
@@ -1716,7 +1716,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 1380,
@@ -1733,7 +1733,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 2070,
@@ -1750,7 +1750,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 2760,
@@ -4739,7 +4739,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           y={510}
                         />
                         <View
-                          color="rgba(255,255,255,0.06)"
+                          color="rgba(247,247,247,0.10)"
                           path={
                             {
                               "addCircle": [Function],
@@ -4760,7 +4760,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaPath"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 0,
@@ -4777,7 +4777,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 172.5,
@@ -4794,7 +4794,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 345,
@@ -4811,7 +4811,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 517.5,
@@ -4828,7 +4828,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 690,
@@ -4845,7 +4845,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 862.5,
@@ -4862,7 +4862,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1035,
@@ -4879,7 +4879,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1207.5,
@@ -4896,7 +4896,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1380,
@@ -4913,7 +4913,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1552.5,
@@ -4930,7 +4930,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1725,
@@ -4947,7 +4947,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1897.5,
@@ -4964,7 +4964,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2070,
@@ -4981,7 +4981,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2242.5,
@@ -4998,7 +4998,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2415,
@@ -5015,7 +5015,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2587.5,
@@ -5032,7 +5032,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2760,
@@ -5049,7 +5049,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 0,
@@ -5066,7 +5066,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 690,
@@ -5083,7 +5083,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 1380,
@@ -5100,7 +5100,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 2070,
@@ -5117,7 +5117,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 2760,
@@ -9114,7 +9114,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           y={782}
                         />
                         <View
-                          color="rgba(255,255,255,0.06)"
+                          color="rgba(247,247,247,0.10)"
                           path={
                             {
                               "addCircle": [Function],
@@ -9135,7 +9135,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaPath"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 0,
@@ -9152,7 +9152,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 172.5,
@@ -9169,7 +9169,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 345,
@@ -9186,7 +9186,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 517.5,
@@ -9203,7 +9203,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 690,
@@ -9220,7 +9220,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 862.5,
@@ -9237,7 +9237,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1035,
@@ -9254,7 +9254,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1207.5,
@@ -9271,7 +9271,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1380,
@@ -9288,7 +9288,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1552.5,
@@ -9305,7 +9305,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1725,
@@ -9322,7 +9322,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1897.5,
@@ -9339,7 +9339,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2070,
@@ -9356,7 +9356,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2242.5,
@@ -9373,7 +9373,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2415,
@@ -9390,7 +9390,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2587.5,
@@ -9407,7 +9407,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2760,
@@ -9424,7 +9424,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 0,
@@ -9441,7 +9441,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 690,
@@ -9458,7 +9458,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 1380,
@@ -9475,7 +9475,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 2070,
@@ -9492,7 +9492,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 2760,
@@ -12421,7 +12421,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           y={374}
                         />
                         <View
-                          color="rgba(255,255,255,0.06)"
+                          color="rgba(247,247,247,0.10)"
                           path={
                             {
                               "addCircle": [Function],
@@ -12442,7 +12442,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaPath"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 0,
@@ -12459,7 +12459,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 172.5,
@@ -12476,7 +12476,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 345,
@@ -12493,7 +12493,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 517.5,
@@ -12510,7 +12510,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 690,
@@ -12527,7 +12527,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 862.5,
@@ -12544,7 +12544,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1035,
@@ -12561,7 +12561,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1207.5,
@@ -12578,7 +12578,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1380,
@@ -12595,7 +12595,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1552.5,
@@ -12612,7 +12612,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1725,
@@ -12629,7 +12629,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 1897.5,
@@ -12646,7 +12646,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2070,
@@ -12663,7 +12663,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2242.5,
@@ -12680,7 +12680,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2415,
@@ -12697,7 +12697,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2587.5,
@@ -12714,7 +12714,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.12)"
+                          color="rgba(247,247,247,0.16)"
                           p1={
                             {
                               "x": 2760,
@@ -12731,7 +12731,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 0,
@@ -12748,7 +12748,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 690,
@@ -12765,7 +12765,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 1380,
@@ -12782,7 +12782,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 2070,
@@ -12799,7 +12799,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="rgba(255,255,255,0.25)"
+                          color="rgba(247,247,247,0.30)"
                           p1={
                             {
                               "x": 2760,
