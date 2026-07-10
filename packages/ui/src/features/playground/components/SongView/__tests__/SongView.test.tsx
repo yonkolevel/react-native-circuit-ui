@@ -186,6 +186,28 @@ describe('SongMixerTabBar behavior', () => {
   });
 });
 
+describe('SongView share beat flow', () => {
+  it('dispatches the share action from settings', () => {
+    const onShareBeat = jest.fn();
+    const store = createTestStore({ currentTab: 'settings' } as any);
+
+    const { getByLabelText } = renderWithStore(
+      <SongView onShareBeat={onShareBeat} />,
+      store
+    );
+
+    fireEvent.press(getByLabelText('SHARE BEAT'));
+    expect(onShareBeat).toHaveBeenCalledTimes(1);
+  });
+
+  it('hides the share action when the platform does not provide one', () => {
+    const store = createTestStore({ currentTab: 'settings' } as any);
+    const { queryByLabelText } = renderWithStore(<SongView />, store);
+
+    expect(queryByLabelText('SHARE BEAT')).toBeNull();
+  });
+});
+
 describe('SongView export audio flow', () => {
   // Settings row mirrors iOS: it is always enabled and navigates into the
   // export view. The export guard lives inside that view, not on the row.
