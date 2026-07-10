@@ -232,7 +232,6 @@ function EditProfileViewContent({
             </View>
           </View>
         )}
-
       </View>
     </Modal>
   );
@@ -305,7 +304,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: makeSpacing(3),
   },
-
 });
 
 const labeledInputStyles = StyleSheet.create({

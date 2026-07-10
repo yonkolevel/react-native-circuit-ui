@@ -268,61 +268,71 @@ exports[`AccountLoggedIn matches snapshot (dark mode) 1`] = `
               test@example.com
             </Text>
             <View
-              accessibilityLabel="Edit profile"
-              accessibilityRole="button"
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
               style={
                 {
-                  "paddingVertical": 2,
+                  "flexDirection": "row",
+                  "flexWrap": "wrap",
+                  "gap": 12,
                 }
               }
             >
-              <Text
-                accessibilityRole="text"
+              <View
+                accessibilityLabel="Edit profile"
+                accessibilityRole="button"
+                accessibilityState={
+                  {
+                    "busy": undefined,
+                    "checked": undefined,
+                    "disabled": undefined,
+                    "expanded": undefined,
+                    "selected": undefined,
+                  }
+                }
+                accessibilityValue={
+                  {
+                    "max": undefined,
+                    "min": undefined,
+                    "now": undefined,
+                    "text": undefined,
+                  }
+                }
+                accessible={true}
+                collapsable={false}
+                focusable={true}
+                onBlur={[Function]}
+                onClick={[Function]}
+                onFocus={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
                 style={
-                  [
-                    {
-                      "fontFamily": "System",
-                      "fontSize": 12,
-                      "fontWeight": "400",
-                      "lineHeight": 18,
-                    },
-                    {
-                      "color": "#2496FF",
-                    },
-                  ]
+                  {
+                    "paddingVertical": 2,
+                  }
                 }
               >
-                Edit Account
-              </Text>
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 12,
+                        "fontWeight": "400",
+                        "lineHeight": 18,
+                      },
+                      {
+                        "color": "#2496FF",
+                      },
+                    ]
+                  }
+                >
+                  Edit Account
+                </Text>
+              </View>
             </View>
             <View
               accessibilityLabel="Log out"
@@ -962,61 +972,71 @@ exports[`AccountLoggedIn matches snapshot (light mode) 1`] = `
               test@example.com
             </Text>
             <View
-              accessibilityLabel="Edit profile"
-              accessibilityRole="button"
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
               style={
                 {
-                  "paddingVertical": 2,
+                  "flexDirection": "row",
+                  "flexWrap": "wrap",
+                  "gap": 12,
                 }
               }
             >
-              <Text
-                accessibilityRole="text"
+              <View
+                accessibilityLabel="Edit profile"
+                accessibilityRole="button"
+                accessibilityState={
+                  {
+                    "busy": undefined,
+                    "checked": undefined,
+                    "disabled": undefined,
+                    "expanded": undefined,
+                    "selected": undefined,
+                  }
+                }
+                accessibilityValue={
+                  {
+                    "max": undefined,
+                    "min": undefined,
+                    "now": undefined,
+                    "text": undefined,
+                  }
+                }
+                accessible={true}
+                collapsable={false}
+                focusable={true}
+                onBlur={[Function]}
+                onClick={[Function]}
+                onFocus={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
                 style={
-                  [
-                    {
-                      "fontFamily": "System",
-                      "fontSize": 12,
-                      "fontWeight": "400",
-                      "lineHeight": 18,
-                    },
-                    {
-                      "color": "#2496FF",
-                    },
-                  ]
+                  {
+                    "paddingVertical": 2,
+                  }
                 }
               >
-                Edit Account
-              </Text>
+                <Text
+                  accessibilityRole="text"
+                  style={
+                    [
+                      {
+                        "fontFamily": "System",
+                        "fontSize": 12,
+                        "fontWeight": "400",
+                        "lineHeight": 18,
+                      },
+                      {
+                        "color": "#2496FF",
+                      },
+                    ]
+                  }
+                >
+                  Edit Account
+                </Text>
+              </View>
             </View>
             <View
               accessibilityLabel="Log out"
