@@ -65,6 +65,34 @@ describe('web instrument QWERTY release', () => {
     expect(onPadRelease).toHaveBeenCalledTimes(1);
   });
 
+  it('releases every held drum pad on visibility loss', () => {
+    const onPadRelease = jest.fn();
+    const samples = Array.from({ length: 16 }, (_, noteNumber) => ({
+      id: String(noteNumber),
+      name: `Pad ${noteNumber}`,
+      fileName: `pad-${noteNumber}.wav`,
+      noteNumber,
+    }));
+    render(
+      <ThemeProvider initialMode="dark">
+        <DrumPadsView samples={samples} onPadRelease={onPadRelease} />
+      </ThemeProvider>
+    );
+
+    dispatch('keydown', { key: 'a' });
+    dispatch('keydown', { key: 's' });
+    Object.defineProperty(document, 'hidden', {
+      value: true,
+      configurable: true,
+    });
+    dispatch('visibilitychange');
+
+    expect(onPadRelease.mock.calls).toEqual([[8], [9]]);
+    dispatch('keyup', { key: 'a' });
+    dispatch('keyup', { key: 's' });
+    expect(onPadRelease).toHaveBeenCalledTimes(2);
+  });
+
   it('releases a held piano key once when the window blurs', () => {
     const onNoteOn = jest.fn();
     const onNoteOff = jest.fn();
@@ -78,5 +106,16 @@ describe('web instrument QWERTY release', () => {
 
     dispatch('keyup', { key: 'a' });
     expect(onNoteOff).toHaveBeenCalledTimes(1);
+  });
+
+  it('releases every held piano key on unmount', () => {
+    const onNoteOff = jest.fn();
+    const view = render(<PianoKeyboard onNoteOff={onNoteOff} />);
+
+    dispatch('keydown', { key: 'a' });
+    dispatch('keydown', { key: 'w' });
+    view.unmount();
+
+    expect(onNoteOff.mock.calls).toEqual([[0], [1]]);
   });
 });

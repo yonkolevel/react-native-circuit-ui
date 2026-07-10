@@ -19,6 +19,7 @@ const ctx = {
   totalPitches: 3,
   beatWidth: 80,
   stepWidth: 20,
+  gridWidth: 320,
   rowHeight: 30,
   pitchToMidi: samples.map((sample) => sample.noteNumber),
 };
@@ -51,11 +52,69 @@ describe('pianoRollMath', () => {
           endX: 122,
           endY: 78,
           originalPosition: 1,
+          originalDuration: 0.5,
+          originalNoteNumber: 38,
         },
         ctx
       )
     ).toEqual({ noteNumber: 36, position: 1.5 });
 
     expect(getResizedNoteDuration(0.5, 31, ctx)).toBe(1);
+  });
+
+  it('rejects grid taps outside the horizontal bounds', () => {
+    expect(getGridPointNoteTarget(-1, 10, ctx)).toBeNull();
+    expect(getGridPointNoteTarget(ctx.gridWidth, 10, ctx)).toBeNull();
+  });
+
+  it('keeps pitch stable for horizontal drags from padded hit space', () => {
+    expect(
+      getMovedNoteTarget(
+        {
+          startX: 80,
+          startY: 20,
+          endX: 100,
+          endY: 20,
+          originalPosition: 1,
+          originalDuration: 0.5,
+          originalNoteNumber: 38,
+        },
+        ctx
+      )
+    ).toEqual({ noteNumber: 38, position: 1.25 });
+  });
+
+  it('clamps move and resize boundaries', () => {
+    expect(
+      getMovedNoteTarget(
+        {
+          startX: 80,
+          startY: 45,
+          endX: -200,
+          endY: -200,
+          originalPosition: 1,
+          originalDuration: 0.5,
+          originalNoteNumber: 38,
+        },
+        ctx
+      )
+    ).toEqual({ noteNumber: 42, position: 0 });
+    expect(getResizedNoteDuration(0.5, -100, ctx)).toBe(0.25);
+    expect(getResizedNoteDuration(0.5, 200, ctx, 3.5)).toBe(0.5);
+
+    expect(
+      getMovedNoteTarget(
+        {
+          startX: 80,
+          startY: 45,
+          endX: 500,
+          endY: 45,
+          originalPosition: 1,
+          originalDuration: 0.5,
+          originalNoteNumber: 38,
+        },
+        ctx
+      ).position
+    ).toBe(3.5);
   });
 });

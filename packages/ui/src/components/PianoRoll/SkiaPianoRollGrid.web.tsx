@@ -24,6 +24,7 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
+import type { LayoutChangeEvent, ViewProps } from 'react-native';
 import { Text } from '../Text';
 import { Icon, Icons } from '../SFSymbol';
 import { useTheme, hexToRgba } from '../../theme';
@@ -81,6 +82,30 @@ type WebGridTapEvent = {
   currentTarget?: {
     getBoundingClientRect?: () => { left: number };
   };
+};
+
+type WebPointerEvent = {
+  nativeEvent: Pick<
+    PointerEvent,
+    'button' | 'clientX' | 'clientY' | 'pointerId' | 'pointerType'
+  >;
+  currentTarget: Element;
+  preventDefault?: () => void;
+};
+
+type WebKeyboardEvent = {
+  nativeEvent?: { key?: string; shiftKey?: boolean };
+  key?: string;
+  shiftKey?: boolean;
+  preventDefault?: () => void;
+};
+
+type WebPointerHandlers = {
+  onPointerDown: (event: WebPointerEvent) => void;
+  onPointerMove: (event: WebPointerEvent) => void;
+  onPointerUp: (event: WebPointerEvent) => void;
+  onPointerCancel: (event: WebPointerEvent) => void;
+  onLostPointerCapture: (event: WebPointerEvent) => void;
 };
 
 export const getWebGridTapX = (event: WebGridTapEvent): number => {
@@ -179,6 +204,11 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     noteNumber: number;
     duration: number;
   } | null>(null);
+  const [keyboardCursor, setKeyboardCursor] = useState({
+    pitchIndex: 0,
+    step: 0,
+  });
+  const [isKeyboardFocused, setIsKeyboardFocused] = useState(false);
 
   const isDrum = instrumentType === 'drum';
   const basePitch = isDrum ? 0 : (melodicMinPitch ?? DEFAULT_MELODIC_MIN_PITCH);
@@ -188,7 +218,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 
   // Measure container height for expanded mode
   const [containerH, setContainerH] = useState(0);
-  const onContainerLayout = useCallback((e: any) => {
+  const onContainerLayout = useCallback((e: LayoutChangeEvent) => {
     setContainerH(e.nativeEvent.layout.height);
   }, []);
 
@@ -251,6 +281,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       totalPitches,
       beatWidth,
       stepWidth,
+      gridWidth,
       rowHeight: effectiveRowHeight,
       pitchToMidi,
     }),
@@ -261,6 +292,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       totalPitches,
       beatWidth,
       stepWidth,
+      gridWidth,
       effectiveRowHeight,
       pitchToMidi,
     ]
@@ -273,12 +305,25 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     setDragPreview(null);
   }, []);
 
-  useEffect(() => clearPointerInteraction, [clearPointerInteraction]);
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return clearPointerInteraction;
+    }
+    const handleVisibilityChange = () => {
+      if (document.hidden) clearPointerInteraction();
+    };
+    window.addEventListener('blur', clearPointerInteraction);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      window.removeEventListener('blur', clearPointerInteraction);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearPointerInteraction();
+    };
+  }, [clearPointerInteraction]);
 
-  const getPointerPoint = useCallback((e: any) => {
-    const target = e.currentTarget as Element;
-    const rect = target.getBoundingClientRect();
-    const nativeEvent = e.nativeEvent as PointerEvent;
+  const getPointerPoint = useCallback((e: WebPointerEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const nativeEvent = e.nativeEvent;
     return {
       x: getWebGridTapX(e as WebGridTapEvent),
       y: nativeEvent.clientY - rect.top,
@@ -303,7 +348,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
           duration: getResizedNoteDuration(
             note.duration,
             x - interaction.startX,
-            pianoRollMathContext
+            pianoRollMathContext,
+            note.position
           ),
         };
       }
@@ -315,6 +361,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
           endX: x,
           endY: y,
           originalPosition: note.position,
+          originalDuration: note.duration,
+          originalNoteNumber: note.noteNumber,
         },
         pianoRollMathContext
       );
@@ -329,8 +377,15 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   );
 
   const handlePointerDown = useCallback(
-    (e: any) => {
-      const nativeEvent = e.nativeEvent as PointerEvent;
+    (e: WebPointerEvent) => {
+      const nativeEvent = e.nativeEvent;
+      const activeInteraction = pointerInteractionRef.current;
+      if (
+        activeInteraction &&
+        activeInteraction.pointerId !== nativeEvent.pointerId
+      ) {
+        return;
+      }
       if (nativeEvent.button != null && nativeEvent.button !== 0) return;
       const { x, y } = getPointerPoint(e);
       const hit = hitTestPianoRollNote(notes, x, y, pianoRollMathContext);
@@ -349,7 +404,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
         held: false,
       };
       pointerInteractionRef.current = interaction;
-      (e.currentTarget as Element).setPointerCapture?.(nativeEvent.pointerId);
+      e.currentTarget.setPointerCapture?.(nativeEvent.pointerId);
+      if (hit && nativeEvent.pointerType === 'touch') e.preventDefault?.();
 
       if (!interaction.touchReady) {
         touchHoldTimerRef.current = setTimeout(() => {
@@ -366,8 +422,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   );
 
   const handlePointerMove = useCallback(
-    (e: any) => {
-      const nativeEvent = e.nativeEvent as PointerEvent;
+    (e: WebPointerEvent) => {
+      const nativeEvent = e.nativeEvent;
       const interaction = pointerInteractionRef.current;
       if (!interaction || interaction.pointerId !== nativeEvent.pointerId)
         return;
@@ -376,19 +432,23 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
         x - interaction.startX,
         y - interaction.startY
       );
-      if (interaction.noteIndex == null || !interaction.touchReady) return;
+      if (!interaction.touchReady) {
+        if (distance >= DRAG_THRESHOLD) clearPointerInteraction();
+        return;
+      }
+      if (interaction.noteIndex == null) return;
       if (!interaction.dragging && distance < DRAG_THRESHOLD) return;
 
       interaction.dragging = true;
       e.preventDefault?.();
       setDragPreview(previewForPointer(interaction, x, y));
     },
-    [getPointerPoint, previewForPointer]
+    [clearPointerInteraction, getPointerPoint, previewForPointer]
   );
 
   const handlePointerUp = useCallback(
-    (e: any) => {
-      const nativeEvent = e.nativeEvent as PointerEvent;
+    (e: WebPointerEvent) => {
+      const nativeEvent = e.nativeEvent;
       const interaction = pointerInteractionRef.current;
       if (!interaction || interaction.pointerId !== nativeEvent.pointerId)
         return;
@@ -447,13 +507,75 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     ]
   );
 
-  const webPointerHandlers = {
+  const handlePointerTermination = useCallback(
+    (e: WebPointerEvent) => {
+      if (
+        pointerInteractionRef.current?.pointerId === e.nativeEvent.pointerId
+      ) {
+        clearPointerInteraction();
+      }
+    },
+    [clearPointerInteraction]
+  );
+
+  const webPointerHandlers: WebPointerHandlers = {
     onPointerDown: handlePointerDown,
     onPointerMove: handlePointerMove,
     onPointerUp: handlePointerUp,
-    onPointerCancel: clearPointerInteraction,
-    onLostPointerCapture: clearPointerInteraction,
-  } as any;
+    onPointerCancel: handlePointerTermination,
+    onLostPointerCapture: handlePointerTermination,
+  };
+
+  const moveKeyboardCursor = useCallback(
+    (stepDelta: number, pitchDelta: number) => {
+      setKeyboardCursor((cursor) => ({
+        step: Math.max(0, Math.min(totalSteps - 1, cursor.step + stepDelta)),
+        pitchIndex: Math.max(
+          0,
+          Math.min(totalPitches - 1, cursor.pitchIndex + pitchDelta)
+        ),
+      }));
+    },
+    [totalPitches, totalSteps]
+  );
+
+  const addNoteAtKeyboardCursor = useCallback(() => {
+    const noteNumber =
+      pitchToMidi[keyboardCursor.pitchIndex] ?? keyboardCursor.pitchIndex;
+    onGridTap?.(noteNumber, keyboardCursor.step * 0.25);
+  }, [keyboardCursor, onGridTap, pitchToMidi]);
+
+  const handleGridKeyDown = useCallback(
+    (e: WebKeyboardEvent) => {
+      const key = e.nativeEvent?.key ?? e.key;
+      const movement =
+        key === 'ArrowLeft'
+          ? ([-1, 0] as const)
+          : key === 'ArrowRight'
+            ? ([1, 0] as const)
+            : key === 'ArrowUp'
+              ? ([0, 1] as const)
+              : key === 'ArrowDown'
+                ? ([0, -1] as const)
+                : null;
+      if (movement) {
+        e.preventDefault?.();
+        moveKeyboardCursor(movement[0], movement[1]);
+      } else if (key === 'Enter' || key === ' ') {
+        e.preventDefault?.();
+        addNoteAtKeyboardCursor();
+      }
+    },
+    [addNoteAtKeyboardCursor, moveKeyboardCursor]
+  );
+
+  const webGridHandlers = {
+    ...webPointerHandlers,
+    onKeyDown: handleGridKeyDown,
+    onFocus: () => setIsKeyboardFocused(true),
+    onBlur: () => setIsKeyboardFocused(false),
+    tabIndex: 0,
+  } as unknown as ViewProps;
 
   return (
     <View
@@ -586,6 +708,55 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   pianoRollMathContext
                 );
                 const noteColor = noteColors?.[note.noteNumber] ?? trackColor;
+                const pitchIndex = Math.max(
+                  0,
+                  pitchToMidi.indexOf(note.noteNumber)
+                );
+                const moveNote = (stepDelta: number, pitchDelta: number) => {
+                  const nextPitchIndex = Math.max(
+                    0,
+                    Math.min(totalPitches - 1, pitchIndex + pitchDelta)
+                  );
+                  const nextPosition = Math.max(
+                    0,
+                    Math.min(
+                      lengthInBeats - note.duration,
+                      note.position + stepDelta * 0.25
+                    )
+                  );
+                  onNoteMove?.(
+                    idx,
+                    nextPosition,
+                    pitchToMidi[nextPitchIndex] ?? note.noteNumber
+                  );
+                };
+                const resizeNote = (stepDelta: number) => {
+                  onNoteResize?.(
+                    idx,
+                    Math.max(
+                      0.25,
+                      Math.min(
+                        lengthInBeats - note.position,
+                        note.duration + stepDelta * 0.25
+                      )
+                    )
+                  );
+                };
+                const handleNoteKeyDown = (e: WebKeyboardEvent) => {
+                  const key = e.nativeEvent?.key ?? e.key;
+                  const shiftKey = e.nativeEvent?.shiftKey ?? e.shiftKey;
+                  if (shiftKey && key === 'ArrowLeft') resizeNote(-1);
+                  else if (shiftKey && key === 'ArrowRight') resizeNote(1);
+                  else if (key === 'ArrowLeft') moveNote(-1, 0);
+                  else if (key === 'ArrowRight') moveNote(1, 0);
+                  else if (key === 'ArrowUp') moveNote(0, 1);
+                  else if (key === 'ArrowDown') moveNote(0, -1);
+                  else return;
+                  e.preventDefault?.();
+                };
+                const noteKeyboardProps = {
+                  onKeyDown: handleNoteKeyDown,
+                } as unknown as ViewProps;
 
                 return (
                   <Fragment key={`n${idx}`}>
@@ -605,7 +776,9 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                     <Pressable
                       onPress={() => onNotePress?.(idx)}
                       accessibilityRole="button"
-                      accessibilityLabel={`Delete note ${getNoteName(note.noteNumber)}`}
+                      accessibilityLabel={`Delete note ${getNoteName(note.noteNumber)} at beat ${note.position}, duration ${note.duration}. Arrow keys move; Shift plus Left or Right resizes`}
+                      accessibilityHint="Press Enter to delete"
+                      {...noteKeyboardProps}
                       style={{
                         position: 'absolute',
                         left: rect.x,
@@ -652,12 +825,32 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                 );
               })}
 
-              {/* One pointer layer keeps mouse/touch hit testing in grid coordinates. */}
+              {/* One interaction layer keeps pointer and keyboard editing in grid coordinates. */}
               <View
                 style={StyleSheet.absoluteFill}
-                accessible={false}
-                {...webPointerHandlers}
-              />
+                accessible
+                accessibilityRole="button"
+                accessibilityLabel={`Piano roll note grid, ${getPitchLabel(keyboardCursor.pitchIndex)} at beat ${keyboardCursor.step * 0.25}. Arrow keys move; Enter adds`}
+                accessibilityHint="Choose a pitch and beat, then add a note"
+                {...webGridHandlers}
+              >
+                {isKeyboardFocused && (
+                  <View
+                    pointerEvents="none"
+                    style={{
+                      position: 'absolute',
+                      left: keyboardCursor.step * stepWidth,
+                      top:
+                        (totalPitches - 1 - keyboardCursor.pitchIndex) *
+                        effectiveRowHeight,
+                      width: stepWidth,
+                      height: effectiveRowHeight,
+                      borderWidth: 2,
+                      borderColor: colors.mcOrange,
+                    }}
+                  />
+                )}
+              </View>
             </View>
           </ScrollView>
         </View>

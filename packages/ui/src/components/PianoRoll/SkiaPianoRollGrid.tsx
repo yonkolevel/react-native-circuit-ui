@@ -51,7 +51,9 @@ import type {
 } from '../../features/playground/types';
 import {
   getGridPointNoteTarget,
+  getMovedGridTarget,
   getMovedNoteTarget,
+  getPianoRollNoteRect,
   getResizedNoteDuration,
   hitTestPianoRollNote,
 } from './pianoRollMath';
@@ -266,6 +268,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       totalPitches,
       beatWidth,
       stepWidth,
+      gridWidth,
       rowHeight: effectiveRowHeight,
       pitchToMidi,
     }),
@@ -276,6 +279,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       totalPitches,
       beatWidth,
       stepWidth,
+      gridWidth,
       effectiveRowHeight,
       pitchToMidi,
     ]
@@ -300,11 +304,9 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 
   // Live drag preview — Reanimated shared values read directly by Skia on UI thread.
   // No React re-renders during drag — GPU updates every frame.
-  const dragNoteIdx = useSharedValue(-1);
   const dragX = useSharedValue(0);
   const dragY = useSharedValue(0);
   const dragW = useSharedValue(0);
-  const dragOpacity = useSharedValue(0);
   // Which note index is currently being dragged (-1 = none).
   // React state — only set on drag start/end (2 renders per gesture, not per frame).
   const [activeNoteIdx, setActiveNoteIdx] = useState(-1);
@@ -315,6 +317,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const dragStartY = useSharedValue(0);
   const dragOrigPos = useSharedValue(0);
   const dragOrigDur = useSharedValue(0);
+  const dragOrigRow = useSharedValue(0);
 
   // --- JS callbacks (scheduled from gesture worklets onto the React Native JS runtime) ---
   const handleTap = useCallback(
@@ -354,12 +357,14 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       };
       // Mirror to shared values for worklet access
       dragType.value = hit.isResizeEdge ? 2 : 1;
-      dragNoteIdx.value = hit.idx;
       dragStartX.value = x;
       dragStartY.value = y;
       dragOrigPos.value = note.position;
       dragOrigDur.value = note.duration;
-      dragOpacity.value = 1;
+      dragOrigRow.value = getPianoRollNoteRect(
+        note,
+        pianoRollMathContext
+      ).rowIdx;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Reanimated SharedValues are stable refs
     [hitTestNote, notes]
@@ -372,6 +377,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const bwRef = beatWidth;
   const rhRef = effectiveRowHeight;
   const tpRef = totalPitches;
+  const lengthRef = lengthInBeats;
 
   const handleDragEnd = useCallback(
     (x: number, y: number) => {
@@ -382,7 +388,12 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       if (ds.type === 'resize') {
         onNoteResize?.(
           ds.noteIdx,
-          getResizedNoteDuration(ds.origDuration, dx, pianoRollMathContext)
+          getResizedNoteDuration(
+            ds.origDuration,
+            dx,
+            pianoRollMathContext,
+            ds.origPosition
+          )
         );
       } else {
         const target = getMovedNoteTarget(
@@ -392,6 +403,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
             endX: x,
             endY: y,
             originalPosition: ds.origPosition,
+            originalDuration: ds.origDuration,
+            originalNoteNumber: ds.origNoteNumber,
           },
           pianoRollMathContext
         );
@@ -403,11 +416,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
         }
       }
       dragState.current = null;
-      dragNoteIdx.value = -1;
-      dragOpacity.value = 0;
       setActiveNoteIdx(-1);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- Reanimated SharedValues are stable refs
     [pianoRollMathContext, onNoteResize, onNoteMove]
   );
 
@@ -434,18 +444,26 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       if (dragType.value === 2) {
         // Resize
         dragX.value = dragOrigPos.value * bwRef;
-        dragW.value = Math.max(swRef, dragOrigDur.value * bwRef + dx);
+        dragW.value = Math.min(
+          (lengthRef - dragOrigPos.value) * bwRef,
+          Math.max(swRef, dragOrigDur.value * bwRef + dx)
+        );
         const origRow = Math.floor(dragStartY.value / rhRef);
         dragY.value = origRow * rhRef + 1;
       } else {
         // Move
-        const stepsDx = Math.round(dx / swRef);
-        const rowsDy = Math.round(dy / rhRef);
-        const newPos = Math.max(0, dragOrigPos.value + stepsDx * 0.25);
-        const newRowIdx = Math.floor(dragStartY.value / rhRef) + rowsDy;
-        const clampedRow = Math.max(0, Math.min(tpRef - 1, newRowIdx));
-        dragX.value = newPos * bwRef;
-        dragY.value = clampedRow * rhRef + 1;
+        const target = getMovedGridTarget(
+          dx,
+          dy,
+          dragOrigPos.value,
+          dragOrigRow.value,
+          swRef,
+          rhRef,
+          tpRef,
+          lengthRef - dragOrigDur.value
+        );
+        dragX.value = target.position * bwRef;
+        dragY.value = target.rowIdx * rhRef + 1;
         dragW.value = dragOrigDur.value * bwRef - 1;
       }
     })

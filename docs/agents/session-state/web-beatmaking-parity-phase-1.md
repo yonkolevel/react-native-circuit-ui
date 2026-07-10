@@ -11,12 +11,13 @@ Work completed:
 - ✅ Fixed drum/piano QWERTY held-note cleanup on blur/visibility change and prevents unmatched or duplicate releases.
 - ✅ Added interaction regression tests and refreshed intentional ClipEditor grid snapshots.
 - ✅ Browser QA on local Expo web: pad press/release/leave, grid placement, delete, note move, resize, preview, QWERTY blur cleanup, transport, and live drum recording.
-- ✅ Focused tests, changed-file lint, workspace/build typechecks, and Expo web export pass.
+- ✅ CE review fixes: per-cell multi-touch ownership, single-owner piano-roll gestures, horizontal/clip bounds, padded-hit pitch stability, blur cleanup, and typed web events.
+- ✅ Added keyboard/semantic add, move, pitch, resize, and delete paths for web automation and accessibility.
+- ✅ Full Circuit UI suite (265 passing, 1 todo), lint, workspace/build typechecks, browser QA, and Expo web export pass.
 
 Work remaining:
 - ⬜ Physical touch-device check for the 250 ms hold gesture and touch scrolling feel.
 - ⬜ Optional touch pinch zoom and playhead alignment while horizontally scrolled.
-- ⬜ Separate pre-existing `AccountLoggedIn` snapshot drift (the only remaining Circuit UI unit-suite failure).
 
-PR: https://github.com/yonkolevel/midicircuit-rn/pull/13
+PRs: https://github.com/yonkolevel/react-native-circuit-ui/pull/5 and https://github.com/yonkolevel/midicircuit-rn/pull/13
 Blockers: none

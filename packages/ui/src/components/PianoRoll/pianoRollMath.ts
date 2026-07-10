@@ -7,6 +7,7 @@ export type PianoRollMathContext = {
   totalPitches: number;
   beatWidth: number;
   stepWidth: number;
+  gridWidth: number;
   rowHeight: number;
   pitchToMidi: number[];
 };
@@ -49,8 +50,16 @@ export const getPianoRollNoteRect = (
 export const getGridPointNoteTarget = (
   x: number,
   y: number,
-  { stepWidth, rowHeight, totalPitches, pitchToMidi }: PianoRollMathContext
+  {
+    stepWidth,
+    gridWidth,
+    rowHeight,
+    totalPitches,
+    pitchToMidi,
+  }: PianoRollMathContext
 ): { noteNumber: number; position: number } | null => {
+  if (x < 0 || x >= gridWidth) return null;
+
   const rowIdx = Math.floor(y / rowHeight);
   const pitchIdx = totalPitches - 1 - rowIdx;
   if (pitchIdx < 0 || pitchIdx >= totalPitches) return null;
@@ -99,10 +108,37 @@ export const hitTestPianoRollNote = (
 export const getResizedNoteDuration = (
   originalDuration: number,
   dx: number,
-  { beatWidth, stepWidth }: PianoRollMathContext
+  { beatWidth, stepWidth, gridWidth }: PianoRollMathContext,
+  originalPosition = 0
 ): number => {
   const newWidth = originalDuration * beatWidth + dx;
-  return Math.max(1, Math.round(newWidth / stepWidth)) * 0.25;
+  const snappedDuration = Math.max(1, Math.round(newWidth / stepWidth)) * 0.25;
+  const maxDuration = Math.max(0.25, gridWidth / beatWidth - originalPosition);
+  return Math.min(maxDuration, snappedDuration);
+};
+
+export const getMovedGridTarget = (
+  dx: number,
+  dy: number,
+  originalPosition: number,
+  originalRow: number,
+  stepWidth: number,
+  rowHeight: number,
+  totalPitches: number,
+  maxPosition: number
+): { position: number; rowIdx: number } => {
+  'worklet';
+  const stepsDx = Math.round(dx / stepWidth);
+  const rowsDy = Math.round(dy / rowHeight);
+  const rowIdx = Math.max(0, Math.min(totalPitches - 1, originalRow + rowsDy));
+
+  return {
+    position: Math.min(
+      maxPosition,
+      Math.max(0, originalPosition + stepsDx * 0.25)
+    ),
+    rowIdx,
+  };
 };
 
 export const getMovedNoteTarget = (
@@ -112,22 +148,42 @@ export const getMovedNoteTarget = (
     endX,
     endY,
     originalPosition,
+    originalDuration,
+    originalNoteNumber,
   }: {
     startX: number;
     startY: number;
     endX: number;
     endY: number;
     originalPosition: number;
+    originalDuration: number;
+    originalNoteNumber: number;
   },
-  { stepWidth, rowHeight, totalPitches, pitchToMidi }: PianoRollMathContext
+  {
+    stepWidth,
+    beatWidth,
+    gridWidth,
+    rowHeight,
+    totalPitches,
+    pitchToMidi,
+  }: PianoRollMathContext
 ): { noteNumber: number; position: number } => {
-  const stepsDx = Math.round((endX - startX) / stepWidth);
-  const rowsDy = Math.round((endY - startY) / rowHeight);
-  const rowIdx = Math.floor(startY / rowHeight) + rowsDy;
-  const pitchIdx = totalPitches - 1 - clamp(rowIdx, 0, totalPitches - 1);
+  const pitchIdx = pitchToMidi.indexOf(originalNoteNumber);
+  const originalRow = totalPitches - 1 - clamp(pitchIdx, 0, totalPitches - 1);
+  const target = getMovedGridTarget(
+    endX - startX,
+    endY - startY,
+    originalPosition,
+    originalRow,
+    stepWidth,
+    rowHeight,
+    totalPitches,
+    Math.max(0, gridWidth / beatWidth - originalDuration)
+  );
+  const targetPitchIdx = totalPitches - 1 - target.rowIdx;
 
   return {
-    noteNumber: pitchToMidi[pitchIdx] ?? pitchIdx,
-    position: Math.max(0, originalPosition + stepsDx * 0.25),
+    noteNumber: pitchToMidi[targetPitchIdx] ?? targetPitchIdx,
+    position: target.position,
   };
 };
