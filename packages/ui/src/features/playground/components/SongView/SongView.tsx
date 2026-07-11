@@ -151,6 +151,8 @@ export interface SongViewProps {
   onExportAudio?: () => void | Promise<void>;
   /** Export bundle — still invoked directly from the Settings row. */
   onExportBundle?: () => void;
+  /** Share the current beat as a remixable link. Omit when unavailable. */
+  onShareBeat?: () => void | Promise<void>;
   /** Playground name shown in the export view. */
   playgroundName?: string;
   /** Artist/author name shown in the export view. */
@@ -164,6 +166,7 @@ export const SongView = memo(function SongView({
   onBack,
   onExportAudio,
   onExportBundle,
+  onShareBeat,
   playgroundName,
   artistName,
   coverImageUrl,
@@ -376,6 +379,7 @@ export const SongView = memo(function SongView({
           <SongSettings
             onExportAudio={() => setExportVisible(true)}
             onExportBundle={onExportBundle}
+            onShareBeat={onShareBeat}
           />
         )}
       </View>

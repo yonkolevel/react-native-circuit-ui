@@ -31,12 +31,14 @@ export interface SongSettingsProps {
    */
   onExportAudio?: () => void;
   onExportBundle?: () => void;
+  onShareBeat?: () => void | Promise<void>;
   a11yId?: string;
 }
 
 export const SongSettings = memo(function SongSettings({
   onExportAudio,
   onExportBundle,
+  onShareBeat,
   a11yId,
 }: SongSettingsProps) {
   const { colors } = useTheme();
@@ -137,8 +139,16 @@ export const SongSettings = memo(function SongSettings({
         />
       </SettingRow>
 
-      {/* Export buttons */}
+      {/* Export and share buttons */}
       <View style={styles.buttonGroup}>
+        {onShareBeat && (
+          <ActionButton
+            icon={Icons.more}
+            label="SHARE BEAT"
+            onPress={onShareBeat}
+            testID="shareBeatButton"
+          />
+        )}
         <ActionButton
           icon={Icons.audioTrack}
           label="EXPORT AUDIO"
@@ -188,11 +198,13 @@ function ActionButton({
   label,
   onPress,
   disabled = false,
+  testID,
 }: {
   icon: any;
   label: string;
-  onPress?: () => void;
+  onPress?: () => void | Promise<void>;
   disabled?: boolean;
+  testID?: string;
 }) {
   const { colors } = useTheme();
   return (
@@ -207,6 +219,7 @@ function ActionButton({
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{ disabled }}
+      testID={testID}
     >
       <Icon icon={icon} size={16} color={colors.mcWhite} />
       <Text variant="label" color={colors.mcWhite}>
