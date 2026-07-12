@@ -9,7 +9,15 @@
  * - Horizontally scrollable section headers + clips (right side)
  */
 import { Fragment, memo, useState } from 'react';
-import { View, ScrollView, Pressable, Alert, StyleSheet } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Pressable,
+  Modal,
+  Platform,
+  StyleSheet,
+  TextInput,
+} from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
@@ -46,6 +54,23 @@ export const GRID = {
 
 const { CELL_W, CELL_H, SECTION_H, GAP } = GRID;
 
+type SongMenuTarget =
+  | { kind: 'track'; trackId: number; title: string }
+  | { kind: 'confirmTrackDelete'; trackId: number; title: string }
+  | { kind: 'clip'; trackId: number; clipId: number }
+  | { kind: 'section'; sectionId: number; name: string }
+  | { kind: 'renameSection'; sectionId: number };
+
+const webContextMenu = (open: () => void) =>
+  Platform.OS === 'web'
+    ? ({
+        onContextMenu: (event: any) => {
+          event.preventDefault?.();
+          open();
+        },
+      } as any)
+    : {};
+
 // ── Clip Cell ───────────────────────────────────────────────────────────────
 
 const CLIP_PAD = 2;
@@ -56,6 +81,8 @@ const ClipCell = memo(function ClipCell({
   sampleCount,
   defaultOctave,
   onPress,
+  onLongPress,
+  testID,
 }: {
   clip?: Clip;
   color: string;
@@ -63,6 +90,8 @@ const ClipCell = memo(function ClipCell({
   sampleCount?: number;
   defaultOctave?: number;
   onPress?: () => void;
+  onLongPress?: () => void;
+  testID?: string;
 }) {
   if (!clip) {
     return (
@@ -100,6 +129,11 @@ const ClipCell = memo(function ClipCell({
   return (
     <Pressable
       onPress={onPress}
+      onLongPress={onLongPress}
+      testID={testID}
+      accessibilityLabel="Edit clip"
+      accessibilityRole="button"
+      {...webContextMenu(onLongPress ?? (() => {}))}
       style={[s.cell, { backgroundColor: color, borderRadius: 6 }]}
     >
       <View style={[s.cellContent, { padding: CLIP_PAD }]}>
@@ -174,6 +208,8 @@ export const SongView = memo(function SongView({
 }: SongViewProps) {
   const { colors } = useTheme();
   const [exportVisible, setExportVisible] = useState(false);
+  const [menuTarget, setMenuTarget] = useState<SongMenuTarget | null>(null);
+  const [sectionName, setSectionName] = useState('');
 
   // State — fine-grained selectors
   const currentTab = useSongContext((s) => s.currentTab);
@@ -189,7 +225,10 @@ export const SongView = memo(function SongView({
     addSection,
     showAddTrackMenu,
     removeTrack,
+    duplicateClip,
+    removeClip,
     renameSection,
+    duplicateSection,
     removeSection,
   } = useSongActions();
 
@@ -208,16 +247,30 @@ export const SongView = memo(function SongView({
               {tracks.map((t) => (
                 <Pressable
                   key={t.id}
-                  onLongPress={() => {
-                    Alert.alert('Delete Track', `Delete "${t.title}"?`, [
-                      { text: 'Cancel', style: 'cancel' },
-                      {
-                        text: 'Delete',
-                        style: 'destructive',
-                        onPress: () => removeTrack(t.id),
-                      },
-                    ]);
-                  }}
+                  onPress={() =>
+                    setMenuTarget({
+                      kind: 'track',
+                      trackId: t.id,
+                      title: t.title,
+                    })
+                  }
+                  onLongPress={() =>
+                    setMenuTarget({
+                      kind: 'track',
+                      trackId: t.id,
+                      title: t.title,
+                    })
+                  }
+                  testID={`track-label-${t.id}`}
+                  accessibilityLabel={`${t.title} track options`}
+                  accessibilityRole="button"
+                  {...webContextMenu(() =>
+                    setMenuTarget({
+                      kind: 'track',
+                      trackId: t.id,
+                      title: t.title,
+                    })
+                  )}
                   style={[
                     s.label,
                     {
@@ -258,64 +311,54 @@ export const SongView = memo(function SongView({
                 <View style={s.sections}>
                   {sections.map((sec, index) => {
                     const isActive = sec.id === currentSectionId;
+                    const openSectionMenu = () =>
+                      setMenuTarget({
+                        kind: 'section',
+                        sectionId: sec.id,
+                        name: sec.name || `Section ${index + 1}`,
+                      });
                     return (
-                      <Pressable
-                        key={sec.id}
-                        onPress={() => setCurrentSection(sec.id)}
-                        onLongPress={() => {
-                          Alert.alert(
-                            sec.name || `Section ${index + 1}`,
-                            undefined,
-                            [
-                              {
-                                text: 'Rename',
-                                onPress: () => {
-                                  Alert.prompt?.(
-                                    'Rename Section',
-                                    undefined,
-                                    (newName: string) => {
-                                      if (newName.trim())
-                                        renameSection(sec.id, newName.trim());
-                                    },
-                                    'plain-text',
-                                    sec.name || `Section ${index + 1}`
-                                  );
-                                  // Alert.prompt is iOS-only; on Android renameSection is called from settings
-                                },
-                              },
-                              ...(sections.length > 1
-                                ? [
-                                    {
-                                      text: 'Delete',
-                                      style: 'destructive' as const,
-                                      onPress: () => removeSection(sec.id),
-                                    },
-                                  ]
-                                : []),
-                              { text: 'Cancel', style: 'cancel' as const },
-                            ]
-                          );
-                        }}
-                        style={[
-                          s.secTab,
-                          {
-                            backgroundColor: isActive
-                              ? colors.mcWhite
-                              : colors.mcWhite3,
-                          },
-                        ]}
-                        accessibilityLabel={`Section ${sec.name || index + 1}`}
-                        accessibilityRole="button"
-                      >
-                        <Text
-                          variant="small"
-                          color={colors.mcBlack}
-                          center
-                          numberOfLines={1}
+                      <View key={sec.id} style={s.secTabContainer}>
+                        <Pressable
+                          onPress={() => setCurrentSection(sec.id)}
+                          onLongPress={openSectionMenu}
+                          testID={`section-${sec.id}`}
+                          {...webContextMenu(openSectionMenu)}
+                          style={[
+                            s.secTab,
+                            {
+                              backgroundColor: isActive
+                                ? colors.mcWhite
+                                : colors.mcWhite3,
+                            },
+                          ]}
+                          accessibilityLabel={`Section ${sec.name || index + 1}`}
+                          accessibilityRole="button"
                         >
-                          {sec.name || `${index + 1}`}
-                        </Text>
-                      </Pressable>
+                          <Text
+                            variant="small"
+                            color={colors.mcBlack}
+                            center
+                            numberOfLines={1}
+                          >
+                            {sec.name || `${index + 1}`}
+                          </Text>
+                        </Pressable>
+                        <Pressable
+                          onPress={openSectionMenu}
+                          style={s.itemMenuButton}
+                          hitSlop={10}
+                          accessibilityLabel={`Options for ${sec.name || `Section ${index + 1}`}`}
+                          accessibilityRole="button"
+                          testID={`section-menu-${sec.id}`}
+                        >
+                          <Icon
+                            icon={Icons.more}
+                            size={14}
+                            color={colors.mcBlack}
+                          />
+                        </Pressable>
+                      </View>
                     );
                   })}
                   <Pressable
@@ -332,31 +375,61 @@ export const SongView = memo(function SongView({
                         const clip = t.clips.find(
                           (c) => c.sectionID === sec.id
                         );
+                        const openClipMenu = clip
+                          ? () =>
+                              setMenuTarget({
+                                kind: 'clip',
+                                trackId: t.id,
+                                clipId: clip.id,
+                              })
+                          : undefined;
                         const cell = (
-                          <ClipCell
-                            clip={clip}
-                            color={INSTRUMENT_COLORS[t.type] || '#fff'}
-                            instrumentType={t.type}
-                            sampleCount={t.soundBank?.samples?.length}
-                            defaultOctave={t.soundBank?.defaultOctave}
-                            onPress={() => {
-                              if (clip) {
-                                openClipEditor(t.id, clip.id);
-                              } else {
-                                // Create clip then immediately open editor
-                                // Compute new ID using same logic as songStore.createClip
-                                const allClipIds = tracks.flatMap((tr) =>
-                                  tr.clips.map((c) => c.id)
-                                );
-                                const newClipId =
-                                  allClipIds.length > 0
-                                    ? Math.max(...allClipIds) + 1
-                                    : 0;
-                                createClip(t.id, sec.id);
-                                openClipEditor(t.id, newClipId);
+                          <View style={s.clipCellContainer}>
+                            <ClipCell
+                              clip={clip}
+                              color={INSTRUMENT_COLORS[t.type] || '#fff'}
+                              instrumentType={t.type}
+                              sampleCount={t.soundBank?.samples?.length}
+                              defaultOctave={t.soundBank?.defaultOctave}
+                              testID={
+                                clip ? `clip-${t.id}-${clip.id}` : undefined
                               }
-                            }}
-                          />
+                              onLongPress={openClipMenu}
+                              onPress={() => {
+                                if (clip) {
+                                  openClipEditor(t.id, clip.id);
+                                } else {
+                                  // Create clip then immediately open editor
+                                  // Compute new ID using same logic as songStore.createClip
+                                  const allClipIds = tracks.flatMap((tr) =>
+                                    tr.clips.map((c) => c.id)
+                                  );
+                                  const newClipId =
+                                    allClipIds.length > 0
+                                      ? Math.max(...allClipIds) + 1
+                                      : 0;
+                                  createClip(t.id, sec.id);
+                                  openClipEditor(t.id, newClipId);
+                                }
+                              }}
+                            />
+                            {clip && openClipMenu && (
+                              <Pressable
+                                onPress={openClipMenu}
+                                style={s.itemMenuButton}
+                                hitSlop={10}
+                                accessibilityLabel="Clip options"
+                                accessibilityRole="button"
+                                testID={`clip-menu-${t.id}-${clip.id}`}
+                              >
+                                <Icon
+                                  icon={Icons.more}
+                                  size={14}
+                                  color={colors.mcBlack}
+                                />
+                              </Pressable>
+                            )}
+                          </View>
                         );
 
                         return trackIndex === 0 && sectionIndex === 0 ? (
@@ -385,6 +458,218 @@ export const SongView = memo(function SongView({
       </View>
 
       {showTab && <SongMixerTabBar />}
+
+      <Modal
+        visible={menuTarget !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setMenuTarget(null)}
+      >
+        <View style={s.menuLayer}>
+          <Pressable
+            style={s.menuBackdrop}
+            onPress={() => setMenuTarget(null)}
+            accessible={false}
+            testID="close-song-context-menu"
+          />
+          <View
+            style={s.menuCard}
+            accessibilityViewIsModal
+            testID="song-context-menu"
+          >
+            {menuTarget?.kind === 'track' &&
+              (tracks.length > 1 ? (
+                <Pressable
+                  style={s.menuAction}
+                  onPress={() =>
+                    setMenuTarget({
+                      kind: 'confirmTrackDelete',
+                      trackId: menuTarget.trackId,
+                      title: menuTarget.title,
+                    })
+                  }
+                  accessibilityLabel="Delete track"
+                  accessibilityRole="button"
+                  testID="delete-track-action"
+                >
+                  <Text variant="label" color={colors.mcPink}>
+                    Delete Track
+                  </Text>
+                </Pressable>
+              ) : (
+                <Text variant="label" color={colors.mcWhite}>
+                  Cannot delete last track
+                </Text>
+              ))}
+            {menuTarget?.kind === 'confirmTrackDelete' && (
+              <>
+                <Text variant="label" color={colors.mcWhite}>
+                  Delete “{menuTarget.title}” and all its clips?
+                </Text>
+                <Pressable
+                  style={s.menuAction}
+                  onPress={() => {
+                    removeTrack(menuTarget.trackId);
+                    setMenuTarget(null);
+                  }}
+                  accessibilityLabel="Confirm delete track"
+                  accessibilityRole="button"
+                  testID="confirm-delete-track"
+                >
+                  <Text variant="label" color={colors.mcPink}>
+                    Delete
+                  </Text>
+                </Pressable>
+              </>
+            )}
+            {menuTarget?.kind === 'clip' && (
+              <>
+                <Pressable
+                  style={s.menuAction}
+                  onPress={() => {
+                    openClipEditor(menuTarget.trackId, menuTarget.clipId);
+                    setMenuTarget(null);
+                  }}
+                  accessibilityLabel="Edit clip"
+                  accessibilityRole="button"
+                  testID="edit-clip-action"
+                >
+                  <Text variant="label" color={colors.mcWhite}>
+                    Edit Clip
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={s.menuAction}
+                  onPress={() => {
+                    duplicateClip(menuTarget.trackId, menuTarget.clipId);
+                    setMenuTarget(null);
+                  }}
+                  accessibilityLabel="Duplicate clip"
+                  accessibilityRole="button"
+                  testID="duplicate-clip-action"
+                >
+                  <Text variant="label" color={colors.mcWhite}>
+                    Duplicate
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={s.menuAction}
+                  onPress={() => {
+                    removeClip(menuTarget.trackId, menuTarget.clipId);
+                    setMenuTarget(null);
+                  }}
+                  accessibilityLabel="Delete clip"
+                  accessibilityRole="button"
+                  testID="delete-clip-action"
+                >
+                  <Text variant="label" color={colors.mcPink}>
+                    Delete
+                  </Text>
+                </Pressable>
+              </>
+            )}
+            {menuTarget?.kind === 'section' && (
+              <>
+                <Pressable
+                  style={s.menuAction}
+                  onPress={() => {
+                    setSectionName(menuTarget.name);
+                    setMenuTarget({
+                      kind: 'renameSection',
+                      sectionId: menuTarget.sectionId,
+                    });
+                  }}
+                  accessibilityLabel="Rename section"
+                  accessibilityRole="button"
+                  testID="rename-section-action"
+                >
+                  <Text variant="label" color={colors.mcWhite}>
+                    Edit Title
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={s.menuAction}
+                  onPress={() => {
+                    duplicateSection(menuTarget.sectionId);
+                    setMenuTarget(null);
+                  }}
+                  accessibilityLabel="Duplicate section"
+                  accessibilityRole="button"
+                  testID="duplicate-section-action"
+                >
+                  <Text variant="label" color={colors.mcWhite}>
+                    Duplicate
+                  </Text>
+                </Pressable>
+                {sections.length > 1 && (
+                  <Pressable
+                    style={s.menuAction}
+                    onPress={() => {
+                      removeSection(menuTarget.sectionId);
+                      setMenuTarget(null);
+                    }}
+                    accessibilityLabel="Delete section"
+                    accessibilityRole="button"
+                    testID="delete-section-action"
+                  >
+                    <Text variant="label" color={colors.mcPink}>
+                      Delete
+                    </Text>
+                  </Pressable>
+                )}
+              </>
+            )}
+            {menuTarget?.kind === 'renameSection' && (
+              <>
+                <TextInput
+                  value={sectionName}
+                  onChangeText={setSectionName}
+                  placeholder="Section name"
+                  accessibilityLabel="Section name"
+                  testID="section-name-input"
+                  style={s.menuInput}
+                  autoFocus
+                  selectTextOnFocus
+                />
+                <Pressable
+                  style={s.menuAction}
+                  onPress={() => {
+                    if (sectionName.trim())
+                      renameSection(menuTarget.sectionId, sectionName.trim());
+                    setMenuTarget(null);
+                  }}
+                  accessibilityLabel="Save section name"
+                  accessibilityRole="button"
+                  testID="save-section-name"
+                >
+                  <Text variant="label" color={colors.mcWhite}>
+                    Save
+                  </Text>
+                </Pressable>
+              </>
+            )}
+            <Pressable
+              style={s.menuAction}
+              onPress={() => setMenuTarget(null)}
+              accessibilityLabel={
+                menuTarget?.kind === 'confirmTrackDelete' ||
+                menuTarget?.kind === 'renameSection'
+                  ? 'Cancel'
+                  : 'Close menu'
+              }
+              accessibilityRole="button"
+              testID="close-song-menu-action"
+            >
+              <Text variant="label" color={colors.mcWhite3}>
+                {menuTarget?.kind === 'confirmTrackDelete' ||
+                menuTarget?.kind === 'renameSection'
+                  ? 'Cancel'
+                  : 'Close'}
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
 
       <ExportAudioView
         visible={exportVisible}
@@ -422,6 +707,11 @@ const s = StyleSheet.create({
     gap: GAP,
     marginBottom: GAP,
   },
+  secTabContainer: {
+    width: CELL_W,
+    height: SECTION_H,
+    position: 'relative',
+  },
   secTab: {
     width: CELL_W,
     height: SECTION_H,
@@ -458,6 +748,47 @@ const s = StyleSheet.create({
     borderWidth: 1,
   },
   cellContent: { flex: 1, width: '100%', position: 'relative' },
+  clipCellContainer: {
+    width: CELL_W,
+    height: CELL_H,
+    position: 'relative',
+  },
+  itemMenuButton: {
+    position: 'absolute',
+    top: 2,
+    right: 2,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  menuLayer: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 24,
+  },
+  menuBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  menuCard: {
+    width: '100%',
+    maxWidth: 420,
+    alignSelf: 'center',
+    padding: 20,
+    borderRadius: 6,
+    backgroundColor: '#1A1C20',
+    gap: 8,
+  },
+  menuAction: { paddingVertical: 12 },
+  menuInput: {
+    color: '#F7F7F7',
+    borderWidth: 1,
+    borderColor: 'rgba(247,247,247,0.3)',
+    borderRadius: 6,
+    padding: 12,
+  },
   addTrack: {
     width: CELL_W,
     height: CELL_H,

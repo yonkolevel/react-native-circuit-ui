@@ -582,6 +582,7 @@ exports[`PlaygroundsDashboard snapshots matches snapshot refresh with playground
                 "padding": 12,
               }
             }
+            testID="playgroundMenuButton_0"
           >
             <View>
               <View
@@ -790,6 +791,7 @@ exports[`PlaygroundsDashboard snapshots matches snapshot refresh with playground
                 "padding": 12,
               }
             }
+            testID="playgroundMenuButton_1"
           >
             <View>
               <View
@@ -1136,6 +1138,7 @@ exports[`PlaygroundsDashboard snapshots matches snapshot with playgrounds 1`] = 
                 "padding": 12,
               }
             }
+            testID="playgroundMenuButton_0"
           >
             <View>
               <View
@@ -1344,6 +1347,7 @@ exports[`PlaygroundsDashboard snapshots matches snapshot with playgrounds 1`] = 
                 "padding": 12,
               }
             }
+            testID="playgroundMenuButton_1"
           >
             <View>
               <View
@@ -1552,6 +1556,7 @@ exports[`PlaygroundsDashboard snapshots matches snapshot with playgrounds 1`] = 
                 "padding": 12,
               }
             }
+            testID="playgroundMenuButton_2"
           >
             <View>
               <View

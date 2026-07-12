@@ -70,6 +70,21 @@ describe('PlaygroundsDashboard behavior', () => {
     expect(onSelect).toHaveBeenCalled();
   });
 
+  it('calls onMenuPress from a stable indexed menu trigger', () => {
+    const onMenuPress = jest.fn();
+    const playgrounds = createMockPlaygroundsList(2);
+    const { getByTestId } = renderWithTheme(
+      <PlaygroundsDashboard
+        playgrounds={playgrounds}
+        onMenuPress={onMenuPress}
+      />
+    );
+
+    fireEvent.press(getByTestId('playgroundMenuButton_1'));
+
+    expect(onMenuPress).toHaveBeenCalledWith(playgrounds[1]!.id);
+  });
+
   it('calls onCreate when tapping + New', () => {
     const onCreate = jest.fn();
     const playgrounds = createMockPlaygroundsList(1);
