@@ -4698,6 +4698,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
           }
         />
         <View
+          accessibilityLabel="Drums track options"
+          accessibilityRole="button"
           accessibilityState={
             {
               "busy": undefined,
@@ -4741,6 +4743,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
               },
             ]
           }
+          testID="track-label-1"
         >
           <View>
             <View
@@ -4773,6 +4776,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
           </Text>
         </View>
         <View
+          accessibilityLabel="Keys track options"
+          accessibilityRole="button"
           accessibilityState={
             {
               "busy": undefined,
@@ -4816,6 +4821,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
               },
             ]
           }
+          testID="track-label-2"
         >
           <View>
             <View
@@ -4848,6 +4854,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
           </Text>
         </View>
         <View
+          accessibilityLabel="Bass track options"
+          accessibilityRole="button"
           accessibilityState={
             {
               "busy": undefined,
@@ -4891,6 +4899,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
               },
             ]
           }
+          testID="track-label-3"
         >
           <View>
             <View
@@ -5010,144 +5019,276 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
               }
             >
               <View
-                accessibilityLabel="Section Intro"
-                accessibilityRole="button"
-                accessibilityState={
-                  {
-                    "busy": undefined,
-                    "checked": undefined,
-                    "disabled": undefined,
-                    "expanded": undefined,
-                    "selected": undefined,
-                  }
-                }
-                accessibilityValue={
-                  {
-                    "max": undefined,
-                    "min": undefined,
-                    "now": undefined,
-                    "text": undefined,
-                  }
-                }
-                accessible={true}
-                collapsable={false}
-                focusable={true}
-                onBlur={[Function]}
-                onClick={[Function]}
-                onFocus={[Function]}
-                onResponderGrant={[Function]}
-                onResponderMove={[Function]}
-                onResponderRelease={[Function]}
-                onResponderTerminate={[Function]}
-                onResponderTerminationRequest={[Function]}
-                onStartShouldSetResponder={[Function]}
                 style={
-                  [
-                    {
-                      "alignItems": "center",
-                      "height": 50,
-                      "justifyContent": "flex-start",
-                      "padding": 4,
-                      "width": 80,
-                    },
-                    {
-                      "backgroundColor": "#F7F7F7",
-                    },
-                  ]
+                  {
+                    "height": 50,
+                    "position": "relative",
+                    "width": 80,
+                  }
                 }
               >
-                <Text
-                  accessibilityRole="text"
-                  numberOfLines={1}
+                <View
+                  accessibilityLabel="Section Intro"
+                  accessibilityRole="button"
+                  accessibilityState={
+                    {
+                      "busy": undefined,
+                      "checked": undefined,
+                      "disabled": undefined,
+                      "expanded": undefined,
+                      "selected": undefined,
+                    }
+                  }
+                  accessibilityValue={
+                    {
+                      "max": undefined,
+                      "min": undefined,
+                      "now": undefined,
+                      "text": undefined,
+                    }
+                  }
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onFocus={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
                   style={
                     [
                       {
-                        "fontFamily": "System",
-                        "fontSize": 12,
-                        "fontWeight": "400",
-                        "lineHeight": 18,
+                        "alignItems": "center",
+                        "height": 50,
+                        "justifyContent": "flex-start",
+                        "padding": 4,
+                        "width": 80,
                       },
                       {
-                        "color": "#000000",
-                      },
-                      {
-                        "textAlign": "center",
+                        "backgroundColor": "#F7F7F7",
                       },
                     ]
                   }
+                  testID="section-1"
                 >
-                  Intro
-                </Text>
+                  <Text
+                    accessibilityRole="text"
+                    numberOfLines={1}
+                    style={
+                      [
+                        {
+                          "fontFamily": "System",
+                          "fontSize": 12,
+                          "fontWeight": "400",
+                          "lineHeight": 18,
+                        },
+                        {
+                          "color": "#000000",
+                        },
+                        {
+                          "textAlign": "center",
+                        },
+                      ]
+                    }
+                  >
+                    Intro
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Options for Intro"
+                  accessibilityRole="button"
+                  accessibilityState={
+                    {
+                      "busy": undefined,
+                      "checked": undefined,
+                      "disabled": undefined,
+                      "expanded": undefined,
+                      "selected": undefined,
+                    }
+                  }
+                  accessibilityValue={
+                    {
+                      "max": undefined,
+                      "min": undefined,
+                      "now": undefined,
+                      "text": undefined,
+                    }
+                  }
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  hitSlop={10}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onFocus={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    {
+                      "alignItems": "center",
+                      "height": 24,
+                      "justifyContent": "center",
+                      "position": "absolute",
+                      "right": 2,
+                      "top": 2,
+                      "width": 24,
+                      "zIndex": 1,
+                    }
+                  }
+                  testID="section-menu-1"
+                >
+                  <View>
+                    <View
+                      color="#000000"
+                      size={14}
+                      testID="lucide-MoreHorizontal"
+                    />
+                  </View>
+                </View>
               </View>
               <View
-                accessibilityLabel="Section Verse"
-                accessibilityRole="button"
-                accessibilityState={
-                  {
-                    "busy": undefined,
-                    "checked": undefined,
-                    "disabled": undefined,
-                    "expanded": undefined,
-                    "selected": undefined,
-                  }
-                }
-                accessibilityValue={
-                  {
-                    "max": undefined,
-                    "min": undefined,
-                    "now": undefined,
-                    "text": undefined,
-                  }
-                }
-                accessible={true}
-                collapsable={false}
-                focusable={true}
-                onBlur={[Function]}
-                onClick={[Function]}
-                onFocus={[Function]}
-                onResponderGrant={[Function]}
-                onResponderMove={[Function]}
-                onResponderRelease={[Function]}
-                onResponderTerminate={[Function]}
-                onResponderTerminationRequest={[Function]}
-                onStartShouldSetResponder={[Function]}
                 style={
-                  [
-                    {
-                      "alignItems": "center",
-                      "height": 50,
-                      "justifyContent": "flex-start",
-                      "padding": 4,
-                      "width": 80,
-                    },
-                    {
-                      "backgroundColor": "rgba(247, 247, 247, 0.60)",
-                    },
-                  ]
+                  {
+                    "height": 50,
+                    "position": "relative",
+                    "width": 80,
+                  }
                 }
               >
-                <Text
-                  accessibilityRole="text"
-                  numberOfLines={1}
+                <View
+                  accessibilityLabel="Section Verse"
+                  accessibilityRole="button"
+                  accessibilityState={
+                    {
+                      "busy": undefined,
+                      "checked": undefined,
+                      "disabled": undefined,
+                      "expanded": undefined,
+                      "selected": undefined,
+                    }
+                  }
+                  accessibilityValue={
+                    {
+                      "max": undefined,
+                      "min": undefined,
+                      "now": undefined,
+                      "text": undefined,
+                    }
+                  }
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onFocus={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
                   style={
                     [
                       {
-                        "fontFamily": "System",
-                        "fontSize": 12,
-                        "fontWeight": "400",
-                        "lineHeight": 18,
+                        "alignItems": "center",
+                        "height": 50,
+                        "justifyContent": "flex-start",
+                        "padding": 4,
+                        "width": 80,
                       },
                       {
-                        "color": "#000000",
-                      },
-                      {
-                        "textAlign": "center",
+                        "backgroundColor": "rgba(247, 247, 247, 0.60)",
                       },
                     ]
                   }
+                  testID="section-2"
                 >
-                  Verse
-                </Text>
+                  <Text
+                    accessibilityRole="text"
+                    numberOfLines={1}
+                    style={
+                      [
+                        {
+                          "fontFamily": "System",
+                          "fontSize": 12,
+                          "fontWeight": "400",
+                          "lineHeight": 18,
+                        },
+                        {
+                          "color": "#000000",
+                        },
+                        {
+                          "textAlign": "center",
+                        },
+                      ]
+                    }
+                  >
+                    Verse
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Options for Verse"
+                  accessibilityRole="button"
+                  accessibilityState={
+                    {
+                      "busy": undefined,
+                      "checked": undefined,
+                      "disabled": undefined,
+                      "expanded": undefined,
+                      "selected": undefined,
+                    }
+                  }
+                  accessibilityValue={
+                    {
+                      "max": undefined,
+                      "min": undefined,
+                      "now": undefined,
+                      "text": undefined,
+                    }
+                  }
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  hitSlop={10}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onFocus={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    {
+                      "alignItems": "center",
+                      "height": 24,
+                      "justifyContent": "center",
+                      "position": "absolute",
+                      "right": 2,
+                      "top": 2,
+                      "width": 24,
+                      "zIndex": 1,
+                    }
+                  }
+                  testID="section-menu-2"
+                >
+                  <View>
+                    <View
+                      color="#000000"
+                      size={14}
+                      testID="lucide-MoreHorizontal"
+                    />
+                  </View>
+                </View>
               </View>
               <View
                 accessibilityState={
@@ -5231,6 +5372,378 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   }
                 >
                   <View
+                    style={
+                      {
+                        "height": 60,
+                        "position": "relative",
+                        "width": 80,
+                      }
+                    }
+                  >
+                    <View
+                      accessibilityLabel="Edit clip"
+                      accessibilityRole="button"
+                      accessibilityState={
+                        {
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                      style={
+                        [
+                          {
+                            "alignItems": "center",
+                            "height": 60,
+                            "justifyContent": "center",
+                            "padding": 4,
+                            "width": 80,
+                          },
+                          {
+                            "backgroundColor": "#1AFFA8",
+                            "borderRadius": 6,
+                          },
+                        ]
+                      }
+                      testID="clip-1-1"
+                    >
+                      <View
+                        style={
+                          [
+                            {
+                              "flex": 1,
+                              "position": "relative",
+                              "width": "100%",
+                            },
+                            {
+                              "padding": 2,
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 2,
+                              "height": 3.6,
+                              "left": 0,
+                              "position": "absolute",
+                              "top": 44,
+                              "width": 2,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 2,
+                              "height": 3.6,
+                              "left": 8.5,
+                              "position": "absolute",
+                              "top": 44,
+                              "width": 2,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 2,
+                              "height": 3.6,
+                              "left": 4.25,
+                              "position": "absolute",
+                              "top": 36,
+                              "width": 2,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 2,
+                              "height": 3.6,
+                              "left": 12.75,
+                              "position": "absolute",
+                              "top": 36,
+                              "width": 2,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 2,
+                              "height": 3.6,
+                              "left": 0,
+                              "position": "absolute",
+                              "top": 20,
+                              "width": 2,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 2,
+                              "height": 3.6,
+                              "left": 2.125,
+                              "position": "absolute",
+                              "top": 20,
+                              "width": 2,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 2,
+                              "height": 3.6,
+                              "left": 4.25,
+                              "position": "absolute",
+                              "top": 20,
+                              "width": 2,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 2,
+                              "height": 3.6,
+                              "left": 6.375,
+                              "position": "absolute",
+                              "top": 20,
+                              "width": 2,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 2,
+                              "height": 3.6,
+                              "left": 8.5,
+                              "position": "absolute",
+                              "top": 20,
+                              "width": 2,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 2,
+                              "height": 3.6,
+                              "left": 10.625,
+                              "position": "absolute",
+                              "top": 20,
+                              "width": 2,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 2,
+                              "height": 3.6,
+                              "left": 12.75,
+                              "position": "absolute",
+                              "top": 20,
+                              "width": 2,
+                            }
+                          }
+                        />
+                        <View
+                          style={
+                            {
+                              "backgroundColor": "rgba(26,28,32,0.4)",
+                              "borderRadius": 2,
+                              "height": 3.6,
+                              "left": 14.875,
+                              "position": "absolute",
+                              "top": 20,
+                              "width": 2,
+                            }
+                          }
+                        />
+                      </View>
+                    </View>
+                    <View
+                      accessibilityLabel="Clip options"
+                      accessibilityRole="button"
+                      accessibilityState={
+                        {
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      hitSlop={10}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                      style={
+                        {
+                          "alignItems": "center",
+                          "height": 24,
+                          "justifyContent": "center",
+                          "position": "absolute",
+                          "right": 2,
+                          "top": 2,
+                          "width": 24,
+                          "zIndex": 1,
+                        }
+                      }
+                      testID="clip-menu-1-1"
+                    >
+                      <View>
+                        <View
+                          color="#000000"
+                          size={14}
+                          testID="lucide-MoreHorizontal"
+                        />
+                      </View>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  style={
+                    {
+                      "height": 60,
+                      "position": "relative",
+                      "width": 80,
+                    }
+                  }
+                >
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderWidth": 1,
+                          "height": 60,
+                          "justifyContent": "center",
+                          "padding": 4,
+                          "width": 80,
+                        },
+                        {
+                          "borderColor": "#1AFFA8",
+                        },
+                      ]
+                    }
+                  >
+                    <View>
+                      <View
+                        color="#1AFFA8"
+                        size={17}
+                        testID="lucide-Plus"
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+              <View
+                style={
+                  {
+                    "flexDirection": "row",
+                    "gap": 4,
+                    "height": 60,
+                  }
+                }
+              >
+                <View
+                  style={
+                    {
+                      "height": 60,
+                      "position": "relative",
+                      "width": 80,
+                    }
+                  }
+                >
+                  <View
+                    accessibilityLabel="Edit clip"
+                    accessibilityRole="button"
                     accessibilityState={
                       {
                         "busy": undefined,
@@ -5270,11 +5783,12 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           "width": 80,
                         },
                         {
-                          "backgroundColor": "#1AFFA8",
+                          "backgroundColor": "#FF6C3A",
                           "borderRadius": 6,
                         },
                       ]
                     }
+                    testID="clip-2-3"
                   >
                     <View
                       style={
@@ -5295,11 +5809,11 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           {
                             "backgroundColor": "rgba(26,28,32,0.4)",
                             "borderRadius": 2,
-                            "height": 3.6,
+                            "height": 2.7,
                             "left": 0,
                             "position": "absolute",
-                            "top": 44,
-                            "width": 2,
+                            "top": 45,
+                            "width": 4.25,
                           }
                         }
                       />
@@ -5308,24 +5822,11 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           {
                             "backgroundColor": "rgba(26,28,32,0.4)",
                             "borderRadius": 2,
-                            "height": 3.6,
-                            "left": 8.5,
-                            "position": "absolute",
-                            "top": 44,
-                            "width": 2,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 2,
-                            "height": 3.6,
+                            "height": 2.7,
                             "left": 4.25,
                             "position": "absolute",
-                            "top": 36,
-                            "width": 2,
+                            "top": 37,
+                            "width": 4.25,
                           }
                         }
                       />
@@ -5334,76 +5835,11 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           {
                             "backgroundColor": "rgba(26,28,32,0.4)",
                             "borderRadius": 2,
-                            "height": 3.6,
-                            "left": 12.75,
-                            "position": "absolute",
-                            "top": 36,
-                            "width": 2,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 2,
-                            "height": 3.6,
-                            "left": 0,
-                            "position": "absolute",
-                            "top": 20,
-                            "width": 2,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 2,
-                            "height": 3.6,
-                            "left": 2.125,
-                            "position": "absolute",
-                            "top": 20,
-                            "width": 2,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 2,
-                            "height": 3.6,
-                            "left": 4.25,
-                            "position": "absolute",
-                            "top": 20,
-                            "width": 2,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 2,
-                            "height": 3.6,
-                            "left": 6.375,
-                            "position": "absolute",
-                            "top": 20,
-                            "width": 2,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 2,
-                            "height": 3.6,
+                            "height": 2.7,
                             "left": 8.5,
                             "position": "absolute",
-                            "top": 20,
-                            "width": 2,
+                            "top": 31,
+                            "width": 4.25,
                           }
                         }
                       />
@@ -5412,273 +5848,134 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                           {
                             "backgroundColor": "rgba(26,28,32,0.4)",
                             "borderRadius": 2,
-                            "height": 3.6,
-                            "left": 10.625,
-                            "position": "absolute",
-                            "top": 20,
-                            "width": 2,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 2,
-                            "height": 3.6,
+                            "height": 2.7,
                             "left": 12.75,
                             "position": "absolute",
-                            "top": 20,
-                            "width": 2,
-                          }
-                        }
-                      />
-                      <View
-                        style={
-                          {
-                            "backgroundColor": "rgba(26,28,32,0.4)",
-                            "borderRadius": 2,
-                            "height": 3.6,
-                            "left": 14.875,
-                            "position": "absolute",
-                            "top": 20,
-                            "width": 2,
+                            "top": 21,
+                            "width": 4.25,
                           }
                         }
                       />
                     </View>
                   </View>
-                </View>
-                <View
-                  accessibilityState={
-                    {
-                      "busy": undefined,
-                      "checked": undefined,
-                      "disabled": undefined,
-                      "expanded": undefined,
-                      "selected": undefined,
+                  <View
+                    accessibilityLabel="Clip options"
+                    accessibilityRole="button"
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
                     }
-                  }
-                  accessibilityValue={
-                    {
-                      "max": undefined,
-                      "min": undefined,
-                      "now": undefined,
-                      "text": undefined,
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
                     }
-                  }
-                  accessible={true}
-                  collapsable={false}
-                  focusable={true}
-                  onBlur={[Function]}
-                  onClick={[Function]}
-                  onFocus={[Function]}
-                  onResponderGrant={[Function]}
-                  onResponderMove={[Function]}
-                  onResponderRelease={[Function]}
-                  onResponderTerminate={[Function]}
-                  onResponderTerminationRequest={[Function]}
-                  onStartShouldSetResponder={[Function]}
-                  style={
-                    [
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    hitSlop={10}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
                       {
                         "alignItems": "center",
-                        "borderWidth": 1,
-                        "height": 60,
+                        "height": 24,
                         "justifyContent": "center",
-                        "padding": 4,
-                        "width": 80,
-                      },
-                      {
-                        "borderColor": "#1AFFA8",
-                      },
-                    ]
-                  }
-                >
-                  <View>
-                    <View
-                      color="#1AFFA8"
-                      size={17}
-                      testID="lucide-Plus"
-                    />
+                        "position": "absolute",
+                        "right": 2,
+                        "top": 2,
+                        "width": 24,
+                        "zIndex": 1,
+                      }
+                    }
+                    testID="clip-menu-2-3"
+                  >
+                    <View>
+                      <View
+                        color="#000000"
+                        size={14}
+                        testID="lucide-MoreHorizontal"
+                      />
+                    </View>
                   </View>
                 </View>
-              </View>
-              <View
-                style={
-                  {
-                    "flexDirection": "row",
-                    "gap": 4,
-                    "height": 60,
-                  }
-                }
-              >
                 <View
-                  accessibilityState={
-                    {
-                      "busy": undefined,
-                      "checked": undefined,
-                      "disabled": undefined,
-                      "expanded": undefined,
-                      "selected": undefined,
-                    }
-                  }
-                  accessibilityValue={
-                    {
-                      "max": undefined,
-                      "min": undefined,
-                      "now": undefined,
-                      "text": undefined,
-                    }
-                  }
-                  accessible={true}
-                  collapsable={false}
-                  focusable={true}
-                  onBlur={[Function]}
-                  onClick={[Function]}
-                  onFocus={[Function]}
-                  onResponderGrant={[Function]}
-                  onResponderMove={[Function]}
-                  onResponderRelease={[Function]}
-                  onResponderTerminate={[Function]}
-                  onResponderTerminationRequest={[Function]}
-                  onStartShouldSetResponder={[Function]}
                   style={
-                    [
-                      {
-                        "alignItems": "center",
-                        "height": 60,
-                        "justifyContent": "center",
-                        "padding": 4,
-                        "width": 80,
-                      },
-                      {
-                        "backgroundColor": "#FF6C3A",
-                        "borderRadius": 6,
-                      },
-                    ]
+                    {
+                      "height": 60,
+                      "position": "relative",
+                      "width": 80,
+                    }
                   }
                 >
                   <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
                     style={
                       [
                         {
-                          "flex": 1,
-                          "position": "relative",
-                          "width": "100%",
+                          "alignItems": "center",
+                          "borderWidth": 1,
+                          "height": 60,
+                          "justifyContent": "center",
+                          "padding": 4,
+                          "width": 80,
                         },
                         {
-                          "padding": 2,
+                          "borderColor": "#FF6C3A",
                         },
                       ]
                     }
                   >
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 2.7,
-                          "left": 0,
-                          "position": "absolute",
-                          "top": 45,
-                          "width": 4.25,
-                        }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 2.7,
-                          "left": 4.25,
-                          "position": "absolute",
-                          "top": 37,
-                          "width": 4.25,
-                        }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 2.7,
-                          "left": 8.5,
-                          "position": "absolute",
-                          "top": 31,
-                          "width": 4.25,
-                        }
-                      }
-                    />
-                    <View
-                      style={
-                        {
-                          "backgroundColor": "rgba(26,28,32,0.4)",
-                          "borderRadius": 2,
-                          "height": 2.7,
-                          "left": 12.75,
-                          "position": "absolute",
-                          "top": 21,
-                          "width": 4.25,
-                        }
-                      }
-                    />
-                  </View>
-                </View>
-                <View
-                  accessibilityState={
-                    {
-                      "busy": undefined,
-                      "checked": undefined,
-                      "disabled": undefined,
-                      "expanded": undefined,
-                      "selected": undefined,
-                    }
-                  }
-                  accessibilityValue={
-                    {
-                      "max": undefined,
-                      "min": undefined,
-                      "now": undefined,
-                      "text": undefined,
-                    }
-                  }
-                  accessible={true}
-                  collapsable={false}
-                  focusable={true}
-                  onBlur={[Function]}
-                  onClick={[Function]}
-                  onFocus={[Function]}
-                  onResponderGrant={[Function]}
-                  onResponderMove={[Function]}
-                  onResponderRelease={[Function]}
-                  onResponderTerminate={[Function]}
-                  onResponderTerminationRequest={[Function]}
-                  onStartShouldSetResponder={[Function]}
-                  style={
-                    [
-                      {
-                        "alignItems": "center",
-                        "borderWidth": 1,
-                        "height": 60,
-                        "justifyContent": "center",
-                        "padding": 4,
-                        "width": 80,
-                      },
-                      {
-                        "borderColor": "#FF6C3A",
-                      },
-                    ]
-                  }
-                >
-                  <View>
-                    <View
-                      color="#FF6C3A"
-                      size={17}
-                      testID="lucide-Plus"
-                    />
+                    <View>
+                      <View
+                        color="#FF6C3A"
+                        size={17}
+                        testID="lucide-Plus"
+                      />
+                    </View>
                   </View>
                 </View>
               </View>
@@ -5692,111 +5989,131 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                 }
               >
                 <View
-                  accessibilityState={
-                    {
-                      "busy": undefined,
-                      "checked": undefined,
-                      "disabled": undefined,
-                      "expanded": undefined,
-                      "selected": undefined,
-                    }
-                  }
-                  accessibilityValue={
-                    {
-                      "max": undefined,
-                      "min": undefined,
-                      "now": undefined,
-                      "text": undefined,
-                    }
-                  }
-                  accessible={true}
-                  collapsable={false}
-                  focusable={true}
-                  onBlur={[Function]}
-                  onClick={[Function]}
-                  onFocus={[Function]}
-                  onResponderGrant={[Function]}
-                  onResponderMove={[Function]}
-                  onResponderRelease={[Function]}
-                  onResponderTerminate={[Function]}
-                  onResponderTerminationRequest={[Function]}
-                  onStartShouldSetResponder={[Function]}
                   style={
-                    [
-                      {
-                        "alignItems": "center",
-                        "borderWidth": 1,
-                        "height": 60,
-                        "justifyContent": "center",
-                        "padding": 4,
-                        "width": 80,
-                      },
-                      {
-                        "borderColor": "#3AA0FF",
-                      },
-                    ]
+                    {
+                      "height": 60,
+                      "position": "relative",
+                      "width": 80,
+                    }
                   }
                 >
-                  <View>
-                    <View
-                      color="#3AA0FF"
-                      size={17}
-                      testID="lucide-Plus"
-                    />
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderWidth": 1,
+                          "height": 60,
+                          "justifyContent": "center",
+                          "padding": 4,
+                          "width": 80,
+                        },
+                        {
+                          "borderColor": "#3AA0FF",
+                        },
+                      ]
+                    }
+                  >
+                    <View>
+                      <View
+                        color="#3AA0FF"
+                        size={17}
+                        testID="lucide-Plus"
+                      />
+                    </View>
                   </View>
                 </View>
                 <View
-                  accessibilityState={
-                    {
-                      "busy": undefined,
-                      "checked": undefined,
-                      "disabled": undefined,
-                      "expanded": undefined,
-                      "selected": undefined,
-                    }
-                  }
-                  accessibilityValue={
-                    {
-                      "max": undefined,
-                      "min": undefined,
-                      "now": undefined,
-                      "text": undefined,
-                    }
-                  }
-                  accessible={true}
-                  collapsable={false}
-                  focusable={true}
-                  onBlur={[Function]}
-                  onClick={[Function]}
-                  onFocus={[Function]}
-                  onResponderGrant={[Function]}
-                  onResponderMove={[Function]}
-                  onResponderRelease={[Function]}
-                  onResponderTerminate={[Function]}
-                  onResponderTerminationRequest={[Function]}
-                  onStartShouldSetResponder={[Function]}
                   style={
-                    [
-                      {
-                        "alignItems": "center",
-                        "borderWidth": 1,
-                        "height": 60,
-                        "justifyContent": "center",
-                        "padding": 4,
-                        "width": 80,
-                      },
-                      {
-                        "borderColor": "#3AA0FF",
-                      },
-                    ]
+                    {
+                      "height": 60,
+                      "position": "relative",
+                      "width": 80,
+                    }
                   }
                 >
-                  <View>
-                    <View
-                      color="#3AA0FF"
-                      size={17}
-                      testID="lucide-Plus"
-                    />
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderWidth": 1,
+                          "height": 60,
+                          "justifyContent": "center",
+                          "padding": 4,
+                          "width": 80,
+                        },
+                        {
+                          "borderColor": "#3AA0FF",
+                        },
+                      ]
+                    }
+                  >
+                    <View>
+                      <View
+                        color="#3AA0FF"
+                        size={17}
+                        testID="lucide-Plus"
+                      />
+                    </View>
                   </View>
                 </View>
               </View>

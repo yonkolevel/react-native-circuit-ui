@@ -47,6 +47,7 @@ export interface SongActions {
   setCurrentSection: (sectionId: number) => void;
   addSection: () => void;
   renameSection: (sectionId: number, name: string) => void;
+  duplicateSection: (sectionId: number) => void;
   removeSection: (sectionId: number) => void;
 
   // Mixer
@@ -68,6 +69,8 @@ export interface SongActions {
 
   // Clip
   createClip: (trackId: number, sectionId: number) => void;
+  duplicateClip: (trackId: number, clipId: number) => void;
+  removeClip: (trackId: number, clipId: number) => void;
   setClipLength: (trackId: number, clipId: number, bars: number) => void;
 
   // Track management

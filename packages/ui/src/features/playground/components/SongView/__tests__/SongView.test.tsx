@@ -41,6 +41,7 @@ function createTestStore(
     setCurrentSection: jest.fn(),
     addSection: jest.fn(),
     renameSection: jest.fn(),
+    duplicateSection: jest.fn(),
     removeSection: jest.fn(),
     setTrackVolume: jest.fn(),
     setTrackPan: jest.fn(),
@@ -51,6 +52,8 @@ function createTestStore(
     updateNote: jest.fn(),
     setClipNotes: jest.fn(),
     createClip: jest.fn(),
+    duplicateClip: jest.fn(),
+    removeClip: jest.fn(),
     setClipLength: jest.fn(),
     addNewTrack: jest.fn(),
     removeTrack: jest.fn(),
@@ -183,6 +186,85 @@ describe('SongMixerTabBar behavior', () => {
     const { getByTestId } = renderWithStore(<SongMixerTabBar />, store);
     fireEvent.press(getByTestId('tab-mixer'));
     expect(store.getState().setCurrentTab).toHaveBeenCalledWith('mixer');
+  });
+});
+
+describe('SongView context menus', () => {
+  it('explains why the last track cannot be deleted', () => {
+    const store = createTestStore({ tracks: [createMockTrack({ id: 1 })] });
+    const screen = renderWithStore(<SongView />, store);
+
+    fireEvent.press(screen.getByTestId('track-label-1'));
+
+    expect(screen.getByText('Cannot delete last track')).toBeTruthy();
+    expect(screen.queryByTestId('delete-track-action')).toBeNull();
+    expect(store.getState().removeTrack).not.toHaveBeenCalled();
+  });
+
+  it('deletes a track after confirmation', () => {
+    const store = createTestStore({
+      tracks: [createMockTrack({ id: 1 }), createMockTrack({ id: 2 })],
+    });
+    const { getByTestId } = renderWithStore(<SongView />, store);
+
+    fireEvent.press(getByTestId('track-label-1'));
+    expect(
+      getByTestId('close-song-context-menu', { includeHiddenElements: true })
+        .props.accessible
+    ).toBe(false);
+    expect(
+      getByTestId('song-context-menu').props.accessibilityViewIsModal
+    ).toBe(true);
+    expect(getByTestId('close-song-menu-action').props.accessibilityLabel).toBe(
+      'Close menu'
+    );
+    fireEvent.press(getByTestId('delete-track-action'));
+    expect(getByTestId('close-song-menu-action').props.accessibilityLabel).toBe(
+      'Cancel'
+    );
+    fireEvent.press(getByTestId('confirm-delete-track'));
+
+    expect(store.getState().removeTrack).toHaveBeenCalledWith(1);
+  });
+
+  it('duplicates and deletes clips from their context menu', () => {
+    const clip = createMockClip({ id: 11, sectionID: 1 });
+    const store = createTestStore({
+      tracks: [createMockTrack({ id: 1, clips: [clip] })],
+    });
+    const screen = renderWithStore(<SongView />, store);
+
+    fireEvent.press(screen.getByTestId('clip-menu-1-11'));
+    expect(
+      screen.getByTestId('close-song-menu-action').props.accessibilityLabel
+    ).toBe('Close menu');
+    fireEvent.press(screen.getByTestId('duplicate-clip-action'));
+    expect(store.getState().duplicateClip).toHaveBeenCalledWith(1, 11);
+
+    fireEvent.press(screen.getByTestId('clip-menu-1-11'));
+    fireEvent.press(screen.getByTestId('delete-clip-action'));
+    expect(store.getState().removeClip).toHaveBeenCalledWith(1, 11);
+  });
+
+  it('renames and duplicates sections from their context menu', () => {
+    const store = createTestStore();
+    const screen = renderWithStore(<SongView />, store);
+
+    fireEvent.press(screen.getByTestId('section-menu-1'));
+    expect(
+      screen.getByTestId('close-song-menu-action').props.accessibilityLabel
+    ).toBe('Close menu');
+    fireEvent.press(screen.getByTestId('rename-section-action'));
+    expect(
+      screen.getByTestId('close-song-menu-action').props.accessibilityLabel
+    ).toBe('Cancel');
+    fireEvent.changeText(screen.getByTestId('section-name-input'), 'Drop');
+    fireEvent.press(screen.getByTestId('save-section-name'));
+    expect(store.getState().renameSection).toHaveBeenCalledWith(1, 'Drop');
+
+    fireEvent.press(screen.getByTestId('section-menu-1'));
+    fireEvent.press(screen.getByTestId('duplicate-section-action'));
+    expect(store.getState().duplicateSection).toHaveBeenCalledWith(1);
   });
 });
 

@@ -27,12 +27,14 @@ import type { PlaygroundState } from '../../types';
 
 interface PlaygroundCardProps {
   playground: PlaygroundState;
+  index: number;
   onPress?: (id: string) => void;
   onMenuPress?: (id: string) => void;
 }
 
 const PlaygroundCard = memo(function PlaygroundCard({
   playground,
+  index,
   onPress,
   onMenuPress,
 }: PlaygroundCardProps) {
@@ -75,6 +77,7 @@ const PlaygroundCard = memo(function PlaygroundCard({
         hitSlop={12}
         accessibilityRole="button"
         accessibilityLabel="More options"
+        testID={`playgroundMenuButton_${index}`}
       >
         <Icon icon={Icons.more} size={20} color={colors.mcWhite3} />
       </Pressable>
@@ -173,10 +176,11 @@ export const PlaygroundsDashboard = memo(function PlaygroundsDashboard({
               { paddingHorizontal: padding },
             ]}
           >
-            {playgrounds.map((p) => (
+            {playgrounds.map((p, index) => (
               <PlaygroundCard
                 key={p.id}
                 playground={p}
+                index={index}
                 onPress={onSelect}
                 onMenuPress={onMenuPress}
               />
