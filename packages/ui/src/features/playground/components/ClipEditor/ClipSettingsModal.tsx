@@ -20,10 +20,18 @@ export interface ClipSettingsModalProps {
   tempo: number;
   isMetronomeEnabled: boolean;
   showNoteLabels: boolean;
+  /** Whether dragging notes snaps to whole steps (placing a new note always snaps regardless). */
+  snapToGrid?: boolean;
+  /** Drum clips only — show the Lock Note Length row */
+  showLockNoteDuration?: boolean;
+  /** Whether notes on this (drum) clip can be resized longer */
+  lockNoteDuration?: boolean;
   onClose: () => void;
   onTempoChange?: (bpm: number) => void;
   onToggleMetronome?: () => void;
   onToggleNoteLabels?: () => void;
+  onToggleSnapToGrid?: () => void;
+  onToggleLockNoteDuration?: () => void;
 }
 
 export const ClipSettingsModal = memo(function ClipSettingsModal({
@@ -31,10 +39,15 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
   tempo,
   isMetronomeEnabled,
   showNoteLabels,
+  snapToGrid = false,
+  showLockNoteDuration = false,
+  lockNoteDuration = true,
   onClose,
   onTempoChange,
   onToggleMetronome,
   onToggleNoteLabels,
+  onToggleSnapToGrid,
+  onToggleLockNoteDuration,
 }: ClipSettingsModalProps) {
   const { colors } = useTheme();
   const [tempoDisplay, setTempoDisplay] = useState<number | null>(null);
@@ -125,6 +138,55 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
               trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}
             />
           </View>
+
+          {/* Snap to Grid — placing a new note always snaps; this only
+              governs dragging existing notes to move/resize them. */}
+          <View
+            style={[
+              styles.row,
+              { borderBottomColor: colors.mcBlack4, alignItems: 'flex-start' },
+            ]}
+          >
+            <View style={styles.labelWithSubtitle}>
+              <Text variant="label" color={colors.mcWhite}>
+                Snap to Grid
+              </Text>
+              <Text variant="extraSmall" color={colors.mcGray}>
+                Moving/resizing notes snaps to the step grid
+              </Text>
+            </View>
+            <Switch
+              value={snapToGrid}
+              onValueChange={() => onToggleSnapToGrid?.()}
+              trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}
+            />
+          </View>
+
+          {/* Lock Note Length — drum clips only. A one-shot sample doesn't
+              sustain just because the note block got longer, so this is on
+              by default and most users won't need to touch it. */}
+          {showLockNoteDuration && (
+            <View
+              style={[
+                styles.row,
+                { borderBottomColor: colors.mcBlack4, alignItems: 'flex-start' },
+              ]}
+            >
+              <View style={styles.labelWithSubtitle}>
+                <Text variant="label" color={colors.mcWhite}>
+                  Lock Note Length
+                </Text>
+                <Text variant="extraSmall" color={colors.mcGray}>
+                  Drum hits can&apos;t be resized longer
+                </Text>
+              </View>
+              <Switch
+                value={lockNoteDuration}
+                onValueChange={() => onToggleLockNoteDuration?.()}
+                trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}
+              />
+            </View>
+          )}
         </View>
       </View>
     </Modal>

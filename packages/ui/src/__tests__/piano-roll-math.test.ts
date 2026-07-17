@@ -59,7 +59,10 @@ describe('pianoRollMath', () => {
       )
     ).toEqual({ noteNumber: 36, position: 1.5 });
 
-    expect(getResizedNoteDuration(0.5, 31, ctx)).toBe(1);
+    // Resize snaps to the nearest half-step (edge or cell center), not just
+    // whole steps — 71px lands closer to the 70px half-step than the 80px
+    // edge.
+    expect(getResizedNoteDuration(0.5, 31, ctx)).toBe(0.875);
   });
 
   it('rejects grid taps outside the horizontal bounds', () => {
@@ -99,7 +102,9 @@ describe('pianoRollMath', () => {
         ctx
       )
     ).toEqual({ noteNumber: 42, position: 0 });
-    expect(getResizedNoteDuration(0.5, -100, ctx)).toBe(0.25);
+    // Minimum duration floor is now half a step (10px = 0.125 beats), not a
+    // full step, matching the half-step snap grid.
+    expect(getResizedNoteDuration(0.5, -100, ctx)).toBe(0.125);
     expect(getResizedNoteDuration(0.5, 200, ctx, 3.5)).toBe(0.5);
 
     expect(

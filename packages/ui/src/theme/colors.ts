@@ -210,6 +210,68 @@ export const hexToRgba = (hex: string, alpha: number = 1): string => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
+/**
+ * Convert hex to HSL. Hue in degrees [0, 360), saturation/lightness as
+ * fractions [0, 1] — fractions (not 0-100) keep downstream interpolation
+ * math simple for callers like getVelocityColor.
+ */
+export const hexToHsl = (hex: string): { h: number; s: number; l: number } => {
+  const hexValue = hex.replace('#', '');
+  const r = parseInt(hexValue.substring(0, 2), 16) / 255;
+  const g = parseInt(hexValue.substring(2, 4), 16) / 255;
+  const b = parseInt(hexValue.substring(4, 6), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+
+  if (max === min) return { h: 0, s: 0, l };
+
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  let h: number;
+  switch (max) {
+    case r:
+      h = (g - b) / d + (g < b ? 6 : 0);
+      break;
+    case g:
+      h = (b - r) / d + 2;
+      break;
+    default:
+      h = (r - g) / d + 4;
+  }
+  return { h: h * 60, s, l };
+};
+
+/** Convert HSL (hue in degrees, saturation/lightness as [0, 1] fractions) to a hex string. */
+export const hslToHex = (h: number, s: number, l: number): string => {
+  if (s === 0) {
+    const v = Math.round(l * 255);
+    const hex = v.toString(16).padStart(2, '0');
+    return `#${hex}${hex}${hex}`;
+  }
+
+  const hue2rgb = (p: number, q: number, t: number): number => {
+    let tt = t;
+    if (tt < 0) tt += 1;
+    if (tt > 1) tt -= 1;
+    if (tt < 1 / 6) return p + (q - p) * 6 * tt;
+    if (tt < 1 / 2) return q;
+    if (tt < 2 / 3) return p + (q - p) * (2 / 3 - tt) * 6;
+    return p;
+  };
+
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  const hNorm = h / 360;
+  const toHex = (v: number) =>
+    Math.round(v * 255)
+      .toString(16)
+      .padStart(2, '0');
+
+  return `#${toHex(hue2rgb(p, q, hNorm + 1 / 3))}${toHex(hue2rgb(p, q, hNorm))}${toHex(hue2rgb(p, q, hNorm - 1 / 3))}`;
+};
+
 // ─── Type exports ───────────────────────────────────────────────────────────
 
 export type Palette = typeof palette;

@@ -47,10 +47,16 @@ export interface Clip {
   sectionID: number;
   lengthInBars: number;
   activeLengthInBars: number;
+  /** 0-indexed bar where the active/looping range begins. 0 = starts at bar 1. */
+  activeBarStart: number;
   colorHex: string;
   notes: ClipNote[];
   audioFileReference?: string;
   audioFileDuration?: number;
+  /** Drum clips only — blocks resizing notes longer, since a one-shot
+   * sample doesn't sustain just because the note block got longer. Defaults
+   * to true (locked) for drum clips; irrelevant for other instrument types. */
+  lockNoteDuration?: boolean;
 }
 
 /** Matches midicircuit-rn Track */

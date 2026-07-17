@@ -3,7 +3,7 @@
  * Identical props, state, and gesture logic to NotePrecisionPanel.tsx.
  * All Skia Canvas drawing replaced with absolute-positioned Views.
  */
-import React, { memo, useMemo, useCallback, useRef, useState } from 'react';
+import React, { memo, forwardRef, useImperativeHandle, useMemo, useCallback, useRef, useState } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import {
   ScrollView as GHScrollView,
@@ -15,17 +15,22 @@ import { Text } from '../Text';
 import { Icon, Icons } from '../SFSymbol';
 import { useTheme } from '../../theme';
 import type { ClipNote } from '../../features/playground/types';
+import { getMovedGridTarget, getResizedNoteDuration, getVelocityColor } from '../PianoRoll/pianoRollMath';
 
 const LABEL_COL = 60;
 const BEAT_LABEL_H = 16;
 const NOTE_AREA_H = 36;
-const STEP_W = 24;
-const HANDLE_W = STEP_W;
+// Fixed velocity-handle width — independent of the timeline's step width
+// (which now matches the piano roll grid above, and can be quite wide/narrow).
+const HANDLE_W = 24;
 const HANDLE_H = 16;
 const STEM_W = 2;
 const BOTTOM_PAD = 32;
 const BEATS_PER_BAR = 4;
 const STEPS_PER_BEAT = 4;
+// A note can be dragged arbitrarily close to any position here, but never
+// resized smaller than one 16th-note step — matches the piano roll's floor.
+const MIN_NOTE_DURATION = 0.25;
 
 const VEL_LEVELS = [
   { vel: 127, label: '127' },
@@ -42,24 +47,56 @@ export interface NotePrecisionPanelProps {
   pitchMidiNumber: number;
   activeLengthInBars: number;
   trackColor: string;
+  /** Pixel width of one beat step — pass the same value used by the piano
+   * roll grid above so this panel's timeline lines up with it exactly. */
+  stepWidth: number;
   onClose?: () => void;
   onVelocityChange?: (noteIndex: number, velocity: number) => void;
+  /** Fired continuously while a velocity handle is being dragged (and once
+   * more with `null` on release) — lets the piano roll grid above mirror the
+   * in-progress value live, without touching the undo-tracked store on
+   * every drag tick the way a committed onVelocityChange call would. */
+  onVelocityPreview?: (noteIndex: number, velocity: number | null) => void;
   onPositionChange?: (noteIndex: number, newPosition: number) => void;
   onDurationChange?: (noteIndex: number, newDuration: number) => void;
+  /** Fired on horizontal scroll with the raw scroll-x pixel offset — lets
+   * callers keep the piano roll grid above (which shares the same
+   * beat-to-pixel scale) in sync. */
+  onScrollXChange?: (x: number) => void;
 }
 
-export const NotePrecisionPanel = memo(function NotePrecisionPanel({
+/** Imperative handle for scrolling the panel programmatically (e.g. to mirror the piano roll grid's scroll position). */
+export interface NotePrecisionPanelHandle {
+  scrollToX: (x: number, animated?: boolean) => void;
+}
+
+export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, NotePrecisionPanelProps>(function NotePrecisionPanel({
   notes,
   pitchLabel,
   pitchMidiNumber,
   activeLengthInBars,
   trackColor,
+  stepWidth,
   onClose,
   onVelocityChange,
+  onVelocityPreview,
   onPositionChange,
   onDurationChange,
-}: NotePrecisionPanelProps) {
+  onScrollXChange,
+}: NotePrecisionPanelProps, ref) {
   const { colors } = useTheme();
+  const hScrollRef = useRef<any>(null);
+  useImperativeHandle(ref, () => ({
+    scrollToX: (x: number, animated = true) => {
+      hScrollRef.current?.scrollTo?.({ x, animated });
+    },
+  }), []);
+  const handleScroll = useCallback(
+    (e: { nativeEvent: { contentOffset: { x: number } } }) => {
+      onScrollXChange?.(e.nativeEvent.contentOffset.x);
+    },
+    [onScrollXChange]
+  );
 
   const notesAtPitch = useMemo(
     () =>
@@ -70,8 +107,9 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
   );
 
   const totalSteps = activeLengthInBars * BEATS_PER_BAR * STEPS_PER_BEAT;
-  const totalWidth = totalSteps * STEP_W;
+  const totalWidth = totalSteps * stepWidth;
   const totalBeats = activeLengthInBars * BEATS_PER_BAR;
+  const beatWidth = stepWidth * STEPS_PER_BEAT;
 
   const [velAreaH, setVelAreaH] = useState(120);
 
@@ -117,8 +155,12 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
       );
       dragVelRef.current = newVel;
       setDragVel(newVel);
+      const idx = dragIdxRef.current;
+      if (idx >= 0 && idx < notesAtPitch.length) {
+        onVelocityPreview?.(notesAtPitch[idx]!.globalIdx, newVel);
+      }
     },
-    [velAreaH]
+    [velAreaH, notesAtPitch, onVelocityPreview]
   );
 
   const handleVelDragEnd = useCallback(() => {
@@ -126,10 +168,55 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
     const vel = dragVelRef.current;
     if (idx >= 0 && idx < notesAtPitch.length) {
       onVelocityChange?.(notesAtPitch[idx]!.globalIdx, vel);
+      onVelocityPreview?.(notesAtPitch[idx]!.globalIdx, null);
     }
     dragIdxRef.current = -1;
     setDragIdx(-1);
-  }, [notesAtPitch, onVelocityChange]);
+  }, [notesAtPitch, onVelocityChange, onVelocityPreview]);
+
+  // This panel is the precision/manual-control surface — it never snaps,
+  // regardless of the piano roll's Snap to Grid setting. Reuses the grid's
+  // own math (for consistent clamping/bounds) but always in free mode.
+  const getLivePosition = useCallback(
+    (originalPosition: number, originalDuration: number, dx: number) => {
+      const maxPosition = Math.max(0, totalBeats - originalDuration);
+      return getMovedGridTarget(
+        dx,
+        0,
+        originalPosition,
+        0,
+        stepWidth,
+        1,
+        1,
+        maxPosition,
+        false
+      ).position;
+    },
+    [stepWidth, totalBeats]
+  );
+  const getLiveDuration = useCallback(
+    (originalDuration: number, originalPosition: number, dx: number) =>
+      Math.max(
+        MIN_NOTE_DURATION,
+        getResizedNoteDuration(
+          originalDuration,
+          dx,
+          {
+            beatWidth,
+            stepWidth,
+            gridWidth: totalWidth,
+            isDrum: false,
+            basePitch: 0,
+            totalPitches: 1,
+            rowHeight: NOTE_AREA_H,
+            pitchToMidi: [],
+          },
+          originalPosition,
+          false
+        )
+      ),
+    [beatWidth, stepWidth, totalWidth]
+  );
 
   const handlePosBlockDragStart = useCallback((idx: number, x: number) => {
     setPosBlockDragIdx(idx);
@@ -143,15 +230,14 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
     (x: number) => {
       if (posBlockDragIdx >= 0 && posBlockDragIdx < notesAtPitch.length) {
         const dx = x - posBlockStartX.current;
-        const stepsDelta = Math.round(dx / STEP_W);
         const note = notesAtPitch[posBlockDragIdx]!.note;
-        const newPos = Math.max(0, note.position + stepsDelta * 0.25);
+        const newPos = getLivePosition(note.position, note.duration, dx);
         onPositionChange?.(notesAtPitch[posBlockDragIdx]!.globalIdx, newPos);
       }
       setPosBlockDragIdx(-1);
       setPosBlockDragDx(0);
     },
-    [posBlockDragIdx, notesAtPitch, onPositionChange]
+    [posBlockDragIdx, notesAtPitch, onPositionChange, getLivePosition]
   );
 
   const handleDurBlockDragStart = useCallback((idx: number, x: number) => {
@@ -166,9 +252,8 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
     (x: number) => {
       if (durBlockDragIdx >= 0 && durBlockDragIdx < notesAtPitch.length) {
         const dx = x - durBlockStartX.current;
-        const stepsDelta = Math.round(dx / STEP_W);
         const note = notesAtPitch[durBlockDragIdx]!.note;
-        const newDur = Math.max(0.25, note.duration + stepsDelta * 0.25);
+        const newDur = getLiveDuration(note.duration, note.position, dx);
         onDurationChange?.(notesAtPitch[durBlockDragIdx]!.globalIdx, newDur);
       }
       setDurBlockDragIdx(-1);
@@ -183,7 +268,7 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
       const baseline = velAreaH - BOTTOM_PAD;
       const usableH = baseline - HANDLE_H;
       const stemH = Math.max(0, fraction * usableH);
-      const noteStartX = (note.position / 0.25) * STEP_W;
+      const noteStartX = (note.position / 0.25) * stepWidth;
       const handleX = noteStartX;
       const stemX = noteStartX + HANDLE_W;
       const handleY = baseline - stemH - HANDLE_H;
@@ -199,7 +284,7 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
         baseline,
       };
     },
-    [velAreaH]
+    [velAreaH, stepWidth]
   );
 
   return (
@@ -276,9 +361,12 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
 
         {/* Scrollable timeline */}
         <GHScrollView
+          ref={hScrollRef}
           horizontal
           showsHorizontalScrollIndicator
           style={{ flex: 1 }}
+          onScroll={handleScroll}
+          scrollEventThrottle={100}
         >
           <View style={{ width: Math.max(totalWidth, totalWidth + HANDLE_W) }}>
             {/* Beat labels */}
@@ -289,7 +377,7 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
                   variant="extraSmall"
                   color={colors.mcWhite3}
                   style={{
-                    width: STEPS_PER_BEAT * STEP_W,
+                    width: STEPS_PER_BEAT * stepWidth,
                     fontSize: 8,
                     paddingLeft: 2,
                   }}
@@ -303,32 +391,57 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
             <View style={{ height: NOTE_AREA_H }}>
               {/* Grid lines */}
               <View style={StyleSheet.absoluteFill} pointerEvents="none">
-                {Array.from({ length: totalSteps + 1 }, (_, s) => (
-                  <View
-                    key={s}
-                    style={{
-                      position: 'absolute',
-                      left: s * STEP_W,
-                      top: 0,
-                      bottom: 0,
-                      width: s % STEPS_PER_BEAT === 0 ? 1 : 0.5,
-                      backgroundColor:
-                        s % STEPS_PER_BEAT === 0
+                {/* Half-step lines give a finer visual reference than the
+                    step grid alone, now that dragging here is always free. */}
+                {Array.from({ length: totalSteps * 2 + 1 }, (_, h) => {
+                  const isBeat = h % (STEPS_PER_BEAT * 2) === 0;
+                  const isStep = h % 2 === 0;
+                  return (
+                    <View
+                      key={h}
+                      style={{
+                        position: 'absolute',
+                        left: h * (stepWidth / 2),
+                        top: 0,
+                        bottom: 0,
+                        width: isBeat ? 1 : 0.5,
+                        backgroundColor: isBeat
                           ? 'rgba(255,255,255,0.2)'
-                          : 'rgba(255,255,255,0.06)',
-                    }}
-                  />
-                ))}
+                          : isStep
+                            ? 'rgba(255,255,255,0.06)'
+                            : 'rgba(255,255,255,0.03)',
+                      }}
+                    />
+                  );
+                })}
                 {/* Note blocks */}
                 {notesAtPitch.map(({ note }, i) => {
-                  const dx = i === posBlockDragIdx ? posBlockDragDx : 0;
-                  const dw = i === durBlockDragIdx ? durBlockDragDx : 0;
-                  const x = (note.position / 0.25) * STEP_W + dx;
+                  const livePos =
+                    i === posBlockDragIdx
+                      ? getLivePosition(
+                          note.position,
+                          note.duration,
+                          posBlockDragDx
+                        )
+                      : note.position;
+                  const liveDur =
+                    i === durBlockDragIdx
+                      ? getLiveDuration(
+                          note.duration,
+                          note.position,
+                          durBlockDragDx
+                        )
+                      : note.duration;
+                  const x = (livePos / 0.25) * stepWidth;
                   const w = Math.max(
-                    (note.duration / 0.25) * STEP_W + dw - 1,
-                    STEP_W * 0.5
+                    (liveDur / 0.25) * stepWidth - 1,
+                    stepWidth * 0.5
                   );
-                  const velOpacity = 0.4 + 0.6 * (note.velocity / 127);
+                  // Matches the piano roll grid's note styling exactly,
+                  // including velocity-scaled lightness — reads dragVel live
+                  // while this note's own velocity handle is being dragged,
+                  // same as the stem/handle below already do.
+                  const liveVelocity = i === dragIdx ? dragVel : note.velocity;
                   return (
                     <View
                       key={i}
@@ -339,18 +452,21 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
                         width: w,
                         height: NOTE_AREA_H - 4,
                         borderRadius: 3,
-                        backgroundColor: trackColor,
-                        opacity: velOpacity,
+                        backgroundColor: getVelocityColor(trackColor, liveVelocity),
+                        borderWidth: 0.5,
+                        borderColor: '#000000',
+                        opacity: 1,
                       }}
                     >
                       <View
                         style={{
                           position: 'absolute',
                           right: 2,
-                          top: 6,
-                          bottom: 6,
+                          top: 4,
+                          bottom: 4,
                           width: 2,
-                          backgroundColor: 'rgba(0,0,0,0.4)',
+                          backgroundColor: 'rgba(0,0,0,0.3)',
+                          borderRadius: 1,
                         }}
                       />
                     </View>
@@ -360,8 +476,11 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
 
               {/* Drag gesture targets */}
               {notesAtPitch.map(({ note }, i) => {
-                const x = (note.position / 0.25) * STEP_W;
-                const w = Math.max((note.duration / 0.25) * STEP_W, STEP_W);
+                const x = (note.position / 0.25) * stepWidth;
+                const w = Math.max(
+                  (note.duration / 0.25) * stepWidth,
+                  stepWidth
+                );
                 const edgeW = 12;
                 return (
                   <React.Fragment key={`bg${i}`}>
@@ -503,7 +622,7 @@ export const NotePrecisionPanel = memo(function NotePrecisionPanel({
       </View>
     </View>
   );
-});
+}));
 
 const PrecisionBlockDrag = memo(function PrecisionBlockDrag({
   index,

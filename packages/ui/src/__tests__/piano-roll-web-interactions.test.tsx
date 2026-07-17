@@ -23,6 +23,7 @@ function renderGrid(callbacks: {
         instrumentType="melodic"
         trackColor="#1AFFA8"
         lengthInBeats={4}
+        snapToGrid
         {...callbacks}
       />
     </ThemeProvider>
@@ -66,16 +67,19 @@ describe('SkiaPianoRollGrid web pointer interactions', () => {
   afterEach(() => jest.useRealTimers());
 
   it('moves a note instead of deleting it after a mouse drag', () => {
+    // Move vs. resize is decided by drag direction, not touch position (see
+    // resolveNoteDragType): a leftward/vertical-dominant drag is always a
+    // move, regardless of where on the note it started.
     const onNoteMove = jest.fn();
     const onNotePress = jest.fn();
     const view = renderGrid({ onNoteMove, onNotePress });
     const overlay = pointerOverlay(view);
 
     fireEvent(overlay, 'pointerDown', pointer(190, 380));
-    fireEvent(overlay, 'pointerMove', pointer(240, 346));
-    fireEvent(overlay, 'pointerUp', pointer(240, 346));
+    fireEvent(overlay, 'pointerMove', pointer(140, 346));
+    fireEvent(overlay, 'pointerUp', pointer(140, 346));
 
-    expect(onNoteMove).toHaveBeenCalledWith(0, 1.25, 61);
+    expect(onNoteMove).toHaveBeenCalledWith(0, 0.75, 61);
     expect(onNotePress).not.toHaveBeenCalled();
   });
 
@@ -90,32 +94,65 @@ describe('SkiaPianoRollGrid web pointer interactions', () => {
     expect(onGridTap).toHaveBeenCalledWith(69, 0.5);
   });
 
-  it('requires a touch hold to drag and does not delete after holding', () => {
-    jest.useFakeTimers();
+  it('treats a drag starting on empty grid as panning, not a tap-to-add', () => {
+    // The overlay has a static touch-action: pan-y, so the browser never
+    // scrolls horizontally on its own — a drag over empty space has to be
+    // recognized as "pan the view," not misfire onGridTap once released.
+    const onGridTap = jest.fn();
+    const view = renderGrid({ onGridTap });
+    const overlay = pointerOverlay(view);
+
+    fireEvent(overlay, 'pointerDown', pointer(100, 100, 'touch'));
+    fireEvent(overlay, 'pointerMove', pointer(160, 100, 'touch'));
+    fireEvent(overlay, 'pointerUp', pointer(160, 100, 'touch'));
+
+    expect(onGridTap).not.toHaveBeenCalled();
+  });
+
+  it('still adds a note on a quick touch tap over empty grid (no pan)', () => {
+    const onGridTap = jest.fn();
+    const view = renderGrid({ onGridTap });
+    const overlay = pointerOverlay(view);
+
+    fireEvent(overlay, 'pointerDown', pointer(100, 100, 'touch'));
+    fireEvent(overlay, 'pointerUp', pointer(100, 100, 'touch'));
+
+    expect(onGridTap).toHaveBeenCalledWith(69, 0.5);
+  });
+
+  it('moves a note on touch drag immediately, with no hold required', () => {
+    // A touch that starts on a note is unambiguous — it's manipulating the
+    // note, not scrolling — so it must behave exactly like mouse: drag
+    // starts as soon as the pointer clears the drag threshold, no hold-timer
+    // delay. (A hold-timer here previously let the browser's native scroll
+    // win the gesture race before our drag ever got a chance to start.)
     const onNoteMove = jest.fn();
     const onNotePress = jest.fn();
     const view = renderGrid({ onNoteMove, onNotePress });
     const overlay = pointerOverlay(view);
 
     fireEvent(overlay, 'pointerDown', pointer(190, 380, 'touch'));
-    fireEvent(overlay, 'pointerMove', pointer(240, 346, 'touch'));
-    fireEvent(overlay, 'pointerUp', pointer(240, 346, 'touch'));
-    expect(onNoteMove).not.toHaveBeenCalled();
-    expect(onNotePress).not.toHaveBeenCalled();
+    fireEvent(overlay, 'pointerMove', pointer(140, 346, 'touch'));
+    fireEvent(overlay, 'pointerUp', pointer(140, 346, 'touch'));
 
-    fireEvent(overlay, 'pointerDown', pointer(190, 380, 'touch'));
-    jest.advanceTimersByTime(250);
-    fireEvent(overlay, 'pointerUp', pointer(190, 380, 'touch'));
+    expect(onNoteMove).toHaveBeenCalledWith(0, 0.75, 61);
     expect(onNotePress).not.toHaveBeenCalled();
-
-    fireEvent(overlay, 'pointerDown', pointer(190, 380, 'touch'));
-    jest.advanceTimersByTime(250);
-    fireEvent(overlay, 'pointerMove', pointer(240, 346, 'touch'));
-    fireEvent(overlay, 'pointerUp', pointer(240, 346, 'touch'));
-    expect(onNoteMove).toHaveBeenCalledWith(0, 1.25, 61);
   });
 
-  it('supports quick touch taps and cancels abandoned holds', () => {
+  it('deletes a note on a quick touch tap with no movement', () => {
+    const onNoteMove = jest.fn();
+    const onNotePress = jest.fn();
+    const view = renderGrid({ onNoteMove, onNotePress });
+    const overlay = pointerOverlay(view);
+
+    fireEvent(overlay, 'pointerDown', pointer(190, 380, 'touch'));
+    fireEvent(overlay, 'pointerUp', pointer(190, 380, 'touch'));
+
+    expect(onNotePress).toHaveBeenCalledWith(0);
+    expect(onNoteMove).not.toHaveBeenCalled();
+  });
+
+  it('supports quick touch taps and a pointercancel does not leave a stale interaction', () => {
     jest.useFakeTimers();
     const onGridTap = jest.fn();
     const onNotePress = jest.fn();
@@ -173,10 +210,10 @@ describe('SkiaPianoRollGrid web pointer interactions', () => {
     fireEvent(overlay, 'pointerDown', pointer(100, 100, 'touch', 2));
     fireEvent(overlay, 'lostPointerCapture', pointer(100, 100, 'touch', 2));
     jest.advanceTimersByTime(250);
-    fireEvent(overlay, 'pointerMove', pointer(240, 346, 'touch', 1));
-    fireEvent(overlay, 'pointerUp', pointer(240, 346, 'touch', 1));
+    fireEvent(overlay, 'pointerMove', pointer(140, 346, 'touch', 1));
+    fireEvent(overlay, 'pointerUp', pointer(140, 346, 'touch', 1));
 
-    expect(onNoteMove).toHaveBeenCalledWith(0, 1.25, 61);
+    expect(onNoteMove).toHaveBeenCalledWith(0, 0.75, 61);
   });
 
   it('exposes semantic add, move, pitch, and resize actions', () => {

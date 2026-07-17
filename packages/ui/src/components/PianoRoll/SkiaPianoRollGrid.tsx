@@ -14,8 +14,10 @@
  */
 import React, {
   memo,
+  forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -39,7 +41,12 @@ import {
   Gesture,
   GestureDetector,
 } from 'react-native-gesture-handler';
-import { useSharedValue } from 'react-native-reanimated';
+import {
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import type { SharedValue } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 import { Text } from '../Text';
 import { Icon, Icons } from '../SFSymbol';
@@ -55,23 +62,80 @@ import {
   getMovedNoteTarget,
   getPianoRollNoteRect,
   getResizedNoteDuration,
+  getResizeMagneticTarget,
+  getSelectedLabelColor,
+  getVelocityColor,
   hitTestPianoRollNote,
+  UNSNAPPED_MIN_DURATION_STEPS,
+  type RecordingNotePreviewData,
 } from './pianoRollMath';
+
+// Bright red — reads as "actively recording" against any track color,
+// matching the convention most DAWs use for an in-progress take.
+const RECORDING_OUTLINE_COLOR = '#FF3B30';
+
+/**
+ * Live preview of a note currently held during recording. Grows from its
+ * press beat to the live playhead position via a SharedValue read on the UI
+ * thread — no React re-renders while recording (matches the drag-preview
+ * and playhead patterns elsewhere in this file).
+ */
+const RecordingNotePreview = memo(function RecordingNotePreview({
+  x,
+  rowIdx,
+  effectiveRowHeight,
+  playheadPosX,
+  color,
+}: {
+  x: number;
+  rowIdx: number;
+  effectiveRowHeight: number;
+  playheadPosX: SharedValue<number>;
+  color: string;
+}) {
+  const y = rowIdx * effectiveRowHeight + 1;
+  const h = effectiveRowHeight - 2;
+  const width = useDerivedValue(() =>
+    Math.max(4, playheadPosX.value - x)
+  );
+  return (
+    <>
+      <RoundedRect x={x} y={y} width={width} height={h} r={3} color={color} opacity={1} />
+      <RoundedRect
+        x={x}
+        y={y}
+        width={width}
+        height={h}
+        r={3}
+        color={RECORDING_OUTLINE_COLOR}
+        style="stroke"
+        strokeWidth={2}
+      />
+    </>
+  );
+});
+
+// Snap-zone ease duration for resize live-preview — short enough to feel
+// immediate, long enough to read as a glide rather than a jump.
+const SNAP_EASE_MS = 90;
 
 const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
 const MELODIC_PITCH_COUNT = 24;
 
-// SwiftUI uses black grid strokes, but the RN grid has black rows; these keep
-// the same neutral feel while making row/step boundaries readable on web.
-const GRID_LINE_COLOR = 'rgba(247,247,247,0.10)';
-const GRID_BEAT_COLOR = 'rgba(247,247,247,0.16)';
-const GRID_BAR_COLOR = 'rgba(247,247,247,0.30)';
+// Matches native's PianoRoll package: every grid line (step, beat, and bar
+// boundary alike) is drawn with the same uniform black stroke — no separate
+// emphasis tier for beats/bars.
+const GRID_LINE_COLOR = '#000000';
 
-// Tap and drag share one boundary: a touch shorter than this is a tap
-// (add/delete), a hold this long becomes a drag. If the windows diverge,
-// touches falling between them are silently dropped.
+// A touch that releases within this window without much movement is a tap
+// (add/delete). Drag recognition is distance-based (see PAN_MIN_DISTANCE)
+// so a fast flick still counts as a drag instead of being dropped.
 const DRAG_HOLD_MS = 250;
+
+// Movement past this many pixels commits the gesture to a move/resize drag,
+// regardless of how quickly it happened.
+const PAN_MIN_DISTANCE = 8;
 
 // Optional peer dep — if present at runtime the require() succeeds,
 // otherwise haptics are a no-op (same pattern as whats-new/utils/haptics).
@@ -128,9 +192,44 @@ export interface SkiaPianoRollGridProps {
   noteColors?: Record<number, string>;
   /** Show built-in expand/zoom controls. */
   showControls?: boolean;
+  /**
+   * Whether dragging a note to move/resize it snaps to whole 16th-note
+   * steps (default) or moves/resizes freely at exact pixel resolution.
+   * Placing a *new* note (tap on empty grid) always snaps regardless of
+   * this flag — matches the melodic-sequencer reference behavior.
+   */
+  snapToGrid?: boolean;
+  /** Drum clips only — when true (the default), notes can't be resized
+   * longer: a one-shot sample doesn't sustain just because the note block
+   * got longer. Irrelevant for non-drum instrument types. */
+  lockNoteDuration?: boolean;
+  /** Notes currently held during live recording — rendered as a growing
+   * "in progress" preview from the press beat to the live playhead. */
+  recordingNotes?: RecordingNotePreviewData[];
+  /** Live playhead X position (pixels), updated at display frame rate via a
+   * SharedValue — required for recordingNotes previews to grow smoothly
+   * without React re-renders. Falls back to a static internal value (no
+   * growth) if not provided. */
+  playheadPosX?: SharedValue<number>;
+  /** Fired on horizontal scroll with the visible beat range [start, end) — lets
+   * callers (e.g. the bar-range pill selector) show which bars are in view. */
+  onVisibleBeatRangeChange?: (start: number, end: number) => void;
+  /** Fired on horizontal scroll with the raw scroll-x pixel offset — lets
+   * callers keep another horizontally-scrolling view (e.g. NotePrecisionPanel,
+   * which shares the same beat-to-pixel scale) in sync. */
+  onScrollXChange?: (x: number) => void;
+  /** Live velocity override for a single note, keyed by index into `notes` —
+   * mirrors an in-progress velocity-handle drag on NotePrecisionPanel so this
+   * note's color updates in real time instead of only once the drag commits. */
+  velocityPreview?: { noteIndex: number; velocity: number } | null;
 }
 
-export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
+/** Imperative handle for scrolling the grid programmatically (e.g. to jump to an isolated bar, or to mirror another view's scroll position). */
+export interface SkiaPianoRollGridHandle {
+  scrollToX: (x: number, animated?: boolean) => void;
+}
+
+export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPianoRollGridProps>(function SkiaPianoRollGrid({
   notes,
   samples,
   instrumentType = 'drum',
@@ -153,9 +252,20 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   showNoteLabels = false,
   noteColors,
   showControls = true,
-}: SkiaPianoRollGridProps) {
+  snapToGrid = false,
+  lockNoteDuration,
+  recordingNotes,
+  playheadPosX,
+  onVisibleBeatRangeChange,
+  onScrollXChange,
+  velocityPreview,
+}: SkiaPianoRollGridProps, ref) {
   const { colors } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
+  // Fallback SharedValue when no live playhead is supplied (e.g. not
+  // recording) — recordingNotes is empty in that case, so this stays unused.
+  const internalPlayheadPosX = useSharedValue(0);
+  const effectivePlayheadPosX = playheadPosX ?? internalPlayheadPosX;
 
   // Computed here (not module scope) so CanvasKit is ready when matchFont runs
   const noteFont = useMemo(
@@ -165,6 +275,9 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   );
 
   const isDrum = instrumentType === 'drum';
+  // Locked (notes can't resize) by default for drum clips — only relevant
+  // for drum, and only unlocked if the clip's own flag explicitly says so.
+  const isNoteResizeLocked = isDrum && (lockNoteDuration ?? true);
   const basePitch = isDrum ? 0 : (melodicMinPitch ?? DEFAULT_MELODIC_MIN_PITCH);
   const totalPitches = isDrum
     ? (samples ?? []).length || 12 // Use exact sample count (no minimum)
@@ -186,6 +299,11 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
 
   // Scroll ref — reset position when zoom changes to prevent over-scroll
   const hScrollRef = useRef<any>(null);
+  useImperativeHandle(ref, () => ({
+    scrollToX: (x: number, animated = true) => {
+      hScrollRef.current?.scrollTo?.({ x, animated });
+    },
+  }), []);
   const prevZoom = useRef(zoomLevel);
   useEffect(() => {
     if (zoomLevel < prevZoom.current) {
@@ -199,6 +317,21 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const stepWidth = (availableGridWidth / 16) * zoomLevel;
   const beatWidth = stepWidth * 4;
   const gridWidth = lengthInBeats * beatWidth;
+
+  const handleGridScroll = useCallback(
+    (e: { nativeEvent: { contentOffset: { x: number } } }) => {
+      const scrollX = e.nativeEvent.contentOffset.x;
+      onVisibleBeatRangeChange?.(scrollX / beatWidth, (scrollX + availableGridWidth) / beatWidth);
+      onScrollXChange?.(scrollX);
+    },
+    [onVisibleBeatRangeChange, onScrollXChange, beatWidth, availableGridWidth]
+  );
+
+  // Report the initial viewport (scroll resets to 0 on zoom-out above) so the
+  // bar selector's "in viewport" state isn't empty before the first scroll.
+  useEffect(() => {
+    onVisibleBeatRangeChange?.(0, availableGridWidth / beatWidth);
+  }, [onVisibleBeatRangeChange, beatWidth, availableGridWidth]);
   const gridHeight = totalPitches * effectiveRowHeight;
   const totalSteps = lengthInBeats * 4;
 
@@ -231,9 +364,10 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     gridHeight,
   ]);
 
-  // Row background colors — alternating
-  const rowBgColor1 = colors.mcBlack;
-  const rowBgColor2 = colors.mcBlack2;
+  // Column background colors — alternating per beat, matching native's
+  // makeBackgroundNotes (vertical bands, not per-row horizontal stripes).
+  const colBgColor1 = colors.mcBlack3;
+  const colBgColor2 = colors.mcBlack2;
 
   // Pitch label helpers
   const getPitchLabel = useCallback(
@@ -311,6 +445,25 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   // React state — only set on drag start/end (2 renders per gesture, not per frame).
   const [activeNoteIdx, setActiveNoteIdx] = useState(-1);
 
+  // Resize handle position while dragging — tracks the live shared values so
+  // the handle stays glued to the note body instead of disappearing.
+  const dragHandleP1 = useDerivedValue(() =>
+    vec(dragX.value + dragW.value - 3, dragY.value + 4)
+  );
+  const dragHandleP2 = useDerivedValue(() =>
+    vec(
+      dragX.value + dragW.value - 3,
+      dragY.value + (effectiveRowHeight - 2) - 4
+    )
+  );
+
+  // Note label position while dragging — same idea as the handle, so the
+  // label stays glued to the note instead of disappearing during a drag.
+  const dragLabelX = useDerivedValue(() => dragX.value + 4);
+  const dragLabelY = useDerivedValue(
+    () => dragY.value + (effectiveRowHeight - 2) - 4
+  );
+
   // Drag state mirrored as shared values for worklet access
   const dragType = useSharedValue(0); // 0 = none, 1 = move, 2 = resize
   const dragStartX = useSharedValue(0);
@@ -346,8 +499,12 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       // Confirm entering drag mode so a hold-then-move feels intentional.
       Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle.Light);
       const note = notes[hit.idx]!;
+      // Drum notes never resize — a one-shot sample doesn't sustain just
+      // because the note block got longer, so any drag on a drum note is
+      // always a move, regardless of where it started.
+      const isResizeEdge = !isNoteResizeLocked && hit.isResizeEdge;
       dragState.current = {
-        type: hit.isResizeEdge ? 'resize' : 'move',
+        type: isResizeEdge ? 'resize' : 'move',
         noteIdx: hit.idx,
         startX: x,
         startY: y,
@@ -356,7 +513,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
         origNoteNumber: note.noteNumber,
       };
       // Mirror to shared values for worklet access
-      dragType.value = hit.isResizeEdge ? 2 : 1;
+      dragType.value = isResizeEdge ? 2 : 1;
       dragStartX.value = x;
       dragStartY.value = y;
       dragOrigPos.value = note.position;
@@ -367,7 +524,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       ).rowIdx;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Reanimated SharedValues are stable refs
-    [hitTestNote, notes]
+    [hitTestNote, notes, isNoteResizeLocked]
   );
 
   // Drag update — pure worklet, reads/writes shared values only.
@@ -378,6 +535,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
   const rhRef = effectiveRowHeight;
   const tpRef = totalPitches;
   const lengthRef = lengthInBeats;
+  const snapRef = snapToGrid;
 
   const handleDragEnd = useCallback(
     (x: number, y: number) => {
@@ -392,7 +550,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
             ds.origDuration,
             dx,
             pianoRollMathContext,
-            ds.origPosition
+            ds.origPosition,
+            snapRef
           )
         );
       } else {
@@ -406,7 +565,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
             originalDuration: ds.origDuration,
             originalNoteNumber: ds.origNoteNumber,
           },
-          pianoRollMathContext
+          pianoRollMathContext,
+          snapRef
         );
         if (
           target.position !== ds.origPosition ||
@@ -418,7 +578,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       dragState.current = null;
       setActiveNoteIdx(-1);
     },
-    [pianoRollMathContext, onNoteResize, onNoteMove]
+    [pianoRollMathContext, onNoteResize, onNoteMove, snapRef]
   );
 
   // --- Gestures (UI thread → scheduleOnRN for callbacks) ---
@@ -430,7 +590,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
     });
 
   const panGesture = Gesture.Pan()
-    .activateAfterLongPress(DRAG_HOLD_MS)
+    .minDistance(PAN_MIN_DISTANCE)
     .onStart((e) => {
       'worklet';
       scheduleOnRN(handleDragStart, e.x, e.y);
@@ -442,12 +602,30 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       const dy = e.y - dragStartY.value;
 
       if (dragType.value === 2) {
-        // Resize
+        // Resize — gradual/free-following outside the magnetic zone around
+        // a snap point (grid edge or cell center); eased with withTiming
+        // when inside one, so it reads as a smooth glide instead of a jump.
+        const maxWidth = (lengthRef - dragOrigPos.value) * bwRef;
         dragX.value = dragOrigPos.value * bwRef;
-        dragW.value = Math.min(
-          (lengthRef - dragOrigPos.value) * bwRef,
-          Math.max(swRef, dragOrigDur.value * bwRef + dx)
-        );
+        if (snapRef) {
+          const target = getResizeMagneticTarget(
+            dragOrigPos.value,
+            dragOrigDur.value,
+            dx,
+            bwRef,
+            swRef,
+            maxWidth
+          );
+          dragW.value = target.isSnapping
+            ? withTiming(target.widthPx, { duration: SNAP_EASE_MS })
+            : target.widthPx;
+        } else {
+          const minWidth = swRef * UNSNAPPED_MIN_DURATION_STEPS;
+          dragW.value = Math.min(
+            maxWidth,
+            Math.max(minWidth, dragOrigDur.value * bwRef + dx)
+          );
+        }
         const origRow = Math.floor(dragStartY.value / rhRef);
         dragY.value = origRow * rhRef + 1;
       } else {
@@ -460,7 +638,8 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
           swRef,
           rhRef,
           tpRef,
-          lengthRef - dragOrigDur.value
+          lengthRef - dragOrigDur.value,
+          snapRef
         );
         dragX.value = target.position * bwRef;
         dragY.value = target.rowIdx * rhRef + 1;
@@ -517,10 +696,13 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                       height: effectiveRowHeight,
                       backgroundColor:
                         selectedPitchIndex === pitchIdx
-                          ? colors.mcOrange
+                          ? getSelectedLabelColor(pitchColor)
                           : hasName
                             ? pitchColor
                             : hexToRgba(pitchColor, 0.6),
+                      ...(selectedPitchIndex === pitchIdx
+                        ? { borderWidth: 2, borderColor: colors.mcWhite }
+                        : null),
                     },
                   ]}
                 >
@@ -543,56 +725,33 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
             horizontal
             showsHorizontalScrollIndicator={false}
             style={styles.gridScroll}
+            onScroll={handleGridScroll}
+            scrollEventThrottle={100}
           >
             <View style={{ width: gridWidth, height: gridHeight }}>
               <Canvas style={StyleSheet.absoluteFill}>
-                {/* Row backgrounds — alternating colors */}
-                {Array.from({ length: totalPitches }, (_, i) => (
-                  <Rect
-                    key={`bg${i}`}
-                    x={0}
-                    y={i * effectiveRowHeight}
-                    width={gridWidth}
-                    height={effectiveRowHeight}
-                    color={i % 2 === 0 ? rowBgColor1 : rowBgColor2}
-                  />
-                ))}
+                {/* Column backgrounds — alternating per beat, matching native */}
+                {Array.from(
+                  { length: Math.ceil(totalSteps / 4) },
+                  (_, i) => (
+                    <Rect
+                      key={`bg${i}`}
+                      x={i * beatWidth}
+                      y={0}
+                      width={beatWidth}
+                      height={gridHeight}
+                      color={i % 2 === 0 ? colBgColor1 : colBgColor2}
+                    />
+                  )
+                )}
 
-                {/* Grid lines — single path, one draw call */}
+                {/* Grid lines — single path, one draw call, uniform weight */}
                 <SkiaPath
                   path={gridPath}
                   color={GRID_LINE_COLOR}
                   style="stroke"
                   strokeWidth={0.5}
                 />
-
-                {/* Beat lines (stronger) */}
-                {Array.from(
-                  { length: Math.floor(totalSteps / 4) + 1 },
-                  (_, i) => (
-                    <Line
-                      key={`beat${i}`}
-                      p1={vec(i * 4 * stepWidth, 0)}
-                      p2={vec(i * 4 * stepWidth, gridHeight)}
-                      color={GRID_BEAT_COLOR}
-                      strokeWidth={1}
-                    />
-                  )
-                )}
-
-                {/* Bar lines (strongest) */}
-                {Array.from(
-                  { length: Math.floor(totalSteps / 16) + 1 },
-                  (_, i) => (
-                    <Line
-                      key={`bar${i}`}
-                      p1={vec(i * 16 * stepWidth, 0)}
-                      p2={vec(i * 16 * stepWidth, gridHeight)}
-                      color={GRID_BAR_COLOR}
-                      strokeWidth={1.5}
-                    />
-                  )
-                )}
 
                 {/* Notes — styled to match AudioKit PianoRoll */}
                 {notes.map((note, idx) => {
@@ -612,21 +771,17 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                   const h = effectiveRowHeight - 2;
                   const r = 3;
                   const isDragging = idx === activeNoteIdx;
-                  const noteColor = noteColors?.[note.noteNumber] ?? trackColor;
+                  const liveVelocity =
+                    velocityPreview?.noteIndex === idx
+                      ? velocityPreview.velocity
+                      : note.velocity;
+                  const noteColor = getVelocityColor(
+                    noteColors?.[note.noteNumber] ?? trackColor,
+                    liveVelocity
+                  );
 
                   return (
                     <React.Fragment key={`n${idx}`}>
-                      {/* When dragging: ghost at original position (AudioKit style) */}
-                      {isDragging && (
-                        <RoundedRect
-                          x={x}
-                          y={y}
-                          width={w}
-                          height={h}
-                          r={r}
-                          color="rgba(0,0,0,0.2)"
-                        />
-                      )}
                       {/* Note body — uses shared values when dragging, static values otherwise */}
                       <RoundedRect
                         x={isDragging ? dragX : x}
@@ -635,21 +790,34 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                         height={h}
                         r={r}
                         color={noteColor}
-                        opacity={isDragging ? 1 : 0.85}
+                        opacity={1}
                       />
-                      {/* Resize handle */}
-                      {!isDragging && (
+                      <RoundedRect
+                        x={isDragging ? dragX : x}
+                        y={isDragging ? dragY : y}
+                        width={isDragging ? dragW : w}
+                        height={h}
+                        r={r}
+                        color="#000000"
+                        style="stroke"
+                        strokeWidth={0.5}
+                      />
+                      {/* Resize handle — omitted for drum notes entirely,
+                       * not just disabled: a one-shot sample doesn't sustain
+                       * just because the note block is longer, so showing a
+                       * grip here would promise an edit that has no audible
+                       * effect. */}
+                      {!isNoteResizeLocked && (
                         <Line
-                          p1={vec(x + w - 3, y + 4)}
-                          p2={vec(x + w - 3, y + h - 4)}
+                          p1={isDragging ? dragHandleP1 : vec(x + w - 3, y + 4)}
+                          p2={isDragging ? dragHandleP2 : vec(x + w - 3, y + h - 4)}
                           color="rgba(0,0,0,0.3)"
                           strokeWidth={2}
                         />
                       )}
                       {/* Note label — when enabled + note wide enough */}
                       {(() => {
-                        if (!showNoteLabels || isDragging || w <= 18)
-                          return null;
+                        if (!showNoteLabels || w <= 18) return null;
                         // For melodic: show note name (C4, D#5, etc.)
                         // For drums: show sample name (Kick, Snare, etc.)
                         const labelText = isDrum
@@ -658,6 +826,21 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                               ?.name?.slice(0, 6) ?? '')
                           : getNoteName(note.noteNumber);
                         if (!labelText) return null;
+                        // While dragging, skip the bounds clip (its rect
+                        // would need to track the drag too) and follow the
+                        // live shared-value position instead of disappearing.
+                        if (isDragging) {
+                          return (
+                            <SkiaText
+                              key={`label${idx}`}
+                              x={dragLabelX}
+                              y={dragLabelY}
+                              text={labelText}
+                              font={noteFont}
+                              color="white"
+                            />
+                          );
+                        }
                         // Clip text to note bounds
                         return (
                           <Group
@@ -675,6 +858,37 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
                         );
                       })()}
                     </React.Fragment>
+                  );
+                })}
+
+                {/* Live recording preview — grows from press beat to the
+                    playhead as the key is held, before it's committed. */}
+                {(recordingNotes ?? []).map((rn, i) => {
+                  let pitchIdx: number;
+                  if (isDrum) {
+                    const si = (samples ?? []).findIndex(
+                      (s) => s.noteNumber === rn.noteNumber
+                    );
+                    pitchIdx = si >= 0 ? si : 0;
+                  } else {
+                    pitchIdx = rn.noteNumber - basePitch;
+                  }
+                  const rowIdx = totalPitches - 1 - pitchIdx;
+                  const wrappedStart =
+                    lengthInBeats > 0
+                      ? rn.startBeat % lengthInBeats
+                      : rn.startBeat;
+                  const x = wrappedStart * beatWidth;
+                  const color = noteColors?.[rn.noteNumber] ?? trackColor;
+                  return (
+                    <RecordingNotePreview
+                      key={`rec${rn.noteNumber}-${i}`}
+                      x={x}
+                      rowIdx={rowIdx}
+                      effectiveRowHeight={effectiveRowHeight}
+                      playheadPosX={effectivePlayheadPosX}
+                      color={color}
+                    />
                   );
                 })}
               </Canvas>
@@ -713,7 +927,7 @@ export const SkiaPianoRollGrid = memo(function SkiaPianoRollGrid({
       )}
     </View>
   );
-});
+}));
 
 const styles = StyleSheet.create({
   container: { flex: 1, position: 'relative' },

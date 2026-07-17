@@ -1,3 +1,4 @@
+import { hexToHsl, hslToHex } from '../../theme';
 import type { ClipNote, Sample } from '../../features/playground/types';
 
 export type PianoRollMathContext = {
@@ -12,11 +13,53 @@ export type PianoRollMathContext = {
   pitchToMidi: number[];
 };
 
+/** A note currently held down during live recording — not yet committed to
+ * the clip. Rendered as a growing "in progress" preview from `startBeat` to
+ * the live playhead position. */
+export interface RecordingNotePreviewData {
+  noteNumber: number;
+  startBeat: number;
+}
+
 const TOUCH_PADDING = 12;
 const MIN_RESIZE_ZONE = 20;
 
 const clamp = (value: number, min: number, max: number): number =>
   Math.max(min, Math.min(max, value));
+
+const MIDI_VELOCITY_MAX = 127;
+// The visual floor a velocity-0 note dims to, and the lightness floor that
+// maps to — chosen so even the softest possible note stays a clearly
+// readable, fully-opaque colored shape against the dark grid, never
+// approaching black/invisible the way a plain opacity fade would.
+const VELOCITY_VISUAL_FLOOR = 0.4;
+const NOTE_LIGHTNESS_FLOOR = 0.22;
+
+/**
+ * Applies a velocity-scaled lightness to a note's base color (track color or
+ * per-pitch color) — full velocity (127) renders exactly as the base color
+ * always has, softer velocities dim progressively toward NOTE_LIGHTNESS_FLOOR.
+ * Applies uniformly to melodic and drum notes; both platforms take a plain
+ * hex string for a note's fill, so this needs no Skia-specific handling.
+ */
+export const getVelocityColor = (hex: string, velocity: number): string => {
+  const fraction = clamp(velocity, 0, MIDI_VELOCITY_MAX) / MIDI_VELOCITY_MAX;
+  const visualT = VELOCITY_VISUAL_FLOOR + (1 - VELOCITY_VISUAL_FLOOR) * fraction;
+  const { h, s, l } = hexToHsl(hex);
+  const targetLightness = NOTE_LIGHTNESS_FLOOR + (l - NOTE_LIGHTNESS_FLOOR) * visualT;
+  return hslToHex(h, s, targetLightness);
+};
+
+// Matches the mcOrange2 → mcOrange step in the design palette (same hue,
+// same saturation, ~4-5 points darker) — applied generically to any track's
+// own color so a selected pitch label darkens toward that track's color
+// instead of always turning a fixed orange.
+const SELECTED_LABEL_LIGHTNESS_DELTA = 0.05;
+
+export const getSelectedLabelColor = (hex: string): string => {
+  const { h, s, l } = hexToHsl(hex);
+  return hslToHex(h, s, Math.max(0, l - SELECTED_LABEL_LIGHTNESS_DELTA));
+};
 
 export const getPianoRollNotePitchIndex = (
   note: Pick<ClipNote, 'noteNumber'>,
@@ -105,16 +148,85 @@ export const hitTestPianoRollNote = (
   return bestIdx >= 0 ? { idx: bestIdx, isResizeEdge: bestIsResize } : null;
 };
 
+// Matches the melodic-sequencer reference: with snap on, duration rounds to
+// whole steps (min 1 step); with snap off, duration is exact/fractional with
+// a much finer minimum (1/8 step) for precise editing.
+export const UNSNAPPED_MIN_DURATION_STEPS = 0.125;
+
 export const getResizedNoteDuration = (
   originalDuration: number,
   dx: number,
   { beatWidth, stepWidth, gridWidth }: PianoRollMathContext,
-  originalPosition = 0
+  originalPosition = 0,
+  snap = true
 ): number => {
   const newWidth = originalDuration * beatWidth + dx;
-  const snappedDuration = Math.max(1, Math.round(newWidth / stepWidth)) * 0.25;
+  let rawDuration: number;
+  if (snap) {
+    // Snap the note's absolute *end* to the nearest half-step — half-steps
+    // land on either a grid edge (whole step) or a cell center, matching
+    // the release-time "snap to the middle of a cell" behavior. The start
+    // never moves during a resize, so only the end needs to land on a line.
+    const startPx = originalPosition * beatWidth;
+    const endPx = startPx + newWidth;
+    const snapUnit = stepWidth / 2;
+    const nextSnapPointAfterStart =
+      Math.ceil(startPx / snapUnit + 1e-9) * snapUnit;
+    const snappedEndPx = Math.max(
+      Math.round(endPx / snapUnit) * snapUnit,
+      nextSnapPointAfterStart
+    );
+    rawDuration = (snappedEndPx - startPx) / beatWidth;
+  } else {
+    rawDuration =
+      Math.max(UNSNAPPED_MIN_DURATION_STEPS, newWidth / stepWidth) * 0.25;
+  }
   const maxDuration = Math.max(0.25, gridWidth / beatWidth - originalPosition);
-  return Math.min(maxDuration, snappedDuration);
+  return Math.min(maxDuration, rawDuration);
+};
+
+// How close (as a fraction of a half-step) the raw drag needs to be to a
+// snap point (edge or cell center) before live preview eases toward it.
+const RESIZE_SNAP_ZONE_RATIO = 0.3;
+
+/**
+ * Live drag-preview width for a resize, in pixels. Outside the magnetic
+ * zone around each snap point the note follows the pointer exactly
+ * (gradual extension); inside the zone it reports the snap target so the
+ * caller can ease toward it instead of jumping.
+ */
+export const getResizeMagneticTarget = (
+  originalPosition: number,
+  originalDuration: number,
+  dx: number,
+  beatWidth: number,
+  stepWidth: number,
+  maxWidthPx: number
+): { widthPx: number; isSnapping: boolean } => {
+  'worklet';
+  const startPx = originalPosition * beatWidth;
+  const freeWidthPx = Math.max(
+    stepWidth * UNSNAPPED_MIN_DURATION_STEPS,
+    originalDuration * beatWidth + dx
+  );
+  const freeEndPx = startPx + freeWidthPx;
+  const snapUnit = stepWidth / 2;
+  const nextSnapPointAfterStart =
+    Math.ceil(startPx / snapUnit + 1e-9) * snapUnit;
+  const nearestSnapEndPx = Math.max(
+    Math.round(freeEndPx / snapUnit) * snapUnit,
+    nextSnapPointAfterStart
+  );
+  const distance = Math.abs(freeEndPx - nearestSnapEndPx);
+  const zonePx = snapUnit * RESIZE_SNAP_ZONE_RATIO;
+
+  if (distance < zonePx) {
+    return {
+      widthPx: Math.min(maxWidthPx, nearestSnapEndPx - startPx),
+      isSnapping: true,
+    };
+  }
+  return { widthPx: Math.min(maxWidthPx, freeWidthPx), isSnapping: false };
 };
 
 export const getMovedGridTarget = (
@@ -125,18 +237,27 @@ export const getMovedGridTarget = (
   stepWidth: number,
   rowHeight: number,
   totalPitches: number,
-  maxPosition: number
+  maxPosition: number,
+  snap = true
 ): { position: number; rowIdx: number } => {
   'worklet';
-  const stepsDx = Math.round(dx / stepWidth);
+  // Pitch (row) is always discrete — only the horizontal (time) axis snaps.
   const rowsDy = Math.round(dy / rowHeight);
   const rowIdx = Math.max(0, Math.min(totalPitches - 1, originalRow + rowsDy));
 
+  let newPosition: number;
+  if (snap) {
+    // Snap the note's absolute left edge to the grid rather than adding a
+    // snapped delta to a possibly off-grid original position — a note that
+    // was placed while snap was off lands fully on-grid once it's moved.
+    const newPositionSteps = originalPosition / 0.25 + dx / stepWidth;
+    newPosition = Math.round(newPositionSteps) * 0.25;
+  } else {
+    newPosition = originalPosition + (dx / stepWidth) * 0.25;
+  }
+
   return {
-    position: Math.min(
-      maxPosition,
-      Math.max(0, originalPosition + stepsDx * 0.25)
-    ),
+    position: Math.min(maxPosition, Math.max(0, newPosition)),
     rowIdx,
   };
 };
@@ -166,7 +287,8 @@ export const getMovedNoteTarget = (
     rowHeight,
     totalPitches,
     pitchToMidi,
-  }: PianoRollMathContext
+  }: PianoRollMathContext,
+  snap = true
 ): { noteNumber: number; position: number } => {
   const pitchIdx = pitchToMidi.indexOf(originalNoteNumber);
   const originalRow = totalPitches - 1 - clamp(pitchIdx, 0, totalPitches - 1);
@@ -178,7 +300,8 @@ export const getMovedNoteTarget = (
     stepWidth,
     rowHeight,
     totalPitches,
-    Math.max(0, gridWidth / beatWidth - originalDuration)
+    Math.max(0, gridWidth / beatWidth - originalDuration),
+    snap
   );
   const targetPitchIdx = totalPitches - 1 - target.rowIdx;
 

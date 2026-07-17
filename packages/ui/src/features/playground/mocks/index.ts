@@ -91,6 +91,7 @@ export function createMockClip(overrides?: Partial<Clip>): Clip {
     sectionID: 1,
     lengthInBars: 4,
     activeLengthInBars: 4,
+    activeBarStart: 0,
     colorHex: INSTRUMENT_COLORS.drum,
     notes: [],
     ...overrides,

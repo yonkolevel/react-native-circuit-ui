@@ -8,7 +8,7 @@ export type {
   ThemeProviderProps,
 } from './ThemeContext';
 
-export { colors, palette, hexToRgba } from './colors';
+export { colors, palette, hexToRgba, hexToHsl, hslToHex } from './colors';
 export type { ThemeColors, Palette, ColorAliases } from './colors';
 
 export {

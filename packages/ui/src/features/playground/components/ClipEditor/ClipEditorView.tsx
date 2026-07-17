@@ -17,7 +17,7 @@
  * │ VEL:   [velocity bars with values]               │
  * └──────────────────────────────────────────────────┘
  */
-import { memo, useState, useCallback, useEffect } from 'react';
+import { memo, useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   View,
   ScrollView as RNScrollView,
@@ -38,13 +38,17 @@ import Animated, {
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme, hexToRgba } from '../../../../theme';
-import { makeSpacing } from '../../../../theme/spacing';
+import { makeSpacing, spacing } from '../../../../theme/spacing';
 import { MidiNoteView } from './MidiNoteView';
 import { ClipSettingsModal } from './ClipSettingsModal';
 import { DrumPadsView } from '../DrumPads/DrumPadsView';
 import { PianoKeyboard } from '../PianoKeyboard/PianoKeyboard';
 import { SkiaPianoRollGrid } from '../../../../components/PianoRoll';
+import type { RecordingNotePreviewData, SkiaPianoRollGridHandle } from '../../../../components/PianoRoll';
 import { NotePrecisionPanel } from '../../../../components/NotePrecisionPanel';
+import type { NotePrecisionPanelHandle } from '../../../../components/NotePrecisionPanel';
+import { Modal } from '../../../../components/Modal';
+import { Button } from '../../../../components/Button';
 import { WithHint, HintIDs } from '../../../../components/Hint';
 import type {
   Clip,
@@ -531,109 +535,474 @@ const PianoRollGrid = memo(function PianoRollGrid({
 // Orange bar: "— | 1  2  3  4 | +"
 
 /**
- * ClipLengthBar — Matches iOS ClipLengthBar exactly.
+ * ClipLengthBar — continuous bar-range strip.
  *
- * iOS layout: HStack(spacing:0) { minus | ForEach bars { barButton } | plus }
- * - Minus/Plus: mcOrange icon on mcBlack bg, 34x34
- * - Active bars: mcOrange bg, mcBlack text (mcExtraSmallSemiBold)
- * - Inactive bars: mcBlack3 bg, mcWhite3 text
- * - Current playing bar: mcOrange2 bg with bottom accent line
- * - Height: 34
+ * Layout: HStack(spacing:0) { minus | locator + bar segments | plus }
+ * - Minus/Plus: mcOrange icon on mcBlack bg, 34x34 — change the clip's TOTAL length
+ * - Locator: thin non-interactive strip above the bar segments, mirrors the
+ *   scrubber's visible-window concept — width/position track the piano
+ *   roll's current scroll range and zoom, purely informational
+ * - Bar segments: one continuous strip, divided by hairlines, each showing a
+ *   mini thumbnail of that bar's own notes (mirrors the piano roll above)
+ *   plus its bar number. No isolated per-bar underline anymore.
+ * - Tap a bar inside the active range:
+ *   - it's the last bar → range shrinks by one from the end
+ *   - it's the first bar → range shrinks by one from the front
+ *   - otherwise (interior) → range start jumps to that bar
+ * - Tap a bar outside the active range → range extends to reach it
+ * - Long-press a bar → isolates the range to just that bar
+ * - Double-tap a bar → navigates the piano roll there, selection untouched
+ * - Active (in active range): translucent mcOrange tint
+ * - Inactive: mcBlack3 bg
+ * - When a single bar is isolated, minus/plus become trash/duplicate acting
+ *   on that one bar instead of the clip's total length
  */
 interface ClipLengthBarProps {
   lengthInBars: number;
+  activeBarStart: number;
   activeLengthInBars: number;
-  currentBarIndex?: number;
-  onSetActiveLength?: (barIndex: number) => void;
+  /** Active-range tint for each bar segment mirrors this (the clip/track's own color) */
+  trackColor: string;
+  /** Notes used to render each bar segment's mini note-thumbnail */
+  notes: ClipNote[];
+  /** 0-indexed, half-open [start, end) range of bars currently scrolled into view on the grid above — drives the locator strip */
+  visibleBarRange?: { start: number; end: number };
+  onSetActiveBarRange?: (start: number, length: number) => void;
   onDecrease?: () => void;
   onIncrease?: () => void;
+  /** Delete the given (0-indexed) bar — only offered while it's isolated */
+  onDeleteBar?: (barIndex: number) => void;
+  /** Duplicate the given (0-indexed) bar right after itself — only offered while it's isolated */
+  onDuplicateBar?: (barIndex: number) => void;
+  /** Scroll the piano roll to the given (0-indexed) bar without changing the active range */
+  onNavigateToBar?: (barIndex: number) => void;
 }
 
-const BAR_HEIGHT = 34;
+const BAR_HEIGHT = 28;
 const BAR_BTN_W = 34;
+const LOCATOR_HEIGHT = 2;
+const LOCATOR_GAP = 0;
+
+/** Pure range-math for a tap on bar `i`, given the current half-open active
+ * range [start, end). See the ClipLengthBar doc comment for the rules. */
+const nextRangeForBarTap = (
+  i: number,
+  start: number,
+  end: number
+): [number, number] => {
+  if (i >= start && i < end) {
+    const isLast = i === end - 1;
+    const isFirst = i === start;
+    if (isLast && end - 1 > start) return [start, end - 1 - start];
+    if (isFirst && start + 1 < end) return [start + 1, end - (start + 1)];
+    if (!isFirst && !isLast) return [i, end - i];
+    return [start, end - start]; // single-bar range tapped — no-op
+  }
+  if (i < start) return [i, end - i];
+  return [start, i + 1 - start];
+};
+
+const ClipLengthBarSegment = memo(function ClipLengthBarSegment({
+  index,
+  barIndex,
+  isActive,
+  isLast,
+  trackColor,
+  dashes,
+  onTap,
+  onLongPress,
+  onDoubleTap,
+}: {
+  index: number;
+  barIndex: number;
+  isActive: boolean;
+  isLast: boolean;
+  trackColor: string;
+  dashes: { xFrac: number; yFrac: number }[];
+  onTap: (i: number) => void;
+  onLongPress: (i: number) => void;
+  onDoubleTap: (i: number) => void;
+}) {
+  const { colors } = useTheme();
+
+  const gesture = useMemo(() => {
+    const longPress = Gesture.LongPress()
+      .minDuration(500)
+      .onStart(() => {
+        'worklet';
+        runOnJS(onLongPress)(index);
+      });
+    const doubleTap = Gesture.Tap()
+      .numberOfTaps(2)
+      .maxDuration(250)
+      .onEnd((_e, success) => {
+        'worklet';
+        if (success) runOnJS(onDoubleTap)(index);
+      });
+    const singleTap = Gesture.Tap()
+      .numberOfTaps(1)
+      .requireExternalGestureToFail(doubleTap, longPress)
+      .onEnd((_e, success) => {
+        'worklet';
+        if (success) runOnJS(onTap)(index);
+      });
+    return Gesture.Exclusive(longPress, doubleTap, singleTap);
+  }, [index, onTap, onLongPress, onDoubleTap]);
+
+  return (
+    <GestureDetector gesture={gesture}>
+      <View
+        style={[
+          styles.clipLengthSegment,
+          {
+            backgroundColor: isActive ? hexToRgba(trackColor, 0.35) : colors.mcBlack3,
+            borderRightWidth: isLast ? 0 : 1,
+            borderRightColor: colors.mcBlack,
+          },
+        ]}
+        accessibilityLabel={`Bar ${barIndex}`}
+      >
+        <Text
+          variant="extraSmall10SemiBold"
+          color={isActive ? colors.mcWhite2 : colors.mcWhite3}
+          style={styles.clipLengthSegmentNum}
+        >
+          {barIndex}
+        </Text>
+        {dashes.map((d, di) => (
+          <View
+            key={di}
+            style={[
+              styles.clipLengthDash,
+              {
+                left: `${d.xFrac * 100}%`,
+                top: `${d.yFrac * 100}%`,
+                backgroundColor: colors.mcWhite2,
+              },
+            ]}
+          />
+        ))}
+      </View>
+    </GestureDetector>
+  );
+});
 
 const ClipLengthBar = memo(function ClipLengthBar({
   lengthInBars,
+  activeBarStart,
   activeLengthInBars,
-  currentBarIndex,
-  onSetActiveLength,
+  trackColor,
+  notes,
+  visibleBarRange,
+  onSetActiveBarRange,
   onDecrease,
   onIncrease,
+  onDeleteBar,
+  onDuplicateBar,
+  onNavigateToBar,
 }: ClipLengthBarProps) {
   const { colors } = useTheme();
   const barCount = Math.max(1, lengthInBars);
-  const activeCount = Math.min(Math.max(1, activeLengthInBars), barCount);
+  // A 1-bar clip's only bar is never "isolated" — it already is the whole
+  // clip, so the +/- buttons stay as add/remove rather than duplicate/trash.
+  const isIsolated = activeLengthInBars === 1 && barCount > 1;
   const canAdd = barCount < 16;
   const canRemove = barCount > 1;
+  // Going from 1 to 2 bars is ambiguous — ask whether the new bar should be
+  // empty or a copy of the only bar that exists so far.
+  const [showAddBarPrompt, setShowAddBarPrompt] = useState(false);
+
+  const handlePlusPress = useCallback(() => {
+    if (isIsolated) {
+      onDuplicateBar?.(activeBarStart);
+    } else if (barCount === 1) {
+      setShowAddBarPrompt(true);
+    } else {
+      onIncrease?.();
+    }
+  }, [isIsolated, barCount, activeBarStart, onDuplicateBar, onIncrease]);
+
+  const handleBarTap = useCallback(
+    (i: number) => {
+      const [newStart, newLength] = nextRangeForBarTap(
+        i,
+        activeBarStart,
+        activeBarStart + activeLengthInBars
+      );
+      onSetActiveBarRange?.(newStart, newLength);
+    },
+    [activeBarStart, activeLengthInBars, onSetActiveBarRange]
+  );
+  const handleBarLongPress = useCallback(
+    (i: number) => onSetActiveBarRange?.(i, 1),
+    [onSetActiveBarRange]
+  );
+  const handleBarDoubleTap = useCallback(
+    (i: number) => onNavigateToBar?.(i),
+    [onNavigateToBar]
+  );
+
+  // Mini note-thumbnail per bar — mirrors the piano roll above. Pitch is
+  // normalized against the clip's own min/max pitch so the shape stays
+  // legible regardless of instrument range.
+  const notesByBar = useMemo(() => {
+    const perBar: { xFrac: number; yFrac: number }[][] = Array.from(
+      { length: barCount },
+      () => []
+    );
+    if (!notes.length) return perBar;
+    let minPitch = Infinity;
+    let maxPitch = -Infinity;
+    for (const n of notes) {
+      if (n.noteNumber < minPitch) minPitch = n.noteNumber;
+      if (n.noteNumber > maxPitch) maxPitch = n.noteNumber;
+    }
+    const pitchSpan = Math.max(1, maxPitch - minPitch);
+    for (const n of notes) {
+      const bar = Math.floor(n.position / 4);
+      if (bar < 0 || bar >= barCount) continue;
+      const xFrac = (n.position - bar * 4) / 4;
+      const yFrac = 1 - (n.noteNumber - minPitch) / pitchSpan;
+      perBar[bar]?.push({
+        xFrac: Math.min(0.92, Math.max(0, xFrac)),
+        yFrac: Math.min(0.85, Math.max(0.15, yFrac)),
+      });
+    }
+    return perBar;
+  }, [notes, barCount]);
+
+  const locatorLeftFrac = visibleBarRange
+    ? Math.max(0, visibleBarRange.start) / barCount
+    : 0;
+  const locatorWidthFrac = visibleBarRange
+    ? Math.max(0, Math.min(barCount, visibleBarRange.end) - Math.max(0, visibleBarRange.start)) /
+      barCount
+    : 1;
 
   return (
     <View style={[styles.clipLengthBar, { backgroundColor: colors.mcBlack }]}>
-      {/* Minus button */}
+      {/* Minus button — becomes trash while a single bar is isolated */}
       <Pressable
-        onPress={onDecrease}
+        onPress={() => (isIsolated ? onDeleteBar?.(activeBarStart) : onDecrease?.())}
         disabled={!canRemove}
         style={[
           styles.clipLengthEndBtn,
           { backgroundColor: colors.mcBlack, opacity: canRemove ? 1 : 0.4 },
         ]}
-        accessibilityLabel="Remove bar"
+        accessibilityLabel={isIsolated ? 'Delete bar' : 'Remove bar'}
       >
-        <Icon icon={Icons.minus} size={12} color={colors.mcOrange} />
+        <Icon icon={isIsolated ? Icons.trash : Icons.minus} size={12} color={colors.mcWhite2} />
       </Pressable>
 
-      {/* Bar buttons */}
-      <View style={styles.clipLengthNumbers}>
-        {Array.from({ length: barCount }, (_, i) => {
-          const barIndex = i + 1;
-          const isActive = barIndex <= activeCount;
-          const isCurrent = currentBarIndex === barIndex;
-          return (
-            <Pressable
-              key={barIndex}
-              onPress={() => onSetActiveLength?.(barIndex)}
-              style={[
-                styles.clipLengthNum,
-                {
-                  backgroundColor: isCurrent
-                    ? colors.mcOrange2
-                    : isActive
-                      ? colors.mcOrange
-                      : colors.mcBlack3,
-                },
-              ]}
-            >
-              <Text
-                variant="extraSmall10SemiBold"
-                color={isActive ? colors.mcBlack : colors.mcWhite3}
-                center
-              >
-                {barIndex}
-              </Text>
-              {isCurrent && (
-                <View
-                  style={[
-                    styles.clipLengthAccent,
-                    { backgroundColor: colors.mcOrange5 },
-                  ]}
-                />
-              )}
-            </Pressable>
-          );
-        })}
+      <View style={styles.clipLengthMain}>
+        {/* Bar segments */}
+        <View style={styles.clipLengthNumbers}>
+          {Array.from({ length: barCount }, (_, i) => {
+            const isActive = i >= activeBarStart && i < activeBarStart + activeLengthInBars;
+            return (
+              <ClipLengthBarSegment
+                key={i}
+                index={i}
+                barIndex={i + 1}
+                isActive={isActive}
+                isLast={i === barCount - 1}
+                trackColor={trackColor}
+                dashes={notesByBar[i] ?? []}
+                onTap={handleBarTap}
+                onLongPress={handleBarLongPress}
+                onDoubleTap={handleBarDoubleTap}
+              />
+            );
+          })}
+        </View>
+
+        {/* Locator — read-only, mirrors the visible piano-roll range */}
+        <View style={styles.clipLengthLocatorTrack}>
+          <View
+            style={[
+              styles.clipLengthLocatorFill,
+              {
+                left: `${locatorLeftFrac * 100}%`,
+                width: `${locatorWidthFrac * 100}%`,
+                backgroundColor: colors.mcWhite2,
+              },
+            ]}
+          />
+        </View>
       </View>
 
-      {/* Plus button */}
+      {/* Plus button — becomes duplicate while a single bar is isolated */}
       <Pressable
-        onPress={onIncrease}
+        onPress={handlePlusPress}
         disabled={!canAdd}
         style={[
           styles.clipLengthEndBtn,
           { backgroundColor: colors.mcBlack, opacity: canAdd ? 1 : 0.4 },
         ]}
-        accessibilityLabel="Add bar"
+        accessibilityLabel={isIsolated ? 'Duplicate bar' : 'Add bar'}
       >
-        <Icon icon={Icons.plus} size={12} color={colors.mcOrange} />
+        <Icon icon={isIsolated ? Icons.duplicate : Icons.plus} size={12} color={colors.mcWhite2} />
       </Pressable>
+
+      <Modal
+        visible={showAddBarPrompt}
+        title="Add Bar"
+        onClose={() => setShowAddBarPrompt(false)}
+      >
+        <View style={{ gap: makeSpacing(2) }}>
+          <Button
+            variant="secondary"
+            label="Empty Bar"
+            fullWidth
+            onPress={() => {
+              setShowAddBarPrompt(false);
+              onIncrease?.();
+            }}
+          />
+          <Button
+            variant="primary"
+            label="Duplicate Bar 1"
+            fullWidth
+            onPress={() => {
+              setShowAddBarPrompt(false);
+              onDuplicateBar?.(0);
+            }}
+          />
+        </View>
+      </Modal>
+    </View>
+  );
+});
+
+// ─── Zoom Scrubber ──────────────────────────────────────────────────────────
+// A thin zoom slider above the clip length bar: 100% at the left, 300% at
+// the right, current value shown as a percentage at the trailing end.
+// Replaces the old zoom +/- and expand buttons that used to float on top of
+// the grid (and so could sit right over a note a user was trying to reach).
+// Deliberately does nothing else — no panning, no clip-length awareness.
+// Panning is already well covered by the grid's own drag-to-pan and by the
+// clip length bar's jump-to-bar, so a third, cramped way to do the same
+// thing here was adding bugs, not capability.
+
+const SCRUBBER_HEIGHT = 28;
+const SCRUBBER_THUMB_SIZE = 20;
+const SCRUBBER_MIN_ZOOM = 1;
+const SCRUBBER_MAX_ZOOM = 3;
+
+interface ZoomScrubberProps {
+  zoom: number;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
+  onZoomChange: (zoom: number) => void;
+}
+
+const ZoomScrubber = memo(function ZoomScrubber({
+  zoom,
+  isExpanded,
+  onToggleExpand,
+  onZoomChange,
+}: ZoomScrubberProps) {
+  const { colors } = useTheme();
+  const [trackWidth, setTrackWidth] = useState(0);
+  const [displayZoom, setDisplayZoom] = useState(zoom);
+
+  // The gesture reads onZoomChange through a ref rather than closing over it
+  // directly, and is built once via useMemo — not recreated on every render.
+  // Zoom updates live as you drag (it's view-only state, nothing undo-tracked,
+  // so there's no reason to defer it to release), which means every drag tick
+  // re-renders this component; rebuilding the gesture object on each of those
+  // renders was exactly what broke the previous version's dragging mid-touch.
+  const onZoomChangeRef = useRef(onZoomChange);
+  useEffect(() => {
+    onZoomChangeRef.current = onZoomChange;
+  }, [onZoomChange]);
+  const commitZoom = useCallback((z: number) => {
+    onZoomChangeRef.current?.(z);
+    setDisplayZoom(z);
+  }, []);
+
+  const liveZoom = useSharedValue(zoom);
+  useEffect(() => {
+    liveZoom.value = zoom;
+    setDisplayZoom(zoom);
+  }, [zoom, liveZoom]);
+
+  const zoomGesture = useMemo(
+    () =>
+      Gesture.Pan()
+        .minDistance(0)
+        .onStart((e) => {
+          'worklet';
+          if (trackWidth <= 0) return;
+          const fraction = Math.max(0, Math.min(1, e.x / trackWidth));
+          const z = SCRUBBER_MIN_ZOOM + fraction * (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
+          liveZoom.value = z;
+          runOnJS(commitZoom)(z);
+        })
+        .onUpdate((e) => {
+          'worklet';
+          if (trackWidth <= 0) return;
+          const fraction = Math.max(0, Math.min(1, e.x / trackWidth));
+          const z = SCRUBBER_MIN_ZOOM + fraction * (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
+          liveZoom.value = z;
+          runOnJS(commitZoom)(z);
+        }),
+    [trackWidth, liveZoom, commitZoom]
+  );
+
+  const thumbStyle = useAnimatedStyle(() => {
+    const fraction =
+      (liveZoom.value - SCRUBBER_MIN_ZOOM) / (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
+    return { left: fraction * trackWidth - SCRUBBER_THUMB_SIZE / 2 };
+  });
+  const fillStyle = useAnimatedStyle(() => {
+    const fraction =
+      (liveZoom.value - SCRUBBER_MIN_ZOOM) / (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
+    return { width: fraction * trackWidth };
+  });
+
+  return (
+    <View style={[styles.scrubberRow, { backgroundColor: colors.mcBlack }]}>
+      <Pressable
+        onPress={onToggleExpand}
+        style={styles.scrubberExpandBtn}
+        accessibilityLabel={isExpanded ? 'Collapse piano roll' : 'Expand piano roll'}
+      >
+        <Icon
+          icon={isExpanded ? Icons.collapse : Icons.expand}
+          size={12}
+          color={colors.mcWhite2}
+        />
+      </Pressable>
+      <GestureDetector gesture={zoomGesture}>
+        <View
+          style={styles.scrubberTrack}
+          onLayout={(e) => setTrackWidth(e.nativeEvent.layout.width)}
+        >
+          <View
+            style={[styles.scrubberTrackBg, { backgroundColor: colors.mcBlack3 }]}
+          />
+          <Animated.View
+            style={[
+              styles.scrubberFill,
+              { backgroundColor: colors.mcWhite2 },
+              fillStyle,
+            ]}
+          />
+          <Animated.View
+            style={[
+              styles.scrubberThumb,
+              { backgroundColor: colors.mcWhite2 },
+              thumbStyle,
+            ]}
+          >
+            <Icon icon={Icons.search} size={10} color={colors.mcBlack} />
+          </Animated.View>
+        </View>
+      </GestureDetector>
+      <Text variant="extraSmall10SemiBold" color={colors.mcWhite3} style={styles.scrubberZoomLabel}>
+        {Math.round(displayZoom * 100)}%
+      </Text>
     </View>
   );
 });
@@ -872,7 +1241,12 @@ export interface ClipEditorViewProps {
   onToggleMetronome?: () => void;
   onClipLengthIncrease?: () => void;
   onClipLengthDecrease?: () => void;
-  onClipLengthSet?: (bars: number) => void;
+  /** Change which bar-range within the clip actively plays back (0-indexed start, length in bars) */
+  onSetActiveBarRange?: (start: number, length: number) => void;
+  /** Delete the given (0-indexed) bar */
+  onDeleteBar?: (barIndex: number) => void;
+  /** Duplicate the given (0-indexed) bar right after itself */
+  onDuplicateBar?: (barIndex: number) => void;
   onShowSettings?: () => void;
   /** Recording count-in remaining (3, 2, 1, null) */
   recordingCountIn?: number | null;
@@ -880,8 +1254,17 @@ export interface ClipEditorViewProps {
   tempo?: number;
   /** Whether to show note names on piano keyboard */
   showPianoNoteNames?: boolean;
+  /** Whether dragging notes to move/resize snaps to the step grid. Placing a
+   *  new note always snaps regardless — matches the melodic-sequencer reference. */
+  snapToGrid?: boolean;
   onTempoChange?: (bpm: number) => void;
   onTogglePianoNoteNames?: () => void;
+  onToggleSnapToGrid?: () => void;
+  /** Drum clips only — toggles whether notes can be resized longer */
+  onToggleLockNoteDuration?: () => void;
+  /** Notes currently held during live recording (this clip only) — shown as
+   * a growing "in progress" preview on the piano roll. */
+  recordingNotes?: RecordingNotePreviewData[];
 }
 
 export const ClipEditorView = memo(function ClipEditorView({
@@ -906,12 +1289,18 @@ export const ClipEditorView = memo(function ClipEditorView({
   onToggleMetronome,
   onClipLengthIncrease,
   onClipLengthDecrease,
-  onClipLengthSet,
+  onSetActiveBarRange,
+  onDeleteBar,
+  onDuplicateBar,
   recordingCountIn,
   tempo = 120,
   showPianoNoteNames = false,
+  snapToGrid = false,
   onTempoChange,
   onTogglePianoNoteNames,
+  onToggleSnapToGrid,
+  onToggleLockNoteDuration,
+  recordingNotes,
 }: ClipEditorViewProps) {
   const { colors } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
@@ -921,15 +1310,127 @@ export const ClipEditorView = memo(function ClipEditorView({
     null
   );
   const [settingsVisible, setSettingsVisible] = useState(false);
+  // Seeded for the actual initial zoom (1 bar visible at zoom=1 — the
+  // grid always shows exactly 1/zoom bars regardless of screen width), not
+  // the whole clip — otherwise the locator strip below shows full-width
+  // and looks disconnected from the view until the first scroll or zoom.
+  const [visibleBarRange, setVisibleBarRange] = useState<{ start: number; end: number }>({
+    start: 0,
+    end: Math.min(1, clip.lengthInBars),
+  });
   const beatWidth = ((screenWidth - LABEL_COL_WIDTH) / 16) * zoom * 4;
   const trackColor = clip.colorHex;
   const samplesList = samples || [];
+
+  const handleVisibleBeatRangeChange = useCallback((startBeat: number, endBeat: number) => {
+    // Fractional bars, not floor/ceil'd to whole ones — the ClipLengthBar
+    // locator draws this as a proportional strip width, so rounding to whole
+    // bars here would make it look frozen at "1 bar" for any zoom above 1x
+    // (anything under 1 full bar always ceils to 1).
+    setVisibleBarRange({ start: startBeat / 4, end: endBeat / 4 });
+  }, []);
+
+  // Changing zoom changes beatWidth, so the same scroll-x pixel offset would
+  // otherwise land on a different beat after the fact — anchor to whatever
+  // beat currently sits at the left edge (from lastGridX, already tracked for
+  // the grid↔panel scroll sync) and re-apply it once the new beatWidth lands
+  // on the next render, so zooming doesn't yank the view to a different part
+  // of the clip.
+  const zoomAnchorBeatRef = useRef<number | null>(null);
+  const handleZoomChange = useCallback(
+    (newZoom: number) => {
+      zoomAnchorBeatRef.current = beatWidth > 0 ? lastGridX.current / beatWidth : 0;
+      setZoom(Math.max(1, Math.min(3, newZoom)));
+    },
+    [beatWidth]
+  );
+  useEffect(() => {
+    if (zoomAnchorBeatRef.current == null) return;
+    const anchorBeat = zoomAnchorBeatRef.current;
+    zoomAnchorBeatRef.current = null;
+    const x = anchorBeat * beatWidth;
+    lastGridX.current = x;
+    gridRef.current?.scrollToX(x, false);
+  }, [zoom, beatWidth]);
+
+  // Live velocity value while a NotePrecisionPanel velocity handle is being
+  // dragged — bridged over to the piano roll grid below so that note's color
+  // updates in real time instead of only once the drag releases (the drag
+  // itself only commits to the undo-tracked store on release, same as every
+  // other gesture in this editor).
+  const [velocityPreview, setVelocityPreview] = useState<{
+    noteIndex: number;
+    velocity: number;
+  } | null>(null);
+  const handleVelocityPreview = useCallback(
+    (noteIndex: number, velocity: number | null) => {
+      setVelocityPreview(velocity == null ? null : { noteIndex, velocity });
+    },
+    []
+  );
+
+  // ── Piano roll ↔ NotePrecisionPanel scroll sync ──────────────────────────
+  // Both share the same beat-to-pixel scale (stepWidth={beatWidth / 4}), so
+  // their scroll-x offsets line up 1:1 — no beat conversion needed. Each
+  // scroll handler mirrors its position onto the other view, guarded by the
+  // last-synced position so mirroring a scroll doesn't immediately bounce
+  // back and forth.
+  const gridRef = useRef<SkiaPianoRollGridHandle>(null);
+  const panelRef = useRef<NotePrecisionPanelHandle>(null);
+  const lastGridX = useRef(0);
+  const lastPanelX = useRef(0);
+  const handleGridScrollX = useCallback((x: number) => {
+    if (Math.abs(x - lastPanelX.current) < 0.5) return;
+    lastGridX.current = x;
+    panelRef.current?.scrollToX(x, false);
+  }, []);
+  const handlePanelScrollX = useCallback((x: number) => {
+    if (Math.abs(x - lastGridX.current) < 0.5) return;
+    lastPanelX.current = x;
+    gridRef.current?.scrollToX(x, false);
+  }, []);
+
+  // Double-tapping a bar segment on the ClipLengthBar jumps the piano roll
+  // there without touching the active range — distinct from the isolation
+  // effect below, which only fires when the range itself changes.
+  const handleNavigateToBar = useCallback(
+    (barIndex: number) => {
+      const targetX = barIndex * 4 * beatWidth;
+      lastGridX.current = targetX;
+      gridRef.current?.scrollToX(targetX, true);
+      panelRef.current?.scrollToX(targetX, true);
+    },
+    [beatWidth]
+  );
+
+  // ── Scroll the grid (and, via the sync above, the precision panel) to the
+  // isolated bar whenever isolation changes ──────────────────────────────
+  const isIsolated = clip.activeLengthInBars === 1 && clip.lengthInBars > 1;
+  useEffect(() => {
+    if (!isIsolated) return;
+    const targetX = clip.activeBarStart * 4 * beatWidth;
+    lastGridX.current = targetX;
+    gridRef.current?.scrollToX(targetX, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-scroll when isolation itself changes, not on every beatWidth-affecting zoom tick
+  }, [isIsolated, clip.activeBarStart]);
+
+  // The precision panel only mounts once a pitch is selected, so it starts
+  // scrolled to 0 even if the grid above has already scrolled elsewhere —
+  // pull it into sync as soon as it appears.
+  useEffect(() => {
+    if (selectedPitchIndex == null) return;
+    panelRef.current?.scrollToX(lastGridX.current, false);
+  }, [selectedPitchIndex]);
 
   // ── Playhead transport clock (DAW-style frame-pull) ──────────────────────
   // The playhead reads the transport clock at display frame rate via rAF,
   // writing the pixel position directly to a SharedValue. No React props
   // at 60fps, no withTiming interpolation, no audio engine events.
+  // The grid spans the clip's full length, but playback loops within just
+  // the active bar range — so the wrapped beat is offset back into the
+  // full-clip coordinate space before converting to a pixel position.
   const clipBeats = clip.activeLengthInBars * 4;
+  const activeStartBeat = clip.activeBarStart * 4;
   const playheadPosX = useSharedValue(0);
 
   useEffect(() => {
@@ -942,14 +1443,14 @@ export const ClipEditorView = memo(function ClipEditorView({
     const tick = () => {
       const beat = getBeatPosition();
       const wrapped = clipBeats > 0 ? beat % clipBeats : 0;
-      playheadPosX.value = wrapped * beatWidth;
+      playheadPosX.value = (wrapped + activeStartBeat) * beatWidth;
       rafId = requestAnimationFrame(tick);
     };
     rafId = requestAnimationFrame(tick);
 
     return () => cancelAnimationFrame(rafId);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- playheadPosX is a stable SharedValue ref
-  }, [isPlaying, getBeatPosition, clipBeats, beatWidth]);
+  }, [isPlaying, getBeatPosition, clipBeats, activeStartBeat, beatWidth]);
 
   // iOS: PerformanceControlsView visible when config.isPerformanceControlsVisible && !isExpanded
   const shouldShowPerformanceControls =
@@ -985,11 +1486,12 @@ export const ClipEditorView = memo(function ClipEditorView({
         <WithHint hintID={HintIDs.pianoRoll} style={{ flex: 1 }}>
           <View style={{ flex: 1, position: 'relative' }}>
             <SkiaPianoRollGrid
+              ref={gridRef}
               notes={clip.notes}
               samples={samplesList}
               instrumentType={instrumentType}
               trackColor={trackColor}
-              lengthInBeats={clip.activeLengthInBars * 4}
+              lengthInBeats={clip.lengthInBars * 4}
               zoomLevel={zoom}
               isExpanded={isExpanded}
               selectedPitchIndex={selectedPitchIndex}
@@ -1015,25 +1517,49 @@ export const ClipEditorView = memo(function ClipEditorView({
                 );
               }}
               onToggleExpand={() => setIsExpanded(!isExpanded)}
-              onZoomIn={() => setZoom(Math.min(zoom + 0.25, 3))}
-              onZoomOut={() => setZoom(Math.max(zoom - 0.25, 1))}
-              onZoomChange={(z) => setZoom(Math.max(1, Math.min(3, z)))}
+              onZoomChange={handleZoomChange}
+              showControls={false}
               showNoteLabels={showPianoNoteNames}
+              snapToGrid={snapToGrid}
+              lockNoteDuration={clip.lockNoteDuration}
+              recordingNotes={recordingNotes}
+              playheadPosX={playheadPosX}
+              onVisibleBeatRangeChange={handleVisibleBeatRangeChange}
+              onScrollXChange={handleGridScrollX}
+              velocityPreview={velocityPreview}
             />
             <PlayheadLine posX={playheadPosX} color={colors.mcWhite} />
           </View>
         </WithHint>
 
-        {/* Clip Length Bar */}
-        {!isExpanded && (
-          <ClipLengthBar
-            lengthInBars={clip.lengthInBars}
-            activeLengthInBars={clip.activeLengthInBars}
-            onIncrease={onClipLengthIncrease}
-            onDecrease={onClipLengthDecrease}
-            onSetActiveLength={onClipLengthSet}
-          />
-        )}
+        {/* Zoom / pan scrubber — replaces the old floating zoom+expand
+         * controls that used to sit on top of the grid. Not gated on
+         * isExpanded (unlike ClipLengthBar below): the expand button has to
+         * stay reachable in expanded mode too, or there'd be no way back. */}
+        <ZoomScrubber
+          zoom={zoom}
+          isExpanded={isExpanded}
+          onToggleExpand={() => setIsExpanded(!isExpanded)}
+          onZoomChange={handleZoomChange}
+        />
+
+        {/* Clip Length Bar — stays visible in expanded mode too, same as the
+         * zoom scrubber above: there'd be no way to change the active range
+         * or bar count while expanded otherwise. */}
+        <ClipLengthBar
+          lengthInBars={clip.lengthInBars}
+          activeBarStart={clip.activeBarStart}
+          activeLengthInBars={clip.activeLengthInBars}
+          trackColor={trackColor}
+          notes={clip.notes}
+          visibleBarRange={visibleBarRange}
+          onIncrease={onClipLengthIncrease}
+          onDecrease={onClipLengthDecrease}
+          onSetActiveBarRange={onSetActiveBarRange}
+          onDeleteBar={onDeleteBar}
+          onDuplicateBar={onDuplicateBar}
+          onNavigateToBar={handleNavigateToBar}
+        />
       </View>
 
       {/* Bottom half: either NotePrecisionPanel (velocity editing) or PerformanceControls (pads/piano)
@@ -1043,6 +1569,7 @@ export const ClipEditorView = memo(function ClipEditorView({
         <View style={styles.splitHalf}>
           {showVelocityLane ? (
             <NotePrecisionPanel
+              ref={panelRef}
               notes={clip.notes}
               pitchIndex={selectedPitchIndex!}
               pitchLabel={(() => {
@@ -1063,10 +1590,12 @@ export const ClipEditorView = memo(function ClipEditorView({
                   );
                 return melodicMinPitch + selectedPitchIndex!;
               })()}
-              activeLengthInBars={clip.activeLengthInBars}
+              activeLengthInBars={clip.lengthInBars}
               trackColor={trackColor}
+              stepWidth={beatWidth / 4}
               onClose={() => setSelectedPitchIndex(null)}
               onVelocityChange={callbacks?.onVelocityChange}
+              onVelocityPreview={handleVelocityPreview}
               onPositionChange={(idx, newPos) =>
                 callbacks?.onNoteMove?.(
                   idx,
@@ -1077,6 +1606,7 @@ export const ClipEditorView = memo(function ClipEditorView({
               onDurationChange={(idx, newDur) =>
                 callbacks?.onNoteResize?.(idx, newDur)
               }
+              onScrollXChange={handlePanelScrollX}
             />
           ) : shouldShowPerformanceControls ? (
             instrumentType === 'drum' ? (
@@ -1132,10 +1662,15 @@ export const ClipEditorView = memo(function ClipEditorView({
         tempo={tempo}
         isMetronomeEnabled={isMetronomeEnabled ?? false}
         showNoteLabels={showPianoNoteNames}
+        snapToGrid={snapToGrid}
+        showLockNoteDuration={instrumentType === 'drum'}
+        lockNoteDuration={clip.lockNoteDuration ?? true}
         onClose={() => setSettingsVisible(false)}
         onTempoChange={onTempoChange}
         onToggleMetronome={onToggleMetronome}
         onToggleNoteLabels={onTogglePianoNoteNames}
+        onToggleSnapToGrid={onToggleSnapToGrid}
+        onToggleLockNoteDuration={onToggleLockNoteDuration}
       />
     </View>
   );
@@ -1224,11 +1759,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 
-  // Clip length bar — iOS: height 34, mcBlack bg, individual bar buttons
+  // Clip length bar — mcBlack bg, continuous bar-segment strip
   clipLengthBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: BAR_HEIGHT,
+    height: BAR_HEIGHT + LOCATOR_HEIGHT + LOCATOR_GAP,
+    marginBottom: spacing.sm,
   },
   clipLengthEndBtn: {
     width: BAR_BTN_W,
@@ -1236,19 +1772,83 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  clipLengthNumbers: { flex: 1, flexDirection: 'row', height: BAR_HEIGHT },
-  clipLengthNum: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  clipLengthMain: { flex: 1, justifyContent: 'center' },
+  clipLengthLocatorTrack: {
+    height: LOCATOR_HEIGHT,
+    marginTop: LOCATOR_GAP,
     position: 'relative',
   },
-  clipLengthAccent: {
+  clipLengthLocatorFill: {
     position: 'absolute',
+    top: 0,
     bottom: 0,
+    borderRadius: 0,
+  },
+  clipLengthNumbers: { flexDirection: 'row', height: BAR_HEIGHT },
+  clipLengthSegment: {
+    flex: 1,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  clipLengthSegmentNum: {
+    position: 'absolute',
+    top: 2,
+    left: 3,
+  },
+  clipLengthDash: {
+    position: 'absolute',
+    width: 4,
+    height: 2,
+    borderRadius: 1,
+    marginLeft: -2,
+    marginTop: -1,
+  },
+
+  // Zoom scrubber
+  scrubberRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: SCRUBBER_HEIGHT,
+    margin: spacing.xs,
+    paddingHorizontal: spacing.xxs,
+    gap: spacing.xl,
+  },
+  scrubberExpandBtn: {
+    width: SCRUBBER_HEIGHT,
+    height: SCRUBBER_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrubberTrack: {
+    flex: 1,
+    height: SCRUBBER_HEIGHT,
+    justifyContent: 'center',
+  },
+  scrubberTrackBg: {
+    position: 'absolute',
     left: 0,
     right: 0,
-    height: 2,
+    height: 3,
+    borderRadius: 1.5,
+  },
+  scrubberFill: {
+    position: 'absolute',
+    left: 0,
+    height: 3,
+    borderRadius: 1.5,
+    opacity: 0.6,
+  },
+  scrubberThumb: {
+    position: 'absolute',
+    width: SCRUBBER_THUMB_SIZE,
+    height: SCRUBBER_THUMB_SIZE,
+    borderRadius: SCRUBBER_THUMB_SIZE / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrubberZoomLabel: {
+    minWidth: 34,
+    textAlign: 'right',
   },
 
   // Velocity lane

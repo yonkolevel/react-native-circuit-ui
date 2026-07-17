@@ -1247,6 +1247,8 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                 </View>
                 <RCTScrollView
                   horizontal={true}
+                  onScroll={[Function]}
+                  scrollEventThrottle={100}
                   showsHorizontalScrollIndicator={false}
                   style={
                     {
@@ -1767,10 +1769,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#04ffa0"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={0}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={0}
@@ -1794,10 +1807,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#04ffa0"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={345}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={345}
@@ -1821,10 +1845,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#04ffa0"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={172.5}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={172.5}
@@ -1848,10 +1883,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#04ffa0"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={517.5}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={517.5}
@@ -1875,10 +1921,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00f497"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={0}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={0}
@@ -1902,10 +1959,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00e48d"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={86.25}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={86.25}
@@ -1929,10 +1997,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00f497"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={172.5}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={172.5}
@@ -1956,10 +2035,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00e48d"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={258.75}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={258.75}
@@ -1983,10 +2073,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00f497"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={345}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={345}
@@ -2010,10 +2111,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00e48d"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={431.25}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={431.25}
@@ -2037,10 +2149,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00f497"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={517.5}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={517.5}
@@ -2064,10 +2187,21 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00e48d"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={603.75}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={603.75}
@@ -2108,198 +2242,6 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
               </View>
             </View>
           </RCTScrollView>
-          <View
-            style={
-              {
-                "alignItems": "center",
-                "gap": 6,
-                "position": "absolute",
-                "right": 8,
-                "top": 8,
-              }
-            }
-          >
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "height": 36,
-                  "justifyContent": "center",
-                  "width": 36,
-                }
-              }
-            >
-              <View>
-                <View
-                  color="white"
-                  size={14}
-                  testID="lucide-Maximize2"
-                />
-              </View>
-            </View>
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "height": 36,
-                  "justifyContent": "center",
-                  "width": 36,
-                }
-              }
-            >
-              <View>
-                <View
-                  color="white"
-                  size={14}
-                  testID="lucide-ZoomIn"
-                />
-              </View>
-            </View>
-            <View
-              style={
-                {
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "paddingHorizontal": 6,
-                  "paddingVertical": 4,
-                }
-              }
-            >
-              <Text
-                accessibilityRole="text"
-                style={
-                  [
-                    {
-                      "fontFamily": "System",
-                      "fontSize": 10,
-                      "fontWeight": "400",
-                      "lineHeight": 15,
-                    },
-                    {
-                      "color": "white",
-                    },
-                    {
-                      "textAlign": "center",
-                    },
-                  ]
-                }
-              >
-                100
-                %
-              </Text>
-            </View>
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "height": 36,
-                  "justifyContent": "center",
-                  "width": 36,
-                }
-              }
-            >
-              <View>
-                <View
-                  color="white"
-                  size={14}
-                  testID="lucide-ZoomOut"
-                />
-              </View>
-            </View>
-          </View>
         </View>
         <View
           pointerEvents="none"
@@ -2325,6 +2267,169 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
           }
         />
       </View>
+    </View>
+    <View
+      style={
+        [
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "gap": 20,
+            "height": 28,
+            "margin": 4,
+            "paddingHorizontal": 2,
+          },
+          {
+            "backgroundColor": "#000000",
+          },
+        ]
+      }
+    >
+      <View
+        accessibilityLabel="Expand piano roll"
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "height": 28,
+            "justifyContent": "center",
+            "width": 28,
+          }
+        }
+      >
+        <View>
+          <View
+            color="rgba(247, 247, 247, 0.80)"
+            size={12}
+            testID="lucide-Maximize2"
+          />
+        </View>
+      </View>
+      <View
+        onLayout={[Function]}
+        style={
+          {
+            "flex": 1,
+            "height": 28,
+            "justifyContent": "center",
+          }
+        }
+      >
+        <View
+          style={
+            [
+              {
+                "borderRadius": 1.5,
+                "height": 3,
+                "left": 0,
+                "position": "absolute",
+                "right": 0,
+              },
+              {
+                "backgroundColor": "#25272B",
+              },
+            ]
+          }
+        />
+        <View
+          style={
+            [
+              {
+                "borderRadius": 1.5,
+                "height": 3,
+                "left": 0,
+                "opacity": 0.6,
+                "position": "absolute",
+              },
+              {
+                "backgroundColor": "rgba(247, 247, 247, 0.80)",
+              },
+              {
+                "width": 0,
+              },
+            ]
+          }
+        />
+        <View
+          style={
+            [
+              {
+                "alignItems": "center",
+                "borderRadius": 10,
+                "height": 20,
+                "justifyContent": "center",
+                "position": "absolute",
+                "width": 20,
+              },
+              {
+                "backgroundColor": "rgba(247, 247, 247, 0.80)",
+              },
+              {
+                "left": -10,
+              },
+            ]
+          }
+        >
+          <View>
+            <View
+              color="#000000"
+              size={10}
+              testID="lucide-Search"
+            />
+          </View>
+        </View>
+      </View>
+      <Text
+        accessibilityRole="text"
+        style={
+          [
+            {
+              "fontFamily": "System",
+              "fontSize": 10,
+              "fontWeight": "600",
+              "lineHeight": 15,
+            },
+            {
+              "color": "rgba(247, 247, 247, 0.60)",
+            },
+            {
+              "minWidth": 34,
+              "textAlign": "right",
+            },
+          ]
+        }
+      >
+        100
+        %
+      </Text>
     </View>
     <View
       style={
@@ -2399,11 +2504,13 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
           {
             "flex": 1,
             "flexDirection": "row",
+            "gap": 2,
             "height": 34,
           }
         }
       >
         <View
+          accessibilityLabel="Bar 1"
           accessibilityState={
             {
               "busy": undefined,
@@ -2468,8 +2575,25 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
           >
             1
           </Text>
+          <View
+            style={
+              [
+                {
+                  "bottom": 0,
+                  "height": 2,
+                  "left": 0,
+                  "position": "absolute",
+                  "right": 0,
+                },
+                {
+                  "backgroundColor": "#FFCEBD",
+                },
+              ]
+            }
+          />
         </View>
         <View
+          accessibilityLabel="Bar 2"
           accessibilityState={
             {
               "busy": undefined,
@@ -2536,6 +2660,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
           </Text>
         </View>
         <View
+          accessibilityLabel="Bar 3"
           accessibilityState={
             {
               "busy": undefined,
@@ -2602,6 +2727,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
           </Text>
         </View>
         <View
+          accessibilityLabel="Bar 4"
           accessibilityState={
             {
               "busy": undefined,
@@ -4582,6 +4708,8 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 </View>
                 <RCTScrollView
                   horizontal={true}
+                  onScroll={[Function]}
+                  scrollEventThrottle={100}
                   showsHorizontalScrollIndicator={false}
                   style={
                     {
@@ -5134,10 +5262,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#04ffa0"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={0}
+                          y={511}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={0}
@@ -5161,10 +5300,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#04ffa0"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={345}
+                          y={511}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={345}
@@ -5188,10 +5338,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#04ffa0"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={172.5}
+                          y={477}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={172.5}
@@ -5215,10 +5376,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#04ffa0"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={517.5}
+                          y={477}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={517.5}
@@ -5242,10 +5414,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00f497"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={0}
+                          y={443}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={0}
@@ -5269,10 +5452,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00e48d"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={86.25}
+                          y={443}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={86.25}
@@ -5296,10 +5490,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00f497"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={172.5}
+                          y={443}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={172.5}
@@ -5323,10 +5528,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00e48d"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={258.75}
+                          y={443}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={258.75}
@@ -5350,10 +5566,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00f497"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={345}
+                          y={443}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={345}
@@ -5377,10 +5604,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00e48d"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={431.25}
+                          y={443}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={431.25}
@@ -5404,10 +5642,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00f497"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={517.5}
+                          y={443}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={517.5}
@@ -5431,10 +5680,21 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00e48d"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={603.75}
+                          y={443}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={603.75}
@@ -5475,198 +5735,6 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
               </View>
             </View>
           </RCTScrollView>
-          <View
-            style={
-              {
-                "alignItems": "center",
-                "gap": 6,
-                "position": "absolute",
-                "right": 8,
-                "top": 8,
-              }
-            }
-          >
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "height": 36,
-                  "justifyContent": "center",
-                  "width": 36,
-                }
-              }
-            >
-              <View>
-                <View
-                  color="white"
-                  size={14}
-                  testID="lucide-Maximize2"
-                />
-              </View>
-            </View>
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "height": 36,
-                  "justifyContent": "center",
-                  "width": 36,
-                }
-              }
-            >
-              <View>
-                <View
-                  color="white"
-                  size={14}
-                  testID="lucide-ZoomIn"
-                />
-              </View>
-            </View>
-            <View
-              style={
-                {
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "paddingHorizontal": 6,
-                  "paddingVertical": 4,
-                }
-              }
-            >
-              <Text
-                accessibilityRole="text"
-                style={
-                  [
-                    {
-                      "fontFamily": "System",
-                      "fontSize": 10,
-                      "fontWeight": "400",
-                      "lineHeight": 15,
-                    },
-                    {
-                      "color": "white",
-                    },
-                    {
-                      "textAlign": "center",
-                    },
-                  ]
-                }
-              >
-                100
-                %
-              </Text>
-            </View>
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "height": 36,
-                  "justifyContent": "center",
-                  "width": 36,
-                }
-              }
-            >
-              <View>
-                <View
-                  color="white"
-                  size={14}
-                  testID="lucide-ZoomOut"
-                />
-              </View>
-            </View>
-          </View>
         </View>
         <View
           pointerEvents="none"
@@ -5692,6 +5760,169 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           }
         />
       </View>
+    </View>
+    <View
+      style={
+        [
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "gap": 20,
+            "height": 28,
+            "margin": 4,
+            "paddingHorizontal": 2,
+          },
+          {
+            "backgroundColor": "#000000",
+          },
+        ]
+      }
+    >
+      <View
+        accessibilityLabel="Expand piano roll"
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "height": 28,
+            "justifyContent": "center",
+            "width": 28,
+          }
+        }
+      >
+        <View>
+          <View
+            color="rgba(247, 247, 247, 0.80)"
+            size={12}
+            testID="lucide-Maximize2"
+          />
+        </View>
+      </View>
+      <View
+        onLayout={[Function]}
+        style={
+          {
+            "flex": 1,
+            "height": 28,
+            "justifyContent": "center",
+          }
+        }
+      >
+        <View
+          style={
+            [
+              {
+                "borderRadius": 1.5,
+                "height": 3,
+                "left": 0,
+                "position": "absolute",
+                "right": 0,
+              },
+              {
+                "backgroundColor": "#25272B",
+              },
+            ]
+          }
+        />
+        <View
+          style={
+            [
+              {
+                "borderRadius": 1.5,
+                "height": 3,
+                "left": 0,
+                "opacity": 0.6,
+                "position": "absolute",
+              },
+              {
+                "backgroundColor": "rgba(247, 247, 247, 0.80)",
+              },
+              {
+                "width": 0,
+              },
+            ]
+          }
+        />
+        <View
+          style={
+            [
+              {
+                "alignItems": "center",
+                "borderRadius": 10,
+                "height": 20,
+                "justifyContent": "center",
+                "position": "absolute",
+                "width": 20,
+              },
+              {
+                "backgroundColor": "rgba(247, 247, 247, 0.80)",
+              },
+              {
+                "left": -10,
+              },
+            ]
+          }
+        >
+          <View>
+            <View
+              color="#000000"
+              size={10}
+              testID="lucide-Search"
+            />
+          </View>
+        </View>
+      </View>
+      <Text
+        accessibilityRole="text"
+        style={
+          [
+            {
+              "fontFamily": "System",
+              "fontSize": 10,
+              "fontWeight": "600",
+              "lineHeight": 15,
+            },
+            {
+              "color": "rgba(247, 247, 247, 0.60)",
+            },
+            {
+              "minWidth": 34,
+              "textAlign": "right",
+            },
+          ]
+        }
+      >
+        100
+        %
+      </Text>
     </View>
     <View
       style={
@@ -5766,11 +5997,13 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           {
             "flex": 1,
             "flexDirection": "row",
+            "gap": 2,
             "height": 34,
           }
         }
       >
         <View
+          accessibilityLabel="Bar 1"
           accessibilityState={
             {
               "busy": undefined,
@@ -5835,8 +6068,25 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           >
             1
           </Text>
+          <View
+            style={
+              [
+                {
+                  "bottom": 0,
+                  "height": 2,
+                  "left": 0,
+                  "position": "absolute",
+                  "right": 0,
+                },
+                {
+                  "backgroundColor": "#FFCEBD",
+                },
+              ]
+            }
+          />
         </View>
         <View
+          accessibilityLabel="Bar 2"
           accessibilityState={
             {
               "busy": undefined,
@@ -5903,6 +6153,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           </Text>
         </View>
         <View
+          accessibilityLabel="Bar 3"
           accessibilityState={
             {
               "busy": undefined,
@@ -5969,6 +6220,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           </Text>
         </View>
         <View
+          accessibilityLabel="Bar 4"
           accessibilityState={
             {
               "busy": undefined,
@@ -8893,6 +9145,8 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                 </View>
                 <RCTScrollView
                   horizontal={true}
+                  onScroll={[Function]}
+                  scrollEventThrottle={100}
                   showsHorizontalScrollIndicator={false}
                   style={
                     {
@@ -9509,10 +9763,21 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#FF6C3A"
+                          color="#ff5920"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={171.5}
+                          x={0}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={171.5}
                           x={0}
@@ -9536,10 +9801,21 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#FF6C3A"
+                          color="#ff5920"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={171.5}
+                          x={172.5}
+                          y={239}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={171.5}
                           x={172.5}
@@ -9563,10 +9839,21 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#FF6C3A"
+                          color="#ff5920"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={171.5}
+                          x={345}
+                          y={137}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={171.5}
                           x={345}
@@ -9590,10 +9877,21 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           testID="SkiaLine"
                         />
                         <View
-                          color="#FF6C3A"
+                          color="#ff5920"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={171.5}
+                          x={517.5}
+                          y={-33}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={171.5}
                           x={517.5}
@@ -9634,198 +9932,6 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               </View>
             </View>
           </RCTScrollView>
-          <View
-            style={
-              {
-                "alignItems": "center",
-                "gap": 6,
-                "position": "absolute",
-                "right": 8,
-                "top": 8,
-              }
-            }
-          >
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "height": 36,
-                  "justifyContent": "center",
-                  "width": 36,
-                }
-              }
-            >
-              <View>
-                <View
-                  color="white"
-                  size={14}
-                  testID="lucide-Maximize2"
-                />
-              </View>
-            </View>
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "height": 36,
-                  "justifyContent": "center",
-                  "width": 36,
-                }
-              }
-            >
-              <View>
-                <View
-                  color="white"
-                  size={14}
-                  testID="lucide-ZoomIn"
-                />
-              </View>
-            </View>
-            <View
-              style={
-                {
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "paddingHorizontal": 6,
-                  "paddingVertical": 4,
-                }
-              }
-            >
-              <Text
-                accessibilityRole="text"
-                style={
-                  [
-                    {
-                      "fontFamily": "System",
-                      "fontSize": 10,
-                      "fontWeight": "400",
-                      "lineHeight": 15,
-                    },
-                    {
-                      "color": "white",
-                    },
-                    {
-                      "textAlign": "center",
-                    },
-                  ]
-                }
-              >
-                100
-                %
-              </Text>
-            </View>
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "height": 36,
-                  "justifyContent": "center",
-                  "width": 36,
-                }
-              }
-            >
-              <View>
-                <View
-                  color="white"
-                  size={14}
-                  testID="lucide-ZoomOut"
-                />
-              </View>
-            </View>
-          </View>
         </View>
         <View
           pointerEvents="none"
@@ -9851,6 +9957,169 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
           }
         />
       </View>
+    </View>
+    <View
+      style={
+        [
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "gap": 20,
+            "height": 28,
+            "margin": 4,
+            "paddingHorizontal": 2,
+          },
+          {
+            "backgroundColor": "#000000",
+          },
+        ]
+      }
+    >
+      <View
+        accessibilityLabel="Expand piano roll"
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "height": 28,
+            "justifyContent": "center",
+            "width": 28,
+          }
+        }
+      >
+        <View>
+          <View
+            color="rgba(247, 247, 247, 0.80)"
+            size={12}
+            testID="lucide-Maximize2"
+          />
+        </View>
+      </View>
+      <View
+        onLayout={[Function]}
+        style={
+          {
+            "flex": 1,
+            "height": 28,
+            "justifyContent": "center",
+          }
+        }
+      >
+        <View
+          style={
+            [
+              {
+                "borderRadius": 1.5,
+                "height": 3,
+                "left": 0,
+                "position": "absolute",
+                "right": 0,
+              },
+              {
+                "backgroundColor": "#25272B",
+              },
+            ]
+          }
+        />
+        <View
+          style={
+            [
+              {
+                "borderRadius": 1.5,
+                "height": 3,
+                "left": 0,
+                "opacity": 0.6,
+                "position": "absolute",
+              },
+              {
+                "backgroundColor": "rgba(247, 247, 247, 0.80)",
+              },
+              {
+                "width": 0,
+              },
+            ]
+          }
+        />
+        <View
+          style={
+            [
+              {
+                "alignItems": "center",
+                "borderRadius": 10,
+                "height": 20,
+                "justifyContent": "center",
+                "position": "absolute",
+                "width": 20,
+              },
+              {
+                "backgroundColor": "rgba(247, 247, 247, 0.80)",
+              },
+              {
+                "left": -10,
+              },
+            ]
+          }
+        >
+          <View>
+            <View
+              color="#000000"
+              size={10}
+              testID="lucide-Search"
+            />
+          </View>
+        </View>
+      </View>
+      <Text
+        accessibilityRole="text"
+        style={
+          [
+            {
+              "fontFamily": "System",
+              "fontSize": 10,
+              "fontWeight": "600",
+              "lineHeight": 15,
+            },
+            {
+              "color": "rgba(247, 247, 247, 0.60)",
+            },
+            {
+              "minWidth": 34,
+              "textAlign": "right",
+            },
+          ]
+        }
+      >
+        100
+        %
+      </Text>
     </View>
     <View
       style={
@@ -9925,11 +10194,13 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
           {
             "flex": 1,
             "flexDirection": "row",
+            "gap": 2,
             "height": 34,
           }
         }
       >
         <View
+          accessibilityLabel="Bar 1"
           accessibilityState={
             {
               "busy": undefined,
@@ -9994,8 +10265,25 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
           >
             1
           </Text>
+          <View
+            style={
+              [
+                {
+                  "bottom": 0,
+                  "height": 2,
+                  "left": 0,
+                  "position": "absolute",
+                  "right": 0,
+                },
+                {
+                  "backgroundColor": "#FFCEBD",
+                },
+              ]
+            }
+          />
         </View>
         <View
+          accessibilityLabel="Bar 2"
           accessibilityState={
             {
               "busy": undefined,
@@ -10062,6 +10350,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
           </Text>
         </View>
         <View
+          accessibilityLabel="Bar 3"
           accessibilityState={
             {
               "busy": undefined,
@@ -10128,6 +10417,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
           </Text>
         </View>
         <View
+          accessibilityLabel="Bar 4"
           accessibilityState={
             {
               "busy": undefined,
@@ -12296,6 +12586,8 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                 </View>
                 <RCTScrollView
                   horizontal={true}
+                  onScroll={[Function]}
+                  scrollEventThrottle={100}
                   showsHorizontalScrollIndicator={false}
                   style={
                     {
@@ -12816,10 +13108,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#04ffa0"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={0}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={0}
@@ -12843,10 +13146,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#04ffa0"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={345}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={345}
@@ -12870,10 +13184,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#04ffa0"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={172.5}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={172.5}
@@ -12897,10 +13222,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#04ffa0"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={517.5}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={517.5}
@@ -12924,10 +13260,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00f497"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={0}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={0}
@@ -12951,10 +13298,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00e48d"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={86.25}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={86.25}
@@ -12978,10 +13336,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00f497"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={172.5}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={172.5}
@@ -13005,10 +13374,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00e48d"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={258.75}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={258.75}
@@ -13032,10 +13412,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00f497"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={345}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={345}
@@ -13059,10 +13450,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00e48d"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={431.25}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={431.25}
@@ -13086,10 +13488,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00f497"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={517.5}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={517.5}
@@ -13113,10 +13526,21 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           testID="SkiaLine"
                         />
                         <View
-                          color="#1AFFA8"
+                          color="#00e48d"
                           height={32}
-                          opacity={0.85}
+                          opacity={1}
                           r={3}
+                          testID="RoundedRect"
+                          width={43.125}
+                          x={603.75}
+                          y={375}
+                        />
+                        <View
+                          color="#000000"
+                          height={32}
+                          r={3}
+                          strokeWidth={0.5}
+                          style="stroke"
                           testID="RoundedRect"
                           width={43.125}
                           x={603.75}
@@ -13157,198 +13581,6 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
               </View>
             </View>
           </RCTScrollView>
-          <View
-            style={
-              {
-                "alignItems": "center",
-                "gap": 6,
-                "position": "absolute",
-                "right": 8,
-                "top": 8,
-              }
-            }
-          >
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "height": 36,
-                  "justifyContent": "center",
-                  "width": 36,
-                }
-              }
-            >
-              <View>
-                <View
-                  color="white"
-                  size={14}
-                  testID="lucide-Maximize2"
-                />
-              </View>
-            </View>
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "height": 36,
-                  "justifyContent": "center",
-                  "width": 36,
-                }
-              }
-            >
-              <View>
-                <View
-                  color="white"
-                  size={14}
-                  testID="lucide-ZoomIn"
-                />
-              </View>
-            </View>
-            <View
-              style={
-                {
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "paddingHorizontal": 6,
-                  "paddingVertical": 4,
-                }
-              }
-            >
-              <Text
-                accessibilityRole="text"
-                style={
-                  [
-                    {
-                      "fontFamily": "System",
-                      "fontSize": 10,
-                      "fontWeight": "400",
-                      "lineHeight": 15,
-                    },
-                    {
-                      "color": "white",
-                    },
-                    {
-                      "textAlign": "center",
-                    },
-                  ]
-                }
-              >
-                100
-                %
-              </Text>
-            </View>
-            <View
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": undefined,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
-              }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "rgba(0,0,0,0.6)",
-                  "borderRadius": 8,
-                  "height": 36,
-                  "justifyContent": "center",
-                  "width": 36,
-                }
-              }
-            >
-              <View>
-                <View
-                  color="white"
-                  size={14}
-                  testID="lucide-ZoomOut"
-                />
-              </View>
-            </View>
-          </View>
         </View>
         <View
           pointerEvents="none"
@@ -13374,6 +13606,169 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
           }
         />
       </View>
+    </View>
+    <View
+      style={
+        [
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "gap": 20,
+            "height": 28,
+            "margin": 4,
+            "paddingHorizontal": 2,
+          },
+          {
+            "backgroundColor": "#000000",
+          },
+        ]
+      }
+    >
+      <View
+        accessibilityLabel="Expand piano roll"
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "height": 28,
+            "justifyContent": "center",
+            "width": 28,
+          }
+        }
+      >
+        <View>
+          <View
+            color="rgba(247, 247, 247, 0.80)"
+            size={12}
+            testID="lucide-Maximize2"
+          />
+        </View>
+      </View>
+      <View
+        onLayout={[Function]}
+        style={
+          {
+            "flex": 1,
+            "height": 28,
+            "justifyContent": "center",
+          }
+        }
+      >
+        <View
+          style={
+            [
+              {
+                "borderRadius": 1.5,
+                "height": 3,
+                "left": 0,
+                "position": "absolute",
+                "right": 0,
+              },
+              {
+                "backgroundColor": "#25272B",
+              },
+            ]
+          }
+        />
+        <View
+          style={
+            [
+              {
+                "borderRadius": 1.5,
+                "height": 3,
+                "left": 0,
+                "opacity": 0.6,
+                "position": "absolute",
+              },
+              {
+                "backgroundColor": "rgba(247, 247, 247, 0.80)",
+              },
+              {
+                "width": 0,
+              },
+            ]
+          }
+        />
+        <View
+          style={
+            [
+              {
+                "alignItems": "center",
+                "borderRadius": 10,
+                "height": 20,
+                "justifyContent": "center",
+                "position": "absolute",
+                "width": 20,
+              },
+              {
+                "backgroundColor": "rgba(247, 247, 247, 0.80)",
+              },
+              {
+                "left": -10,
+              },
+            ]
+          }
+        >
+          <View>
+            <View
+              color="#000000"
+              size={10}
+              testID="lucide-Search"
+            />
+          </View>
+        </View>
+      </View>
+      <Text
+        accessibilityRole="text"
+        style={
+          [
+            {
+              "fontFamily": "System",
+              "fontSize": 10,
+              "fontWeight": "600",
+              "lineHeight": 15,
+            },
+            {
+              "color": "rgba(247, 247, 247, 0.60)",
+            },
+            {
+              "minWidth": 34,
+              "textAlign": "right",
+            },
+          ]
+        }
+      >
+        100
+        %
+      </Text>
     </View>
     <View
       style={
@@ -13448,11 +13843,13 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
           {
             "flex": 1,
             "flexDirection": "row",
+            "gap": 2,
             "height": 34,
           }
         }
       >
         <View
+          accessibilityLabel="Bar 1"
           accessibilityState={
             {
               "busy": undefined,
@@ -13517,8 +13914,25 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
           >
             1
           </Text>
+          <View
+            style={
+              [
+                {
+                  "bottom": 0,
+                  "height": 2,
+                  "left": 0,
+                  "position": "absolute",
+                  "right": 0,
+                },
+                {
+                  "backgroundColor": "#FFCEBD",
+                },
+              ]
+            }
+          />
         </View>
         <View
+          accessibilityLabel="Bar 2"
           accessibilityState={
             {
               "busy": undefined,
@@ -13585,6 +13999,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
           </Text>
         </View>
         <View
+          accessibilityLabel="Bar 3"
           accessibilityState={
             {
               "busy": undefined,
@@ -13651,6 +14066,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
           </Text>
         </View>
         <View
+          accessibilityLabel="Bar 4"
           accessibilityState={
             {
               "busy": undefined,
