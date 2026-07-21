@@ -1,7 +1,11 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { ThemeProvider } from '../../../../../theme';
-import { ClipEditorView } from '../ClipEditorView';
+import {
+  ClipEditorView,
+  ClipLengthBar,
+  rangeForBarDrag,
+} from '../ClipEditorView';
 import {
   createMockDrumClip,
   createMockMelodyClip,
@@ -55,6 +59,39 @@ describe('ClipEditorView snapshots', () => {
       <ClipEditorView clip={clip} instrumentType="drum" isRecording />
     );
     expect(tree.toJSON()).toMatchSnapshot();
+  });
+});
+
+describe('ClipLengthBar range selection', () => {
+  it('focuses a tapped bar without changing the loop range', () => {
+    const onSetActiveBarRange = jest.fn();
+    const onNavigateToBar = jest.fn();
+    const { getByLabelText } = renderWithTheme(
+      <ClipLengthBar
+        lengthInBars={2}
+        activeBarStart={0}
+        activeLengthInBars={2}
+        trackColor="#FF6C3A"
+        notes={[]}
+        onSetActiveBarRange={onSetActiveBarRange}
+        onNavigateToBar={onNavigateToBar}
+      />
+    );
+
+    fireEvent(getByLabelText('Bar 2'), 'accessibilityTap');
+
+    expect(onSetActiveBarRange).not.toHaveBeenCalled();
+    expect(onNavigateToBar).toHaveBeenCalledWith(1);
+    expect(getByLabelText('Bar 1').props.style[1].backgroundColor).toBe(
+      getByLabelText('Bar 2').props.style[1].backgroundColor
+    );
+    expect(getByLabelText('Bar 2').props.style[1].borderWidth).toBe(1);
+  });
+
+  it('selects every bar between drag endpoints, in either direction', () => {
+    expect(rangeForBarDrag(1, 3)).toEqual([1, 3]);
+    expect(rangeForBarDrag(3, 1)).toEqual([1, 3]);
+    expect(rangeForBarDrag(2, 2)).toEqual([2, 1]);
   });
 });
 

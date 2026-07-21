@@ -35,6 +35,7 @@ import Animated, {
   useAnimatedStyle,
   runOnJS,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme, hexToRgba } from '../../../../theme';
@@ -545,14 +546,11 @@ const PianoRollGrid = memo(function PianoRollGrid({
  * - Bar segments: one continuous strip, divided by hairlines, each showing a
  *   mini thumbnail of that bar's own notes (mirrors the piano roll above)
  *   plus its bar number. No isolated per-bar underline anymore.
- * - Tap a bar inside the active range:
- *   - it's the last bar → range shrinks by one from the end
- *   - it's the first bar → range shrinks by one from the front
- *   - otherwise (interior) → range start jumps to that bar
- * - Tap a bar outside the active range → range extends to reach it
- * - Long-press a bar → isolates the range to just that bar
- * - Double-tap a bar → navigates the piano roll there, selection untouched
- * - Active (in active range): translucent mcOrange tint
+ * - Tap a bar → focuses it and navigates the piano roll there (no loop change)
+ * - Drag across bars → selects the contiguous loop range between them
+ * - Long-press a bar → isolates that bar (useful while playing)
+ * - Active (in loop range): translucent mcOrange tint
+ * - Focused: white outline; focus is independent from the loop range
  * - Inactive: mcBlack3 bg
  * - When a single bar is isolated, minus/plus become trash/duplicate acting
  *   on that one bar instead of the clip's total length
@@ -561,7 +559,7 @@ interface ClipLengthBarProps {
   lengthInBars: number;
   activeBarStart: number;
   activeLengthInBars: number;
-  /** Active-range tint for each bar segment mirrors this (the clip/track's own color) */
+  /** Loop-range tint for each bar segment mirrors this (the clip/track's own color) */
   trackColor: string;
   /** Notes used to render each bar segment's mini note-thumbnail */
   notes: ClipNote[];
@@ -574,7 +572,7 @@ interface ClipLengthBarProps {
   onDeleteBar?: (barIndex: number) => void;
   /** Duplicate the given (0-indexed) bar right after itself — only offered while it's isolated */
   onDuplicateBar?: (barIndex: number) => void;
-  /** Scroll the piano roll to the given (0-indexed) bar without changing the active range */
+  /** Scroll the piano roll to the focused (0-indexed) bar */
   onNavigateToBar?: (barIndex: number) => void;
 }
 
@@ -583,107 +581,85 @@ const BAR_BTN_W = 34;
 const LOCATOR_HEIGHT = 2;
 const LOCATOR_GAP = 0;
 
-/** Pure range-math for a tap on bar `i`, given the current half-open active
- * range [start, end). See the ClipLengthBar doc comment for the rules. */
-const nextRangeForBarTap = (
-  i: number,
-  start: number,
-  end: number
-): [number, number] => {
-  if (i >= start && i < end) {
-    const isLast = i === end - 1;
-    const isFirst = i === start;
-    if (isLast && end - 1 > start) return [start, end - 1 - start];
-    if (isFirst && start + 1 < end) return [start + 1, end - (start + 1)];
-    if (!isFirst && !isLast) return [i, end - i];
-    return [start, end - start]; // single-bar range tapped — no-op
-  }
-  if (i < start) return [i, end - i];
-  return [start, i + 1 - start];
+/** Return the inclusive bar range between two 0-based bar indices. */
+export const rangeForBarDrag = (from: number, to: number): [number, number] => {
+  const start = Math.min(from, to);
+  return [start, Math.abs(to - from) + 1];
+};
+
+/** Convert a local x-coordinate into a clamped 0-based bar index. */
+const barIndexAtX = (
+  x: number,
+  stripWidth: number,
+  barCount: number
+): number => {
+  'worklet';
+  if (stripWidth <= 0) return 0;
+  return Math.max(
+    0,
+    Math.min(barCount - 1, Math.floor((x / stripWidth) * barCount))
+  );
 };
 
 const ClipLengthBarSegment = memo(function ClipLengthBarSegment({
-  index,
   barIndex,
   isActive,
+  isFocused,
   isLast,
   trackColor,
   dashes,
-  onTap,
-  onLongPress,
-  onDoubleTap,
+  onFocus,
 }: {
-  index: number;
   barIndex: number;
   isActive: boolean;
+  isFocused: boolean;
   isLast: boolean;
   trackColor: string;
   dashes: { xFrac: number; yFrac: number }[];
-  onTap: (i: number) => void;
-  onLongPress: (i: number) => void;
-  onDoubleTap: (i: number) => void;
+  onFocus: () => void;
 }) {
   const { colors } = useTheme();
 
-  const gesture = useMemo(() => {
-    const longPress = Gesture.LongPress()
-      .minDuration(500)
-      .onStart(() => {
-        'worklet';
-        runOnJS(onLongPress)(index);
-      });
-    const doubleTap = Gesture.Tap()
-      .numberOfTaps(2)
-      .maxDuration(250)
-      .onEnd((_e, success) => {
-        'worklet';
-        if (success) runOnJS(onDoubleTap)(index);
-      });
-    const singleTap = Gesture.Tap()
-      .numberOfTaps(1)
-      .requireExternalGestureToFail(doubleTap, longPress)
-      .onEnd((_e, success) => {
-        'worklet';
-        if (success) runOnJS(onTap)(index);
-      });
-    return Gesture.Exclusive(longPress, doubleTap, singleTap);
-  }, [index, onTap, onLongPress, onDoubleTap]);
-
   return (
-    <GestureDetector gesture={gesture}>
-      <View
-        style={[
-          styles.clipLengthSegment,
-          {
-            backgroundColor: isActive ? hexToRgba(trackColor, 0.35) : colors.mcBlack3,
-            borderRightWidth: isLast ? 0 : 1,
-            borderRightColor: colors.mcBlack,
-          },
-        ]}
-        accessibilityLabel={`Bar ${barIndex}`}
+    <View
+      style={[
+        styles.clipLengthSegment,
+        {
+          backgroundColor: isActive
+            ? hexToRgba(trackColor, 0.35)
+            : colors.mcBlack3,
+          borderWidth: isFocused ? 1 : 0,
+          borderColor: colors.mcWhite2,
+          borderRightWidth: isLast ? 0 : 1,
+          borderRightColor: isFocused ? colors.mcWhite2 : colors.mcBlack,
+        },
+      ]}
+      accessibilityLabel={`Bar ${barIndex}`}
+      accessibilityRole="button"
+      accessibilityState={{ selected: isFocused }}
+      onAccessibilityTap={onFocus}
+    >
+      <Text
+        variant="extraSmall10SemiBold"
+        color={isActive ? colors.mcWhite2 : colors.mcWhite3}
+        style={styles.clipLengthSegmentNum}
       >
-        <Text
-          variant="extraSmall10SemiBold"
-          color={isActive ? colors.mcWhite2 : colors.mcWhite3}
-          style={styles.clipLengthSegmentNum}
-        >
-          {barIndex}
-        </Text>
-        {dashes.map((d, di) => (
-          <View
-            key={di}
-            style={[
-              styles.clipLengthDash,
-              {
-                left: `${d.xFrac * 100}%`,
-                top: `${d.yFrac * 100}%`,
-                backgroundColor: colors.mcWhite2,
-              },
-            ]}
-          />
-        ))}
-      </View>
-    </GestureDetector>
+        {barIndex}
+      </Text>
+      {dashes.map((d, di) => (
+        <View
+          key={di}
+          style={[
+            styles.clipLengthDash,
+            {
+              left: `${d.xFrac * 100}%`,
+              top: `${d.yFrac * 100}%`,
+              backgroundColor: colors.mcWhite2,
+            },
+          ]}
+        />
+      ))}
+    </View>
   );
 });
 
@@ -705,42 +681,108 @@ const ClipLengthBar = memo(function ClipLengthBar({
   const barCount = Math.max(1, lengthInBars);
   // A 1-bar clip's only bar is never "isolated" — it already is the whole
   // clip, so the +/- buttons stay as add/remove rather than duplicate/trash.
-  const isIsolated = activeLengthInBars === 1 && barCount > 1;
-  const canAdd = barCount < 16;
-  const canRemove = barCount > 1;
+  const [stripWidth, setStripWidth] = useState(0);
+  const [focusedBarIndex, setFocusedBarIndex] = useState<number | null>(null);
+  const [dragPreview, setDragPreview] = useState<[number, number] | null>(null);
+  const dragStartBar = useSharedValue(0);
+  const lastDragBar = useSharedValue(-1);
   // Going from 1 to 2 bars is ambiguous — ask whether the new bar should be
   // empty or a copy of the only bar that exists so far.
   const [showAddBarPrompt, setShowAddBarPrompt] = useState(false);
 
+  const displayActiveBarStart = dragPreview?.[0] ?? activeBarStart;
+  const displayActiveLength = dragPreview?.[1] ?? activeLengthInBars;
+  const isIsolated = displayActiveLength === 1 && barCount > 1;
+  const canAdd = barCount < 16;
+  const canRemove = barCount > 1;
+
   const handlePlusPress = useCallback(() => {
     if (isIsolated) {
-      onDuplicateBar?.(activeBarStart);
+      onDuplicateBar?.(displayActiveBarStart);
     } else if (barCount === 1) {
       setShowAddBarPrompt(true);
     } else {
       onIncrease?.();
     }
-  }, [isIsolated, barCount, activeBarStart, onDuplicateBar, onIncrease]);
+  }, [isIsolated, barCount, displayActiveBarStart, onDuplicateBar, onIncrease]);
 
   const handleBarTap = useCallback(
     (i: number) => {
-      const [newStart, newLength] = nextRangeForBarTap(
-        i,
-        activeBarStart,
-        activeBarStart + activeLengthInBars
-      );
-      onSetActiveBarRange?.(newStart, newLength);
+      setFocusedBarIndex(i);
+      onNavigateToBar?.(i);
     },
-    [activeBarStart, activeLengthInBars, onSetActiveBarRange]
-  );
-  const handleBarLongPress = useCallback(
-    (i: number) => onSetActiveBarRange?.(i, 1),
-    [onSetActiveBarRange]
-  );
-  const handleBarDoubleTap = useCallback(
-    (i: number) => onNavigateToBar?.(i),
     [onNavigateToBar]
   );
+  const handleBarLongPress = useCallback(
+    (i: number) => {
+      setFocusedBarIndex(i);
+      onSetActiveBarRange?.(i, 1);
+    },
+    [onSetActiveBarRange]
+  );
+  const updateDragPreview = useCallback((from: number, to: number) => {
+    const next = rangeForBarDrag(from, to);
+    setDragPreview((previous) =>
+      previous?.[0] === next[0] && previous?.[1] === next[1] ? previous : next
+    );
+  }, []);
+  const finishDrag = useCallback(
+    (from: number, to: number) => {
+      setFocusedBarIndex(to);
+      setDragPreview(null);
+      const [start, length] = rangeForBarDrag(from, to);
+      onSetActiveBarRange?.(start, length);
+    },
+    [onSetActiveBarRange]
+  );
+  const barStripGesture = useMemo(() => {
+    const longPress = Gesture.LongPress()
+      .minDuration(500)
+      .onStart((e) => {
+        'worklet';
+        scheduleOnRN(
+          handleBarLongPress,
+          barIndexAtX(e.x, stripWidth, barCount)
+        );
+      });
+    const drag = Gesture.Pan()
+      .activeOffsetX([-8, 8])
+      .failOffsetY([-12, 12])
+      .onStart((e) => {
+        'worklet';
+        const index = barIndexAtX(e.x - e.translationX, stripWidth, barCount);
+        dragStartBar.value = index;
+        lastDragBar.value = index;
+        scheduleOnRN(updateDragPreview, index, index);
+      })
+      .onUpdate((e) => {
+        'worklet';
+        const index = barIndexAtX(e.x, stripWidth, barCount);
+        if (index === lastDragBar.value) return;
+        lastDragBar.value = index;
+        scheduleOnRN(updateDragPreview, dragStartBar.value, index);
+      })
+      .onEnd((e) => {
+        'worklet';
+        const index = barIndexAtX(e.x, stripWidth, barCount);
+        scheduleOnRN(finishDrag, dragStartBar.value, index);
+      });
+    const tap = Gesture.Tap().onEnd((e, success) => {
+      'worklet';
+      if (success)
+        scheduleOnRN(handleBarTap, barIndexAtX(e.x, stripWidth, barCount));
+    });
+    return Gesture.Exclusive(longPress, drag, tap);
+  }, [
+    barCount,
+    stripWidth,
+    handleBarLongPress,
+    handleBarTap,
+    updateDragPreview,
+    finishDrag,
+    dragStartBar,
+    lastDragBar,
+  ]);
 
   // Mini note-thumbnail per bar — mirrors the piano roll above. Pitch is
   // normalized against the clip's own min/max pitch so the shape stays
@@ -775,15 +817,20 @@ const ClipLengthBar = memo(function ClipLengthBar({
     ? Math.max(0, visibleBarRange.start) / barCount
     : 0;
   const locatorWidthFrac = visibleBarRange
-    ? Math.max(0, Math.min(barCount, visibleBarRange.end) - Math.max(0, visibleBarRange.start)) /
-      barCount
+    ? Math.max(
+        0,
+        Math.min(barCount, visibleBarRange.end) -
+          Math.max(0, visibleBarRange.start)
+      ) / barCount
     : 1;
 
   return (
     <View style={[styles.clipLengthBar, { backgroundColor: colors.mcBlack }]}>
       {/* Minus button — becomes trash while a single bar is isolated */}
       <Pressable
-        onPress={() => (isIsolated ? onDeleteBar?.(activeBarStart) : onDecrease?.())}
+        onPress={() =>
+          isIsolated ? onDeleteBar?.(displayActiveBarStart) : onDecrease?.()
+        }
         disabled={!canRemove}
         style={[
           styles.clipLengthEndBtn,
@@ -791,30 +838,39 @@ const ClipLengthBar = memo(function ClipLengthBar({
         ]}
         accessibilityLabel={isIsolated ? 'Delete bar' : 'Remove bar'}
       >
-        <Icon icon={isIsolated ? Icons.trash : Icons.minus} size={12} color={colors.mcWhite2} />
+        <Icon
+          icon={isIsolated ? Icons.trash : Icons.minus}
+          size={12}
+          color={colors.mcWhite2}
+        />
       </Pressable>
 
       <View style={styles.clipLengthMain}>
-        {/* Bar segments */}
-        <View style={styles.clipLengthNumbers}>
-          {Array.from({ length: barCount }, (_, i) => {
-            const isActive = i >= activeBarStart && i < activeBarStart + activeLengthInBars;
-            return (
-              <ClipLengthBarSegment
-                key={i}
-                index={i}
-                barIndex={i + 1}
-                isActive={isActive}
-                isLast={i === barCount - 1}
-                trackColor={trackColor}
-                dashes={notesByBar[i] ?? []}
-                onTap={handleBarTap}
-                onLongPress={handleBarLongPress}
-                onDoubleTap={handleBarDoubleTap}
-              />
-            );
-          })}
-        </View>
+        {/* Bar segments: tap selects one bar; horizontal drag selects a range. */}
+        <GestureDetector gesture={barStripGesture}>
+          <View
+            style={styles.clipLengthNumbers}
+            onLayout={(event) => setStripWidth(event.nativeEvent.layout.width)}
+          >
+            {Array.from({ length: barCount }, (_, i) => {
+              const isActive =
+                i >= displayActiveBarStart &&
+                i < displayActiveBarStart + displayActiveLength;
+              return (
+                <ClipLengthBarSegment
+                  key={i}
+                  barIndex={i + 1}
+                  isActive={isActive}
+                  isFocused={focusedBarIndex === i}
+                  isLast={i === barCount - 1}
+                  trackColor={trackColor}
+                  dashes={notesByBar[i] ?? []}
+                  onFocus={() => handleBarTap(i)}
+                />
+              );
+            })}
+          </View>
+        </GestureDetector>
 
         {/* Locator — read-only, mirrors the visible piano-roll range */}
         <View style={styles.clipLengthLocatorTrack}>
@@ -841,7 +897,11 @@ const ClipLengthBar = memo(function ClipLengthBar({
         ]}
         accessibilityLabel={isIsolated ? 'Duplicate bar' : 'Add bar'}
       >
-        <Icon icon={isIsolated ? Icons.duplicate : Icons.plus} size={12} color={colors.mcWhite2} />
+        <Icon
+          icon={isIsolated ? Icons.duplicate : Icons.plus}
+          size={12}
+          color={colors.mcWhite2}
+        />
       </Pressable>
 
       <Modal
@@ -1390,9 +1450,8 @@ export const ClipEditorView = memo(function ClipEditorView({
     gridRef.current?.scrollToX(x, false);
   }, []);
 
-  // Double-tapping a bar segment on the ClipLengthBar jumps the piano roll
-  // there without touching the active range — distinct from the isolation
-  // effect below, which only fires when the range itself changes.
+  // Selecting a bar on the ClipLengthBar jumps the piano roll there. The
+  // isolation effect below also handles range changes from tap and drag.
   const handleNavigateToBar = useCallback(
     (barIndex: number) => {
       const targetX = barIndex * 4 * beatWidth;

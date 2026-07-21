@@ -1963,6 +1963,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
         }
       >
         <View
+          onLayout={[Function]}
           style={
             {
               "flexDirection": "row",
@@ -1972,6 +1973,13 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
         >
           <View
             accessibilityLabel="Bar 1"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -1981,8 +1989,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                 },
                 {
                   "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 1,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -2241,6 +2251,13 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
           </View>
           <View
             accessibilityLabel="Bar 2"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -2250,8 +2267,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                 },
                 {
                   "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 1,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -2282,6 +2301,13 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
           </View>
           <View
             accessibilityLabel="Bar 3"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -2291,8 +2317,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                 },
                 {
                   "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 1,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -2323,6 +2351,13 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
           </View>
           <View
             accessibilityLabel="Bar 4"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -2332,8 +2367,10 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                 },
                 {
                   "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 0,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -5021,6 +5058,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
         }
       >
         <View
+          onLayout={[Function]}
           style={
             {
               "flexDirection": "row",
@@ -5030,6 +5068,13 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
         >
           <View
             accessibilityLabel="Bar 1"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5039,8 +5084,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 },
                 {
                   "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 1,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -5299,6 +5346,13 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           </View>
           <View
             accessibilityLabel="Bar 2"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5308,8 +5362,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 },
                 {
                   "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 1,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -5340,6 +5396,13 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           </View>
           <View
             accessibilityLabel="Bar 3"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5349,8 +5412,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 },
                 {
                   "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 1,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -5381,6 +5446,13 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           </View>
           <View
             accessibilityLabel="Bar 4"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5390,8 +5462,10 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 },
                 {
                   "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 0,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -8923,6 +8997,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
         }
       >
         <View
+          onLayout={[Function]}
           style={
             {
               "flexDirection": "row",
@@ -8932,6 +9007,13 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
         >
           <View
             accessibilityLabel="Bar 1"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -8941,8 +9023,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                 },
                 {
                   "backgroundColor": "rgba(255, 108, 58, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 1,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -9049,6 +9133,13 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
           </View>
           <View
             accessibilityLabel="Bar 2"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -9058,8 +9149,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                 },
                 {
                   "backgroundColor": "rgba(255, 108, 58, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 1,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -9090,6 +9183,13 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
           </View>
           <View
             accessibilityLabel="Bar 3"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -9099,8 +9199,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                 },
                 {
                   "backgroundColor": "rgba(255, 108, 58, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 1,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -9131,6 +9233,13 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
           </View>
           <View
             accessibilityLabel="Bar 4"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -9140,8 +9249,10 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                 },
                 {
                   "backgroundColor": "rgba(255, 108, 58, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 0,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -12017,6 +12128,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
         }
       >
         <View
+          onLayout={[Function]}
           style={
             {
               "flexDirection": "row",
@@ -12026,6 +12138,13 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
         >
           <View
             accessibilityLabel="Bar 1"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -12035,8 +12154,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                 },
                 {
                   "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 1,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -12295,6 +12416,13 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
           </View>
           <View
             accessibilityLabel="Bar 2"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -12304,8 +12432,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                 },
                 {
                   "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 1,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -12336,6 +12466,13 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
           </View>
           <View
             accessibilityLabel="Bar 3"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -12345,8 +12482,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                 },
                 {
                   "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 1,
+                  "borderWidth": 0,
                 },
               ]
             }
@@ -12377,6 +12516,13 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
           </View>
           <View
             accessibilityLabel="Bar 4"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "selected": false,
+              }
+            }
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -12386,8 +12532,10 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                 },
                 {
                   "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                  "borderColor": "rgba(247, 247, 247, 0.80)",
                   "borderRightColor": "#000000",
                   "borderRightWidth": 0,
+                  "borderWidth": 0,
                 },
               ]
             }
