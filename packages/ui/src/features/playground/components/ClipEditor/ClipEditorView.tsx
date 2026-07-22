@@ -19,37 +19,33 @@
  */
 import { memo, useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import {
+  Alert,
   View,
-  ScrollView as RNScrollView,
   Pressable,
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
-import {
-  ScrollView,
-  Gesture,
-  GestureDetector,
-} from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  runOnJS,
+  useFrameCallback,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme, hexToRgba } from '../../../../theme';
 import { makeSpacing, spacing } from '../../../../theme/spacing';
-import { MidiNoteView } from './MidiNoteView';
 import { ClipSettingsModal } from './ClipSettingsModal';
 import { DrumPadsView } from '../DrumPads/DrumPadsView';
 import { PianoKeyboard } from '../PianoKeyboard/PianoKeyboard';
 import { SkiaPianoRollGrid } from '../../../../components/PianoRoll';
-import type { RecordingNotePreviewData, SkiaPianoRollGridHandle } from '../../../../components/PianoRoll';
+import type {
+  RecordingNotePreviewData,
+  SkiaPianoRollGridHandle,
+} from '../../../../components/PianoRoll';
 import { NotePrecisionPanel } from '../../../../components/NotePrecisionPanel';
 import type { NotePrecisionPanelHandle } from '../../../../components/NotePrecisionPanel';
-import { Modal } from '../../../../components/Modal';
-import { Button } from '../../../../components/Button';
 import { WithHint, HintIDs } from '../../../../components/Hint';
 import type {
   Clip,
@@ -169,35 +165,6 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
   );
 });
 
-// ─── PianoRoll Grid ─────────────────────────────────────────────────────────
-
-interface PianoRollGridProps {
-  notes: ClipNote[];
-  samples?: Sample[];
-  instrumentType?: InstrumentType;
-  trackColor: string;
-  lengthInBeats: number;
-  rowHeight?: number;
-  zoomLevel?: number;
-  playheadPosition?: number;
-  isExpanded?: boolean;
-  selectedPitchIndex?: number | null;
-  /** Base MIDI note for melodic/bass pitch range (from soundbank defaultOctave). Falls back to 48 (C3). */
-  melodicMinPitch?: number;
-  onNotePress?: (index: number) => void;
-  onNoteResize?: (index: number, newDuration: number) => void;
-  onNoteMove?: (
-    index: number,
-    newPosition: number,
-    newNoteNumber: number
-  ) => void;
-  onGridTap?: (noteNumber: number, position: number) => void;
-  onPitchLabelTap?: (pitch: number) => void;
-  onToggleExpand?: () => void;
-  onZoomIn?: () => void;
-  onZoomOut?: () => void;
-}
-
 // Note name lookup for melodic/bass pitch labels — matches iOS getNoteName
 const NOTE_NAMES = [
   'C',
@@ -214,323 +181,12 @@ const NOTE_NAMES = [
   'B',
 ] as const;
 
-/** Returns a human-readable note name like "C4" or "D#5" for a MIDI pitch value. */
-const getNoteName = (pitch: number): string => {
-  const noteName = NOTE_NAMES[pitch % 12];
-  const octave = Math.floor(pitch / 12) + 1;
-  return `${noteName}${octave}`;
-};
-
-// ─── Playhead ───────────────────────────────────────────────────────────────
-
-/**
- * Playhead driven by the sequencer clock. One source of truth.
- *
- * Playhead driven by the transport clock (DAW-style frame-pull model).
- *
- * The parent runs a requestAnimationFrame loop that reads the transport
- * clock at display frame rate (~60fps) and writes the pixel position
- * directly to a SharedValue. No React props updated at 60fps, no
- * withTiming interpolation, no events from the audio engine.
- *
- * The playhead position IS the sequencer position — direct and accurate.
- */
-const PlayheadLine = memo(function PlayheadLine({
-  posX,
-  color,
-}: {
-  /** Pixel X position driven by rAF loop reading the transport clock. */
-  posX: Animated.SharedValue<number>;
-  color: string;
-}) {
-  const animStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: posX.value }],
-  }));
-
-  return (
-    <Animated.View
-      pointerEvents="none"
-      style={[
-        {
-          position: 'absolute',
-          left: LABEL_COL_WIDTH,
-          top: 0,
-          bottom: 0,
-          width: 2,
-          backgroundColor: color,
-          zIndex: 10,
-        },
-        animStyle,
-      ]}
-    />
-  );
-});
-
-// ─── PianoRoll Grid ─────────────────────────────────────────────────────────
-
 /** Width of the pitch label column in the piano roll grid */
 const LABEL_COL_WIDTH = 60;
 
 /** Default MIDI pitch range for melodic/bass tracks (2 octaves starting at C3 = MIDI 48).
  *  Can be overridden per-track via the `melodicMinPitch` prop on ClipEditorView. */
 const DEFAULT_MELODIC_MIN_PITCH = 48;
-const MELODIC_PITCH_COUNT = 24;
-
-const PianoRollGrid = memo(function PianoRollGrid({
-  notes,
-  samples,
-  instrumentType = 'drum',
-  trackColor,
-  lengthInBeats,
-  rowHeight = 34,
-  zoomLevel = 1,
-  isExpanded,
-  selectedPitchIndex,
-  melodicMinPitch,
-  onNotePress,
-  onNoteResize,
-  onNoteMove,
-  onGridTap,
-  onPitchLabelTap,
-  onToggleExpand,
-  onZoomIn,
-  onZoomOut,
-}: PianoRollGridProps) {
-  const { colors } = useTheme();
-  const { width: screenWidth } = useWindowDimensions();
-
-  const isDrum = instrumentType === 'drum';
-
-  // Effective base pitch for melodic/bass: use soundbank's defaultOctave when available
-  const basePitch = isDrum ? 0 : (melodicMinPitch ?? DEFAULT_MELODIC_MIN_PITCH);
-
-  // Calculate pitch range: drums use sample count, melodic/bass use fixed 2-octave range
-  const totalPitches = isDrum
-    ? (samples ?? []).length || 12 // Use exact sample count (no minimum)
-    : MELODIC_PITCH_COUNT;
-
-  // iOS: baseWidth = availableGridWidth / 16 (steps per bar)
-  // At zoom 1.0, one bar fills the available width exactly.
-  const availableGridWidth = screenWidth - LABEL_COL_WIDTH;
-  const STEPS_PER_BAR = 16;
-  const baseStepWidth = availableGridWidth / STEPS_PER_BAR;
-  const stepWidth = baseStepWidth * zoomLevel;
-  const BEAT_WIDTH = stepWidth * 4; // 4 steps per beat
-  const gridHeight = totalPitches * rowHeight;
-
-  // pitchToMidi: maps pitchIdx (0 = bottom/lowest) → MIDI note number
-  // Drums: each index maps to the sample's noteNumber
-  // Melodic/bass: linear from basePitch (soundbank defaultOctave)
-  const pitchToMidi: number[] = isDrum
-    ? Array.from(
-        { length: totalPitches },
-        (_, i) => (samples ?? [])[i]?.noteNumber ?? i
-      )
-    : Array.from({ length: totalPitches }, (_, i) => basePitch + i);
-
-  /**
-   * Get label for a pitch row.
-   * - Drum: sample.name (human readable, e.g. "Kick", "Hi-Hat Closed")
-   * - Melodic/Bass: note name (e.g. "C4", "D#5")
-   */
-  const getPitchLabel = (pitchIdx: number): string => {
-    if (isDrum) {
-      const sample = (samples ?? [])[pitchIdx];
-      return sample?.name ?? `Note ${pitchIdx}`;
-    }
-    return getNoteName(basePitch + pitchIdx);
-  };
-
-  /**
-   * Check if a pitch row contains any notes.
-   * - Drum: map pitchIdx → sample.noteNumber, then search notes
-   * - Melodic/Bass: pitchIdx maps directly to MIDI note number
-   */
-  /**
-   * iOS: defaultRowColor = title.isNotEmpty ? color : color.opacity(0.6)
-   * Pitch "has a name" if the label text is a real name (not a fallback).
-   */
-  const pitchHasName = (pitchIdx: number): boolean => {
-    const label = getPitchLabel(pitchIdx);
-    return !label.startsWith('Note ');
-  };
-
-  return (
-    <View style={styles.pianoRollContainer}>
-      {/* iOS layout: single vertical ScrollView wrapping HStack(labels, horizontalScrollGrid)
-       * Labels and grid scroll vertically TOGETHER.
-       * Grid also scrolls horizontally inside a nested horizontal ScrollView. */}
-      <ScrollView style={styles.pianoRollContent}>
-        <View style={styles.pianoRollRow}>
-          {/* Fixed-width pitch labels column — scrolls vertically with grid */}
-          <View style={[styles.pitchLabels, { width: LABEL_COL_WIDTH }]}>
-            {Array.from({ length: totalPitches }, (_, i) => {
-              const pitchIdx = totalPitches - 1 - i;
-              const hasName = pitchHasName(pitchIdx);
-              return (
-                <Pressable
-                  key={pitchIdx}
-                  onPress={() => onPitchLabelTap?.(pitchIdx)}
-                  style={[
-                    styles.pitchLabel,
-                    {
-                      height: rowHeight,
-                      backgroundColor:
-                        selectedPitchIndex === pitchIdx
-                          ? colors.mcOrange
-                          : hasName
-                            ? trackColor
-                            : hexToRgba(trackColor, 0.6),
-                    },
-                  ]}
-                >
-                  <Text
-                    variant="extraSmall"
-                    color={colors.mcBlack}
-                    numberOfLines={2}
-                    style={styles.pitchLabelText}
-                  >
-                    {getPitchLabel(pitchIdx)}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-
-          {/* Grid — scrolls horizontally, fills remaining width */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.gridScroll}
-          >
-            <View
-              style={{
-                width: lengthInBeats * BEAT_WIDTH,
-                height: gridHeight,
-                position: 'relative',
-              }}
-            >
-              {/* Grid rows — tappable to add notes */}
-              {Array.from({ length: totalPitches }, (_, i) => {
-                const pitchIdx = totalPitches - 1 - i;
-                return (
-                  <Pressable
-                    key={`r${i}`}
-                    onPress={(e) => {
-                      if (!onGridTap) return;
-                      // Compute which step was tapped from touch X
-                      const tapX = e.nativeEvent.locationX;
-                      const step = Math.floor(tapX / stepWidth);
-                      const position = step * 0.25; // 16th note = 0.25 beats
-
-                      // Map pitchIdx → MIDI note number
-                      let noteNumber: number;
-                      if (isDrum) {
-                        const sample = (samples ?? [])[pitchIdx];
-                        noteNumber = sample?.noteNumber ?? pitchIdx;
-                      } else {
-                        noteNumber = basePitch + pitchIdx;
-                      }
-                      onGridTap(noteNumber, position);
-                    }}
-                    style={{
-                      position: 'absolute',
-                      top: i * rowHeight,
-                      left: 0,
-                      right: 0,
-                      height: rowHeight,
-                      borderBottomWidth: 0.5,
-                      borderBottomColor: colors.mcBlack4,
-                      backgroundColor:
-                        i % 2 === 0 ? colors.mcBlack : colors.mcBlack2,
-                    }}
-                  />
-                );
-              })}
-              {/* Step lines — 16th note subdivisions matching iOS grid */}
-              {Array.from({ length: lengthInBeats * 4 + 1 }, (_, i) => {
-                const isBar = i % 16 === 0;
-                const isBeat = i % 4 === 0;
-                return (
-                  <View
-                    key={`s${i}`}
-                    style={{
-                      position: 'absolute',
-                      left: i * stepWidth,
-                      top: 0,
-                      bottom: 0,
-                      width: isBar ? 1.5 : isBeat ? 1 : 0.5,
-                      backgroundColor: isBar
-                        ? 'rgba(255,255,255,0.25)'
-                        : isBeat
-                          ? 'rgba(255,255,255,0.12)'
-                          : 'rgba(255,255,255,0.04)',
-                    }}
-                  />
-                );
-              })}
-              {/* Notes — gesture-driven MidiNoteView (native thread) */}
-              {notes.map((note, idx) => {
-                let pitchIdx: number;
-                if (isDrum) {
-                  const sampleIdx = (samples ?? []).findIndex(
-                    (s) => s.noteNumber === note.noteNumber
-                  );
-                  pitchIdx = sampleIdx >= 0 ? sampleIdx : 0;
-                } else {
-                  pitchIdx = note.noteNumber - basePitch;
-                }
-                const rowIdx = totalPitches - 1 - pitchIdx;
-                return (
-                  <MidiNoteView
-                    key={`${note.noteNumber}-${note.position}-${idx}`}
-                    position={note.position}
-                    duration={note.duration}
-                    noteNumber={note.noteNumber}
-                    rowIndex={rowIdx}
-                    beatWidth={BEAT_WIDTH}
-                    rowHeight={rowHeight}
-                    stepWidth={stepWidth}
-                    color={trackColor}
-                    label={!isDrum ? getNoteName(note.noteNumber) : undefined}
-                    noteIndex={idx}
-                    onDelete={onNotePress}
-                    onResize={onNoteResize}
-                    onMove={onNoteMove}
-                    totalPitches={totalPitches}
-                    pitchToMidi={pitchToMidi}
-                  />
-                );
-              })}
-            </View>
-          </ScrollView>
-        </View>
-      </ScrollView>
-
-      {/* Zoom controls — iOS: individual buttons with black.opacity(0.6) bg, rounded, 36x36 */}
-      <View style={styles.zoomControls}>
-        <Pressable onPress={onToggleExpand} style={styles.zoomBtn}>
-          <Icon
-            icon={isExpanded ? Icons.collapse : Icons.expand}
-            size={14}
-            color={colors.mcWhite}
-          />
-        </Pressable>
-        <Pressable onPress={onZoomIn} style={styles.zoomBtn}>
-          <Icon icon={Icons.zoomIn} size={14} color={colors.mcWhite} />
-        </Pressable>
-        <View style={styles.zoomLabel}>
-          <Text variant="extraSmall10" color={colors.mcWhite} center>
-            {Math.round(zoomLevel * 100)}%
-          </Text>
-        </View>
-        <Pressable onPress={onZoomOut} style={styles.zoomBtn}>
-          <Icon icon={Icons.zoomOut} size={14} color={colors.mcWhite} />
-        </Pressable>
-      </View>
-    </View>
-  );
-});
 
 // ─── Clip Length Bar ─────────────────────────────────────────────────────────
 // Orange bar: "— | 1  2  3  4 | +"
@@ -548,12 +204,9 @@ const PianoRollGrid = memo(function PianoRollGrid({
  *   plus its bar number. No isolated per-bar underline anymore.
  * - Tap a bar → focuses it and navigates the piano roll there (no loop change)
  * - Drag across bars → selects the contiguous loop range between them
- * - Long-press a bar → isolates that bar (useful while playing)
  * - Active (in loop range): translucent mcOrange tint
  * - Focused: white outline; focus is independent from the loop range
  * - Inactive: mcBlack3 bg
- * - When a single bar is isolated, minus/plus become trash/duplicate acting
- *   on that one bar instead of the clip's total length
  */
 interface ClipLengthBarProps {
   lengthInBars: number;
@@ -568,9 +221,7 @@ interface ClipLengthBarProps {
   onSetActiveBarRange?: (start: number, length: number) => void;
   onDecrease?: () => void;
   onIncrease?: () => void;
-  /** Delete the given (0-indexed) bar — only offered while it's isolated */
-  onDeleteBar?: (barIndex: number) => void;
-  /** Duplicate the given (0-indexed) bar right after itself — only offered while it's isolated */
+  /** Duplicate the first bar when adding the second bar. */
   onDuplicateBar?: (barIndex: number) => void;
   /** Scroll the piano roll to the focused (0-indexed) bar */
   onNavigateToBar?: (barIndex: number) => void;
@@ -673,38 +324,40 @@ const ClipLengthBar = memo(function ClipLengthBar({
   onSetActiveBarRange,
   onDecrease,
   onIncrease,
-  onDeleteBar,
   onDuplicateBar,
   onNavigateToBar,
 }: ClipLengthBarProps) {
   const { colors } = useTheme();
   const barCount = Math.max(1, lengthInBars);
-  // A 1-bar clip's only bar is never "isolated" — it already is the whole
-  // clip, so the +/- buttons stay as add/remove rather than duplicate/trash.
   const [stripWidth, setStripWidth] = useState(0);
   const [focusedBarIndex, setFocusedBarIndex] = useState<number | null>(null);
   const [dragPreview, setDragPreview] = useState<[number, number] | null>(null);
   const dragStartBar = useSharedValue(0);
   const lastDragBar = useSharedValue(-1);
-  // Going from 1 to 2 bars is ambiguous — ask whether the new bar should be
-  // empty or a copy of the only bar that exists so far.
-  const [showAddBarPrompt, setShowAddBarPrompt] = useState(false);
-
   const displayActiveBarStart = dragPreview?.[0] ?? activeBarStart;
   const displayActiveLength = dragPreview?.[1] ?? activeLengthInBars;
-  const isIsolated = displayActiveLength === 1 && barCount > 1;
   const canAdd = barCount < 16;
   const canRemove = barCount > 1;
 
   const handlePlusPress = useCallback(() => {
-    if (isIsolated) {
-      onDuplicateBar?.(displayActiveBarStart);
-    } else if (barCount === 1) {
-      setShowAddBarPrompt(true);
-    } else {
+    if (barCount !== 1 || notes.length === 0) {
       onIncrease?.();
+      return;
     }
-  }, [isIsolated, barCount, displayActiveBarStart, onDuplicateBar, onIncrease]);
+
+    Alert.alert(
+      'Add Bar',
+      'Would you like to duplicate the notes from the last bar?',
+      [
+        {
+          text: 'Duplicate notes from the last bar',
+          onPress: () => onDuplicateBar?.(0),
+        },
+        { text: 'Add Empty Bar', onPress: onIncrease },
+        { text: 'Cancel', style: 'cancel' },
+      ]
+    );
+  }, [barCount, notes.length, onDuplicateBar, onIncrease]);
 
   const handleBarTap = useCallback(
     (i: number) => {
@@ -712,13 +365,6 @@ const ClipLengthBar = memo(function ClipLengthBar({
       onNavigateToBar?.(i);
     },
     [onNavigateToBar]
-  );
-  const handleBarLongPress = useCallback(
-    (i: number) => {
-      setFocusedBarIndex(i);
-      onSetActiveBarRange?.(i, 1);
-    },
-    [onSetActiveBarRange]
   );
   const updateDragPreview = useCallback((from: number, to: number) => {
     const next = rangeForBarDrag(from, to);
@@ -736,15 +382,6 @@ const ClipLengthBar = memo(function ClipLengthBar({
     [onSetActiveBarRange]
   );
   const barStripGesture = useMemo(() => {
-    const longPress = Gesture.LongPress()
-      .minDuration(500)
-      .onStart((e) => {
-        'worklet';
-        scheduleOnRN(
-          handleBarLongPress,
-          barIndexAtX(e.x, stripWidth, barCount)
-        );
-      });
     const drag = Gesture.Pan()
       .activeOffsetX([-8, 8])
       .failOffsetY([-12, 12])
@@ -772,11 +409,10 @@ const ClipLengthBar = memo(function ClipLengthBar({
       if (success)
         scheduleOnRN(handleBarTap, barIndexAtX(e.x, stripWidth, barCount));
     });
-    return Gesture.Exclusive(longPress, drag, tap);
+    return Gesture.Exclusive(drag, tap);
   }, [
     barCount,
     stripWidth,
-    handleBarLongPress,
     handleBarTap,
     updateDragPreview,
     finishDrag,
@@ -826,23 +462,16 @@ const ClipLengthBar = memo(function ClipLengthBar({
 
   return (
     <View style={[styles.clipLengthBar, { backgroundColor: colors.mcBlack }]}>
-      {/* Minus button — becomes trash while a single bar is isolated */}
       <Pressable
-        onPress={() =>
-          isIsolated ? onDeleteBar?.(displayActiveBarStart) : onDecrease?.()
-        }
+        onPress={onDecrease}
         disabled={!canRemove}
         style={[
           styles.clipLengthEndBtn,
           { backgroundColor: colors.mcBlack, opacity: canRemove ? 1 : 0.4 },
         ]}
-        accessibilityLabel={isIsolated ? 'Delete bar' : 'Remove bar'}
+        accessibilityLabel="Remove bar"
       >
-        <Icon
-          icon={isIsolated ? Icons.trash : Icons.minus}
-          size={12}
-          color={colors.mcWhite2}
-        />
+        <Icon icon={Icons.minus} size={12} color={colors.mcWhite2} />
       </Pressable>
 
       <View style={styles.clipLengthMain}>
@@ -887,7 +516,6 @@ const ClipLengthBar = memo(function ClipLengthBar({
         </View>
       </View>
 
-      {/* Plus button — becomes duplicate while a single bar is isolated */}
       <Pressable
         onPress={handlePlusPress}
         disabled={!canAdd}
@@ -895,41 +523,10 @@ const ClipLengthBar = memo(function ClipLengthBar({
           styles.clipLengthEndBtn,
           { backgroundColor: colors.mcBlack, opacity: canAdd ? 1 : 0.4 },
         ]}
-        accessibilityLabel={isIsolated ? 'Duplicate bar' : 'Add bar'}
+        accessibilityLabel="Add bar"
       >
-        <Icon
-          icon={isIsolated ? Icons.duplicate : Icons.plus}
-          size={12}
-          color={colors.mcWhite2}
-        />
+        <Icon icon={Icons.plus} size={12} color={colors.mcWhite2} />
       </Pressable>
-
-      <Modal
-        visible={showAddBarPrompt}
-        title="Add Bar"
-        onClose={() => setShowAddBarPrompt(false)}
-      >
-        <View style={{ gap: makeSpacing(2) }}>
-          <Button
-            variant="secondary"
-            label="Empty Bar"
-            fullWidth
-            onPress={() => {
-              setShowAddBarPrompt(false);
-              onIncrease?.();
-            }}
-          />
-          <Button
-            variant="primary"
-            label="Duplicate Bar 1"
-            fullWidth
-            onPress={() => {
-              setShowAddBarPrompt(false);
-              onDuplicateBar?.(0);
-            }}
-          />
-        </View>
-      </Modal>
     </View>
   );
 });
@@ -995,29 +592,35 @@ const ZoomScrubber = memo(function ZoomScrubber({
           'worklet';
           if (trackWidth <= 0) return;
           const fraction = Math.max(0, Math.min(1, e.x / trackWidth));
-          const z = SCRUBBER_MIN_ZOOM + fraction * (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
+          const z =
+            SCRUBBER_MIN_ZOOM +
+            fraction * (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
           liveZoom.value = z;
-          runOnJS(commitZoom)(z);
+          scheduleOnRN(commitZoom, z);
         })
         .onUpdate((e) => {
           'worklet';
           if (trackWidth <= 0) return;
           const fraction = Math.max(0, Math.min(1, e.x / trackWidth));
-          const z = SCRUBBER_MIN_ZOOM + fraction * (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
+          const z =
+            SCRUBBER_MIN_ZOOM +
+            fraction * (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
           liveZoom.value = z;
-          runOnJS(commitZoom)(z);
+          scheduleOnRN(commitZoom, z);
         }),
     [trackWidth, liveZoom, commitZoom]
   );
 
   const thumbStyle = useAnimatedStyle(() => {
     const fraction =
-      (liveZoom.value - SCRUBBER_MIN_ZOOM) / (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
+      (liveZoom.value - SCRUBBER_MIN_ZOOM) /
+      (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
     return { left: fraction * trackWidth - SCRUBBER_THUMB_SIZE / 2 };
   });
   const fillStyle = useAnimatedStyle(() => {
     const fraction =
-      (liveZoom.value - SCRUBBER_MIN_ZOOM) / (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
+      (liveZoom.value - SCRUBBER_MIN_ZOOM) /
+      (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
     return { width: fraction * trackWidth };
   });
 
@@ -1026,7 +629,9 @@ const ZoomScrubber = memo(function ZoomScrubber({
       <Pressable
         onPress={onToggleExpand}
         style={styles.scrubberExpandBtn}
-        accessibilityLabel={isExpanded ? 'Collapse piano roll' : 'Expand piano roll'}
+        accessibilityLabel={
+          isExpanded ? 'Collapse piano roll' : 'Expand piano roll'
+        }
       >
         <Icon
           icon={isExpanded ? Icons.collapse : Icons.expand}
@@ -1040,7 +645,10 @@ const ZoomScrubber = memo(function ZoomScrubber({
           onLayout={(e) => setTrackWidth(e.nativeEvent.layout.width)}
         >
           <View
-            style={[styles.scrubberTrackBg, { backgroundColor: colors.mcBlack3 }]}
+            style={[
+              styles.scrubberTrackBg,
+              { backgroundColor: colors.mcBlack3 },
+            ]}
           />
           <Animated.View
             style={[
@@ -1060,211 +668,13 @@ const ZoomScrubber = memo(function ZoomScrubber({
           </Animated.View>
         </View>
       </GestureDetector>
-      <Text variant="extraSmall10SemiBold" color={colors.mcWhite3} style={styles.scrubberZoomLabel}>
+      <Text
+        variant="extraSmall10SemiBold"
+        color={colors.mcWhite3}
+        style={styles.scrubberZoomLabel}
+      >
         {Math.round(displayZoom * 100)}%
       </Text>
-    </View>
-  );
-});
-
-// ─── Velocity Lane ──────────────────────────────────────────────────────────
-// Matches SwiftUI VelocityLaneView: stem+handle pattern, VEL label column,
-// velocity values ON TOP of bars in orange, beat markers above notes row
-
-// ─── Velocity Bar (drag-to-edit) ────────────────────────────────────────────
-
-const VelocityBar = memo(function VelocityBar({
-  index,
-  velocity,
-  barHeight,
-  trackColor,
-  onChange,
-}: {
-  index: number;
-  velocity: number;
-  barHeight: number;
-  trackColor: string;
-  onChange?: (index: number, velocity: number) => void;
-}) {
-  const { colors } = useTheme();
-  const dragVel = useSharedValue(velocity);
-  const isDragging = useSharedValue(false);
-
-  const commitVelocity = useCallback(
-    (vel: number) => {
-      onChange?.(index, vel);
-    },
-    [index, onChange]
-  );
-
-  const drag = Gesture.Pan()
-    .onStart(() => {
-      'worklet';
-      isDragging.value = true;
-      dragVel.value = velocity;
-    })
-    .onUpdate((e) => {
-      'worklet';
-      // Drag up = increase, drag down = decrease
-      const delta = -e.translationY * (127 / barHeight);
-      dragVel.value = Math.round(Math.max(1, Math.min(127, velocity + delta)));
-    })
-    .onEnd(() => {
-      'worklet';
-      isDragging.value = false;
-      runOnJS(commitVelocity)(dragVel.value);
-    });
-
-  const barStyle = useAnimatedStyle(() => ({
-    height: ((isDragging.value ? dragVel.value : velocity) / 127) * barHeight,
-  }));
-
-  const displayVel = velocity;
-
-  return (
-    <GestureDetector gesture={drag}>
-      <View style={styles.velBarCol}>
-        <Text
-          variant="extraSmall"
-          color={colors.mcOrange}
-          bold
-          style={styles.velValueLabel}
-        >
-          {displayVel}
-        </Text>
-        <Animated.View
-          style={[styles.velBar, { backgroundColor: trackColor }, barStyle]}
-        />
-      </View>
-    </GestureDetector>
-  );
-});
-
-// ─── Velocity Lane ──────────────────────────────────────────────────────────
-
-interface VelocityLaneProps {
-  notes: ClipNote[];
-  trackColor: string;
-  selectedNoteName?: string;
-  activeLengthInBars?: number;
-  onClose?: () => void;
-  onVelocityChange?: (index: number, velocity: number) => void;
-}
-
-const VelocityLane = memo(function VelocityLane({
-  notes,
-  trackColor,
-  selectedNoteName,
-  activeLengthInBars = 1,
-  onClose,
-  onVelocityChange,
-}: VelocityLaneProps) {
-  const { colors } = useTheme();
-  const BAR_HEIGHT = 200;
-  const Y_LABELS = [127, 95, 64, 32];
-  const totalBeats = activeLengthInBars * 4;
-
-  return (
-    <View
-      style={[
-        styles.velocityLane,
-        { backgroundColor: colors.mcBlack, borderTopColor: colors.mcBlack4 },
-      ]}
-    >
-      {/* Header — selected note name + close X */}
-      <View style={styles.velocityHeader}>
-        <Text variant="label" bold>
-          {selectedNoteName || 'Velocity'}
-        </Text>
-        {onClose && (
-          <Pressable
-            onPress={onClose}
-            hitSlop={8}
-            style={styles.velCloseBtn}
-            accessibilityLabel="Close velocity"
-          >
-            <Icon icon={Icons.close} size={18} color={colors.mcWhite3} />
-          </Pressable>
-        )}
-      </View>
-
-      {/* Beat markers: 1.1, 1.2, 1.3, 1.4 */}
-      <RNScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={styles.velContent}>
-          <View style={styles.velBeatMarkers}>
-            <View style={{ width: 50 }} />
-            {Array.from({ length: totalBeats }, (_, i) => (
-              <Text
-                key={i}
-                variant="extraSmall"
-                color={colors.mcWhite3}
-                center
-                style={styles.velBeatLabel}
-              >
-                {Math.floor(i / 4) + 1}.{(i % 4) + 1}
-              </Text>
-            ))}
-          </View>
-
-          {/* NOTES row — colored blocks matching piano roll */}
-          <View style={styles.velNotesRow}>
-            <Text
-              variant="extraSmall"
-              color={colors.mcWhite3}
-              style={styles.velLabel}
-            >
-              NOTES
-            </Text>
-            <View style={styles.velNoteBlocksRow}>
-              {notes.map((_note, i) => (
-                <View
-                  key={i}
-                  style={[styles.velNoteBlock, { backgroundColor: trackColor }]}
-                >
-                  <View
-                    style={{
-                      width: 1,
-                      height: '60%',
-                      backgroundColor: 'rgba(0,0,0,0.3)',
-                    }}
-                  />
-                </View>
-              ))}
-            </View>
-          </View>
-
-          {/* Velocity bars — values ON TOP in orange, bars below */}
-          <View style={styles.velBarsArea}>
-            <View style={styles.velYAxisCol}>
-              <Text variant="extraSmall" color={colors.mcWhite3}>
-                VEL
-              </Text>
-              {Y_LABELS.map((v) => (
-                <Text
-                  key={v}
-                  variant="extraSmall"
-                  color={colors.mcWhite3}
-                  style={styles.velYLabel}
-                >
-                  {v}
-                </Text>
-              ))}
-            </View>
-            <View style={[styles.velBarsRow, { height: BAR_HEIGHT }]}>
-              {notes.map((_n, i) => (
-                <VelocityBar
-                  key={i}
-                  index={i}
-                  velocity={notes[i]!.velocity}
-                  barHeight={BAR_HEIGHT}
-                  trackColor={trackColor}
-                  onChange={onVelocityChange}
-                />
-              ))}
-            </View>
-          </View>
-        </View>
-      </RNScrollView>
     </View>
   );
 });
@@ -1278,9 +688,9 @@ export interface ClipEditorViewProps {
   isPlaying?: boolean;
   isRecording?: boolean;
   isMetronomeEnabled?: boolean;
-  /** Returns current playhead beat position from the transport clock.
-   *  Called at ~60fps by internal rAF loop during playback.
-   *  Replaces the old beatPosition event-driven prop with DAW-style frame-pull. */
+  /** Returns the current playhead beat from the transport clock.
+   *  Sampled when playback starts or the timing scale changes; frame-by-frame
+   *  interpolation stays on the UI thread. */
   getBeatPosition?: () => number;
   canUndo?: boolean;
   canRedo?: boolean;
@@ -1303,9 +713,7 @@ export interface ClipEditorViewProps {
   onClipLengthDecrease?: () => void;
   /** Change which bar-range within the clip actively plays back (0-indexed start, length in bars) */
   onSetActiveBarRange?: (start: number, length: number) => void;
-  /** Delete the given (0-indexed) bar */
-  onDeleteBar?: (barIndex: number) => void;
-  /** Duplicate the given (0-indexed) bar right after itself */
+  /** Duplicate the first bar when adding the second bar. */
   onDuplicateBar?: (barIndex: number) => void;
   onShowSettings?: () => void;
   /** Recording count-in remaining (3, 2, 1, null) */
@@ -1350,7 +758,6 @@ export const ClipEditorView = memo(function ClipEditorView({
   onClipLengthIncrease,
   onClipLengthDecrease,
   onSetActiveBarRange,
-  onDeleteBar,
   onDuplicateBar,
   recordingCountIn,
   tempo = 120,
@@ -1374,7 +781,10 @@ export const ClipEditorView = memo(function ClipEditorView({
   // grid always shows exactly 1/zoom bars regardless of screen width), not
   // the whole clip — otherwise the locator strip below shows full-width
   // and looks disconnected from the view until the first scroll or zoom.
-  const [visibleBarRange, setVisibleBarRange] = useState<{ start: number; end: number }>({
+  const [visibleBarRange, setVisibleBarRange] = useState<{
+    start: number;
+    end: number;
+  }>({
     start: 0,
     end: Math.min(1, clip.lengthInBars),
   });
@@ -1382,13 +792,16 @@ export const ClipEditorView = memo(function ClipEditorView({
   const trackColor = clip.colorHex;
   const samplesList = samples || [];
 
-  const handleVisibleBeatRangeChange = useCallback((startBeat: number, endBeat: number) => {
-    // Fractional bars, not floor/ceil'd to whole ones — the ClipLengthBar
-    // locator draws this as a proportional strip width, so rounding to whole
-    // bars here would make it look frozen at "1 bar" for any zoom above 1x
-    // (anything under 1 full bar always ceils to 1).
-    setVisibleBarRange({ start: startBeat / 4, end: endBeat / 4 });
-  }, []);
+  const handleVisibleBeatRangeChange = useCallback(
+    (startBeat: number, endBeat: number) => {
+      // Fractional bars, not floor/ceil'd to whole ones — the ClipLengthBar
+      // locator draws this as a proportional strip width, so rounding to whole
+      // bars here would make it look frozen at "1 bar" for any zoom above 1x
+      // (anything under 1 full bar always ceils to 1).
+      setVisibleBarRange({ start: startBeat / 4, end: endBeat / 4 });
+    },
+    []
+  );
 
   // Changing zoom changes beatWidth, so the same scroll-x pixel offset would
   // otherwise land on a different beat after the fact — anchor to whatever
@@ -1399,7 +812,8 @@ export const ClipEditorView = memo(function ClipEditorView({
   const zoomAnchorBeatRef = useRef<number | null>(null);
   const handleZoomChange = useCallback(
     (newZoom: number) => {
-      zoomAnchorBeatRef.current = beatWidth > 0 ? lastGridX.current / beatWidth : 0;
+      zoomAnchorBeatRef.current =
+        beatWidth > 0 ? lastGridX.current / beatWidth : 0;
       setZoom(Math.max(1, Math.min(3, newZoom)));
     },
     [beatWidth]
@@ -1464,14 +878,15 @@ export const ClipEditorView = memo(function ClipEditorView({
 
   // ── Scroll the grid (and, via the sync above, the precision panel) to the
   // isolated bar whenever isolation changes ──────────────────────────────
-  const isIsolated = clip.activeLengthInBars === 1 && clip.lengthInBars > 1;
+  const isSingleBarLoop =
+    clip.activeLengthInBars === 1 && clip.lengthInBars > 1;
   useEffect(() => {
-    if (!isIsolated) return;
+    if (!isSingleBarLoop) return;
     const targetX = clip.activeBarStart * 4 * beatWidth;
     lastGridX.current = targetX;
     gridRef.current?.scrollToX(targetX, true);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-scroll when isolation itself changes, not on every beatWidth-affecting zoom tick
-  }, [isIsolated, clip.activeBarStart]);
+  }, [isSingleBarLoop, clip.activeBarStart]);
 
   // The precision panel only mounts once a pitch is selected, so it starts
   // scrolled to 0 even if the grid above has already scrolled elsewhere —
@@ -1482,34 +897,101 @@ export const ClipEditorView = memo(function ClipEditorView({
   }, [selectedPitchIndex]);
 
   // ── Playhead transport clock (DAW-style frame-pull) ──────────────────────
-  // The playhead reads the transport clock at display frame rate via rAF,
-  // writing the pixel position directly to a SharedValue. No React props
-  // at 60fps, no withTiming interpolation, no audio engine events.
+  // Sample the transport clock on JS only when playback/timing changes. The
+  // UI-thread frame callback interpolates pixel position between those seeds,
+  // so JS scheduling cannot make the line stutter.
   // The grid spans the clip's full length, but playback loops within just
   // the active bar range — so the wrapped beat is offset back into the
   // full-clip coordinate space before converting to a pixel position.
   const clipBeats = clip.activeLengthInBars * 4;
   const activeStartBeat = clip.activeBarStart * 4;
   const playheadPosX = useSharedValue(0);
+  const playheadBeatAtStart = useSharedValue(0);
+  const playheadFrameStart = useSharedValue(-1);
+  // Memoized so unrelated re-renders (e.g. a note edited mid-recording)
+  // don't change this closure's identity — useFrameCallback re-registers
+  // the callback with the native frame-callback registry every time its
+  // function reference changes (see Reanimated's useFrameCallback: the
+  // registration effect depends on `[callback, autostart]`), which would
+  // otherwise churn the frame loop and risk a dropped/duplicated frame
+  // right as playback and editing overlap.
+  const playheadFrameCallback = useCallback(
+    ({ timestamp }: { timestamp: number }) => {
+      'worklet';
+      if (playheadFrameStart.value < 0) {
+        playheadFrameStart.value = timestamp;
+      }
+
+      const elapsedMs = timestamp - playheadFrameStart.value;
+      const beat = playheadBeatAtStart.value + (elapsedMs * tempo) / 60000;
+      const wrapped = clipBeats > 0 ? beat % clipBeats : 0;
+      playheadPosX.value = (wrapped + activeStartBeat) * beatWidth;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- SharedValues are stable refs
+    [tempo, clipBeats, activeStartBeat, beatWidth]
+  );
+  const playheadFrame = useFrameCallback(playheadFrameCallback, false);
 
   useEffect(() => {
     if (!isPlaying || !getBeatPosition) {
+      playheadFrame.setActive(false);
+      playheadFrameStart.value = -1;
       playheadPosX.value = 0;
       return;
     }
 
-    let rafId: number;
-    const tick = () => {
-      const beat = getBeatPosition();
-      const wrapped = clipBeats > 0 ? beat % clipBeats : 0;
-      playheadPosX.value = (wrapped + activeStartBeat) * beatWidth;
-      rafId = requestAnimationFrame(tick);
-    };
-    rafId = requestAnimationFrame(tick);
+    // Seed once from the transport clock, then let the UI-thread frame
+    // callback interpolate between frames without depending on JS rAF timing.
+    playheadBeatAtStart.value = getBeatPosition();
+    playheadFrameStart.value = -1;
+    playheadFrame.setActive(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- SharedValues and frame handle are stable refs
+  }, [
+    isPlaying,
+    getBeatPosition,
+    clipBeats,
+    activeStartBeat,
+    beatWidth,
+    tempo,
+  ]);
 
-    return () => cancelAnimationFrame(rafId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- playheadPosX is a stable SharedValue ref
-  }, [isPlaying, getBeatPosition, clipBeats, activeStartBeat, beatWidth]);
+  // Stable references for SkiaPianoRollGrid's callback props — inline arrow
+  // functions here would recreate on every ClipEditorView render (e.g. a
+  // toolbar-only state change like play/pause) and silently defeat that
+  // component's memo(), forcing a full re-render — and, before the grid's
+  // own gestures were memoized, a gesture-recognizer rebuild — for state
+  // changes that have nothing to do with the grid.
+  const handleNotePress = useCallback(
+    (idx: number) => callbacks?.onNoteDelete?.(idx),
+    [callbacks]
+  );
+  const handleNoteResize = useCallback(
+    (idx: number, newDuration: number) =>
+      callbacks?.onNoteResize?.(idx, newDuration),
+    [callbacks]
+  );
+  const handleNoteMove = useCallback(
+    (idx: number, newPos: number, newNote: number) =>
+      callbacks?.onNoteMove?.(idx, newPos, newNote),
+    [callbacks]
+  );
+  const handleGridTap = useCallback(
+    (noteNumber: number, position: number) => {
+      callbacks?.onNoteAdd?.({
+        noteNumber,
+        velocity: 100,
+        position,
+        duration: 0.25,
+      });
+    },
+    [callbacks]
+  );
+  const handlePitchLabelTap = useCallback((pitch: number) => {
+    setSelectedPitchIndex((current) => (current === pitch ? null : pitch));
+  }, []);
+  const handleToggleExpand = useCallback(() => {
+    setIsExpanded((current) => !current);
+  }, []);
 
   // iOS: PerformanceControlsView visible when config.isPerformanceControlsVisible && !isExpanded
   const shouldShowPerformanceControls =
@@ -1555,39 +1037,24 @@ export const ClipEditorView = memo(function ClipEditorView({
               isExpanded={isExpanded}
               selectedPitchIndex={selectedPitchIndex}
               melodicMinPitch={melodicMinPitch}
-              onNotePress={(idx) => callbacks?.onNoteDelete?.(idx)}
-              onNoteResize={(idx, newDuration) =>
-                callbacks?.onNoteResize?.(idx, newDuration)
-              }
-              onNoteMove={(idx, newPos, newNote) =>
-                callbacks?.onNoteMove?.(idx, newPos, newNote)
-              }
-              onGridTap={(noteNumber, position) => {
-                callbacks?.onNoteAdd?.({
-                  noteNumber,
-                  velocity: 100,
-                  position,
-                  duration: 0.25,
-                });
-              }}
-              onPitchLabelTap={(pitch) => {
-                setSelectedPitchIndex(
-                  selectedPitchIndex === pitch ? null : pitch
-                );
-              }}
-              onToggleExpand={() => setIsExpanded(!isExpanded)}
+              onNotePress={handleNotePress}
+              onNoteResize={handleNoteResize}
+              onNoteMove={handleNoteMove}
+              onGridTap={handleGridTap}
+              onPitchLabelTap={handlePitchLabelTap}
+              onToggleExpand={handleToggleExpand}
               onZoomChange={handleZoomChange}
               showControls={false}
               showNoteLabels={showPianoNoteNames}
               snapToGrid={snapToGrid}
               lockNoteDuration={clip.lockNoteDuration}
               recordingNotes={recordingNotes}
+              isPlaying={isPlaying}
               playheadPosX={playheadPosX}
               onVisibleBeatRangeChange={handleVisibleBeatRangeChange}
               onScrollXChange={handleGridScrollX}
               velocityPreview={velocityPreview}
             />
-            <PlayheadLine posX={playheadPosX} color={colors.mcWhite} />
           </View>
         </WithHint>
 
@@ -1598,7 +1065,7 @@ export const ClipEditorView = memo(function ClipEditorView({
         <ZoomScrubber
           zoom={zoom}
           isExpanded={isExpanded}
-          onToggleExpand={() => setIsExpanded(!isExpanded)}
+          onToggleExpand={handleToggleExpand}
           onZoomChange={handleZoomChange}
         />
 
@@ -1615,7 +1082,6 @@ export const ClipEditorView = memo(function ClipEditorView({
           onIncrease={onClipLengthIncrease}
           onDecrease={onClipLengthDecrease}
           onSetActiveBarRange={onSetActiveBarRange}
-          onDeleteBar={onDeleteBar}
           onDuplicateBar={onDuplicateBar}
           onNavigateToBar={handleNavigateToBar}
         />
@@ -1774,56 +1240,11 @@ const styles = StyleSheet.create({
     gap: makeSpacing(4),
   },
 
-  // Piano Roll
-  pianoRollContainer: { flex: 1, position: 'relative' },
-  // iOS: single vertical ScrollView
-  pianoRollContent: { flex: 1 },
-  // iOS: HStack(alignment: .bottom, spacing: 0) { labels, horizontalGrid }
-  pianoRollRow: { flexDirection: 'row' },
-  pitchLabels: {},
-  gridScroll: { flex: 1 },
-  // iOS: padding(2), centered text, border(Color.black, width: 0.5)
-  pitchLabel: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 2,
-    borderWidth: 0.5,
-    borderColor: 'rgba(0,0,0,0.5)',
-  },
-  pitchLabelText: {
-    fontSize: 10, // iOS: .mcExtraSmall10
-    textAlign: 'center' as const,
-  },
-
-  // Zoom controls — iOS: individual rounded buttons, black.opacity(0.6) bg
-  zoomControls: {
-    position: 'absolute',
-    right: 8,
-    top: 8,
-    gap: 6,
-    alignItems: 'center',
-  },
-  zoomBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  zoomLabel: {
-    paddingHorizontal: 6,
-    paddingVertical: 4,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    borderRadius: 8,
-  },
-
   // Clip length bar — mcBlack bg, continuous bar-segment strip
   clipLengthBar: {
     flexDirection: 'row',
     alignItems: 'center',
     height: BAR_HEIGHT + LOCATOR_HEIGHT + LOCATOR_GAP,
-    marginBottom: spacing.sm,
   },
   clipLengthEndBtn: {
     width: BAR_BTN_W,
@@ -1868,7 +1289,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: SCRUBBER_HEIGHT,
-    margin: spacing.xs,
     paddingHorizontal: spacing.xxs,
     gap: spacing.xl,
   },
@@ -1909,47 +1329,6 @@ const styles = StyleSheet.create({
     minWidth: 34,
     textAlign: 'right',
   },
-
-  // Velocity lane
-  velocityLane: { flex: 1, borderTopWidth: 1 },
-  velocityHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-  },
-  velCloseBtn: { padding: 4 },
-  velContent: {},
-  velBeatMarkers: { flexDirection: 'row', paddingBottom: 4 },
-  velBeatLabel: { width: 28, marginHorizontal: 1 },
-  velNotesRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 32,
-    paddingBottom: 4,
-  },
-  velLabel: { width: 50, paddingLeft: 4 },
-  velNoteBlocksRow: { flexDirection: 'row', gap: 2 },
-  velNoteBlock: {
-    width: 28,
-    height: 24,
-    borderRadius: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  velBarsArea: { flexDirection: 'row' },
-  velYAxisCol: {
-    width: 50,
-    justifyContent: 'space-between',
-    paddingLeft: 4,
-    paddingVertical: 4,
-  },
-  velYLabel: {},
-  velBarsRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 2 },
-  velBarCol: { alignItems: 'center', justifyContent: 'flex-end', width: 28 },
-  velValueLabel: { marginBottom: 2 },
-  velBar: { width: 24, borderRadius: 1 },
 });
 
-export { ClipEditorToolbar, PianoRollGrid, ClipLengthBar, VelocityLane };
+export { ClipEditorToolbar, ClipLengthBar };

@@ -57,6 +57,7 @@ import type {
   Sample,
 } from '../../features/playground/types';
 import {
+  getDragPreviewSeed,
   getGridPointNoteTarget,
   getMovedGridTarget,
   getMovedNoteTarget,
@@ -206,10 +207,11 @@ export interface SkiaPianoRollGridProps {
   /** Notes currently held during live recording — rendered as a growing
    * "in progress" preview from the press beat to the live playhead. */
   recordingNotes?: RecordingNotePreviewData[];
-  /** Live playhead X position (pixels), updated at display frame rate via a
-   * SharedValue — required for recordingNotes previews to grow smoothly
-   * without React re-renders. Falls back to a static internal value (no
-   * growth) if not provided. */
+  /** Whether the transport is playing; draws the playhead inside the
+   * horizontally scrolling Skia content when true. */
+  isPlaying?: boolean;
+  /** Live playhead X position (pixels), updated on the UI thread via a
+   * SharedValue. Also drives recordingNotes previews. */
   playheadPosX?: SharedValue<number>;
   /** Fired on horizontal scroll with the visible beat range [start, end) — lets
    * callers (e.g. the bar-range pill selector) show which bars are in view. */
@@ -252,6 +254,7 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
   showNoteLabels = false,
   noteColors,
   showControls = true,
+  isPlaying = false,
   snapToGrid = false,
   lockNoteDuration,
   recordingNotes,
@@ -297,34 +300,69 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
       ? Math.max(MIN_EXPANDED_ROW, containerH / totalPitches)
       : rowHeight;
 
-  // Scroll ref — reset position when zoom changes to prevent over-scroll
+  // Scroll ref — keep the offset inside the current content bounds. Android
+  // can retain an old offset after the content width shrinks, which exposes
+  // the black viewport past the end of the Skia canvas.
   const hScrollRef = useRef<any>(null);
-  useImperativeHandle(ref, () => ({
-    scrollToX: (x: number, animated = true) => {
-      hScrollRef.current?.scrollTo?.({ x, animated });
-    },
-  }), []);
-  const prevZoom = useRef(zoomLevel);
-  useEffect(() => {
-    if (zoomLevel < prevZoom.current) {
-      // Zoomed out — clamp scroll to prevent blank space on the right
-      hScrollRef.current?.scrollTo?.({ x: 0, animated: false });
-    }
-    prevZoom.current = zoomLevel;
-  }, [zoomLevel]);
+  const scrollXRef = useRef(0);
 
   const availableGridWidth = screenWidth - LABEL_COL_WIDTH;
   const stepWidth = (availableGridWidth / 16) * zoomLevel;
   const beatWidth = stepWidth * 4;
   const gridWidth = lengthInBeats * beatWidth;
+  const maxScrollX = Math.max(0, gridWidth - availableGridWidth);
+
+  const scrollToX = useCallback(
+    (x: number, animated = true) => {
+      const clampedX = Math.max(0, Math.min(x, maxScrollX));
+      scrollXRef.current = clampedX;
+      hScrollRef.current?.scrollTo?.({ x: clampedX, animated });
+    },
+    [maxScrollX]
+  );
+
+  useImperativeHandle(ref, () => ({ scrollToX }), [scrollToX]);
+
+  const prevZoom = useRef(zoomLevel);
+  useEffect(() => {
+    if (zoomLevel < prevZoom.current) {
+      // Zoomed out — clamp scroll to prevent blank space on the right.
+      scrollToX(0, false);
+    }
+    prevZoom.current = zoomLevel;
+  }, [zoomLevel, scrollToX]);
+
+  // A shorter clip can make the previous offset invalid before the native
+  // ScrollView clamps itself. Move to the last visible bar immediately.
+  useEffect(() => {
+    const clampedX = Math.min(scrollXRef.current, maxScrollX);
+    if (clampedX === scrollXRef.current) return;
+    scrollToX(clampedX, false);
+    onVisibleBeatRangeChange?.(
+      clampedX / beatWidth,
+      (clampedX + availableGridWidth) / beatWidth
+    );
+    onScrollXChange?.(clampedX);
+  }, [
+    maxScrollX,
+    beatWidth,
+    availableGridWidth,
+    onVisibleBeatRangeChange,
+    onScrollXChange,
+    scrollToX,
+  ]);
 
   const handleGridScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { x: number } } }) => {
-      const scrollX = e.nativeEvent.contentOffset.x;
+      const scrollX = Math.max(
+        0,
+        Math.min(e.nativeEvent.contentOffset.x, maxScrollX)
+      );
+      scrollXRef.current = scrollX;
       onVisibleBeatRangeChange?.(scrollX / beatWidth, (scrollX + availableGridWidth) / beatWidth);
       onScrollXChange?.(scrollX);
     },
-    [onVisibleBeatRangeChange, onScrollXChange, beatWidth, availableGridWidth]
+    [onVisibleBeatRangeChange, onScrollXChange, beatWidth, availableGridWidth, maxScrollX]
   );
 
   // Report the initial viewport (scroll resets to 0 on zoom-out above) so the
@@ -334,6 +372,12 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
   }, [onVisibleBeatRangeChange, beatWidth, availableGridWidth]);
   const gridHeight = totalPitches * effectiveRowHeight;
   const totalSteps = lengthInBeats * 4;
+  const playheadP1 = useDerivedValue(() =>
+    vec(effectivePlayheadPosX.value, 0)
+  );
+  const playheadP2 = useDerivedValue(() =>
+    vec(effectivePlayheadPosX.value, gridHeight)
+  );
 
   // Build the grid path once — memoized on dimensions only (not notes)
   const gridPath = useMemo(() => {
@@ -471,6 +515,9 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
   const dragOrigPos = useSharedValue(0);
   const dragOrigDur = useSharedValue(0);
   const dragOrigRow = useSharedValue(0);
+  // Touch point at onBegin (first contact) — see handleDragStart.
+  const dragBeginX = useSharedValue(0);
+  const dragBeginY = useSharedValue(0);
 
   // --- JS callbacks (scheduled from gesture worklets onto the React Native JS runtime) ---
   const handleTap = useCallback(
@@ -487,8 +534,15 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
   );
 
   const handleDragStart = useCallback(
-    (x: number, y: number) => {
-      const hit = hitTestNote(x, y);
+    (x: number, y: number, hitX: number, hitY: number) => {
+      // Hit-test (and therefore the move-vs-resize decision) uses the touch
+      // point from the moment the finger first landed (onBegin), not where
+      // it ended up once the long-press hold finished (onStart). RNGH allows
+      // up to PAN_MIN_DISTANCE of drift during that hold before failing the
+      // gesture, and on narrow notes that drift alone can cross into the
+      // resize zone — turning an intended move into an accidental resize
+      // (most visible on Android, where that drift shows up more often).
+      const hit = hitTestNote(hitX, hitY);
       if (!hit) {
         dragState.current = null;
         dragType.value = 0;
@@ -522,9 +576,21 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
         note,
         pianoRollMathContext
       ).rowIdx;
+      // Seed the live preview at the note's current rect — the note switches
+      // to these shared values on this same render, but onUpdate only fires
+      // once the finger moves, so stale values from a previous drag would
+      // otherwise teleport the note while it's just being held.
+      const seed = getDragPreviewSeed(
+        note,
+        isResizeEdge,
+        pianoRollMathContext
+      );
+      dragX.value = seed.x;
+      dragY.value = seed.y;
+      dragW.value = seed.width;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Reanimated SharedValues are stable refs
-    [hitTestNote, notes, isNoteResizeLocked]
+    [hitTestNote, notes, isNoteResizeLocked, pianoRollMathContext]
   );
 
   // Drag update — pure worklet, reads/writes shared values only.
@@ -582,74 +648,111 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
   );
 
   // --- Gestures (UI thread → scheduleOnRN for callbacks) ---
-  const tapGesture = Gesture.Tap()
-    .maxDuration(DRAG_HOLD_MS)
-    .onEnd((e) => {
-      'worklet';
-      scheduleOnRN(handleTap, e.x, e.y);
-    });
+  // Memoized with useMemo (mandatory for RNGH v2's builder API) — without
+  // it, a new gesture object is created on every render, forcing the
+  // GestureDetector to tear down and re-attach its recognizers. That reset
+  // is what caused the horizontal ScrollView to intermittently "win" a note
+  // drag mid-gesture, since the recognizer relationship (Exclusive/
+  // Simultaneous) has to be rebuilt from scratch every time.
+  const tapGesture = useMemo(
+    () =>
+      Gesture.Tap()
+        .maxDuration(DRAG_HOLD_MS)
+        .onEnd((e) => {
+          'worklet';
+          scheduleOnRN(handleTap, e.x, e.y);
+        }),
+    [handleTap]
+  );
 
-  const panGesture = Gesture.Pan()
-    .minDistance(PAN_MIN_DISTANCE)
-    .onStart((e) => {
-      'worklet';
-      scheduleOnRN(handleDragStart, e.x, e.y);
-    })
-    .onUpdate((e) => {
-      'worklet';
-      if (dragType.value === 0) return;
-      const dx = e.x - dragStartX.value;
-      const dy = e.y - dragStartY.value;
+  const panGesture = useMemo(
+    () =>
+      Gesture.Pan()
+        // Let an immediate horizontal swipe belong to the ScrollView. Note moves
+        // still work after a short hold, matching the previous note-view gesture.
+        // Vertical movement should fail quickly so the outer vertical ScrollView
+        // can win instead of the note gesture.
+        .activateAfterLongPress(120)
+        .failOffsetY([-12, 12])
+        .minDistance(PAN_MIN_DISTANCE)
+        .onBegin((e) => {
+          'worklet';
+          // Earliest reliable touch point — before the long-press hold can
+          // accumulate drift. See handleDragStart for why this must be kept
+          // separate from onStart's (possibly drifted) point.
+          dragBeginX.value = e.x;
+          dragBeginY.value = e.y;
+        })
+        .onStart((e) => {
+          'worklet';
+          scheduleOnRN(
+            handleDragStart,
+            e.x,
+            e.y,
+            dragBeginX.value,
+            dragBeginY.value
+          );
+        })
+        .onUpdate((e) => {
+          'worklet';
+          if (dragType.value === 0) return;
+          const dx = e.x - dragStartX.value;
+          const dy = e.y - dragStartY.value;
 
-      if (dragType.value === 2) {
-        // Resize — gradual/free-following outside the magnetic zone around
-        // a snap point (grid edge or cell center); eased with withTiming
-        // when inside one, so it reads as a smooth glide instead of a jump.
-        const maxWidth = (lengthRef - dragOrigPos.value) * bwRef;
-        dragX.value = dragOrigPos.value * bwRef;
-        if (snapRef) {
-          const target = getResizeMagneticTarget(
-            dragOrigPos.value,
-            dragOrigDur.value,
-            dx,
-            bwRef,
-            swRef,
-            maxWidth
-          );
-          dragW.value = target.isSnapping
-            ? withTiming(target.widthPx, { duration: SNAP_EASE_MS })
-            : target.widthPx;
-        } else {
-          const minWidth = swRef * UNSNAPPED_MIN_DURATION_STEPS;
-          dragW.value = Math.min(
-            maxWidth,
-            Math.max(minWidth, dragOrigDur.value * bwRef + dx)
-          );
-        }
-        const origRow = Math.floor(dragStartY.value / rhRef);
-        dragY.value = origRow * rhRef + 1;
-      } else {
-        // Move
-        const target = getMovedGridTarget(
-          dx,
-          dy,
-          dragOrigPos.value,
-          dragOrigRow.value,
-          swRef,
-          rhRef,
-          tpRef,
-          lengthRef - dragOrigDur.value,
-          snapRef
-        );
-        dragX.value = target.position * bwRef;
-        dragY.value = target.rowIdx * rhRef + 1;
-        dragW.value = dragOrigDur.value * bwRef - 1;
-      }
-    })
-    .onEnd((e) => {
-      'worklet';
-      scheduleOnRN(handleDragEnd, e.x, e.y);
-    });
+          if (dragType.value === 2) {
+            // Resize — gradual/free-following outside the magnetic zone around
+            // a snap point (grid edge or cell center); eased with withTiming
+            // when inside one, so it reads as a smooth glide instead of a jump.
+            const maxWidth = (lengthRef - dragOrigPos.value) * bwRef;
+            dragX.value = dragOrigPos.value * bwRef;
+            if (snapRef) {
+              const target = getResizeMagneticTarget(
+                dragOrigPos.value,
+                dragOrigDur.value,
+                dx,
+                bwRef,
+                swRef,
+                maxWidth
+              );
+              dragW.value = target.isSnapping
+                ? withTiming(target.widthPx, { duration: SNAP_EASE_MS })
+                : target.widthPx;
+            } else {
+              const minWidth = swRef * UNSNAPPED_MIN_DURATION_STEPS;
+              dragW.value = Math.min(
+                maxWidth,
+                Math.max(minWidth, dragOrigDur.value * bwRef + dx)
+              );
+            }
+            // Use the note's own row (mirrored at drag start), not the touch
+            // Y — the hit test allows ±12px padding, so the finger can start
+            // in the adjacent row.
+            dragY.value = dragOrigRow.value * rhRef + 1;
+          } else {
+            // Move
+            const target = getMovedGridTarget(
+              dx,
+              dy,
+              dragOrigPos.value,
+              dragOrigRow.value,
+              swRef,
+              rhRef,
+              tpRef,
+              lengthRef - dragOrigDur.value,
+              snapRef
+            );
+            dragX.value = target.position * bwRef;
+            dragY.value = target.rowIdx * rhRef + 1;
+            dragW.value = dragOrigDur.value * bwRef - 1;
+          }
+        })
+        .onEnd((e) => {
+          'worklet';
+          scheduleOnRN(handleDragEnd, e.x, e.y);
+        }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Reanimated SharedValues (dragType, dragStartX/Y, dragBeginX/Y, dragOrig*, dragX/Y/W) are stable refs
+    [handleDragStart, handleDragEnd, swRef, bwRef, rhRef, tpRef, lengthRef, snapRef]
+  );
 
   // Pinch-to-zoom — matches iOS MagnificationGesture behavior
   const pinchStartZoom = useSharedValue(1);
@@ -660,24 +763,29 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
     [onZoomChange]
   );
 
-  const pinchGesture = Gesture.Pinch()
-    .onStart(() => {
-      'worklet';
-      pinchStartZoom.value = zoomLevel;
-    })
-    .onUpdate((e) => {
-      'worklet';
-      scheduleOnRN(handlePinchZoom, pinchStartZoom.value * e.scale);
-    });
+  const pinchGesture = useMemo(
+    () =>
+      Gesture.Pinch()
+        .onStart(() => {
+          'worklet';
+          pinchStartZoom.value = zoomLevel;
+        })
+        .onUpdate((e) => {
+          'worklet';
+          scheduleOnRN(handlePinchZoom, pinchStartZoom.value * e.scale);
+        }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- pinchStartZoom is a stable SharedValue ref
+    [handlePinchZoom, zoomLevel]
+  );
 
-  const composedGesture = Gesture.Simultaneous(
-    pinchGesture,
-    Gesture.Exclusive(panGesture, tapGesture)
+  const composedGesture = useMemo(
+    () => Gesture.Simultaneous(pinchGesture, Gesture.Exclusive(panGesture, tapGesture)),
+    [pinchGesture, panGesture, tapGesture]
   );
 
   return (
     <View style={styles.container} onLayout={onContainerLayout}>
-      <ScrollView style={styles.scrollV}>
+      <ScrollView style={styles.scrollV} nestedScrollEnabled>
         <View style={styles.row}>
           {/* Pitch labels — React Views (interactive, need text) */}
           <View style={[styles.labels, { width: LABEL_COL_WIDTH }]}>
@@ -723,6 +831,7 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
           <ScrollView
             ref={hScrollRef}
             horizontal
+            nestedScrollEnabled
             showsHorizontalScrollIndicator={false}
             style={styles.gridScroll}
             onScroll={handleGridScroll}
@@ -891,6 +1000,18 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
                     />
                   );
                 })}
+
+                {/* Keep the playhead in the same Skia content layer as the
+                    notes. It then scrolls and composites with the grid as one
+                    native-rendered surface instead of being a JS sibling. */}
+                {isPlaying && (
+                  <Line
+                    p1={playheadP1}
+                    p2={playheadP2}
+                    color={colors.mcOrange3}
+                    strokeWidth={2}
+                  />
+                )}
               </Canvas>
 
               {/* Touch overlay — gesture handler for tap/drag/resize */}

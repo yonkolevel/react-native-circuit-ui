@@ -380,6 +380,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
           }
         >
           <RCTScrollView
+            nestedScrollEnabled={true}
             style={
               {
                 "flex": 1,
@@ -1247,6 +1248,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                 </View>
                 <RCTScrollView
                   horizontal={true}
+                  nestedScrollEnabled={true}
                   onScroll={[Function]}
                   scrollEventThrottle={100}
                   showsHorizontalScrollIndicator={false}
@@ -1678,6 +1680,27 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           x={603.75}
                           y={375}
                         />
+                        <View
+                          color="#FF8D66"
+                          p1={
+                            {
+                              "value": {
+                                "x": 0,
+                                "y": 0,
+                              },
+                            }
+                          }
+                          p2={
+                            {
+                              "value": {
+                                "x": 0,
+                                "y": 408,
+                              },
+                            }
+                          }
+                          strokeWidth={2}
+                          testID="SkiaLine"
+                        />
                       </View>
                       <View
                         style={
@@ -1697,29 +1720,6 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             </View>
           </RCTScrollView>
         </View>
-        <View
-          pointerEvents="none"
-          style={
-            [
-              {
-                "backgroundColor": "#F7F7F7",
-                "bottom": 0,
-                "left": 60,
-                "position": "absolute",
-                "top": 0,
-                "width": 2,
-                "zIndex": 10,
-              },
-              {
-                "transform": [
-                  {
-                    "translateX": 0,
-                  },
-                ],
-              },
-            ]
-          }
-        />
       </View>
     </View>
     <View
@@ -1730,7 +1730,6 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             "flexDirection": "row",
             "gap": 20,
             "height": 28,
-            "margin": 4,
             "paddingHorizontal": 2,
           },
           {
@@ -1892,7 +1891,6 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             "alignItems": "center",
             "flexDirection": "row",
             "height": 30,
-            "marginBottom": 8,
           },
           {
             "backgroundColor": "#000000",
@@ -3195,6 +3193,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           }
         >
           <RCTScrollView
+            nestedScrollEnabled={true}
             style={
               {
                 "flex": 1,
@@ -4342,6 +4341,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 </View>
                 <RCTScrollView
                   horizontal={true}
+                  nestedScrollEnabled={true}
                   onScroll={[Function]}
                   scrollEventThrottle={100}
                   showsHorizontalScrollIndicator={false}
@@ -4792,29 +4792,6 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </View>
           </RCTScrollView>
         </View>
-        <View
-          pointerEvents="none"
-          style={
-            [
-              {
-                "backgroundColor": "#F7F7F7",
-                "bottom": 0,
-                "left": 60,
-                "position": "absolute",
-                "top": 0,
-                "width": 2,
-                "zIndex": 10,
-              },
-              {
-                "transform": [
-                  {
-                    "translateX": 0,
-                  },
-                ],
-              },
-            ]
-          }
-        />
       </View>
     </View>
     <View
@@ -4825,7 +4802,6 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             "flexDirection": "row",
             "gap": 20,
             "height": 28,
-            "margin": 4,
             "paddingHorizontal": 2,
           },
           {
@@ -4987,7 +4963,6 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             "alignItems": "center",
             "flexDirection": "row",
             "height": 30,
-            "marginBottom": 8,
           },
           {
             "backgroundColor": "#000000",
@@ -6674,6 +6649,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
           }
         >
           <RCTScrollView
+            nestedScrollEnabled={true}
             style={
               {
                 "flex": 1,
@@ -8381,6 +8357,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                 </View>
                 <RCTScrollView
                   horizontal={true}
+                  nestedScrollEnabled={true}
                   onScroll={[Function]}
                   scrollEventThrottle={100}
                   showsHorizontalScrollIndicator={false}
@@ -8731,29 +8708,6 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             </View>
           </RCTScrollView>
         </View>
-        <View
-          pointerEvents="none"
-          style={
-            [
-              {
-                "backgroundColor": "#F7F7F7",
-                "bottom": 0,
-                "left": 60,
-                "position": "absolute",
-                "top": 0,
-                "width": 2,
-                "zIndex": 10,
-              },
-              {
-                "transform": [
-                  {
-                    "translateX": 0,
-                  },
-                ],
-              },
-            ]
-          }
-        />
       </View>
     </View>
     <View
@@ -8764,7 +8718,6 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             "flexDirection": "row",
             "gap": 20,
             "height": 28,
-            "margin": 4,
             "paddingHorizontal": 2,
           },
           {
@@ -8926,7 +8879,6 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             "alignItems": "center",
             "flexDirection": "row",
             "height": 30,
-            "marginBottom": 8,
           },
           {
             "backgroundColor": "#000000",
@@ -10545,6 +10497,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
           }
         >
           <RCTScrollView
+            nestedScrollEnabled={true}
             style={
               {
                 "flex": 1,
@@ -11412,6 +11365,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                 </View>
                 <RCTScrollView
                   horizontal={true}
+                  nestedScrollEnabled={true}
                   onScroll={[Function]}
                   scrollEventThrottle={100}
                   showsHorizontalScrollIndicator={false}
@@ -11862,29 +11816,6 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             </View>
           </RCTScrollView>
         </View>
-        <View
-          pointerEvents="none"
-          style={
-            [
-              {
-                "backgroundColor": "#F7F7F7",
-                "bottom": 0,
-                "left": 60,
-                "position": "absolute",
-                "top": 0,
-                "width": 2,
-                "zIndex": 10,
-              },
-              {
-                "transform": [
-                  {
-                    "translateX": 0,
-                  },
-                ],
-              },
-            ]
-          }
-        />
       </View>
     </View>
     <View
@@ -11895,7 +11826,6 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             "flexDirection": "row",
             "gap": 20,
             "height": 28,
-            "margin": 4,
             "paddingHorizontal": 2,
           },
           {
@@ -12057,7 +11987,6 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             "alignItems": "center",
             "flexDirection": "row",
             "height": 30,
-            "marginBottom": 8,
           },
           {
             "backgroundColor": "#000000",

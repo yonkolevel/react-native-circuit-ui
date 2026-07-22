@@ -44,9 +44,11 @@ const NOTE_LIGHTNESS_FLOOR = 0.22;
  */
 export const getVelocityColor = (hex: string, velocity: number): string => {
   const fraction = clamp(velocity, 0, MIDI_VELOCITY_MAX) / MIDI_VELOCITY_MAX;
-  const visualT = VELOCITY_VISUAL_FLOOR + (1 - VELOCITY_VISUAL_FLOOR) * fraction;
+  const visualT =
+    VELOCITY_VISUAL_FLOOR + (1 - VELOCITY_VISUAL_FLOOR) * fraction;
   const { h, s, l } = hexToHsl(hex);
-  const targetLightness = NOTE_LIGHTNESS_FLOOR + (l - NOTE_LIGHTNESS_FLOOR) * visualT;
+  const targetLightness =
+    NOTE_LIGHTNESS_FLOOR + (l - NOTE_LIGHTNESS_FLOOR) * visualT;
   return hslToHex(h, s, targetLightness);
 };
 
@@ -88,6 +90,31 @@ export const getPianoRollNoteRect = (
   const height = context.rowHeight - 2;
 
   return { x, y, width, height, pitchIdx, rowIdx };
+};
+
+/**
+ * Initial live drag-preview rect for a note at drag start, in pixels.
+ * Seeds the shared values the Skia preview reads before the first pan
+ * update arrives — without this, the preview shows stale values from the
+ * previous drag while the note is merely held. Deliberately takes no touch
+ * point: the hit test allows TOUCH_PADDING outside the note, so the row
+ * must come from the note itself, never the finger position.
+ */
+export const getDragPreviewSeed = (
+  note: ClipNote,
+  isResizeEdge: boolean,
+  context: PianoRollMathContext
+): { x: number; y: number; width: number } => {
+  const { rowIdx } = getPianoRollNoteRect(note, context);
+  return {
+    x: note.position * context.beatWidth,
+    y: rowIdx * context.rowHeight + 1,
+    // Matches what the first pan update would compute: a moved note keeps
+    // the 1px right gap; a resized note follows its exact end.
+    width: isResizeEdge
+      ? note.duration * context.beatWidth
+      : note.duration * context.beatWidth - 1,
+  };
 };
 
 export const getGridPointNoteTarget = (
