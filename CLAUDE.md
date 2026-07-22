@@ -2,6 +2,24 @@
 
 A pixel-perfect React Native port of Midicircuit's SwiftUI design system.
 
+## Reply style
+
+Default to a terse, status-first reply modeled on an incident/update card:
+
+```text
+🔴 <outcome> — <one-line cause or state>
+• ✅ Fix: <concrete action/result>
+• 🟡 Findings: <secondary issue, only if useful>
+• 👉 Next: <next action or decision>
+```
+
+- Lead with the outcome; do not narrate the investigation before it.
+- Keep each bullet to one line and include only actionable facts.
+- Use `✅`, `🟡`, `🔴`, and `👉` consistently for success, findings, blocker, and next step.
+- Omit empty sections; target 1–4 bullets.
+- Include changed files and tests/commands in bullets when relevant.
+- Use a short before/after only for a meaningful improvement; never default to a long essay.
+
 ## Architecture
 
 ### Design Token Flow
