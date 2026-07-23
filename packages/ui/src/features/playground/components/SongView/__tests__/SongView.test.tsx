@@ -5,7 +5,7 @@
  * Tests create a real zustand store with mock data.
  */
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { create } from 'zustand';
 import { ThemeProvider } from '../../../../../theme';
 import { SongView } from '../SongView';
@@ -340,7 +340,7 @@ describe('SongView export audio flow', () => {
     expect(onExportAudio).not.toHaveBeenCalled();
   });
 
-  it('enables the export button once a clip has MIDI notes', () => {
+  it('enables the export button once a clip has MIDI notes', async () => {
     const onExportAudio = jest.fn();
     const track = createMockTrack({
       id: 1,
@@ -364,6 +364,16 @@ describe('SongView export audio flow', () => {
     });
 
     fireEvent.press(exportButton);
+    await waitFor(() =>
+      expect(exportButton.props.accessibilityState).toMatchObject({
+        disabled: true,
+      })
+    );
+    await waitFor(() =>
+      expect(exportButton.props.accessibilityState).toMatchObject({
+        disabled: false,
+      })
+    );
     expect(onExportAudio).toHaveBeenCalledTimes(1);
   });
 });
