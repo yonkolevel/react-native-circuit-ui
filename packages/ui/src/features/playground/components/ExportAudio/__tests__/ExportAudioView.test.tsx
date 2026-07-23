@@ -85,7 +85,17 @@ describe('ExportAudioView', () => {
     });
 
     fireEvent.press(exportButton);
-    await waitFor(() => expect(onExport).toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(exportButton.props.accessibilityState).toMatchObject({
+        disabled: true,
+      })
+    );
+    await waitFor(() =>
+      expect(exportButton.props.accessibilityState).toMatchObject({
+        disabled: false,
+      })
+    );
+    expect(onExport).toHaveBeenCalledTimes(1);
   });
 
   it('enables export when an audio clip has a file reference', async () => {
@@ -113,7 +123,17 @@ describe('ExportAudioView', () => {
     });
 
     fireEvent.press(exportButton);
-    await waitFor(() => expect(onExport).toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(exportButton.props.accessibilityState).toMatchObject({
+        disabled: true,
+      })
+    );
+    await waitFor(() =>
+      expect(exportButton.props.accessibilityState).toMatchObject({
+        disabled: false,
+      })
+    );
+    expect(onExport).toHaveBeenCalledTimes(1);
   });
 
   it('treats a whitespace-only audio reference as not exportable', () => {
