@@ -19,6 +19,9 @@ export type PianoRollMathContext = {
 export interface RecordingNotePreviewData {
   noteNumber: number;
   startBeat: number;
+  /** Captured active loop, used to keep the preview growing across wrap. */
+  loopStartBeat?: number;
+  loopBeats?: number;
 }
 
 const TOUCH_PADDING = 12;
@@ -44,9 +47,11 @@ const NOTE_LIGHTNESS_FLOOR = 0.22;
  */
 export const getVelocityColor = (hex: string, velocity: number): string => {
   const fraction = clamp(velocity, 0, MIDI_VELOCITY_MAX) / MIDI_VELOCITY_MAX;
-  const visualT = VELOCITY_VISUAL_FLOOR + (1 - VELOCITY_VISUAL_FLOOR) * fraction;
+  const visualT =
+    VELOCITY_VISUAL_FLOOR + (1 - VELOCITY_VISUAL_FLOOR) * fraction;
   const { h, s, l } = hexToHsl(hex);
-  const targetLightness = NOTE_LIGHTNESS_FLOOR + (l - NOTE_LIGHTNESS_FLOOR) * visualT;
+  const targetLightness =
+    NOTE_LIGHTNESS_FLOOR + (l - NOTE_LIGHTNESS_FLOOR) * visualT;
   return hslToHex(h, s, targetLightness);
 };
 
@@ -88,6 +93,34 @@ export const getPianoRollNoteRect = (
   const height = context.rowHeight - 2;
 
   return { x, y, width, height, pitchIdx, rowIdx };
+};
+
+/**
+ * Initial live drag-preview rect for a note at drag start, in pixels.
+ * Seeds the shared values the Skia preview reads before the first pan
+ * update arrives — without this, the preview shows stale values from the
+ * previous drag while the note is merely held. Deliberately takes no touch
+ * point: the hit test allows TOUCH_PADDING outside the note, so the row
+ * must come from the note itself, never the finger position.
+ */
+export const getDragPreviewSeed = (
+  note: ClipNote,
+  isResizeEdge: boolean,
+  context: PianoRollMathContext
+): { x: number; y: number; width: number } => {
+  const { rowIdx } = getPianoRollNoteRect(note, context);
+  return {
+    x: note.position * context.beatWidth,
+    y: rowIdx * context.rowHeight + 1,
+    // Match the rendered note rect, including its minimum visible width, so
+    // the preview cannot jump on the first pointer update.
+    width: Math.max(
+      isResizeEdge
+        ? note.duration * context.beatWidth
+        : note.duration * context.beatWidth - 1,
+      context.stepWidth
+    ),
+  };
 };
 
 export const getGridPointNoteTarget = (
@@ -181,7 +214,7 @@ export const getResizedNoteDuration = (
     rawDuration =
       Math.max(UNSNAPPED_MIN_DURATION_STEPS, newWidth / stepWidth) * 0.25;
   }
-  const maxDuration = Math.max(0.25, gridWidth / beatWidth - originalPosition);
+  const maxDuration = Math.max(0, gridWidth / beatWidth - originalPosition);
   return Math.min(maxDuration, rawDuration);
 };
 
