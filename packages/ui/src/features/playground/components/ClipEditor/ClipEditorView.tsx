@@ -845,7 +845,10 @@ export const ClipEditorView = memo(function ClipEditorView({
     noteIndex: number;
     velocity: number;
   } | null>(null);
-  const lastVelocityPreview = useRef<{ noteIndex: number; velocity: number } | null>(null);
+  const lastVelocityPreview = useRef<{
+    noteIndex: number;
+    velocity: number;
+  } | null>(null);
   const handleVelocityPreview = useCallback(
     (noteIndex: number, velocity: number | null) => {
       if (velocity == null) {
@@ -854,7 +857,12 @@ export const ClipEditorView = memo(function ClipEditorView({
         return;
       }
       const previous = lastVelocityPreview.current;
-      if (previous && previous.noteIndex === noteIndex && Math.abs(previous.velocity - velocity) < 4) return;
+      if (
+        previous &&
+        previous.noteIndex === noteIndex &&
+        Math.abs(previous.velocity - velocity) < 4
+      )
+        return;
       const next = { noteIndex, velocity };
       lastVelocityPreview.current = next;
       setVelocityPreview(next);
@@ -1066,7 +1074,9 @@ export const ClipEditorView = memo(function ClipEditorView({
               showControls={false}
               showNoteLabels={showPianoNoteNames}
               snapToGrid={snapToGrid}
-              lockNoteDuration={instrumentType === 'drum' && (clip.lockNoteDuration ?? true)}
+              lockNoteDuration={
+                instrumentType === 'drum' && (clip.lockNoteDuration ?? true)
+              }
               recordingNotes={recordingNotes}
               isPlaying={isPlaying}
               playheadPosX={playheadPosX}
@@ -1138,7 +1148,9 @@ export const ClipEditorView = memo(function ClipEditorView({
               trackColor={trackColor}
               stepWidth={beatWidth / 4}
               snapToGrid={snapToGrid}
-              lockNoteDuration={instrumentType === 'drum' && (clip.lockNoteDuration ?? true)}
+              lockNoteDuration={
+                instrumentType === 'drum' && (clip.lockNoteDuration ?? true)
+              }
               onClose={() => setSelectedPitchIndex(null)}
               onVelocityChange={callbacks?.onVelocityChange}
               onVelocityPreview={handleVelocityPreview}
