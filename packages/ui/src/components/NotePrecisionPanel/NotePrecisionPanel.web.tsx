@@ -10,7 +10,7 @@ import {
   Gesture,
   GestureDetector,
 } from 'react-native-gesture-handler';
-import { runOnJS } from 'react-native-reanimated';
+import { runOnJS, useSharedValue } from 'react-native-reanimated';
 import { Text } from '../Text';
 import { Icon, Icons } from '../SFSymbol';
 import { useTheme } from '../../theme';
@@ -63,6 +63,10 @@ export interface NotePrecisionPanelProps {
    * callers keep the piano roll grid above (which shares the same
    * beat-to-pixel scale) in sync. */
   onScrollXChange?: (x: number) => void;
+  /** Match the piano roll's move/resize snapping semantics. */
+  snapToGrid?: boolean;
+  /** Drum one-shots omit duration editing when locked. */
+  lockNoteDuration?: boolean;
 }
 
 /** Imperative handle for scrolling the panel programmatically (e.g. to mirror the piano roll grid's scroll position). */
@@ -83,19 +87,36 @@ export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, Note
   onPositionChange,
   onDurationChange,
   onScrollXChange,
+  snapToGrid = false,
+  lockNoteDuration = false,
 }: NotePrecisionPanelProps, ref) {
   const { colors } = useTheme();
   const hScrollRef = useRef<any>(null);
+  const lastReportedScrollX = useRef(0);
   useImperativeHandle(ref, () => ({
     scrollToX: (x: number, animated = true) => {
       hScrollRef.current?.scrollTo?.({ x, animated });
     },
   }), []);
-  const handleScroll = useCallback(
-    (e: { nativeEvent: { contentOffset: { x: number } } }) => {
-      onScrollXChange?.(e.nativeEvent.contentOffset.x);
+  const reportScroll = useCallback(
+    (x: number, force = false) => {
+      if (!force && x !== 0 && Math.abs(x - lastReportedScrollX.current) < 8) return;
+      lastReportedScrollX.current = x;
+      onScrollXChange?.(x);
     },
     [onScrollXChange]
+  );
+  const handleScroll = useCallback(
+    (e: { nativeEvent: { contentOffset: { x: number } } }) => {
+      reportScroll(e.nativeEvent.contentOffset.x);
+    },
+    [reportScroll]
+  );
+  const flushScroll = useCallback(
+    (e: { nativeEvent: { contentOffset: { x: number } } }) => {
+      reportScroll(e.nativeEvent.contentOffset.x, true);
+    },
+    [reportScroll]
   );
 
   const notesAtPitch = useMemo(
@@ -120,6 +141,8 @@ export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, Note
   const dragStartVel = useRef(0);
   const dragIdxRef = useRef(-1);
   const dragVelRef = useRef(0);
+  const lastRenderedDragVel = useRef(0);
+  const lastPreviewVelocity = useRef<{ noteIndex: number; velocity: number } | null>(null);
 
   // Position drag state
   const [posBlockDragIdx, setPosBlockDragIdx] = useState(-1);
@@ -139,6 +162,7 @@ export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, Note
       dragStartY.current = y;
       dragStartVel.current = entry.note.velocity;
       dragVelRef.current = entry.note.velocity;
+      lastRenderedDragVel.current = entry.note.velocity;
       setDragIdx(idx);
       setDragVel(entry.note.velocity);
     },
@@ -154,10 +178,18 @@ export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, Note
         Math.max(1, Math.min(127, dragStartVel.current + delta))
       );
       dragVelRef.current = newVel;
-      setDragVel(newVel);
+      if (Math.abs(lastRenderedDragVel.current - newVel) >= 4) {
+        lastRenderedDragVel.current = newVel;
+        setDragVel(newVel);
+      }
       const idx = dragIdxRef.current;
       if (idx >= 0 && idx < notesAtPitch.length) {
-        onVelocityPreview?.(notesAtPitch[idx]!.globalIdx, newVel);
+        const globalIdx = notesAtPitch[idx]!.globalIdx;
+        const previous = lastPreviewVelocity.current;
+        if (!previous || previous.noteIndex !== globalIdx || Math.abs(previous.velocity - newVel) >= 4) {
+          lastPreviewVelocity.current = { noteIndex: globalIdx, velocity: newVel };
+          onVelocityPreview?.(globalIdx, newVel);
+        }
       }
     },
     [velAreaH, notesAtPitch, onVelocityPreview]
@@ -168,15 +200,16 @@ export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, Note
     const vel = dragVelRef.current;
     if (idx >= 0 && idx < notesAtPitch.length) {
       onVelocityChange?.(notesAtPitch[idx]!.globalIdx, vel);
+      lastPreviewVelocity.current = null;
       onVelocityPreview?.(notesAtPitch[idx]!.globalIdx, null);
     }
+    setDragVel(vel);
     dragIdxRef.current = -1;
     setDragIdx(-1);
   }, [notesAtPitch, onVelocityChange, onVelocityPreview]);
 
-  // This panel is the precision/manual-control surface — it never snaps,
-  // regardless of the piano roll's Snap to Grid setting. Reuses the grid's
-  // own math (for consistent clamping/bounds) but always in free mode.
+  // Reuse the piano-roll math so this precision surface follows the same
+  // snap and clip-boundary rules as the main editor.
   const getLivePosition = useCallback(
     (originalPosition: number, originalDuration: number, dx: number) => {
       const maxPosition = Math.max(0, totalBeats - originalDuration);
@@ -189,33 +222,38 @@ export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, Note
         1,
         1,
         maxPosition,
-        false
+        snapToGrid
       ).position;
     },
-    [stepWidth, totalBeats]
+    [stepWidth, totalBeats, snapToGrid]
   );
   const getLiveDuration = useCallback(
-    (originalDuration: number, originalPosition: number, dx: number) =>
-      Math.max(
-        MIN_NOTE_DURATION,
-        getResizedNoteDuration(
-          originalDuration,
-          dx,
-          {
-            beatWidth,
-            stepWidth,
-            gridWidth: totalWidth,
-            isDrum: false,
-            basePitch: 0,
-            totalPitches: 1,
-            rowHeight: NOTE_AREA_H,
-            pitchToMidi: [],
-          },
-          originalPosition,
-          false
+    (originalDuration: number, originalPosition: number, dx: number) => {
+      const maxDuration = Math.max(0, totalBeats - originalPosition);
+      return Math.min(
+        maxDuration,
+        Math.max(
+          MIN_NOTE_DURATION,
+          getResizedNoteDuration(
+            originalDuration,
+            dx,
+            {
+              beatWidth,
+              stepWidth,
+              gridWidth: totalWidth,
+              isDrum: false,
+              basePitch: 0,
+              totalPitches: 1,
+              rowHeight: NOTE_AREA_H,
+              pitchToMidi: [],
+            },
+            originalPosition,
+            snapToGrid
+          )
         )
-      ),
-    [beatWidth, stepWidth, totalWidth]
+      );
+    },
+    [beatWidth, stepWidth, totalBeats, totalWidth, snapToGrid]
   );
 
   const handlePosBlockDragStart = useCallback((idx: number, x: number) => {
@@ -259,7 +297,7 @@ export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, Note
       setDurBlockDragIdx(-1);
       setDurBlockDragDx(0);
     },
-    [durBlockDragIdx, notesAtPitch, onDurationChange]
+    [durBlockDragIdx, notesAtPitch, onDurationChange, getLiveDuration]
   );
 
   const noteGeom = useCallback(
@@ -366,6 +404,8 @@ export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, Note
           showsHorizontalScrollIndicator
           style={{ flex: 1 }}
           onScroll={handleScroll}
+          onScrollEndDrag={flushScroll}
+          onMomentumScrollEnd={flushScroll}
           scrollEventThrottle={100}
         >
           <View style={{ width: Math.max(totalWidth, totalWidth + HANDLE_W) }}>
@@ -458,17 +498,19 @@ export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, Note
                         opacity: 1,
                       }}
                     >
-                      <View
-                        style={{
-                          position: 'absolute',
-                          right: 2,
-                          top: 4,
-                          bottom: 4,
-                          width: 2,
-                          backgroundColor: 'rgba(0,0,0,0.3)',
-                          borderRadius: 1,
-                        }}
-                      />
+                      {!lockNoteDuration && (
+                        <View
+                          style={{
+                            position: 'absolute',
+                            right: 2,
+                            top: 4,
+                            bottom: 4,
+                            width: 2,
+                            backgroundColor: 'rgba(0,0,0,0.3)',
+                            borderRadius: 1,
+                          }}
+                        />
+                      )}
                     </View>
                   );
                 })}
@@ -493,15 +535,17 @@ export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, Note
                       onUpdate={handlePosBlockDragUpdate}
                       onEnd={handlePosBlockDragEnd}
                     />
-                    <PrecisionBlockDrag
-                      index={i}
-                      x={x + w - edgeW}
-                      width={edgeW}
-                      type="duration"
-                      onStart={handleDurBlockDragStart}
-                      onUpdate={handleDurBlockDragUpdate}
-                      onEnd={handleDurBlockDragEnd}
-                    />
+                    {!lockNoteDuration && (
+                      <PrecisionBlockDrag
+                        index={i}
+                        x={x + w - edgeW}
+                        width={edgeW}
+                        type="duration"
+                        onStart={handleDurBlockDragStart}
+                        onUpdate={handleDurBlockDragUpdate}
+                        onEnd={handleDurBlockDragEnd}
+                      />
+                    )}
                   </React.Fragment>
                 );
               })}
@@ -602,14 +646,17 @@ export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, Note
 
               {/* Velocity drag targets */}
               {notesAtPitch.map(({ note }, i) => {
-                const vel = i === dragIdx ? dragVel : note.velocity;
-                const g = noteGeom(note, vel);
+                // Keep the gesture target anchored while its visual handle
+                // previews the dragged velocity; moving the target itself
+                // would rebuild the active gesture mid-drag.
+                const g = noteGeom(note, note.velocity);
                 return (
                   <VelDragTarget
                     key={`dt${i}`}
                     index={i}
                     x={g.handleX - 8}
                     y={g.handleY - 8}
+                    updateThresholdPx={Math.max(2, (4 * (velAreaH - BOTTOM_PAD - HANDLE_H)) / 127)}
                     onDragStart={handleVelDragStart}
                     onDragUpdate={handleVelDragUpdate}
                     onDragEnd={handleVelDragEnd}
@@ -678,6 +725,7 @@ const VelDragTarget = memo(function VelDragTarget({
   onDragStart,
   onDragUpdate,
   onDragEnd,
+  updateThresholdPx,
 }: {
   index: number;
   x: number;
@@ -685,14 +733,19 @@ const VelDragTarget = memo(function VelDragTarget({
   onDragStart: (idx: number, y: number) => void;
   onDragUpdate: (y: number) => void;
   onDragEnd: () => void;
+  updateThresholdPx: number;
 }) {
+  const lastUpdateY = useSharedValue(0);
   const gesture = Gesture.Pan()
     .onStart((e) => {
       'worklet';
+      lastUpdateY.value = e.absoluteY;
       runOnJS(onDragStart)(index, e.absoluteY);
     })
     .onUpdate((e) => {
       'worklet';
+      if (Math.abs(e.absoluteY - lastUpdateY.value) < updateThresholdPx) return;
+      lastUpdateY.value = e.absoluteY;
       runOnJS(onDragUpdate)(e.absoluteY);
     })
     .onEnd(() => {

@@ -1,6 +1,7 @@
 import {
   getDragPreviewSeed,
   getPianoRollNoteRect,
+  getResizedNoteDuration,
   hitTestPianoRollNote,
   type PianoRollMathContext,
 } from '../pianoRollMath';
@@ -47,6 +48,25 @@ describe('getDragPreviewSeed', () => {
 
     expect(moveSeed.width).toBe(1 * melodicContext.beatWidth - 1);
     expect(resizeSeed.width).toBe(1 * melodicContext.beatWidth);
+  });
+
+  it('keeps a short preview at the rendered minimum width', () => {
+    const note = makeNote({ duration: 0.01 });
+    const seed = getDragPreviewSeed(note, false, melodicContext);
+
+    expect(seed.width).toBe(melodicContext.stepWidth);
+  });
+
+  it('keeps resize duration inside a short remaining clip tail', () => {
+    const duration = getResizedNoteDuration(
+      0.1,
+      100,
+      melodicContext,
+      15.9,
+      false
+    );
+
+    expect(duration).toBeCloseTo(0.1);
   });
 
   it('places drum notes on the sample row, not the raw MIDI pitch', () => {

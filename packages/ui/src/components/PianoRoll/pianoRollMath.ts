@@ -19,6 +19,9 @@ export type PianoRollMathContext = {
 export interface RecordingNotePreviewData {
   noteNumber: number;
   startBeat: number;
+  /** Captured active loop, used to keep the preview growing across wrap. */
+  loopStartBeat?: number;
+  loopBeats?: number;
 }
 
 const TOUCH_PADDING = 12;
@@ -109,11 +112,14 @@ export const getDragPreviewSeed = (
   return {
     x: note.position * context.beatWidth,
     y: rowIdx * context.rowHeight + 1,
-    // Matches what the first pan update would compute: a moved note keeps
-    // the 1px right gap; a resized note follows its exact end.
-    width: isResizeEdge
-      ? note.duration * context.beatWidth
-      : note.duration * context.beatWidth - 1,
+    // Match the rendered note rect, including its minimum visible width, so
+    // the preview cannot jump on the first pointer update.
+    width: Math.max(
+      isResizeEdge
+        ? note.duration * context.beatWidth
+        : note.duration * context.beatWidth - 1,
+      context.stepWidth
+    ),
   };
 };
 
@@ -208,7 +214,7 @@ export const getResizedNoteDuration = (
     rawDuration =
       Math.max(UNSNAPPED_MIN_DURATION_STEPS, newWidth / stepWidth) * 0.25;
   }
-  const maxDuration = Math.max(0.25, gridWidth / beatWidth - originalPosition);
+  const maxDuration = Math.max(0, gridWidth / beatWidth - originalPosition);
   return Math.min(maxDuration, rawDuration);
 };
 

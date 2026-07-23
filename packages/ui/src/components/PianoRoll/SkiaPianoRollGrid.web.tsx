@@ -75,18 +75,36 @@ const RecordingNotePreview = memo(function RecordingNotePreview({
   effectiveRowHeight,
   playheadPosX,
   color,
+  loopStartBeat = 0,
+  loopBeats = 0,
+  beatWidth,
 }: {
   x: number;
   rowIdx: number;
   effectiveRowHeight: number;
   playheadPosX: SharedValue<number>;
   color: string;
+  loopStartBeat?: number;
+  loopBeats?: number;
+  beatWidth: number;
 }) {
   const y = rowIdx * effectiveRowHeight + 1;
   const h = effectiveRowHeight - 2;
-  const animStyle = useAnimatedStyle(() => ({
-    width: Math.max(4, playheadPosX.value - x),
-  }));
+  const animStyle = useAnimatedStyle(() => {
+    let delta = playheadPosX.value - x;
+    let maxWidth = Number.POSITIVE_INFINITY;
+    if (loopBeats > 0) {
+      const loopStartX = loopStartBeat * beatWidth;
+      const loopEndX = loopStartX + loopBeats * beatWidth;
+      maxWidth = Math.max(0, loopEndX - x);
+      if (playheadPosX.value < x) {
+        delta = loopEndX - x + (playheadPosX.value - loopStartX);
+      }
+    }
+    // The playhead can switch to a new active range while a note is held.
+    // Keep the preview bounded by the range captured at note-on.
+    return { width: Math.min(maxWidth, Math.max(4, delta)) };
+  });
   return (
     <Animated.View
       pointerEvents="none"
@@ -254,6 +272,8 @@ export interface SkiaPianoRollGridProps {
    * longer: a one-shot sample doesn't sustain just because the note block
    * got longer. Irrelevant for non-drum instrument types. */
   lockNoteDuration?: boolean;
+  /** Whether transport playback is active; draws the playhead in the grid. */
+  isPlaying?: boolean;
   /** Notes currently held during live recording — rendered as a growing
    * "in progress" preview from the press beat to the live playhead. */
   recordingNotes?: RecordingNotePreviewData[];
@@ -305,6 +325,7 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
   showControls = true,
   snapToGrid = false,
   lockNoteDuration,
+  isPlaying = false,
   recordingNotes,
   playheadPosX,
   onVisibleBeatRangeChange,
@@ -317,6 +338,9 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
   // recording) — recordingNotes is empty in that case, so this stays unused.
   const internalPlayheadPosX = useSharedValue(0);
   const effectivePlayheadPosX = playheadPosX ?? internalPlayheadPosX;
+  const playheadStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: effectivePlayheadPosX.value }],
+  }));
   const containerRef = useRef<any>(null);
   // Content nodes we pan with a raw CSS transform instead of native scroll —
   // see the comment above GRID_TOUCH_ACTION_STYLE for why: a native
@@ -406,6 +430,16 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
   const beatWidth = stepWidth * 4;
   const gridWidth = lengthInBeats * beatWidth;
   const gridHeight = totalPitches * effectiveRowHeight;
+  const lastReportedScrollX = useRef(0);
+  const reportScroll = useCallback(
+    (x: number, force = false) => {
+      if (!force && x !== 0 && x < Math.max(0, gridWidth - availableGridWidth) && Math.abs(x - lastReportedScrollX.current) < 8) return;
+      lastReportedScrollX.current = x;
+      onVisibleBeatRangeChange?.(x / beatWidth, (x + availableGridWidth) / beatWidth);
+      onScrollXChange?.(x);
+    },
+    [gridWidth, availableGridWidth, beatWidth, onVisibleBeatRangeChange, onScrollXChange]
+  );
 
   const applyGridTransform = useCallback(
     (x: number, animated = false) => {
@@ -417,14 +451,10 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
         node.style.transition = animated ? 'transform 200ms ease-out' : 'none';
         node.style.transform = `translateX(${-clamped}px)`;
       }
-      onVisibleBeatRangeChange?.(
-        clamped / beatWidth,
-        (clamped + availableGridWidth) / beatWidth
-      );
-      onScrollXChange?.(clamped);
+      reportScroll(clamped);
       return clamped;
     },
-    [gridWidth, availableGridWidth, beatWidth, onVisibleBeatRangeChange, onScrollXChange]
+    [gridWidth, availableGridWidth, reportScroll]
   );
 
   const applyOuterTransform = useCallback(
@@ -487,6 +517,7 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
         if (nextX === prevX) velocityX = 0;
         if (nextY === prevY) velocityY = 0;
         if (Math.hypot(velocityX, velocityY) < MIN_MOMENTUM_VELOCITY) {
+          reportScroll(panXRef.current, true);
           momentumRafRef.current = null;
           return;
         }
@@ -494,7 +525,7 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
       };
       momentumRafRef.current = requestAnimationFrame(step);
     },
-    [applyGridTransform, applyOuterTransform, cancelMomentum]
+    [applyGridTransform, applyOuterTransform, cancelMomentum, reportScroll]
   );
 
   useImperativeHandle(ref, () => ({
@@ -838,6 +869,7 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
       const wasDragging = interaction.dragging || distance >= DRAG_THRESHOLD;
 
       if (interaction.type === 'grid') {
+        reportScroll(panXRef.current, true);
         if (!wasDragging) {
           const target = getGridPointNoteTarget(x, y, pianoRollMathContext);
           if (target) onGridTap?.(target.noteNumber, target.position);
@@ -851,7 +883,7 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
       // Same fast-flick case as above, for a note touch: lock in move vs.
       // resize now if no pointermove got the chance to.
       if (wasDragging && interaction.type === 'note-pending') {
-        interaction.type = resolveNoteDragType(dx, dy);
+        interaction.type = isNoteResizeLocked ? 'move' : resolveNoteDragType(dx, dy);
       }
 
       if (wasDragging && interaction.noteIndex != null) {
@@ -889,7 +921,9 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
       onNoteResize,
       pianoRollMathContext,
       previewForPointer,
+      reportScroll,
       startMomentum,
+      isNoteResizeLocked,
     ]
   );
 
@@ -898,10 +932,11 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
       if (
         pointerInteractionRef.current?.pointerId === e.nativeEvent.pointerId
       ) {
+        reportScroll(panXRef.current, true);
         clearPointerInteraction();
       }
     },
-    [clearPointerInteraction]
+    [clearPointerInteraction, reportScroll]
   );
 
   const webPointerHandlers: WebPointerHandlers = {
@@ -1067,6 +1102,14 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
                   }}
                 />
               ))}
+
+              {isPlaying && (
+                <Animated.View
+                  pointerEvents="none"
+                  accessibilityLabel="Playback playhead"
+                  style={[styles.playhead, { height: gridHeight }, playheadStyle]}
+                />
+              )}
 
               {/* Notes */}
               {notes.map((note, idx) => {
@@ -1243,6 +1286,9 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
                     effectiveRowHeight={effectiveRowHeight}
                     playheadPosX={effectivePlayheadPosX}
                     color={color}
+                    loopStartBeat={rn.loopStartBeat}
+                    loopBeats={rn.loopBeats}
+                    beatWidth={beatWidth}
                   />
                 );
               })}
@@ -1345,6 +1391,14 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.5)',
   },
   labelText: { fontSize: 10, textAlign: 'center' },
+  playhead: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 1.5,
+    backgroundColor: '#FF5C24',
+    zIndex: 3,
+  },
   zoomControls: {
     position: 'absolute',
     right: 8,

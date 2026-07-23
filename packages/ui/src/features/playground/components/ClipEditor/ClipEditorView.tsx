@@ -565,10 +565,8 @@ const ZoomScrubber = memo(function ZoomScrubber({
 
   // The gesture reads onZoomChange through a ref rather than closing over it
   // directly, and is built once via useMemo — not recreated on every render.
-  // Zoom updates live as you drag (it's view-only state, nothing undo-tracked,
-  // so there's no reason to defer it to release), which means every drag tick
-  // re-renders this component; rebuilding the gesture object on each of those
-  // renders was exactly what broke the previous version's dragging mid-touch.
+  // The thumb stays on the UI thread during the drag; React/grid state only
+  // commits once on release.
   const onZoomChangeRef = useRef(onZoomChange);
   useEffect(() => {
     onZoomChangeRef.current = onZoomChange;
@@ -596,7 +594,6 @@ const ZoomScrubber = memo(function ZoomScrubber({
             SCRUBBER_MIN_ZOOM +
             fraction * (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
           liveZoom.value = z;
-          scheduleOnRN(commitZoom, z);
         })
         .onUpdate((e) => {
           'worklet';
@@ -606,9 +603,21 @@ const ZoomScrubber = memo(function ZoomScrubber({
             SCRUBBER_MIN_ZOOM +
             fraction * (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
           liveZoom.value = z;
+        })
+        .onEnd((e) => {
+          'worklet';
+          if (trackWidth <= 0) return;
+          const fraction = Math.max(0, Math.min(1, e.x / trackWidth));
+          const z =
+            SCRUBBER_MIN_ZOOM +
+            fraction * (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
           scheduleOnRN(commitZoom, z);
+        })
+        .onFinalize((_e, success) => {
+          'worklet';
+          if (!success) liveZoom.value = zoom;
         }),
-    [trackWidth, liveZoom, commitZoom]
+    [trackWidth, liveZoom, commitZoom, zoom]
   );
 
   const thumbStyle = useAnimatedStyle(() => {
@@ -836,9 +845,19 @@ export const ClipEditorView = memo(function ClipEditorView({
     noteIndex: number;
     velocity: number;
   } | null>(null);
+  const lastVelocityPreview = useRef<{ noteIndex: number; velocity: number } | null>(null);
   const handleVelocityPreview = useCallback(
     (noteIndex: number, velocity: number | null) => {
-      setVelocityPreview(velocity == null ? null : { noteIndex, velocity });
+      if (velocity == null) {
+        lastVelocityPreview.current = null;
+        setVelocityPreview(null);
+        return;
+      }
+      const previous = lastVelocityPreview.current;
+      if (previous && previous.noteIndex === noteIndex && Math.abs(previous.velocity - velocity) < 4) return;
+      const next = { noteIndex, velocity };
+      lastVelocityPreview.current = next;
+      setVelocityPreview(next);
     },
     []
   );
@@ -1047,7 +1066,7 @@ export const ClipEditorView = memo(function ClipEditorView({
               showControls={false}
               showNoteLabels={showPianoNoteNames}
               snapToGrid={snapToGrid}
-              lockNoteDuration={clip.lockNoteDuration}
+              lockNoteDuration={instrumentType === 'drum' && (clip.lockNoteDuration ?? true)}
               recordingNotes={recordingNotes}
               isPlaying={isPlaying}
               playheadPosX={playheadPosX}
@@ -1118,6 +1137,8 @@ export const ClipEditorView = memo(function ClipEditorView({
               activeLengthInBars={clip.lengthInBars}
               trackColor={trackColor}
               stepWidth={beatWidth / 4}
+              snapToGrid={snapToGrid}
+              lockNoteDuration={instrumentType === 'drum' && (clip.lockNoteDuration ?? true)}
               onClose={() => setSelectedPitchIndex(null)}
               onVelocityChange={callbacks?.onVelocityChange}
               onVelocityPreview={handleVelocityPreview}

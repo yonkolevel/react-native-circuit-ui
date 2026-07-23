@@ -87,18 +87,36 @@ const RecordingNotePreview = memo(function RecordingNotePreview({
   effectiveRowHeight,
   playheadPosX,
   color,
+  loopStartBeat = 0,
+  loopBeats = 0,
+  beatWidth,
 }: {
   x: number;
   rowIdx: number;
   effectiveRowHeight: number;
   playheadPosX: SharedValue<number>;
   color: string;
+  loopStartBeat?: number;
+  loopBeats?: number;
+  beatWidth: number;
 }) {
   const y = rowIdx * effectiveRowHeight + 1;
   const h = effectiveRowHeight - 2;
-  const width = useDerivedValue(() =>
-    Math.max(4, playheadPosX.value - x)
-  );
+  const width = useDerivedValue(() => {
+    let delta = playheadPosX.value - x;
+    let maxWidth = Number.POSITIVE_INFINITY;
+    if (loopBeats > 0) {
+      const loopStartX = loopStartBeat * beatWidth;
+      const loopEndX = loopStartX + loopBeats * beatWidth;
+      maxWidth = Math.max(0, loopEndX - x);
+      if (playheadPosX.value < x) {
+        delta = loopEndX - x + (playheadPosX.value - loopStartX);
+      }
+    }
+    // The playhead can switch to a new active range while a note is held.
+    // Keep the preview bounded by the range captured at note-on.
+    return Math.min(maxWidth, Math.max(4, delta));
+  });
   return (
     <>
       <RoundedRect x={x} y={y} width={width} height={h} r={3} color={color} opacity={1} />
@@ -311,14 +329,28 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
   const beatWidth = stepWidth * 4;
   const gridWidth = lengthInBeats * beatWidth;
   const maxScrollX = Math.max(0, gridWidth - availableGridWidth);
+  const lastReportedScrollX = useRef(0);
+  const reportScroll = useCallback(
+    (x: number, force = false) => {
+      // Scroll is a visual interaction; only cross into React callbacks when
+      // the viewport moved meaningfully or reached an edge. Gesture-end
+      // callers force the final exact offset through the same path.
+      if (!force && x !== 0 && x < maxScrollX && Math.abs(x - lastReportedScrollX.current) < 8) return;
+      lastReportedScrollX.current = x;
+      onVisibleBeatRangeChange?.(x / beatWidth, (x + availableGridWidth) / beatWidth);
+      onScrollXChange?.(x);
+    },
+    [maxScrollX, beatWidth, availableGridWidth, onVisibleBeatRangeChange, onScrollXChange]
+  );
 
   const scrollToX = useCallback(
     (x: number, animated = true) => {
       const clampedX = Math.max(0, Math.min(x, maxScrollX));
       scrollXRef.current = clampedX;
       hScrollRef.current?.scrollTo?.({ x: clampedX, animated });
+      reportScroll(clampedX);
     },
-    [maxScrollX]
+    [maxScrollX, reportScroll]
   );
 
   useImperativeHandle(ref, () => ({ scrollToX }), [scrollToX]);
@@ -338,19 +370,8 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
     const clampedX = Math.min(scrollXRef.current, maxScrollX);
     if (clampedX === scrollXRef.current) return;
     scrollToX(clampedX, false);
-    onVisibleBeatRangeChange?.(
-      clampedX / beatWidth,
-      (clampedX + availableGridWidth) / beatWidth
-    );
-    onScrollXChange?.(clampedX);
-  }, [
-    maxScrollX,
-    beatWidth,
-    availableGridWidth,
-    onVisibleBeatRangeChange,
-    onScrollXChange,
-    scrollToX,
-  ]);
+    reportScroll(clampedX);
+  }, [maxScrollX, scrollToX, reportScroll]);
 
   const handleGridScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { x: number } } }) => {
@@ -359,17 +380,27 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
         Math.min(e.nativeEvent.contentOffset.x, maxScrollX)
       );
       scrollXRef.current = scrollX;
-      onVisibleBeatRangeChange?.(scrollX / beatWidth, (scrollX + availableGridWidth) / beatWidth);
-      onScrollXChange?.(scrollX);
+      reportScroll(scrollX);
     },
-    [onVisibleBeatRangeChange, onScrollXChange, beatWidth, availableGridWidth, maxScrollX]
+    [maxScrollX, reportScroll]
+  );
+  const flushGridScroll = useCallback(
+    (e: { nativeEvent: { contentOffset: { x: number } } }) => {
+      const scrollX = Math.max(
+        0,
+        Math.min(e.nativeEvent.contentOffset.x, maxScrollX)
+      );
+      scrollXRef.current = scrollX;
+      reportScroll(scrollX, true);
+    },
+    [maxScrollX, reportScroll]
   );
 
   // Report the initial viewport (scroll resets to 0 on zoom-out above) so the
   // bar selector's "in viewport" state isn't empty before the first scroll.
   useEffect(() => {
-    onVisibleBeatRangeChange?.(0, availableGridWidth / beatWidth);
-  }, [onVisibleBeatRangeChange, beatWidth, availableGridWidth]);
+    reportScroll(0);
+  }, [reportScroll]);
   const gridHeight = totalPitches * effectiveRowHeight;
   const totalSteps = lengthInBeats * 4;
   const playheadP1 = useDerivedValue(() =>
@@ -714,14 +745,15 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
                 swRef,
                 maxWidth
               );
+              const targetWidth = Math.max(swRef, Math.min(maxWidth, target.widthPx));
               dragW.value = target.isSnapping
-                ? withTiming(target.widthPx, { duration: SNAP_EASE_MS })
-                : target.widthPx;
+                ? withTiming(targetWidth, { duration: SNAP_EASE_MS })
+                : targetWidth;
             } else {
               const minWidth = swRef * UNSNAPPED_MIN_DURATION_STEPS;
-              dragW.value = Math.min(
-                maxWidth,
-                Math.max(minWidth, dragOrigDur.value * bwRef + dx)
+              dragW.value = Math.max(
+                swRef,
+                Math.min(maxWidth, Math.max(minWidth, dragOrigDur.value * bwRef + dx))
               );
             }
             // Use the note's own row (mirrored at drag start), not the touch
@@ -743,7 +775,7 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
             );
             dragX.value = target.position * bwRef;
             dragY.value = target.rowIdx * rhRef + 1;
-            dragW.value = dragOrigDur.value * bwRef - 1;
+            dragW.value = Math.max(swRef, dragOrigDur.value * bwRef - 1);
           }
         })
         .onEnd((e) => {
@@ -756,6 +788,7 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
 
   // Pinch-to-zoom — matches iOS MagnificationGesture behavior
   const pinchStartZoom = useSharedValue(1);
+  const pinchLastCommittedZoom = useSharedValue(zoomLevel);
   const handlePinchZoom = useCallback(
     (newZoom: number) => {
       onZoomChange?.(Math.max(1, Math.min(3, newZoom)));
@@ -769,8 +802,17 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
         .onStart(() => {
           'worklet';
           pinchStartZoom.value = zoomLevel;
+          pinchLastCommittedZoom.value = zoomLevel;
         })
         .onUpdate((e) => {
+          'worklet';
+          const nextZoom = pinchStartZoom.value * e.scale;
+          if (Math.abs(nextZoom - pinchLastCommittedZoom.value) >= 0.05) {
+            pinchLastCommittedZoom.value = nextZoom;
+            scheduleOnRN(handlePinchZoom, nextZoom);
+          }
+        })
+        .onEnd((e) => {
           'worklet';
           scheduleOnRN(handlePinchZoom, pinchStartZoom.value * e.scale);
         }),
@@ -835,6 +877,8 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
             showsHorizontalScrollIndicator={false}
             style={styles.gridScroll}
             onScroll={handleGridScroll}
+            onScrollEndDrag={flushGridScroll}
+            onMomentumScrollEnd={flushGridScroll}
             scrollEventThrottle={100}
           >
             <View style={{ width: gridWidth, height: gridHeight }}>
@@ -997,6 +1041,9 @@ export const SkiaPianoRollGrid = memo(forwardRef<SkiaPianoRollGridHandle, SkiaPi
                       effectiveRowHeight={effectiveRowHeight}
                       playheadPosX={effectivePlayheadPosX}
                       color={color}
+                      loopStartBeat={rn.loopStartBeat}
+                      loopBeats={rn.loopBeats}
+                      beatWidth={beatWidth}
                     />
                   );
                 })}

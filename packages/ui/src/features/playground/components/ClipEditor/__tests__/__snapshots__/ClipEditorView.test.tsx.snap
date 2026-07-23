@@ -1249,7 +1249,9 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                 <RCTScrollView
                   horizontal={true}
                   nestedScrollEnabled={true}
+                  onMomentumScrollEnd={[Function]}
                   onScroll={[Function]}
+                  onScrollEndDrag={[Function]}
                   scrollEventThrottle={100}
                   showsHorizontalScrollIndicator={false}
                   style={
@@ -4342,7 +4344,9 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 <RCTScrollView
                   horizontal={true}
                   nestedScrollEnabled={true}
+                  onMomentumScrollEnd={[Function]}
                   onScroll={[Function]}
+                  onScrollEndDrag={[Function]}
                   scrollEventThrottle={100}
                   showsHorizontalScrollIndicator={false}
                   style={
@@ -8358,7 +8362,9 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                 <RCTScrollView
                   horizontal={true}
                   nestedScrollEnabled={true}
+                  onMomentumScrollEnd={[Function]}
                   onScroll={[Function]}
+                  onScrollEndDrag={[Function]}
                   scrollEventThrottle={100}
                   showsHorizontalScrollIndicator={false}
                   style={
@@ -11366,7 +11372,9 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                 <RCTScrollView
                   horizontal={true}
                   nestedScrollEnabled={true}
+                  onMomentumScrollEnd={[Function]}
                   onScroll={[Function]}
+                  onScrollEndDrag={[Function]}
                   scrollEventThrottle={100}
                   showsHorizontalScrollIndicator={false}
                   style={
