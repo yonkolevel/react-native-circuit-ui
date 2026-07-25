@@ -3,19 +3,31 @@
  * Identical props, state, and gesture logic to NotePrecisionPanel.tsx.
  * All Skia Canvas drawing replaced with absolute-positioned Views.
  */
-import React, { memo, forwardRef, useImperativeHandle, useMemo, useCallback, useRef, useState } from 'react';
+import React, {
+  memo,
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import {
   ScrollView as GHScrollView,
   Gesture,
   GestureDetector,
 } from 'react-native-gesture-handler';
-import { runOnJS } from 'react-native-reanimated';
+import { runOnJS, useSharedValue } from 'react-native-reanimated';
 import { Text } from '../Text';
 import { Icon, Icons } from '../SFSymbol';
 import { useTheme } from '../../theme';
 import type { ClipNote } from '../../features/playground/types';
-import { getMovedGridTarget, getResizedNoteDuration, getVelocityColor } from '../PianoRoll/pianoRollMath';
+import {
+  getMovedGridTarget,
+  getResizedNoteDuration,
+  getVelocityColor,
+} from '../PianoRoll/pianoRollMath';
 
 const LABEL_COL = 60;
 const BEAT_LABEL_H = 16;
@@ -63,6 +75,10 @@ export interface NotePrecisionPanelProps {
    * callers keep the piano roll grid above (which shares the same
    * beat-to-pixel scale) in sync. */
   onScrollXChange?: (x: number) => void;
+  /** Match the piano roll's move/resize snapping semantics. */
+  snapToGrid?: boolean;
+  /** Drum one-shots omit duration editing when locked. */
+  lockNoteDuration?: boolean;
 }
 
 /** Imperative handle for scrolling the panel programmatically (e.g. to mirror the piano roll grid's scroll position). */
@@ -70,455 +86,337 @@ export interface NotePrecisionPanelHandle {
   scrollToX: (x: number, animated?: boolean) => void;
 }
 
-export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, NotePrecisionPanelProps>(function NotePrecisionPanel({
-  notes,
-  pitchLabel,
-  pitchMidiNumber,
-  activeLengthInBars,
-  trackColor,
-  stepWidth,
-  onClose,
-  onVelocityChange,
-  onVelocityPreview,
-  onPositionChange,
-  onDurationChange,
-  onScrollXChange,
-}: NotePrecisionPanelProps, ref) {
-  const { colors } = useTheme();
-  const hScrollRef = useRef<any>(null);
-  useImperativeHandle(ref, () => ({
-    scrollToX: (x: number, animated = true) => {
-      hScrollRef.current?.scrollTo?.({ x, animated });
-    },
-  }), []);
-  const handleScroll = useCallback(
-    (e: { nativeEvent: { contentOffset: { x: number } } }) => {
-      onScrollXChange?.(e.nativeEvent.contentOffset.x);
-    },
-    [onScrollXChange]
-  );
-
-  const notesAtPitch = useMemo(
-    () =>
-      notes
-        .map((n, i) => ({ note: n, globalIdx: i }))
-        .filter((x) => x.note.noteNumber === pitchMidiNumber),
-    [notes, pitchMidiNumber]
-  );
-
-  const totalSteps = activeLengthInBars * BEATS_PER_BAR * STEPS_PER_BEAT;
-  const totalWidth = totalSteps * stepWidth;
-  const totalBeats = activeLengthInBars * BEATS_PER_BAR;
-  const beatWidth = stepWidth * STEPS_PER_BEAT;
-
-  const [velAreaH, setVelAreaH] = useState(120);
-
-  // Velocity drag state
-  const [dragIdx, setDragIdx] = useState(-1);
-  const [dragVel, setDragVel] = useState(0);
-  const dragStartY = useRef(0);
-  const dragStartVel = useRef(0);
-  const dragIdxRef = useRef(-1);
-  const dragVelRef = useRef(0);
-
-  // Position drag state
-  const [posBlockDragIdx, setPosBlockDragIdx] = useState(-1);
-  const [posBlockDragDx, setPosBlockDragDx] = useState(0);
-  const posBlockStartX = useRef(0);
-
-  // Duration drag state
-  const [durBlockDragIdx, setDurBlockDragIdx] = useState(-1);
-  const [durBlockDragDx, setDurBlockDragDx] = useState(0);
-  const durBlockStartX = useRef(0);
-
-  const handleVelDragStart = useCallback(
-    (idx: number, y: number) => {
-      const entry = notesAtPitch[idx];
-      if (!entry) return;
-      dragIdxRef.current = idx;
-      dragStartY.current = y;
-      dragStartVel.current = entry.note.velocity;
-      dragVelRef.current = entry.note.velocity;
-      setDragIdx(idx);
-      setDragVel(entry.note.velocity);
-    },
-    [notesAtPitch]
-  );
-
-  const handleVelDragUpdate = useCallback(
-    (y: number) => {
-      const dy = y - dragStartY.current;
-      const usableH = velAreaH - BOTTOM_PAD - HANDLE_H;
-      const delta = (-dy / usableH) * 127;
-      const newVel = Math.round(
-        Math.max(1, Math.min(127, dragStartVel.current + delta))
-      );
-      dragVelRef.current = newVel;
-      setDragVel(newVel);
-      const idx = dragIdxRef.current;
-      if (idx >= 0 && idx < notesAtPitch.length) {
-        onVelocityPreview?.(notesAtPitch[idx]!.globalIdx, newVel);
-      }
-    },
-    [velAreaH, notesAtPitch, onVelocityPreview]
-  );
-
-  const handleVelDragEnd = useCallback(() => {
-    const idx = dragIdxRef.current;
-    const vel = dragVelRef.current;
-    if (idx >= 0 && idx < notesAtPitch.length) {
-      onVelocityChange?.(notesAtPitch[idx]!.globalIdx, vel);
-      onVelocityPreview?.(notesAtPitch[idx]!.globalIdx, null);
-    }
-    dragIdxRef.current = -1;
-    setDragIdx(-1);
-  }, [notesAtPitch, onVelocityChange, onVelocityPreview]);
-
-  // This panel is the precision/manual-control surface — it never snaps,
-  // regardless of the piano roll's Snap to Grid setting. Reuses the grid's
-  // own math (for consistent clamping/bounds) but always in free mode.
-  const getLivePosition = useCallback(
-    (originalPosition: number, originalDuration: number, dx: number) => {
-      const maxPosition = Math.max(0, totalBeats - originalDuration);
-      return getMovedGridTarget(
-        dx,
-        0,
-        originalPosition,
-        0,
+export const NotePrecisionPanel = memo(
+  forwardRef<NotePrecisionPanelHandle, NotePrecisionPanelProps>(
+    function NotePrecisionPanel(
+      {
+        notes,
+        pitchLabel,
+        pitchMidiNumber,
+        activeLengthInBars,
+        trackColor,
         stepWidth,
-        1,
-        1,
-        maxPosition,
-        false
-      ).position;
-    },
-    [stepWidth, totalBeats]
-  );
-  const getLiveDuration = useCallback(
-    (originalDuration: number, originalPosition: number, dx: number) =>
-      Math.max(
-        MIN_NOTE_DURATION,
-        getResizedNoteDuration(
-          originalDuration,
-          dx,
-          {
-            beatWidth,
-            stepWidth,
-            gridWidth: totalWidth,
-            isDrum: false,
-            basePitch: 0,
-            totalPitches: 1,
-            rowHeight: NOTE_AREA_H,
-            pitchToMidi: [],
+        onClose,
+        onVelocityChange,
+        onVelocityPreview,
+        onPositionChange,
+        onDurationChange,
+        onScrollXChange,
+        snapToGrid = false,
+        lockNoteDuration = false,
+      }: NotePrecisionPanelProps,
+      ref
+    ) {
+      const { colors } = useTheme();
+      const hScrollRef = useRef<any>(null);
+      const lastReportedScrollX = useRef(0);
+      useImperativeHandle(
+        ref,
+        () => ({
+          scrollToX: (x: number, animated = true) => {
+            hScrollRef.current?.scrollTo?.({ x, animated });
           },
-          originalPosition,
-          false
-        )
-      ),
-    [beatWidth, stepWidth, totalWidth]
-  );
+        }),
+        []
+      );
+      const reportScroll = useCallback(
+        (x: number, force = false) => {
+          if (
+            !force &&
+            x !== 0 &&
+            Math.abs(x - lastReportedScrollX.current) < 8
+          )
+            return;
+          lastReportedScrollX.current = x;
+          onScrollXChange?.(x);
+        },
+        [onScrollXChange]
+      );
+      const handleScroll = useCallback(
+        (e: { nativeEvent: { contentOffset: { x: number } } }) => {
+          reportScroll(e.nativeEvent.contentOffset.x);
+        },
+        [reportScroll]
+      );
+      const flushScroll = useCallback(
+        (e: { nativeEvent: { contentOffset: { x: number } } }) => {
+          reportScroll(e.nativeEvent.contentOffset.x, true);
+        },
+        [reportScroll]
+      );
 
-  const handlePosBlockDragStart = useCallback((idx: number, x: number) => {
-    setPosBlockDragIdx(idx);
-    setPosBlockDragDx(0);
-    posBlockStartX.current = x;
-  }, []);
-  const handlePosBlockDragUpdate = useCallback((x: number) => {
-    setPosBlockDragDx(x - posBlockStartX.current);
-  }, []);
-  const handlePosBlockDragEnd = useCallback(
-    (x: number) => {
-      if (posBlockDragIdx >= 0 && posBlockDragIdx < notesAtPitch.length) {
-        const dx = x - posBlockStartX.current;
-        const note = notesAtPitch[posBlockDragIdx]!.note;
-        const newPos = getLivePosition(note.position, note.duration, dx);
-        onPositionChange?.(notesAtPitch[posBlockDragIdx]!.globalIdx, newPos);
-      }
-      setPosBlockDragIdx(-1);
-      setPosBlockDragDx(0);
-    },
-    [posBlockDragIdx, notesAtPitch, onPositionChange, getLivePosition]
-  );
+      const notesAtPitch = useMemo(
+        () =>
+          notes
+            .map((n, i) => ({ note: n, globalIdx: i }))
+            .filter((x) => x.note.noteNumber === pitchMidiNumber),
+        [notes, pitchMidiNumber]
+      );
 
-  const handleDurBlockDragStart = useCallback((idx: number, x: number) => {
-    setDurBlockDragIdx(idx);
-    setDurBlockDragDx(0);
-    durBlockStartX.current = x;
-  }, []);
-  const handleDurBlockDragUpdate = useCallback((x: number) => {
-    setDurBlockDragDx(x - durBlockStartX.current);
-  }, []);
-  const handleDurBlockDragEnd = useCallback(
-    (x: number) => {
-      if (durBlockDragIdx >= 0 && durBlockDragIdx < notesAtPitch.length) {
-        const dx = x - durBlockStartX.current;
-        const note = notesAtPitch[durBlockDragIdx]!.note;
-        const newDur = getLiveDuration(note.duration, note.position, dx);
-        onDurationChange?.(notesAtPitch[durBlockDragIdx]!.globalIdx, newDur);
-      }
-      setDurBlockDragIdx(-1);
-      setDurBlockDragDx(0);
-    },
-    [durBlockDragIdx, notesAtPitch, onDurationChange]
-  );
+      const totalSteps = activeLengthInBars * BEATS_PER_BAR * STEPS_PER_BEAT;
+      const totalWidth = totalSteps * stepWidth;
+      const totalBeats = activeLengthInBars * BEATS_PER_BAR;
+      const beatWidth = stepWidth * STEPS_PER_BEAT;
 
-  const noteGeom = useCallback(
-    (note: ClipNote, vel: number) => {
-      const fraction = vel / 127;
-      const baseline = velAreaH - BOTTOM_PAD;
-      const usableH = baseline - HANDLE_H;
-      const stemH = Math.max(0, fraction * usableH);
-      const noteStartX = (note.position / 0.25) * stepWidth;
-      const handleX = noteStartX;
-      const stemX = noteStartX + HANDLE_W;
-      const handleY = baseline - stemH - HANDLE_H;
-      const stemTop = baseline - stemH;
-      return {
-        noteStartX,
-        stemX,
-        stemH,
-        stemTop,
-        handleX,
-        handleY,
-        fraction,
-        baseline,
-      };
-    },
-    [velAreaH, stepWidth]
-  );
+      const [velAreaH, setVelAreaH] = useState(120);
 
-  return (
-    <View style={[styles.container, { backgroundColor: colors.mcBlack2 }]}>
-      {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.mcBlack3 }]}>
-        <Text
-          variant="label"
-          color={colors.mcWhite}
-          style={{ flex: 1, fontSize: 13 }}
-        >
-          {pitchLabel}
-        </Text>
-        <Pressable onPress={onClose} hitSlop={8}>
-          <Icon icon={Icons.close} size={16} color={colors.mcWhite3} />
-        </Pressable>
-      </View>
+      // Velocity drag state
+      const [dragIdx, setDragIdx] = useState(-1);
+      const [dragVel, setDragVel] = useState(0);
+      const dragStartY = useRef(0);
+      const dragStartVel = useRef(0);
+      const dragIdxRef = useRef(-1);
+      const dragVelRef = useRef(0);
+      const lastRenderedDragVel = useRef(0);
+      const lastPreviewVelocity = useRef<{
+        noteIndex: number;
+        velocity: number;
+      } | null>(null);
 
-      {/* Body: left ruler + scrollable timeline */}
-      <View style={styles.body}>
-        {/* Left ruler column */}
-        <View
-          style={[
-            styles.leftCol,
-            { width: LABEL_COL, backgroundColor: colors.mcBlack2 },
-          ]}
-        >
-          <View style={{ height: BEAT_LABEL_H }} />
-          <View style={{ height: NOTE_AREA_H, justifyContent: 'center' }}>
-            <Text
-              variant="extraSmall"
-              color={colors.mcWhite3}
-              center
-              style={styles.tinyLabel}
-            >
-              NOTES
-            </Text>
-          </View>
-          <View
-            style={{ flex: 1 }}
-            onLayout={(e) =>
-              setVelAreaH(Math.max(60, e.nativeEvent.layout.height))
+      // Position drag state
+      const [posBlockDragIdx, setPosBlockDragIdx] = useState(-1);
+      const [posBlockDragDx, setPosBlockDragDx] = useState(0);
+      const posBlockStartX = useRef(0);
+
+      // Duration drag state
+      const [durBlockDragIdx, setDurBlockDragIdx] = useState(-1);
+      const [durBlockDragDx, setDurBlockDragDx] = useState(0);
+      const durBlockStartX = useRef(0);
+
+      const handleVelDragStart = useCallback(
+        (idx: number, y: number) => {
+          const entry = notesAtPitch[idx];
+          if (!entry) return;
+          dragIdxRef.current = idx;
+          dragStartY.current = y;
+          dragStartVel.current = entry.note.velocity;
+          dragVelRef.current = entry.note.velocity;
+          lastRenderedDragVel.current = entry.note.velocity;
+          setDragIdx(idx);
+          setDragVel(entry.note.velocity);
+        },
+        [notesAtPitch]
+      );
+
+      const handleVelDragUpdate = useCallback(
+        (y: number) => {
+          const dy = y - dragStartY.current;
+          const usableH = velAreaH - BOTTOM_PAD - HANDLE_H;
+          const delta = (-dy / usableH) * 127;
+          const newVel = Math.round(
+            Math.max(1, Math.min(127, dragStartVel.current + delta))
+          );
+          dragVelRef.current = newVel;
+          if (Math.abs(lastRenderedDragVel.current - newVel) >= 4) {
+            lastRenderedDragVel.current = newVel;
+            setDragVel(newVel);
+          }
+          const idx = dragIdxRef.current;
+          if (idx >= 0 && idx < notesAtPitch.length) {
+            const globalIdx = notesAtPitch[idx]!.globalIdx;
+            const previous = lastPreviewVelocity.current;
+            if (
+              !previous ||
+              previous.noteIndex !== globalIdx ||
+              Math.abs(previous.velocity - newVel) >= 4
+            ) {
+              lastPreviewVelocity.current = {
+                noteIndex: globalIdx,
+                velocity: newVel,
+              };
+              onVelocityPreview?.(globalIdx, newVel);
             }
-          >
-            <Text
-              variant="extraSmall"
-              color={colors.mcWhite3}
-              center
-              style={[styles.tinyLabel, { marginTop: 4 }]}
-            >
-              VEL
-            </Text>
-            {VEL_LEVELS.map((l) => {
-              const fraction = l.vel / 127;
-              const baseline = velAreaH - BOTTOM_PAD;
-              const usableH = baseline - HANDLE_H;
-              const stemH = fraction * usableH;
-              const y = baseline - stemH - HANDLE_H / 2;
-              return (
-                <View key={l.label} style={[styles.rulerTick, { top: y }]}>
-                  <Text
-                    variant="extraSmall"
-                    color={colors.mcWhite3}
-                    style={styles.rulerNum}
-                  >
-                    {l.label}
-                  </Text>
-                  <View style={styles.rulerDash} />
-                </View>
-              );
-            })}
-          </View>
-        </View>
+          }
+        },
+        [velAreaH, notesAtPitch, onVelocityPreview]
+      );
 
-        {/* Scrollable timeline */}
-        <GHScrollView
-          ref={hScrollRef}
-          horizontal
-          showsHorizontalScrollIndicator
-          style={{ flex: 1 }}
-          onScroll={handleScroll}
-          scrollEventThrottle={100}
-        >
-          <View style={{ width: Math.max(totalWidth, totalWidth + HANDLE_W) }}>
-            {/* Beat labels */}
-            <View style={{ height: BEAT_LABEL_H, flexDirection: 'row' }}>
-              {Array.from({ length: totalBeats }, (_, i) => (
+      const handleVelDragEnd = useCallback(() => {
+        const idx = dragIdxRef.current;
+        const vel = dragVelRef.current;
+        if (idx >= 0 && idx < notesAtPitch.length) {
+          onVelocityChange?.(notesAtPitch[idx]!.globalIdx, vel);
+          lastPreviewVelocity.current = null;
+          onVelocityPreview?.(notesAtPitch[idx]!.globalIdx, null);
+        }
+        setDragVel(vel);
+        dragIdxRef.current = -1;
+        setDragIdx(-1);
+      }, [notesAtPitch, onVelocityChange, onVelocityPreview]);
+
+      // Reuse the piano-roll math so this precision surface follows the same
+      // snap and clip-boundary rules as the main editor.
+      const getLivePosition = useCallback(
+        (originalPosition: number, originalDuration: number, dx: number) => {
+          const maxPosition = Math.max(0, totalBeats - originalDuration);
+          return getMovedGridTarget(
+            dx,
+            0,
+            originalPosition,
+            0,
+            stepWidth,
+            1,
+            1,
+            maxPosition,
+            snapToGrid
+          ).position;
+        },
+        [stepWidth, totalBeats, snapToGrid]
+      );
+      const getLiveDuration = useCallback(
+        (originalDuration: number, originalPosition: number, dx: number) => {
+          const maxDuration = Math.max(0, totalBeats - originalPosition);
+          return Math.min(
+            maxDuration,
+            Math.max(
+              MIN_NOTE_DURATION,
+              getResizedNoteDuration(
+                originalDuration,
+                dx,
+                {
+                  beatWidth,
+                  stepWidth,
+                  gridWidth: totalWidth,
+                  isDrum: false,
+                  basePitch: 0,
+                  totalPitches: 1,
+                  rowHeight: NOTE_AREA_H,
+                  pitchToMidi: [],
+                },
+                originalPosition,
+                snapToGrid
+              )
+            )
+          );
+        },
+        [beatWidth, stepWidth, totalBeats, totalWidth, snapToGrid]
+      );
+
+      const handlePosBlockDragStart = useCallback((idx: number, x: number) => {
+        setPosBlockDragIdx(idx);
+        setPosBlockDragDx(0);
+        posBlockStartX.current = x;
+      }, []);
+      const handlePosBlockDragUpdate = useCallback((x: number) => {
+        setPosBlockDragDx(x - posBlockStartX.current);
+      }, []);
+      const handlePosBlockDragEnd = useCallback(
+        (x: number) => {
+          if (posBlockDragIdx >= 0 && posBlockDragIdx < notesAtPitch.length) {
+            const dx = x - posBlockStartX.current;
+            const note = notesAtPitch[posBlockDragIdx]!.note;
+            const newPos = getLivePosition(note.position, note.duration, dx);
+            onPositionChange?.(
+              notesAtPitch[posBlockDragIdx]!.globalIdx,
+              newPos
+            );
+          }
+          setPosBlockDragIdx(-1);
+          setPosBlockDragDx(0);
+        },
+        [posBlockDragIdx, notesAtPitch, onPositionChange, getLivePosition]
+      );
+
+      const handleDurBlockDragStart = useCallback((idx: number, x: number) => {
+        setDurBlockDragIdx(idx);
+        setDurBlockDragDx(0);
+        durBlockStartX.current = x;
+      }, []);
+      const handleDurBlockDragUpdate = useCallback((x: number) => {
+        setDurBlockDragDx(x - durBlockStartX.current);
+      }, []);
+      const handleDurBlockDragEnd = useCallback(
+        (x: number) => {
+          if (durBlockDragIdx >= 0 && durBlockDragIdx < notesAtPitch.length) {
+            const dx = x - durBlockStartX.current;
+            const note = notesAtPitch[durBlockDragIdx]!.note;
+            const newDur = getLiveDuration(note.duration, note.position, dx);
+            onDurationChange?.(
+              notesAtPitch[durBlockDragIdx]!.globalIdx,
+              newDur
+            );
+          }
+          setDurBlockDragIdx(-1);
+          setDurBlockDragDx(0);
+        },
+        [durBlockDragIdx, notesAtPitch, onDurationChange, getLiveDuration]
+      );
+
+      const noteGeom = useCallback(
+        (note: ClipNote, vel: number) => {
+          const fraction = vel / 127;
+          const baseline = velAreaH - BOTTOM_PAD;
+          const usableH = baseline - HANDLE_H;
+          const stemH = Math.max(0, fraction * usableH);
+          const noteStartX = (note.position / 0.25) * stepWidth;
+          const handleX = noteStartX;
+          const stemX = noteStartX + HANDLE_W;
+          const handleY = baseline - stemH - HANDLE_H;
+          const stemTop = baseline - stemH;
+          return {
+            noteStartX,
+            stemX,
+            stemH,
+            stemTop,
+            handleX,
+            handleY,
+            fraction,
+            baseline,
+          };
+        },
+        [velAreaH, stepWidth]
+      );
+
+      return (
+        <View style={[styles.container, { backgroundColor: colors.mcBlack2 }]}>
+          {/* Header */}
+          <View style={[styles.header, { backgroundColor: colors.mcBlack3 }]}>
+            <Text
+              variant="label"
+              color={colors.mcWhite}
+              style={{ flex: 1, fontSize: 13 }}
+            >
+              {pitchLabel}
+            </Text>
+            <Pressable onPress={onClose} hitSlop={8}>
+              <Icon icon={Icons.close} size={16} color={colors.mcWhite3} />
+            </Pressable>
+          </View>
+
+          {/* Body: left ruler + scrollable timeline */}
+          <View style={styles.body}>
+            {/* Left ruler column */}
+            <View
+              style={[
+                styles.leftCol,
+                { width: LABEL_COL, backgroundColor: colors.mcBlack2 },
+              ]}
+            >
+              <View style={{ height: BEAT_LABEL_H }} />
+              <View style={{ height: NOTE_AREA_H, justifyContent: 'center' }}>
                 <Text
-                  key={i}
                   variant="extraSmall"
                   color={colors.mcWhite3}
-                  style={{
-                    width: STEPS_PER_BEAT * stepWidth,
-                    fontSize: 8,
-                    paddingLeft: 2,
-                  }}
+                  center
+                  style={styles.tinyLabel}
                 >
-                  {Math.floor(i / BEATS_PER_BAR) + 1}.{(i % BEATS_PER_BAR) + 1}
+                  NOTES
                 </Text>
-              ))}
-            </View>
-
-            {/* Note blocks area */}
-            <View style={{ height: NOTE_AREA_H }}>
-              {/* Grid lines */}
-              <View style={StyleSheet.absoluteFill} pointerEvents="none">
-                {/* Half-step lines give a finer visual reference than the
-                    step grid alone, now that dragging here is always free. */}
-                {Array.from({ length: totalSteps * 2 + 1 }, (_, h) => {
-                  const isBeat = h % (STEPS_PER_BEAT * 2) === 0;
-                  const isStep = h % 2 === 0;
-                  return (
-                    <View
-                      key={h}
-                      style={{
-                        position: 'absolute',
-                        left: h * (stepWidth / 2),
-                        top: 0,
-                        bottom: 0,
-                        width: isBeat ? 1 : 0.5,
-                        backgroundColor: isBeat
-                          ? 'rgba(255,255,255,0.2)'
-                          : isStep
-                            ? 'rgba(255,255,255,0.06)'
-                            : 'rgba(255,255,255,0.03)',
-                      }}
-                    />
-                  );
-                })}
-                {/* Note blocks */}
-                {notesAtPitch.map(({ note }, i) => {
-                  const livePos =
-                    i === posBlockDragIdx
-                      ? getLivePosition(
-                          note.position,
-                          note.duration,
-                          posBlockDragDx
-                        )
-                      : note.position;
-                  const liveDur =
-                    i === durBlockDragIdx
-                      ? getLiveDuration(
-                          note.duration,
-                          note.position,
-                          durBlockDragDx
-                        )
-                      : note.duration;
-                  const x = (livePos / 0.25) * stepWidth;
-                  const w = Math.max(
-                    (liveDur / 0.25) * stepWidth - 1,
-                    stepWidth * 0.5
-                  );
-                  // Matches the piano roll grid's note styling exactly,
-                  // including velocity-scaled lightness — reads dragVel live
-                  // while this note's own velocity handle is being dragged,
-                  // same as the stem/handle below already do.
-                  const liveVelocity = i === dragIdx ? dragVel : note.velocity;
-                  return (
-                    <View
-                      key={i}
-                      style={{
-                        position: 'absolute',
-                        left: x,
-                        top: 2,
-                        width: w,
-                        height: NOTE_AREA_H - 4,
-                        borderRadius: 3,
-                        backgroundColor: getVelocityColor(trackColor, liveVelocity),
-                        borderWidth: 0.5,
-                        borderColor: '#000000',
-                        opacity: 1,
-                      }}
-                    >
-                      <View
-                        style={{
-                          position: 'absolute',
-                          right: 2,
-                          top: 4,
-                          bottom: 4,
-                          width: 2,
-                          backgroundColor: 'rgba(0,0,0,0.3)',
-                          borderRadius: 1,
-                        }}
-                      />
-                    </View>
-                  );
-                })}
               </View>
-
-              {/* Drag gesture targets */}
-              {notesAtPitch.map(({ note }, i) => {
-                const x = (note.position / 0.25) * stepWidth;
-                const w = Math.max(
-                  (note.duration / 0.25) * stepWidth,
-                  stepWidth
-                );
-                const edgeW = 12;
-                return (
-                  <React.Fragment key={`bg${i}`}>
-                    <PrecisionBlockDrag
-                      index={i}
-                      x={x}
-                      width={w - edgeW}
-                      type="position"
-                      onStart={handlePosBlockDragStart}
-                      onUpdate={handlePosBlockDragUpdate}
-                      onEnd={handlePosBlockDragEnd}
-                    />
-                    <PrecisionBlockDrag
-                      index={i}
-                      x={x + w - edgeW}
-                      width={edgeW}
-                      type="duration"
-                      onStart={handleDurBlockDragStart}
-                      onUpdate={handleDurBlockDragUpdate}
-                      onEnd={handleDurBlockDragEnd}
-                    />
-                  </React.Fragment>
-                );
-              })}
-
-              {notesAtPitch.length === 0 && (
-                <View style={styles.emptyState}>
-                  <Text variant="small" color={colors.mcWhite3}>
-                    No notes at {pitchLabel}
-                  </Text>
-                </View>
-              )}
-            </View>
-
-            {/* Velocity area */}
-            <View style={{ height: velAreaH }}>
-              {/* Grid lines at each vel level */}
-              <View style={StyleSheet.absoluteFill} pointerEvents="none">
+              <View
+                style={{ flex: 1 }}
+                onLayout={(e) =>
+                  setVelAreaH(Math.max(60, e.nativeEvent.layout.height))
+                }
+              >
+                <Text
+                  variant="extraSmall"
+                  color={colors.mcWhite3}
+                  center
+                  style={[styles.tinyLabel, { marginTop: 4 }]}
+                >
+                  VEL
+                </Text>
                 {VEL_LEVELS.map((l) => {
                   const fraction = l.vel / 127;
                   const baseline = velAreaH - BOTTOM_PAD;
@@ -526,103 +424,306 @@ export const NotePrecisionPanel = memo(forwardRef<NotePrecisionPanelHandle, Note
                   const stemH = fraction * usableH;
                   const y = baseline - stemH - HANDLE_H / 2;
                   return (
+                    <View key={l.label} style={[styles.rulerTick, { top: y }]}>
+                      <Text
+                        variant="extraSmall"
+                        color={colors.mcWhite3}
+                        style={styles.rulerNum}
+                      >
+                        {l.label}
+                      </Text>
+                      <View style={styles.rulerDash} />
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+
+            {/* Scrollable timeline */}
+            <GHScrollView
+              ref={hScrollRef}
+              horizontal
+              showsHorizontalScrollIndicator
+              style={{ flex: 1 }}
+              onScroll={handleScroll}
+              onScrollEndDrag={flushScroll}
+              onMomentumScrollEnd={flushScroll}
+              scrollEventThrottle={100}
+            >
+              <View
+                style={{ width: Math.max(totalWidth, totalWidth + HANDLE_W) }}
+              >
+                {/* Beat labels */}
+                <View style={{ height: BEAT_LABEL_H, flexDirection: 'row' }}>
+                  {Array.from({ length: totalBeats }, (_, i) => (
+                    <Text
+                      key={i}
+                      variant="extraSmall"
+                      color={colors.mcWhite3}
+                      style={{
+                        width: STEPS_PER_BEAT * stepWidth,
+                        fontSize: 8,
+                        paddingLeft: 2,
+                      }}
+                    >
+                      {Math.floor(i / BEATS_PER_BAR) + 1}.
+                      {(i % BEATS_PER_BAR) + 1}
+                    </Text>
+                  ))}
+                </View>
+
+                {/* Note blocks area */}
+                <View style={{ height: NOTE_AREA_H }}>
+                  {/* Grid lines */}
+                  <View style={StyleSheet.absoluteFill} pointerEvents="none">
+                    {/* Half-step lines give a finer visual reference than the
+                    step grid alone, now that dragging here is always free. */}
+                    {Array.from({ length: totalSteps * 2 + 1 }, (_, h) => {
+                      const isBeat = h % (STEPS_PER_BEAT * 2) === 0;
+                      const isStep = h % 2 === 0;
+                      return (
+                        <View
+                          key={h}
+                          style={{
+                            position: 'absolute',
+                            left: h * (stepWidth / 2),
+                            top: 0,
+                            bottom: 0,
+                            width: isBeat ? 1 : 0.5,
+                            backgroundColor: isBeat
+                              ? 'rgba(255,255,255,0.2)'
+                              : isStep
+                                ? 'rgba(255,255,255,0.06)'
+                                : 'rgba(255,255,255,0.03)',
+                          }}
+                        />
+                      );
+                    })}
+                    {/* Note blocks */}
+                    {notesAtPitch.map(({ note }, i) => {
+                      const livePos =
+                        i === posBlockDragIdx
+                          ? getLivePosition(
+                              note.position,
+                              note.duration,
+                              posBlockDragDx
+                            )
+                          : note.position;
+                      const liveDur =
+                        i === durBlockDragIdx
+                          ? getLiveDuration(
+                              note.duration,
+                              note.position,
+                              durBlockDragDx
+                            )
+                          : note.duration;
+                      const x = (livePos / 0.25) * stepWidth;
+                      const w = Math.max(
+                        (liveDur / 0.25) * stepWidth - 1,
+                        stepWidth * 0.5
+                      );
+                      // Matches the piano roll grid's note styling exactly,
+                      // including velocity-scaled lightness — reads dragVel live
+                      // while this note's own velocity handle is being dragged,
+                      // same as the stem/handle below already do.
+                      const liveVelocity =
+                        i === dragIdx ? dragVel : note.velocity;
+                      return (
+                        <View
+                          key={i}
+                          style={{
+                            position: 'absolute',
+                            left: x,
+                            top: 2,
+                            width: w,
+                            height: NOTE_AREA_H - 4,
+                            borderRadius: 3,
+                            backgroundColor: getVelocityColor(
+                              trackColor,
+                              liveVelocity
+                            ),
+                            borderWidth: 0.5,
+                            borderColor: '#000000',
+                            opacity: 1,
+                          }}
+                        >
+                          {!lockNoteDuration && (
+                            <View
+                              style={{
+                                position: 'absolute',
+                                right: 2,
+                                top: 4,
+                                bottom: 4,
+                                width: 2,
+                                backgroundColor: 'rgba(0,0,0,0.3)',
+                                borderRadius: 1,
+                              }}
+                            />
+                          )}
+                        </View>
+                      );
+                    })}
+                  </View>
+
+                  {/* Drag gesture targets */}
+                  {notesAtPitch.map(({ note }, i) => {
+                    const x = (note.position / 0.25) * stepWidth;
+                    const w = Math.max(
+                      (note.duration / 0.25) * stepWidth,
+                      stepWidth
+                    );
+                    const edgeW = 12;
+                    return (
+                      <React.Fragment key={`bg${i}`}>
+                        <PrecisionBlockDrag
+                          index={i}
+                          x={x}
+                          width={w - edgeW}
+                          type="position"
+                          onStart={handlePosBlockDragStart}
+                          onUpdate={handlePosBlockDragUpdate}
+                          onEnd={handlePosBlockDragEnd}
+                        />
+                        {!lockNoteDuration && (
+                          <PrecisionBlockDrag
+                            index={i}
+                            x={x + w - edgeW}
+                            width={edgeW}
+                            type="duration"
+                            onStart={handleDurBlockDragStart}
+                            onUpdate={handleDurBlockDragUpdate}
+                            onEnd={handleDurBlockDragEnd}
+                          />
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+
+                  {notesAtPitch.length === 0 && (
+                    <View style={styles.emptyState}>
+                      <Text variant="small" color={colors.mcWhite3}>
+                        No notes at {pitchLabel}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+
+                {/* Velocity area */}
+                <View style={{ height: velAreaH }}>
+                  {/* Grid lines at each vel level */}
+                  <View style={StyleSheet.absoluteFill} pointerEvents="none">
+                    {VEL_LEVELS.map((l) => {
+                      const fraction = l.vel / 127;
+                      const baseline = velAreaH - BOTTOM_PAD;
+                      const usableH = baseline - HANDLE_H;
+                      const stemH = fraction * usableH;
+                      const y = baseline - stemH - HANDLE_H / 2;
+                      return (
+                        <View
+                          key={l.label}
+                          style={{
+                            position: 'absolute',
+                            left: 0,
+                            right: 0,
+                            top: y,
+                            height: 0.5,
+                            backgroundColor: 'rgba(255,255,255,0.08)',
+                          }}
+                        />
+                      );
+                    })}
+                    {/* Baseline at velocity 0 */}
                     <View
-                      key={l.label}
                       style={{
                         position: 'absolute',
                         left: 0,
                         right: 0,
-                        top: y,
+                        top: velAreaH - BOTTOM_PAD,
                         height: 0.5,
-                        backgroundColor: 'rgba(255,255,255,0.08)',
+                        backgroundColor: 'rgba(255,255,255,0.15)',
                       }}
                     />
-                  );
-                })}
-                {/* Baseline at velocity 0 */}
-                <View
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    right: 0,
-                    top: velAreaH - BOTTOM_PAD,
-                    height: 0.5,
-                    backgroundColor: 'rgba(255,255,255,0.15)',
-                  }}
-                />
 
-                {/* Stems + handles for each note */}
-                {notesAtPitch.map(({ note }, i) => {
-                  const vel = i === dragIdx ? dragVel : note.velocity;
-                  const g = noteGeom(note, vel);
-                  const velOpacity = 0.3 + 0.7 * g.fraction;
-                  return (
-                    <React.Fragment key={`vh${i}`}>
-                      {/* Stem */}
-                      <View
-                        style={{
-                          position: 'absolute',
-                          left: g.stemX - STEM_W / 2,
-                          top: g.stemTop,
-                          width: STEM_W,
-                          height: g.stemH,
-                          backgroundColor: trackColor,
-                          opacity: 0.4,
-                        }}
+                    {/* Stems + handles for each note */}
+                    {notesAtPitch.map(({ note }, i) => {
+                      const vel = i === dragIdx ? dragVel : note.velocity;
+                      const g = noteGeom(note, vel);
+                      const velOpacity = 0.3 + 0.7 * g.fraction;
+                      return (
+                        <React.Fragment key={`vh${i}`}>
+                          {/* Stem */}
+                          <View
+                            style={{
+                              position: 'absolute',
+                              left: g.stemX - STEM_W / 2,
+                              top: g.stemTop,
+                              width: STEM_W,
+                              height: g.stemH,
+                              backgroundColor: trackColor,
+                              opacity: 0.4,
+                            }}
+                          />
+                          {/* Handle rect */}
+                          <View
+                            style={{
+                              position: 'absolute',
+                              left: g.handleX,
+                              top: g.handleY,
+                              width: HANDLE_W,
+                              height: HANDLE_H,
+                              borderRadius: 2,
+                              backgroundColor: trackColor,
+                              opacity: velOpacity,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              borderWidth: 0.5,
+                              borderColor: 'rgba(255,255,255,0.3)',
+                            }}
+                          >
+                            <Text
+                              variant="extraSmall"
+                              color="white"
+                              style={{ fontSize: 8, fontWeight: '600' }}
+                            >
+                              {vel}
+                            </Text>
+                          </View>
+                        </React.Fragment>
+                      );
+                    })}
+                  </View>
+
+                  {/* Velocity drag targets */}
+                  {notesAtPitch.map(({ note }, i) => {
+                    // Keep the gesture target anchored while its visual handle
+                    // previews the dragged velocity; moving the target itself
+                    // would rebuild the active gesture mid-drag.
+                    const g = noteGeom(note, note.velocity);
+                    return (
+                      <VelDragTarget
+                        key={`dt${i}`}
+                        index={i}
+                        x={g.handleX - 8}
+                        y={g.handleY - 8}
+                        updateThresholdPx={Math.max(
+                          2,
+                          (4 * (velAreaH - BOTTOM_PAD - HANDLE_H)) / 127
+                        )}
+                        onDragStart={handleVelDragStart}
+                        onDragUpdate={handleVelDragUpdate}
+                        onDragEnd={handleVelDragEnd}
                       />
-                      {/* Handle rect */}
-                      <View
-                        style={{
-                          position: 'absolute',
-                          left: g.handleX,
-                          top: g.handleY,
-                          width: HANDLE_W,
-                          height: HANDLE_H,
-                          borderRadius: 2,
-                          backgroundColor: trackColor,
-                          opacity: velOpacity,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          borderWidth: 0.5,
-                          borderColor: 'rgba(255,255,255,0.3)',
-                        }}
-                      >
-                        <Text
-                          variant="extraSmall"
-                          color="white"
-                          style={{ fontSize: 8, fontWeight: '600' }}
-                        >
-                          {vel}
-                        </Text>
-                      </View>
-                    </React.Fragment>
-                  );
-                })}
+                    );
+                  })}
+                </View>
               </View>
-
-              {/* Velocity drag targets */}
-              {notesAtPitch.map(({ note }, i) => {
-                const vel = i === dragIdx ? dragVel : note.velocity;
-                const g = noteGeom(note, vel);
-                return (
-                  <VelDragTarget
-                    key={`dt${i}`}
-                    index={i}
-                    x={g.handleX - 8}
-                    y={g.handleY - 8}
-                    onDragStart={handleVelDragStart}
-                    onDragUpdate={handleVelDragUpdate}
-                    onDragEnd={handleVelDragEnd}
-                  />
-                );
-              })}
-            </View>
+            </GHScrollView>
           </View>
-        </GHScrollView>
-      </View>
-    </View>
-  );
-}));
+        </View>
+      );
+    }
+  )
+);
 
 const PrecisionBlockDrag = memo(function PrecisionBlockDrag({
   index,
@@ -678,6 +779,7 @@ const VelDragTarget = memo(function VelDragTarget({
   onDragStart,
   onDragUpdate,
   onDragEnd,
+  updateThresholdPx,
 }: {
   index: number;
   x: number;
@@ -685,14 +787,19 @@ const VelDragTarget = memo(function VelDragTarget({
   onDragStart: (idx: number, y: number) => void;
   onDragUpdate: (y: number) => void;
   onDragEnd: () => void;
+  updateThresholdPx: number;
 }) {
+  const lastUpdateY = useSharedValue(0);
   const gesture = Gesture.Pan()
     .onStart((e) => {
       'worklet';
+      lastUpdateY.value = e.absoluteY;
       runOnJS(onDragStart)(index, e.absoluteY);
     })
     .onUpdate((e) => {
       'worklet';
+      if (Math.abs(e.absoluteY - lastUpdateY.value) < updateThresholdPx) return;
+      lastUpdateY.value = e.absoluteY;
       runOnJS(onDragUpdate)(e.absoluteY);
     })
     .onEnd(() => {

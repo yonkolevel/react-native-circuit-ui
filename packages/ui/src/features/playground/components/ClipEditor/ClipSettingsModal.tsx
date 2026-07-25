@@ -169,7 +169,10 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
             <View
               style={[
                 styles.row,
-                { borderBottomColor: colors.mcBlack4, alignItems: 'flex-start' },
+                {
+                  borderBottomColor: colors.mcBlack4,
+                  alignItems: 'flex-start',
+                },
               ]}
             >
               <View style={styles.labelWithSubtitle}>

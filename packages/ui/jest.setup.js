@@ -98,6 +98,11 @@ jest.mock('react-native-reanimated', () => {
     useDerivedValue: (fn) => ({ value: fn() }),
     useAnimatedStyle: (fn) => fn(),
     useAnimatedProps: (fn) => fn(),
+    useFrameCallback: (_callback, autostart = true) => ({
+      setActive: () => {},
+      isActive: autostart,
+      callbackId: 0,
+    }),
     useAnimatedScrollHandler: () => {},
     useAnimatedRef: () => ({ current: null }),
     useAnimatedGestureHandler: () => {},
