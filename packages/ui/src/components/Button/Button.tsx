@@ -115,12 +115,9 @@ export const Button: React.FC<ButtonProps> = memo(function Button({
       } else {
         switch (variant) {
           case 'primary':
-            // Green buttons: black text normally, green text when pressed
-            if (buttonColor === colors.mcGreen) {
-              text = pressed ? colors.mcGreen : colors.mcBlack;
-            } else {
-              text = pressed ? buttonColor : colors.mcWhite;
-            }
+            // Primary accents are bright; dark text stays readable in both
+            // normal and inverted press states.
+            text = colors.mcBlack;
             break;
           case 'secondary':
             text = pressed ? colors.mcWhite : buttonColor;
@@ -224,7 +221,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 44,
+    minHeight: 48,
   },
   fullWidth: {
     width: '100%',

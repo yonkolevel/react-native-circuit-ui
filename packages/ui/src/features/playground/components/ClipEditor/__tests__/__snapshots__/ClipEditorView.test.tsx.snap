@@ -5597,6 +5597,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           }
         >
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Shaker"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5618,15 +5631,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -5636,6 +5649,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </Text>
           </View>
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Perc 1"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5657,15 +5683,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -5675,6 +5701,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </Text>
           </View>
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Perc 2"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5696,15 +5735,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -5714,6 +5753,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </Text>
           </View>
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="FX"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5735,15 +5787,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -5763,6 +5815,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           }
         >
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Cymbal"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5784,15 +5849,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -5802,6 +5867,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </Text>
           </View>
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Ride"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5823,15 +5901,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -5841,6 +5919,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </Text>
           </View>
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Rim"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5862,15 +5953,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -5880,6 +5971,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </Text>
           </View>
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Cowbell"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5901,15 +6005,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -5929,6 +6033,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           }
         >
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Clap"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5950,15 +6067,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -5968,6 +6085,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </Text>
           </View>
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Tom Low"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -5989,15 +6119,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -6007,6 +6137,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </Text>
           </View>
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Tom Mid"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -6028,15 +6171,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -6046,6 +6189,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </Text>
           </View>
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Tom High"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -6067,15 +6223,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -6095,6 +6251,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           }
         >
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Kick"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -6116,15 +6285,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -6134,6 +6303,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </Text>
           </View>
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Snare"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -6155,15 +6337,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -6173,6 +6355,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </Text>
           </View>
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Closed HH"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -6194,15 +6389,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]
@@ -6212,6 +6407,19 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             </Text>
           </View>
           <View
+            accessibilityActions={
+              [
+                {
+                  "name": "activate",
+                },
+              ]
+            }
+            accessibilityHint="Play sample"
+            accessibilityLabel="Open HH"
+            accessibilityRole="button"
+            accessible={true}
+            onAccessibilityAction={[Function]}
+            onAccessibilityTap={[Function]}
             style={
               [
                 {
@@ -6233,15 +6441,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 [
                   {
                     "fontFamily": "System",
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "fontWeight": "400",
-                    "lineHeight": 12,
+                    "lineHeight": 18,
                   },
                   {
-                    "color": "rgba(255,255,255,0.5)",
+                    "color": "rgba(247, 247, 247, 0.80)",
                   },
                   {
-                    "fontSize": 8,
+                    "fontSize": 12,
                     "textAlign": "center",
                   },
                 ]

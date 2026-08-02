@@ -5,7 +5,7 @@
  * When a pointer enters a new cell → onPadPress. When it leaves → onPadRelease.
  * Supports simultaneous touches (chords, rolls, fast tapping).
  */
-import { memo, useRef, useCallback } from 'react';
+import { memo, useRef, useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import type {
   ViewProps,
@@ -29,6 +29,8 @@ export const MultiTouchOverlay = memo(function MultiTouchOverlay({
   ...rest
 }: MultiTouchOverlayProps) {
   const layoutRef = useRef({ width: 0, height: 0 });
+  const onPadReleaseRef = useRef(onPadRelease);
+  onPadReleaseRef.current = onPadRelease;
   // Track which cell each pointer is currently in (pointerId → cellIndex)
   const pointerCells = useRef<Map<number, number>>(new Map());
 
@@ -60,24 +62,29 @@ export const MultiTouchOverlay = memo(function MultiTouchOverlay({
         const prevCell = pointerCells.current.get(pointerId);
 
         if (cell !== null && cell !== prevCell) {
-          // Release previous cell if pointer moved to a new one
           if (prevCell !== undefined) {
-            onPadRelease?.(prevCell);
+            pointerCells.current.delete(pointerId);
+            if (![...pointerCells.current.values()].includes(prevCell))
+              onPadRelease?.(prevCell);
           }
+          const isAlreadyHeld = [...pointerCells.current.values()].includes(
+            cell
+          );
           pointerCells.current.set(pointerId, cell);
-          onPadPress?.(cell);
+          if (!isAlreadyHeld) onPadPress?.(cell);
         } else if (cell === null && prevCell !== undefined) {
-          // Pointer moved outside grid
-          onPadRelease?.(prevCell);
           pointerCells.current.delete(pointerId);
+          if (![...pointerCells.current.values()].includes(prevCell))
+            onPadRelease?.(prevCell);
         }
       }
 
       // Release cells for pointers that are no longer active
       for (const [pointerId, cell] of pointerCells.current) {
         if (!activePointers.has(pointerId)) {
-          onPadRelease?.(cell);
           pointerCells.current.delete(pointerId);
+          if (![...pointerCells.current.values()].includes(cell))
+            onPadRelease?.(cell);
         }
       }
     },
@@ -85,18 +92,13 @@ export const MultiTouchOverlay = memo(function MultiTouchOverlay({
     [columns, rows, onPadPress, onPadRelease]
   );
 
-  const onTouchEnd = useCallback(
-    (e: GestureResponderEvent) => {
-      // Release the ended pointer
-      const pointerId = (e.nativeEvent as any).identifier ?? 0;
-      const cell = pointerCells.current.get(pointerId);
-      if (cell !== undefined) {
-        onPadRelease?.(cell);
-        pointerCells.current.delete(pointerId);
-      }
-    },
-    [onPadRelease]
-  );
+  const releaseAllPointers = useCallback(() => {
+    const cells = new Set(pointerCells.current.values());
+    pointerCells.current.clear();
+    for (const cell of cells) onPadReleaseRef.current?.(cell);
+  }, []);
+
+  useEffect(() => releaseAllPointers, [releaseAllPointers]);
 
   return (
     <View
@@ -105,9 +107,11 @@ export const MultiTouchOverlay = memo(function MultiTouchOverlay({
       onStartShouldSetResponder={() => true}
       onMoveShouldSetResponder={() => true}
       onResponderGrant={processPointers}
+      onResponderStart={processPointers}
       onResponderMove={processPointers}
-      onResponderRelease={onTouchEnd}
-      onResponderTerminate={onTouchEnd}
+      onResponderEnd={processPointers}
+      onResponderRelease={processPointers}
+      onResponderTerminate={releaseAllPointers}
       {...rest}
     />
   );

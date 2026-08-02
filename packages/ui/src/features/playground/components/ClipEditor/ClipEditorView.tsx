@@ -725,6 +725,9 @@ export interface ClipEditorViewProps {
   /** Duplicate the first bar when adding the second bar. */
   onDuplicateBar?: (barIndex: number) => void;
   onShowSettings?: () => void;
+  /** Drum tracks only — launch the sampler to create and replace the current kit. */
+  onSampleKit?: () => void;
+  sampleKitButtonTestID?: string;
   /** Recording count-in remaining (3, 2, 1, null) */
   recordingCountIn?: number | null;
   /** Current tempo — passed to clip settings modal */
@@ -768,6 +771,8 @@ export const ClipEditorView = memo(function ClipEditorView({
   onClipLengthDecrease,
   onSetActiveBarRange,
   onDuplicateBar,
+  onSampleKit,
+  sampleKitButtonTestID,
   recordingCountIn,
   tempo = 120,
   showPianoNoteNames = false,
@@ -1229,6 +1234,8 @@ export const ClipEditorView = memo(function ClipEditorView({
         onToggleNoteLabels={onTogglePianoNoteNames}
         onToggleSnapToGrid={onToggleSnapToGrid}
         onToggleLockNoteDuration={onToggleLockNoteDuration}
+        onSampleKit={instrumentType === 'drum' ? onSampleKit : undefined}
+        sampleKitButtonTestID={sampleKitButtonTestID}
       />
     </View>
   );
