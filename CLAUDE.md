@@ -2,6 +2,12 @@
 
 A pixel-perfect React Native port of Midicircuit's SwiftUI design system.
 
+## Cross-platform feature gate
+
+Every Midicircuit feature must span native macOS, native iOS / MidicircuitKit, React Native iOS, React Native Android, and React Native web. Native iOS remains required because the shared native code powers macOS, even though the shipped iOS app is React Native.
+
+Deliver the same user outcome on every surface; platform-specific UI and interaction affordances may differ. Work may be staged across coordinated changes, but track all five surfaces and do not call a feature complete or ship it until all five are supported. Prefer React Native where viable, while continuing native Swift support. Require a parity checklist and automated tests/builds wherever available. If a platform cannot support the capability, block shipping.
+
 ## Reply style
 
 Default to a terse, status-first reply modeled on an incident/update card:

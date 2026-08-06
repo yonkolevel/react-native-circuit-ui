@@ -9,7 +9,7 @@
  * - Press state tracked via onPressIn/onPressOut
  */
 import { memo, useState, useCallback } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
 import type { Sample } from '../../types';
@@ -48,11 +48,10 @@ export const DrumPad = memo(function DrumPad({
     onRelease?.(index);
   }, [index, onRelease]);
 
-  // Empty pad — mcBlack2
+  // Empty pad — mcBlack2. A View, not a Pressable: there is nothing to play,
+  // so it must not present itself to touch or assistive tech as a control.
   if (!sample) {
-    return (
-      <Pressable style={[styles.pad, { backgroundColor: colors.mcBlack2 }]} />
-    );
+    return <View style={[styles.pad, { backgroundColor: colors.mcBlack2 }]} />;
   }
 
   return (
@@ -71,8 +70,8 @@ export const DrumPad = memo(function DrumPad({
     >
       {/* Matches Swift: .font(.system(size: 8, weight: .medium)) .foregroundStyle(Color.white.opacity(0.5)) */}
       <Text
-        variant="extraSmall"
-        color="rgba(255,255,255,0.5)"
+        variant="small"
+        color={isActive ? colors.mcBlack : colors.mcWhite2}
         numberOfLines={2}
         style={styles.label}
       >
@@ -90,5 +89,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 4,
   },
-  label: { fontSize: 8, textAlign: 'center' },
+  label: { fontSize: 12, textAlign: 'center' },
 });

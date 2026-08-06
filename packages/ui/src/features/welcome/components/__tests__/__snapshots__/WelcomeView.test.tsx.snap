@@ -121,7 +121,7 @@ exports[`WelcomeView snapshots matches snapshot 1`] = `
             "alignItems": "center",
             "flexDirection": "row",
             "justifyContent": "center",
-            "minHeight": 44,
+            "minHeight": 48,
           },
           {
             "paddingHorizontal": 16,
@@ -161,7 +161,7 @@ exports[`WelcomeView snapshots matches snapshot 1`] = `
                 "lineHeight": 24,
               },
               {
-                "color": "#F7F7F7",
+                "color": "#000000",
               },
               {
                 "textTransform": "uppercase",
@@ -211,7 +211,7 @@ exports[`WelcomeView snapshots matches snapshot 1`] = `
             "alignItems": "center",
             "flexDirection": "row",
             "justifyContent": "center",
-            "minHeight": 44,
+            "minHeight": 48,
           },
           {
             "paddingHorizontal": 16,

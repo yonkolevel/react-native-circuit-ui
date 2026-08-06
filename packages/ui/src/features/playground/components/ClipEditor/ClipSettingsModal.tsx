@@ -5,7 +5,15 @@
  * Presented as a full-screen modal on iOS, sheet on macOS.
  */
 import { memo, useState } from 'react';
-import { View, Switch, Pressable, Modal, StyleSheet } from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Switch,
+  Pressable,
+  Modal,
+  StyleSheet,
+} from 'react-native';
 import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
@@ -32,6 +40,8 @@ export interface ClipSettingsModalProps {
   onToggleNoteLabels?: () => void;
   onToggleSnapToGrid?: () => void;
   onToggleLockNoteDuration?: () => void;
+  onSampleKit?: () => void;
+  sampleKitButtonTestID?: string;
 }
 
 export const ClipSettingsModal = memo(function ClipSettingsModal({
@@ -48,6 +58,8 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
   onToggleNoteLabels,
   onToggleSnapToGrid,
   onToggleLockNoteDuration,
+  onSampleKit,
+  sampleKitButtonTestID,
 }: ClipSettingsModalProps) {
   const { colors } = useTheme();
   const [tempoDisplay, setTempoDisplay] = useState<number | null>(null);
@@ -60,11 +72,18 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
       animationType="slide"
       onRequestClose={onClose}
     >
-      <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: colors.mcBlack }]}
+      >
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerSpacer} />
-          <Pressable onPress={onClose} hitSlop={8}>
+          <Pressable
+            onPress={onClose}
+            hitSlop={8}
+            accessibilityLabel="Done"
+            accessibilityRole="button"
+          >
             <Text variant="label" color={colors.mcOrange}>
               Done
             </Text>
@@ -72,7 +91,10 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
         </View>
 
         {/* Settings */}
-        <View style={styles.content}>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+        >
           {/* Metronome */}
           <View style={[styles.row, { borderBottomColor: colors.mcBlack4 }]}>
             <Text variant="label" color={colors.mcWhite}>
@@ -80,6 +102,8 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
             </Text>
             <Switch
               value={isMetronomeEnabled}
+              accessibilityLabel="Metronome"
+              accessibilityHint="Play a click with the song"
               onValueChange={() => onToggleMetronome?.()}
               trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}
             />
@@ -101,6 +125,9 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
             {SliderComponent && (
               <SliderComponent
                 style={styles.slider}
+                accessibilityLabel="Tempo"
+                accessibilityRole="adjustable"
+                accessibilityValue={{ text: `${Math.round(tempoValue)} BPM` }}
                 minimumValue={40}
                 maximumValue={240}
                 value={tempo}
@@ -128,12 +155,13 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
               <Text variant="label" color={colors.mcWhite}>
                 Show Labels on Notes
               </Text>
-              <Text variant="extraSmall" color={colors.mcGray}>
+              <Text variant="small" color={colors.mcGray}>
                 Display note/sample names on piano roll notes
               </Text>
             </View>
             <Switch
               value={showNoteLabels}
+              accessibilityLabel="Show labels on notes"
               onValueChange={() => onToggleNoteLabels?.()}
               trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}
             />
@@ -151,12 +179,13 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
               <Text variant="label" color={colors.mcWhite}>
                 Snap to Grid
               </Text>
-              <Text variant="extraSmall" color={colors.mcGray}>
+              <Text variant="small" color={colors.mcGray}>
                 Moving/resizing notes snaps to the step grid
               </Text>
             </View>
             <Switch
               value={snapToGrid}
+              accessibilityLabel="Snap note edits to grid"
               onValueChange={() => onToggleSnapToGrid?.()}
               trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}
             />
@@ -179,19 +208,42 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
                 <Text variant="label" color={colors.mcWhite}>
                   Lock Note Length
                 </Text>
-                <Text variant="extraSmall" color={colors.mcGray}>
+                <Text variant="small" color={colors.mcGray}>
                   Drum hits can&apos;t be resized longer
                 </Text>
               </View>
               <Switch
                 value={lockNoteDuration}
+                accessibilityLabel="Lock drum note length"
                 onValueChange={() => onToggleLockNoteDuration?.()}
                 trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}
               />
             </View>
           )}
-        </View>
-      </View>
+
+          {onSampleKit && (
+            <Pressable
+              onPress={() => {
+                onClose();
+                onSampleKit();
+              }}
+              accessibilityLabel="Sample a kit"
+              accessibilityRole="button"
+              testID={sampleKitButtonTestID}
+              style={[styles.actionRow, { borderBottomColor: colors.mcBlack4 }]}
+            >
+              <Text variant="label" color={colors.mcOrange}>
+                Sample a Kit
+              </Text>
+              {/* `small` (12pt), not `extraSmall` (8pt) — below the 11pt floor
+                  body copy is unreadable for many users. */}
+              <Text variant="small" color={colors.mcGray}>
+                Record or load audio and chop it across the pads
+              </Text>
+            </Pressable>
+          )}
+        </ScrollView>
+      </SafeAreaView>
     </Modal>
   );
 });
@@ -210,6 +262,7 @@ const styles = StyleSheet.create({
   content: {
     paddingTop: 36,
     paddingHorizontal: 20,
+    paddingBottom: 32,
   },
   row: {
     flexDirection: 'row',
@@ -221,6 +274,12 @@ const styles = StyleSheet.create({
   labelWithSubtitle: {
     flex: 1,
     paddingRight: makeSpacing(2),
+  },
+  actionRow: {
+    minHeight: 48,
+    justifyContent: 'center',
+    paddingVertical: makeSpacing(4),
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   tempoGroup: {
     paddingVertical: makeSpacing(4),

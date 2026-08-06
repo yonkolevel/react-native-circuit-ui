@@ -66,19 +66,31 @@ export const DrumPadsView = memo(function DrumPadsView({
 }: DrumPadsViewProps) {
   const { colors } = useTheme();
   const [pressedPads, setPressedPads] = useState<Set<number>>(new Set());
+  const pressCounts = useRef(new Map<number, number>());
 
   const handleNativePress = useCallback(
     (visualIdx: number) => {
       const sampleIdx = visualToSample(visualIdx);
+      if (!samples[sampleIdx]) return;
+      const count = pressCounts.current.get(sampleIdx) ?? 0;
+      pressCounts.current.set(sampleIdx, count + 1);
+      if (count > 0) return;
       setPressedPads((prev) => new Set(prev).add(sampleIdx));
       onPadPress?.(sampleIdx);
     },
-    [onPadPress]
+    [onPadPress, samples]
   );
 
   const handleNativeRelease = useCallback(
     (visualIdx: number) => {
       const sampleIdx = visualToSample(visualIdx);
+      const count = pressCounts.current.get(sampleIdx) ?? 0;
+      if (count > 1) {
+        pressCounts.current.set(sampleIdx, count - 1);
+        return;
+      }
+      if (count === 0) return;
+      pressCounts.current.delete(sampleIdx);
       setPressedPads((prev) => {
         const n = new Set(prev);
         n.delete(sampleIdx);
@@ -87,6 +99,14 @@ export const DrumPadsView = memo(function DrumPadsView({
       onPadRelease?.(sampleIdx);
     },
     [onPadRelease]
+  );
+
+  const handleAccessibleActivation = useCallback(
+    (visualIdx: number) => {
+      handleNativePress(visualIdx);
+      setTimeout(() => handleNativeRelease(visualIdx), 0);
+    },
+    [handleNativePress, handleNativeRelease]
   );
 
   // QWERTY keyboard input.
@@ -144,7 +164,8 @@ export const DrumPadsView = memo(function DrumPadsView({
     };
   }, []);
 
-  const sampleIndexFromGrid = (row: number, col: number) => (3 - row) * 4 + col;
+  const sampleIndexFromGrid = (row: number, col: number) =>
+    visualToSample(row * 4 + col);
 
   return (
     <View style={styles.container} accessibilityLabel="Drum pads">
@@ -156,11 +177,26 @@ export const DrumPadsView = memo(function DrumPadsView({
               const idx = sampleIndexFromGrid(row, col);
               const sample = samples[idx];
               const isActive =
-                pressedPads.has(idx) || externalPressedNotes.has(idx);
+                pressedPads.has(idx) ||
+                (!!sample && externalPressedNotes.has(sample.noteNumber));
 
               return (
                 <View
                   key={col}
+                  accessible={!!sample}
+                  accessibilityRole={sample ? 'button' : undefined}
+                  accessibilityLabel={sample?.name}
+                  accessibilityHint={sample ? 'Play sample' : undefined}
+                  accessibilityActions={
+                    sample ? [{ name: 'activate' }] : undefined
+                  }
+                  onAccessibilityAction={(event) => {
+                    if (sample && event.nativeEvent.actionName === 'activate')
+                      handleAccessibleActivation(row * 4 + col);
+                  }}
+                  onAccessibilityTap={() =>
+                    sample && handleAccessibleActivation(row * 4 + col)
+                  }
                   style={[
                     styles.pad,
                     {

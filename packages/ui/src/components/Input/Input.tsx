@@ -8,7 +8,7 @@
  * - Corner radius: 6
  */
 import React, { memo, useState, useCallback } from 'react';
-import { View, TextInput, StyleSheet, Pressable } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import type { TextInputProps, StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../Text';
 import { useTheme } from '../../theme';
@@ -143,9 +143,7 @@ export const Input: React.FC<InputProps> = memo(function Input({
           {...rest}
         />
 
-        {rightIcon && (
-          <Pressable style={styles.rightIcon}>{rightIcon}</Pressable>
-        )}
+        {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
       </View>
 
       {(error || helperText) && (

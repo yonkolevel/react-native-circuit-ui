@@ -64,6 +64,53 @@ describe('ClipEditorView snapshots', () => {
   });
 });
 
+describe('Drum sampler action', () => {
+  it('labels every interactive clip setting', () => {
+    const clip = createMockDrumClip({ id: 5, trackID: 1, sectionID: 1 });
+    const { getAllByLabelText, getByLabelText, getByRole } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        onSampleKit={jest.fn()}
+      />
+    );
+
+    fireEvent.press(getByLabelText('Settings'));
+
+    expect(getByRole('switch', { name: 'Metronome' })).toBeTruthy();
+    expect(
+      getAllByLabelText('Tempo').some(
+        (element) => element.props.accessibilityRole === 'adjustable'
+      )
+    ).toBe(true);
+    expect(getByRole('switch', { name: 'Show labels on notes' })).toBeTruthy();
+    expect(
+      getByRole('switch', { name: 'Snap note edits to grid' })
+    ).toBeTruthy();
+    expect(getByRole('switch', { name: 'Lock drum note length' })).toBeTruthy();
+    expect(getByRole('button', { name: 'Done' })).toBeTruthy();
+  });
+
+  it('launches sampling from drum clip settings', () => {
+    const onSampleKit = jest.fn();
+    const clip = createMockDrumClip({ id: 5, trackID: 1, sectionID: 1 });
+    const { getByLabelText } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        onSampleKit={onSampleKit}
+      />
+    );
+
+    fireEvent.press(getByLabelText('Settings'));
+    fireEvent.press(getByLabelText('Sample a kit'));
+
+    expect(onSampleKit).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe('ClipLengthBar range selection', () => {
   it('focuses a tapped bar without changing the loop range', () => {
     const onSetActiveBarRange = jest.fn();
