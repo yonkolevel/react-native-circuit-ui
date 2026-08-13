@@ -42,6 +42,7 @@ export const PlaygroundScreen = memo(function PlaygroundScreen({
     addNote: noop,
     removeNote: noop,
     updateNote: noop,
+    applyVelocityContour: noop,
     setClipNotes: noop,
     createClip: noop,
     duplicateClip: noop,

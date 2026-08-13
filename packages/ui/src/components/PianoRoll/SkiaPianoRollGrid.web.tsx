@@ -35,6 +35,7 @@ import type {
   InstrumentType,
   Sample,
 } from '../../features/playground/types';
+import type { VelocityContourPreview } from '../NotePrecisionPanel/velocityContourAuthoring';
 import {
   getGridPointNoteTarget,
   getMovedNoteTarget,
@@ -64,6 +65,50 @@ const RECORDING_OUTLINE_COLOR = '#FF3B30';
  * press beat to the live playhead position via a SharedValue read on the UI
  * thread — mirrors the native SkiaPianoRollGrid's RecordingNotePreview.
  */
+const VelocityPreviewOverlay = memo(function VelocityPreviewOverlay({
+  noteIndex,
+  rect,
+  baseColor,
+  preview,
+}: {
+  noteIndex: number;
+  rect: { x: number; y: number; width: number; height: number };
+  baseColor: string;
+  preview: SharedValue<VelocityContourPreview | null>;
+}) {
+  const palette = useMemo(
+    () =>
+      Array.from({ length: 128 }, (_, velocity) =>
+        getVelocityColor(baseColor, velocity)
+      ),
+    [baseColor]
+  );
+  const style = useAnimatedStyle(() => {
+    const velocity = preview.value?.velocities[noteIndex] ?? -1;
+    return {
+      opacity: velocity >= 0 ? 0.92 : 0,
+      backgroundColor:
+        palette[Math.max(0, Math.min(127, velocity))] ?? baseColor,
+    };
+  });
+  return (
+    <Animated.View
+      pointerEvents="none"
+      style={[
+        {
+          position: 'absolute',
+          left: rect.x,
+          top: rect.y,
+          width: rect.width,
+          height: rect.height,
+          borderRadius: 3,
+        },
+        style,
+      ]}
+    />
+  );
+});
+
 const RecordingNotePreview = memo(function RecordingNotePreview({
   x,
   rowIdx,
@@ -289,6 +334,7 @@ export interface SkiaPianoRollGridProps {
    * mirrors an in-progress velocity-handle drag on NotePrecisionPanel so this
    * note's color updates in real time instead of only once the drag commits. */
   velocityPreview?: { noteIndex: number; velocity: number } | null;
+  velocityContourPreview?: SharedValue<VelocityContourPreview | null>;
 }
 
 /** Imperative handle for scrolling the grid programmatically (e.g. to jump to an isolated bar, or to mirror another view's scroll position). */
@@ -330,6 +376,7 @@ export const SkiaPianoRollGrid = memo(
         onVisibleBeatRangeChange,
         onScrollXChange,
         velocityPreview,
+        velocityContourPreview,
       }: SkiaPianoRollGridProps,
       ref
     ) {
@@ -1325,6 +1372,16 @@ export const SkiaPianoRollGrid = memo(
                             </Text>
                           )}
                         </Pressable>
+                        {velocityContourPreview && (
+                          <VelocityPreviewOverlay
+                            noteIndex={idx}
+                            rect={rect}
+                            baseColor={
+                              noteColors?.[note.noteNumber] ?? trackColor
+                            }
+                            preview={velocityContourPreview}
+                          />
+                        )}
                       </Fragment>
                     );
                   })}

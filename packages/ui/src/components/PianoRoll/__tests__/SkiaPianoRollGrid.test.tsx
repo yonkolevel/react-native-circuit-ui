@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
+import { Skia } from '@shopify/react-native-skia';
 import { GestureDetector } from 'react-native-gesture-handler';
 import { ThemeProvider } from '../../../theme';
 import { SkiaPianoRollGrid } from '../SkiaPianoRollGrid';
@@ -21,6 +22,34 @@ describe('SkiaPianoRollGrid gestures', () => {
     trackColor: '#FF6C3A',
     lengthInBeats: 16,
   };
+
+  it('renders with the package minimum Skia path API', () => {
+    const pathBuilder = (Skia as any).PathBuilder;
+    const pathMake = jest.spyOn((Skia as any).Path, 'Make');
+    (Skia as any).PathBuilder = undefined;
+    try {
+      expect(() =>
+        renderWithTheme(<SkiaPianoRollGrid {...baseProps} />)
+      ).not.toThrow();
+      expect(pathMake).toHaveBeenCalled();
+    } finally {
+      (Skia as any).PathBuilder = pathBuilder;
+      pathMake.mockRestore();
+    }
+  });
+
+  it('prefers PathBuilder when the runtime provides it', () => {
+    const pathMake = jest.spyOn((Skia as any).Path, 'Make');
+    const builderMake = jest.spyOn((Skia as any).PathBuilder, 'Make');
+    try {
+      renderWithTheme(<SkiaPianoRollGrid {...baseProps} />);
+      expect(builderMake).toHaveBeenCalled();
+      expect(pathMake).not.toHaveBeenCalled();
+    } finally {
+      pathMake.mockRestore();
+      builderMake.mockRestore();
+    }
+  });
 
   // Regression test for a real bug: the tap/pan/pinch gestures used to be
   // built directly in the render body instead of behind useMemo. RNGH v2's

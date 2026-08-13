@@ -56,6 +56,7 @@ function createMockStore(song: ReturnType<typeof createMockSong>) {
     addNote: noop,
     removeNote: noop,
     updateNote: noop,
+    applyVelocityContour: noop,
     setClipNotes: noop,
     createClip: noop,
     setClipLength: noop,

@@ -4,6 +4,9 @@ export * from './types';
 // Utils
 export * from './utils';
 
+// Domain primitives
+export * from './core/velocityContour';
+
 // Store (contract + provider + selectors)
 export {
   SongStoreProvider,
