@@ -1,3 +1,8 @@
+import type {
+  VelocityContour,
+  VelocityContourMode,
+} from '../core/velocityContour';
+
 /**
  * Playground Data Models
  *
@@ -196,6 +201,12 @@ export interface ClipEditorCallbacks {
   ) => void;
   onNoteResize?: (noteIndex: number, newDuration: number) => void;
   onVelocityChange?: (noteIndex: number, velocity: number) => void;
+  onVelocityContourApply?: (
+    contour: VelocityContour,
+    mode: VelocityContourMode,
+    noteIndexes: readonly number[],
+    expectedNotes: readonly ClipNote[]
+  ) => boolean;
   onQuantize?: (precision: NotePrecision) => void;
   onUndo?: () => void;
   onRedo?: () => void;

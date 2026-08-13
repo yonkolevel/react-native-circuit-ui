@@ -1,13 +1,32 @@
 import React from 'react';
-import { Alert, ScrollView } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+import { AccessibilityInfo, Alert, ScrollView } from 'react-native';
+import { act, render, fireEvent } from '@testing-library/react-native';
 import { ThemeProvider } from '../../../../../theme';
 import { SkiaPianoRollGrid } from '../../../../../components/PianoRoll';
+import { NotePrecisionPanel } from '../../../../../components/NotePrecisionPanel';
 import {
   ClipEditorView,
   ClipLengthBar,
   rangeForBarDrag,
 } from '../ClipEditorView';
+const mockPanelScrollToX = jest.fn();
+jest.mock('../../../../../components/NotePrecisionPanel', () => {
+  const ReactModule = require('react');
+  const { View } = require('react-native');
+  const NotePrecisionPanel = ReactModule.forwardRef(
+    (props: object, ref: unknown) => {
+      ReactModule.useImperativeHandle(ref, () => ({
+        scrollToX: mockPanelScrollToX,
+      }));
+      return ReactModule.createElement(View, {
+        ...props,
+        testID: 'mock-note-precision-panel',
+      });
+    }
+  );
+  return { NotePrecisionPanel };
+});
+
 import {
   createMockDrumClip,
   createMockMelodyClip,
@@ -19,7 +38,10 @@ function renderWithTheme(ui: React.ReactElement) {
   return render(<ThemeProvider initialMode="dark">{ui}</ThemeProvider>);
 }
 
-beforeEach(() => resetMockIds());
+beforeEach(() => {
+  resetMockIds();
+  mockPanelScrollToX.mockClear();
+});
 
 describe('ClipEditorView snapshots', () => {
   it('matches snapshot with drum clip', () => {
@@ -252,6 +274,48 @@ describe('ClipEditorView interactions', () => {
     ).toBeGreaterThan(0);
   });
 
+  it('opens the precision panel at the current interior grid offset', () => {
+    const clip = createMockDrumClip({ id: 5, trackID: 1, sectionID: 1 });
+    const view = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+      />
+    );
+    const grid = view.UNSAFE_getByType(SkiaPianoRollGrid);
+
+    act(() => grid.props.onScrollXChange(120));
+    expect(mockPanelScrollToX).not.toHaveBeenCalled();
+    act(() => grid.props.onPitchLabelTap(0));
+
+    expect(mockPanelScrollToX).toHaveBeenLastCalledWith(120, false);
+  });
+
+  it('mirrors a grid scroll back to zero after the panel acknowledges the prior offset', () => {
+    const clip = createMockDrumClip({ id: 5, trackID: 1, sectionID: 1 });
+    const view = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+      />
+    );
+
+    act(() =>
+      view.UNSAFE_getByType(SkiaPianoRollGrid).props.onPitchLabelTap(0)
+    );
+    const grid = view.UNSAFE_getByType(SkiaPianoRollGrid);
+    const panel = view.UNSAFE_getByType(NotePrecisionPanel);
+
+    act(() => grid.props.onScrollXChange(120));
+    expect(mockPanelScrollToX).toHaveBeenLastCalledWith(120, false);
+    act(() => panel.props.onScrollXChange(120));
+    act(() => grid.props.onScrollXChange(0));
+
+    expect(mockPanelScrollToX).toHaveBeenLastCalledWith(0, false);
+  });
+
   it('clamps the piano roll to the remaining bars when the clip shrinks', () => {
     const clip = createMockDrumClip({
       id: 6,
@@ -331,6 +395,120 @@ describe('ClipEditorView interactions', () => {
     );
     fireEvent.press(getByLabelText('Redo'));
     expect(onRedo).toHaveBeenCalled();
+  });
+
+  it('invalidates contour Undo when a newer clip edit keeps the notes unchanged', () => {
+    const announce = jest
+      .spyOn(AccessibilityInfo, 'announceForAccessibility')
+      .mockImplementation(() => {});
+    const onUndo = jest.fn();
+    const initialClip = createMockDrumClip({ id: 9, trackID: 1, sectionID: 1 });
+    let latestNotes = initialClip.notes;
+    let replaceClip!: React.Dispatch<React.SetStateAction<typeof initialClip>>;
+    let replaceUndoSnapshot!: React.Dispatch<
+      React.SetStateAction<typeof initialClip.notes | null>
+    >;
+    function Harness() {
+      const [clip, setClip] = React.useState(initialClip);
+      const [undoSnapshotNotes, setUndoSnapshotNotes] = React.useState<
+        typeof initialClip.notes | null
+      >(null);
+      latestNotes = clip.notes;
+      replaceClip = setClip;
+      replaceUndoSnapshot = setUndoSnapshotNotes;
+      return (
+        <ClipEditorView
+          clip={clip}
+          instrumentType="drum"
+          samples={createDrumSamples()}
+          undoSnapshotNotes={undoSnapshotNotes}
+          callbacks={{
+            onVelocityContourApply: (
+              _contour,
+              _mode,
+              indexes,
+              expectedNotes
+            ) => {
+              setUndoSnapshotNotes(expectedNotes.map((note) => ({ ...note })));
+              setClip((current) => ({
+                ...current,
+                notes: current.notes.map((note, index) =>
+                  indexes.includes(index)
+                    ? { ...note, velocity: index === indexes[0] ? 40 : 100 }
+                    : note
+                ),
+              }));
+              return true;
+            },
+            onUndo,
+          }}
+        />
+      );
+    }
+    const view = renderWithTheme(<Harness />);
+
+    act(() =>
+      view.UNSAFE_getByType(SkiaPianoRollGrid).props.onPitchLabelTap(0)
+    );
+    act(() => {
+      const panel = view.UNSAFE_getByType(NotePrecisionPanel);
+      expect(
+        panel.props.onVelocityContourApply(
+          {
+            startBeat: 0,
+            endBeat: 2,
+            variant: { type: 'curve', from: 40, to: 100, bend: 0 },
+          },
+          'absolute',
+          [0, 1],
+          initialClip.notes
+        )
+      ).toBe(true);
+    });
+    expect(view.getByText('2 notes · 40→100')).toBeTruthy();
+    expect(announce).toHaveBeenCalledWith('2 notes · 40→100');
+
+    act(() => {
+      replaceUndoSnapshot(latestNotes);
+      replaceClip((current) => ({
+        ...current,
+        activeBarStart: current.activeBarStart + 1,
+      }));
+    });
+
+    expect(view.queryByLabelText('Undo velocity contour')).toBeNull();
+    expect(onUndo).not.toHaveBeenCalled();
+    announce.mockRestore();
+  });
+
+  it('does not show a contour summary when apply rejects', () => {
+    const clip = createMockDrumClip({ id: 10, trackID: 1, sectionID: 1 });
+    const view = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        callbacks={{ onVelocityContourApply: () => false }}
+      />
+    );
+
+    act(() =>
+      view.UNSAFE_getByType(SkiaPianoRollGrid).props.onPitchLabelTap(0)
+    );
+    act(() => {
+      view.UNSAFE_getByType(NotePrecisionPanel).props.onVelocityContourApply(
+        {
+          startBeat: 0,
+          endBeat: 2,
+          variant: { type: 'curve', from: 40, to: 100, bend: 0 },
+        },
+        'absolute',
+        [0, 1],
+        clip.notes
+      );
+    });
+
+    expect(view.queryByLabelText('Undo velocity contour')).toBeNull();
   });
 
   it('keeps the piano roll callback props stable across an unrelated re-render', () => {

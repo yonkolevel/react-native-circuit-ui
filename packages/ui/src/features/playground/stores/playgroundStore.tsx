@@ -26,6 +26,10 @@ import type {
   Track,
   Clip,
 } from '../types';
+import type {
+  VelocityContour,
+  VelocityContourMode,
+} from '../core/velocityContour';
 
 // ---------------------------------------------------------------------------
 // Actions — everything the UI can dispatch
@@ -65,6 +69,14 @@ export interface SongActions {
     noteIndex: number,
     updates: Partial<ClipNote>
   ) => void;
+  applyVelocityContour: (
+    trackId: number,
+    clipId: number,
+    contour: VelocityContour,
+    mode: VelocityContourMode,
+    noteIndexes: readonly number[],
+    expectedNotes: readonly ClipNote[]
+  ) => boolean;
   setClipNotes: (trackId: number, clipId: number, notes: ClipNote[]) => void;
 
   // Clip

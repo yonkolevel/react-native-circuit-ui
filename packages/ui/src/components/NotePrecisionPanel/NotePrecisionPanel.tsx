@@ -14,6 +14,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
   useMemo,
+  useEffect,
   useCallback,
   useRef,
   useState,
@@ -33,11 +34,26 @@ import {
   Text as SkiaText,
   matchFont,
 } from '@shopify/react-native-skia';
-import { runOnJS, useSharedValue } from 'react-native-reanimated';
+import Animated, {
+  runOnJS,
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
+import type { SharedValue } from 'react-native-reanimated';
 import { Text } from '../Text';
 import { Icon, Icons } from '../SFSymbol';
 import { useTheme } from '../../theme';
 import type { ClipNote } from '../../features/playground/types';
+import type {
+  VelocityContour,
+  VelocityContourMode,
+} from '../../features/playground/core/velocityContour';
+import {
+  xForVelocityHandle,
+  type VelocityContourPreview,
+} from './velocityContourAuthoring';
+import { VelocityContourLane } from './VelocityContourLane';
 import {
   getMovedGridTarget,
   getResizedNoteDuration,
@@ -58,6 +74,7 @@ const STEPS_PER_BEAT = 4;
 // A note can be dragged arbitrarily close to any position here, but never
 // resized smaller than one 16th-note step — matches the piano roll's floor.
 const MIN_NOTE_DURATION = 0.25;
+const AnimatedGHScrollView = Animated.createAnimatedComponent(GHScrollView);
 
 const VEL_LEVELS = [
   { vel: 127, label: '127' },
@@ -79,11 +96,13 @@ export interface NotePrecisionPanelProps {
   stepWidth: number;
   onClose?: () => void;
   onVelocityChange?: (noteIndex: number, velocity: number) => void;
-  /** Fired continuously while a velocity handle is being dragged (and once
-   * more with `null` on release) — lets the piano roll grid above mirror the
-   * in-progress value live, without touching the undo-tracked store on
-   * every drag tick the way a committed onVelocityChange call would. */
-  onVelocityPreview?: (noteIndex: number, velocity: number | null) => void;
+  velocityContourPreview?: SharedValue<VelocityContourPreview | null>;
+  onVelocityContourApply?: (
+    contour: VelocityContour,
+    mode: VelocityContourMode,
+    noteIndexes: readonly number[],
+    expectedNotes: readonly ClipNote[]
+  ) => boolean;
   onPositionChange?: (noteIndex: number, newPosition: number) => void;
   onDurationChange?: (noteIndex: number, newDuration: number) => void;
   /** Fired on horizontal scroll with the raw scroll-x pixel offset — lets
@@ -113,7 +132,8 @@ export const NotePrecisionPanel = memo(
         stepWidth,
         onClose,
         onVelocityChange,
-        onVelocityPreview,
+        velocityContourPreview: providedVelocityContourPreview,
+        onVelocityContourApply,
         onPositionChange,
         onDurationChange,
         onScrollXChange,
@@ -123,42 +143,64 @@ export const NotePrecisionPanel = memo(
       ref
     ) {
       const { colors } = useTheme();
+      const internalVelocityContourPreview =
+        useSharedValue<VelocityContourPreview | null>(null);
+      const velocityContourPreview =
+        providedVelocityContourPreview ?? internalVelocityContourPreview;
+      const scrollOffsetX = useSharedValue(0);
+      const [viewportWidth, setViewportWidth] = useState(0);
+      const totalSteps = activeLengthInBars * BEATS_PER_BAR * STEPS_PER_BEAT;
+      const totalWidth = totalSteps * stepWidth;
+      const totalBeats = activeLengthInBars * BEATS_PER_BAR;
+      const beatWidth = stepWidth * STEPS_PER_BEAT;
+      const maxScrollX = Math.max(0, totalWidth - viewportWidth);
       const hScrollRef = useRef<any>(null);
-      const lastReportedScrollX = useRef(0);
+      const lastReportedScrollX = useSharedValue(0);
       useImperativeHandle(
         ref,
         () => ({
           scrollToX: (x: number, animated = true) => {
-            hScrollRef.current?.scrollTo?.({ x, animated });
+            const clampedX = Math.max(0, Math.min(x, maxScrollX));
+            scrollOffsetX.value = clampedX;
+            hScrollRef.current?.scrollTo?.({ x: clampedX, animated });
           },
         }),
-        []
+        [maxScrollX, scrollOffsetX]
       );
       const reportScroll = useCallback(
-        (x: number, force = false) => {
-          if (
-            !force &&
-            x !== 0 &&
-            Math.abs(x - lastReportedScrollX.current) < 8
-          )
-            return;
-          lastReportedScrollX.current = x;
-          onScrollXChange?.(x);
-        },
+        (x: number) => onScrollXChange?.(x),
         [onScrollXChange]
       );
-      const handleScroll = useCallback(
-        (e: { nativeEvent: { contentOffset: { x: number } } }) => {
-          reportScroll(e.nativeEvent.contentOffset.x);
+      useEffect(() => {
+        const clampedX = Math.max(0, Math.min(scrollOffsetX.value, maxScrollX));
+        hScrollRef.current?.scrollTo?.({ x: clampedX, animated: false });
+        if (Math.abs(scrollOffsetX.value - clampedX) <= 0.5) return;
+        scrollOffsetX.value = clampedX;
+        lastReportedScrollX.value = clampedX;
+        reportScroll(clampedX);
+      }, [lastReportedScrollX, maxScrollX, reportScroll, scrollOffsetX]);
+      const handleScroll = useAnimatedScrollHandler({
+        onScroll: (event) => {
+          const x = Math.max(0, Math.min(event.contentOffset.x, maxScrollX));
+          scrollOffsetX.value = x;
+          if (x === 0 || Math.abs(x - lastReportedScrollX.value) >= 8) {
+            lastReportedScrollX.value = x;
+            scheduleOnRN(reportScroll, x);
+          }
         },
-        [reportScroll]
-      );
-      const flushScroll = useCallback(
-        (e: { nativeEvent: { contentOffset: { x: number } } }) => {
-          reportScroll(e.nativeEvent.contentOffset.x, true);
+        onEndDrag: (event) => {
+          const x = Math.max(0, Math.min(event.contentOffset.x, maxScrollX));
+          scrollOffsetX.value = x;
+          lastReportedScrollX.value = x;
+          scheduleOnRN(reportScroll, x);
         },
-        [reportScroll]
-      );
+        onMomentumEnd: (event) => {
+          const x = Math.max(0, Math.min(event.contentOffset.x, maxScrollX));
+          scrollOffsetX.value = x;
+          lastReportedScrollX.value = x;
+          scheduleOnRN(reportScroll, x);
+        },
+      });
 
       // Computed here so CanvasKit is ready when matchFont runs (avoids web crash)
       const velFont = useMemo(
@@ -178,26 +220,16 @@ export const NotePrecisionPanel = memo(
             .filter((x) => x.note.noteNumber === pitchMidiNumber),
         [notes, pitchMidiNumber]
       );
-
-      const totalSteps = activeLengthInBars * BEATS_PER_BAR * STEPS_PER_BEAT;
-      const totalWidth = totalSteps * stepWidth;
-      const totalBeats = activeLengthInBars * BEATS_PER_BAR;
-      const beatWidth = stepWidth * STEPS_PER_BEAT;
+      const velocityNoteIndexes = useMemo(
+        () => notesAtPitch.map(({ globalIdx }) => globalIdx),
+        [notesAtPitch]
+      );
 
       const [velAreaH, setVelAreaH] = useState(120);
 
-      // Velocity drag state
-      const [dragIdx, setDragIdx] = useState(-1);
-      const [dragVel, setDragVel] = useState(0);
-      const dragStartY = useRef(0);
-      const dragStartVel = useRef(0);
-      const dragIdxRef = useRef(-1);
-      const dragVelRef = useRef(0);
-      const lastRenderedDragVel = useRef(0);
-      const lastPreviewVelocity = useRef<{
-        noteIndex: number;
-        velocity: number;
-      } | null>(null);
+      // Velocity contours now preview entirely through the shared UI-runtime vector.
+      const dragIdx = -1;
+      const dragVel = 0;
 
       // Position drag state (horizontal drag on note block body)
       const [posBlockDragIdx, setPosBlockDragIdx] = useState(-1);
@@ -208,67 +240,6 @@ export const NotePrecisionPanel = memo(
       const [durBlockDragIdx, setDurBlockDragIdx] = useState(-1);
       const [durBlockDragDx, setDurBlockDragDx] = useState(0);
       const durBlockStartX = useRef(0);
-
-      const handleVelDragStart = useCallback(
-        (idx: number, y: number) => {
-          const entry = notesAtPitch[idx];
-          if (!entry) return;
-          dragIdxRef.current = idx;
-          dragStartY.current = y;
-          dragStartVel.current = entry.note.velocity;
-          dragVelRef.current = entry.note.velocity;
-          lastRenderedDragVel.current = entry.note.velocity;
-          setDragIdx(idx);
-          setDragVel(entry.note.velocity);
-        },
-        [notesAtPitch]
-      );
-
-      const handleVelDragUpdate = useCallback(
-        (y: number) => {
-          const dy = y - dragStartY.current;
-          const usableH = velAreaH - BOTTOM_PAD - HANDLE_H;
-          const delta = (-dy / usableH) * 127;
-          const newVel = Math.round(
-            Math.max(1, Math.min(127, dragStartVel.current + delta))
-          );
-          dragVelRef.current = newVel;
-          if (Math.abs(lastRenderedDragVel.current - newVel) >= 4) {
-            lastRenderedDragVel.current = newVel;
-            setDragVel(newVel);
-          }
-          const idx = dragIdxRef.current;
-          if (idx >= 0 && idx < notesAtPitch.length) {
-            const globalIdx = notesAtPitch[idx]!.globalIdx;
-            const previous = lastPreviewVelocity.current;
-            if (
-              !previous ||
-              previous.noteIndex !== globalIdx ||
-              Math.abs(previous.velocity - newVel) >= 4
-            ) {
-              lastPreviewVelocity.current = {
-                noteIndex: globalIdx,
-                velocity: newVel,
-              };
-              onVelocityPreview?.(globalIdx, newVel);
-            }
-          }
-        },
-        [velAreaH, notesAtPitch, onVelocityPreview]
-      );
-
-      const handleVelDragEnd = useCallback(() => {
-        const idx = dragIdxRef.current;
-        const vel = dragVelRef.current;
-        if (idx >= 0 && idx < notesAtPitch.length) {
-          onVelocityChange?.(notesAtPitch[idx]!.globalIdx, vel);
-          lastPreviewVelocity.current = null;
-          onVelocityPreview?.(notesAtPitch[idx]!.globalIdx, null);
-        }
-        setDragVel(vel);
-        dragIdxRef.current = -1;
-        setDragIdx(-1);
-      }, [notesAtPitch, onVelocityChange, onVelocityPreview]);
 
       // Reuse the piano-roll math so this precision surface follows the same
       // snap and clip-boundary rules as the main editor.
@@ -379,8 +350,12 @@ export const NotePrecisionPanel = memo(
           const stemH = Math.max(0, fraction * usableH);
 
           const noteStartX = (note.position / 0.25) * stepWidth;
-          const handleX = noteStartX;
-          const stemX = noteStartX + HANDLE_W;
+          const handleX = xForVelocityHandle(
+            note.position,
+            beatWidth,
+            totalBeats
+          );
+          const stemX = handleX + HANDLE_W;
           const handleY = baseline - stemH - HANDLE_H;
           const stemTop = baseline - stemH;
 
@@ -395,7 +370,7 @@ export const NotePrecisionPanel = memo(
             baseline,
           };
         },
-        [velAreaH, stepWidth]
+        [beatWidth, stepWidth, totalBeats, velAreaH]
       );
 
       return (
@@ -409,7 +384,13 @@ export const NotePrecisionPanel = memo(
             >
               {pitchLabel}
             </Text>
-            <Pressable onPress={onClose} hitSlop={8}>
+            <Pressable
+              onPress={onClose}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="Close note precision editor"
+              testID="note-precision-close"
+            >
               <Icon icon={Icons.close} size={16} color={colors.mcWhite3} />
             </Pressable>
           </View>
@@ -476,19 +457,19 @@ export const NotePrecisionPanel = memo(
             </View>
 
             {/* Scrollable timeline — SINGLE ScrollView for everything */}
-            <GHScrollView
+            <AnimatedGHScrollView
               ref={hScrollRef}
               horizontal
               showsHorizontalScrollIndicator
+              bounces={false}
               style={{ flex: 1 }}
               onScroll={handleScroll}
-              onScrollEndDrag={flushScroll}
-              onMomentumScrollEnd={flushScroll}
-              scrollEventThrottle={100}
+              scrollEventThrottle={16}
+              onLayout={(event) =>
+                setViewportWidth(event.nativeEvent.layout.width)
+              }
             >
-              <View
-                style={{ width: Math.max(totalWidth, totalWidth + HANDLE_W) }}
-              >
+              <View style={{ width: totalWidth }}>
                 {/* Beat labels */}
                 <View style={{ height: BEAT_LABEL_H, flexDirection: 'row' }}>
                   {Array.from({ length: totalBeats }, (_, i) => (
@@ -722,31 +703,22 @@ export const NotePrecisionPanel = memo(
                     })}
                   </Canvas>
 
-                  {/* Drag touch targets — INSIDE the scroll container */}
-                  {notesAtPitch.map(({ note }, i) => {
-                    // Keep the gesture target anchored while its visual handle
-                    // previews the dragged velocity; moving the target itself
-                    // would rebuild the active gesture mid-drag.
-                    const g = noteGeom(note, note.velocity);
-                    return (
-                      <VelDragTarget
-                        key={`dt${i}`}
-                        index={i}
-                        x={g.handleX - 8}
-                        y={g.handleY - 8}
-                        updateThresholdPx={Math.max(
-                          2,
-                          (4 * (velAreaH - BOTTOM_PAD - HANDLE_H)) / 127
-                        )}
-                        onDragStart={handleVelDragStart}
-                        onDragUpdate={handleVelDragUpdate}
-                        onDragEnd={handleVelDragEnd}
-                      />
-                    );
-                  })}
+                  <VelocityContourLane
+                    notes={notes}
+                    noteIndexes={velocityNoteIndexes}
+                    beatWidth={beatWidth}
+                    totalBeats={totalBeats}
+                    areaHeight={velAreaH}
+                    trackColor={trackColor}
+                    preview={velocityContourPreview}
+                    scrollOffsetX={scrollOffsetX}
+                    viewportWidth={viewportWidth}
+                    onApply={onVelocityContourApply}
+                    onSingleVelocityChange={onVelocityChange}
+                  />
                 </View>
               </View>
-            </GHScrollView>
+            </AnimatedGHScrollView>
           </View>
         </View>
       );
@@ -796,56 +768,6 @@ const PrecisionBlockDrag = memo(function PrecisionBlockDrag({
           top: 0,
           width: Math.max(width, 12),
           height: NOTE_AREA_H,
-        }}
-      />
-    </GestureDetector>
-  );
-});
-
-const VelDragTarget = memo(function VelDragTarget({
-  index,
-  x,
-  y,
-  onDragStart,
-  onDragUpdate,
-  onDragEnd,
-  updateThresholdPx,
-}: {
-  index: number;
-  x: number;
-  y: number;
-  onDragStart: (idx: number, y: number) => void;
-  onDragUpdate: (y: number) => void;
-  onDragEnd: () => void;
-  updateThresholdPx: number;
-}) {
-  const lastUpdateY = useSharedValue(0);
-  const gesture = Gesture.Pan()
-    .onStart((e) => {
-      'worklet';
-      lastUpdateY.value = e.absoluteY;
-      runOnJS(onDragStart)(index, e.absoluteY);
-    })
-    .onUpdate((e) => {
-      'worklet';
-      if (Math.abs(e.absoluteY - lastUpdateY.value) < updateThresholdPx) return;
-      lastUpdateY.value = e.absoluteY;
-      runOnJS(onDragUpdate)(e.absoluteY);
-    })
-    .onEnd(() => {
-      'worklet';
-      runOnJS(onDragEnd)();
-    });
-
-  return (
-    <GestureDetector gesture={gesture}>
-      <View
-        style={{
-          position: 'absolute',
-          left: x,
-          top: y,
-          width: HANDLE_W + 16,
-          height: HANDLE_H + 16,
         }}
       />
     </GestureDetector>

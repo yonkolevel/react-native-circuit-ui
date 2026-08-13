@@ -56,6 +56,7 @@ import type {
   InstrumentType,
   Sample,
 } from '../../features/playground/types';
+import type { VelocityContourPreview } from '../NotePrecisionPanel/velocityContourAuthoring';
 import {
   getDragPreviewSeed,
   getGridPointNoteTarget,
@@ -81,6 +82,52 @@ const RECORDING_OUTLINE_COLOR = '#FF3B30';
  * thread — no React re-renders while recording (matches the drag-preview
  * and playhead patterns elsewhere in this file).
  */
+const VelocityPreviewNote = memo(function VelocityPreviewNote({
+  noteIndex,
+  x,
+  y,
+  width,
+  height,
+  radius,
+  baseColor,
+  preview,
+}: {
+  noteIndex: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  radius: number;
+  baseColor: string;
+  preview: SharedValue<VelocityContourPreview | null>;
+}) {
+  const palette = useMemo(
+    () =>
+      Array.from({ length: 128 }, (_, velocity) =>
+        getVelocityColor(baseColor, velocity)
+      ),
+    [baseColor]
+  );
+  const velocity = useDerivedValue(
+    () => preview.value?.velocities[noteIndex] ?? -1
+  );
+  const color = useDerivedValue(
+    () => palette[Math.max(0, Math.min(127, velocity.value))] ?? baseColor
+  );
+  const opacity = useDerivedValue(() => (velocity.value >= 0 ? 0.92 : 0));
+  return (
+    <RoundedRect
+      x={x}
+      y={y}
+      width={width}
+      height={height}
+      r={radius}
+      color={color}
+      opacity={opacity}
+    />
+  );
+});
+
 const RecordingNotePreview = memo(function RecordingNotePreview({
   x,
   rowIdx,
@@ -250,6 +297,8 @@ export interface SkiaPianoRollGridProps {
    * mirrors an in-progress velocity-handle drag on NotePrecisionPanel so this
    * note's color updates in real time instead of only once the drag commits. */
   velocityPreview?: { noteIndex: number; velocity: number } | null;
+  /** Parent-owned all-note velocity contour preview, updated on the UI runtime. */
+  velocityContourPreview?: SharedValue<VelocityContourPreview | null>;
 }
 
 /** Imperative handle for scrolling the grid programmatically (e.g. to jump to an isolated bar, or to mirror another view's scroll position). */
@@ -291,6 +340,7 @@ export const SkiaPianoRollGrid = memo(
         onVisibleBeatRangeChange,
         onScrollXChange,
         velocityPreview,
+        velocityContourPreview,
       }: SkiaPianoRollGridProps,
       ref
     ) {
@@ -446,24 +496,24 @@ export const SkiaPianoRollGrid = memo(
 
       // Build the grid path once — memoized on dimensions only (not notes)
       const gridPath = useMemo(() => {
-        // PathBuilder exists in the app's Skia runtime; the UI package's local
-        // Skia types can lag the app version, so keep this narrowed escape hatch
-        // local to the migration away from deprecated SkPath mutations.
-        const builder = (Skia as any).PathBuilder.Make();
+        const builder = (Skia as any).PathBuilder?.Make?.();
+        const path = builder ?? Skia.Path.Make();
 
         // Horizontal row lines
         for (let i = 0; i <= totalPitches; i++) {
           const y = i * effectiveRowHeight;
-          builder.moveTo(0, y).lineTo(gridWidth, y);
+          path.moveTo(0, y);
+          path.lineTo(gridWidth, y);
         }
 
         // Vertical step lines
         for (let i = 0; i <= totalSteps; i++) {
           const x = i * stepWidth;
-          builder.moveTo(x, 0).lineTo(x, gridHeight);
+          path.moveTo(x, 0);
+          path.lineTo(x, gridHeight);
         }
 
-        return builder.detach();
+        return builder ? builder.detach() : path;
       }, [
         totalPitches,
         effectiveRowHeight,
@@ -929,6 +979,7 @@ export const SkiaPianoRollGrid = memo(
                 horizontal
                 nestedScrollEnabled
                 showsHorizontalScrollIndicator={false}
+                bounces={false}
                 style={styles.gridScroll}
                 onScroll={handleGridScroll}
                 onScrollEndDrag={flushGridScroll}
@@ -1002,6 +1053,20 @@ export const SkiaPianoRollGrid = memo(
                             color={noteColor}
                             opacity={1}
                           />
+                          {velocityContourPreview && (
+                            <VelocityPreviewNote
+                              noteIndex={idx}
+                              x={x}
+                              y={y}
+                              width={w}
+                              height={h}
+                              radius={r}
+                              baseColor={
+                                noteColors?.[note.noteNumber] ?? trackColor
+                              }
+                              preview={velocityContourPreview}
+                            />
+                          )}
                           <RoundedRect
                             x={isDragging ? dragX : x}
                             y={isDragging ? dragY : y}

@@ -17,6 +17,17 @@
         "default": "./lib/commonjs/index.js"
       }
     },
+    "./velocityContour": {
+      "source": "./src/features/playground/core/velocityContour.ts",
+      "import": {
+        "types": "./lib/typescript/module/src/features/playground/core/velocityContour.d.ts",
+        "default": "./lib/module/features/playground/core/velocityContour.js"
+      },
+      "require": {
+        "types": "./lib/typescript/commonjs/src/features/playground/core/velocityContour.d.ts",
+        "default": "./lib/commonjs/features/playground/core/velocityContour.js"
+      }
+    },
     "./Avatar": {
       "source": "./src/components/Avatar/index.ts",
       "import": "./lib/module/components/Avatar/index.js",

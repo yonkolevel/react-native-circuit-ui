@@ -19,7 +19,9 @@
  */
 import { memo, useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import {
+  AccessibilityInfo,
   Alert,
+  Platform,
   View,
   Pressable,
   StyleSheet,
@@ -46,6 +48,11 @@ import type {
 } from '../../../../components/PianoRoll';
 import { NotePrecisionPanel } from '../../../../components/NotePrecisionPanel';
 import type { NotePrecisionPanelHandle } from '../../../../components/NotePrecisionPanel';
+import {
+  contourSummary,
+  type VelocityContourPreview,
+} from '../../../../components/NotePrecisionPanel/velocityContourAuthoring';
+import { applyContour } from '../../core/velocityContour';
 import { WithHint, HintIDs } from '../../../../components/Hint';
 import type {
   Clip,
@@ -702,6 +709,8 @@ export interface ClipEditorViewProps {
    *  interpolation stays on the UI thread. */
   getBeatPosition?: () => number;
   canUndo?: boolean;
+  /** Notes in the current top undo snapshot; guards the inline contour Undo. */
+  undoSnapshotNotes?: readonly ClipNote[] | null;
   canRedo?: boolean;
   callbacks?: ClipEditorCallbacks;
   /** Show DrumPadsView or PianoKeyboard in the bottom half (default: true). Hidden when expanded. */
@@ -756,6 +765,7 @@ export const ClipEditorView = memo(function ClipEditorView({
   isMetronomeEnabled,
   getBeatPosition,
   canUndo = false,
+  undoSnapshotNotes = null,
   canRedo = false,
   callbacks,
   showPerformanceControls = true,
@@ -846,33 +856,84 @@ export const ClipEditorView = memo(function ClipEditorView({
   // updates in real time instead of only once the drag releases (the drag
   // itself only commits to the undo-tracked store on release, same as every
   // other gesture in this editor).
-  const [velocityPreview, setVelocityPreview] = useState<{
-    noteIndex: number;
-    velocity: number;
-  } | null>(null);
-  const lastVelocityPreview = useRef<{
-    noteIndex: number;
-    velocity: number;
-  } | null>(null);
-  const handleVelocityPreview = useCallback(
-    (noteIndex: number, velocity: number | null) => {
-      if (velocity == null) {
-        lastVelocityPreview.current = null;
-        setVelocityPreview(null);
-        return;
+  const velocityContourPreview = useSharedValue<VelocityContourPreview | null>(
+    null
+  );
+  const [velocityEditSummary, setVelocityEditSummary] = useState<string | null>(
+    null
+  );
+  const velocitySummaryNotes = useRef<readonly ClipNote[] | null>(null);
+  const velocitySummaryUndoNotes = useRef<readonly ClipNote[] | null>(null);
+  const notesMatch = (
+    left: readonly ClipNote[] | null,
+    right: readonly ClipNote[] | null
+  ) =>
+    left?.length === right?.length &&
+    left?.every((note, index) => {
+      const other = right?.[index];
+      return (
+        other?.noteNumber === note.noteNumber &&
+        other.velocity === note.velocity &&
+        other.position === note.position &&
+        other.duration === note.duration
+      );
+    }) === true;
+  const summaryMatchesCurrentNotes =
+    notesMatch(velocitySummaryNotes.current, clip.notes) &&
+    notesMatch(velocitySummaryUndoNotes.current, undoSnapshotNotes);
+  useEffect(() => {
+    // Any committed/recorded note-array replacement invalidates gesture preview.
+    velocityContourPreview.value = null;
+    if (velocitySummaryNotes.current && !summaryMatchesCurrentNotes) {
+      velocitySummaryNotes.current = null;
+      velocitySummaryUndoNotes.current = null;
+      setVelocityEditSummary(null);
+    }
+  }, [clip.notes, summaryMatchesCurrentNotes, velocityContourPreview]);
+  const handleVelocityContourApply = useCallback<
+    NonNullable<ClipEditorCallbacks['onVelocityContourApply']>
+  >(
+    (contour, mode, noteIndexes, expectedNotes) => {
+      const indexes = [...noteIndexes].sort((left, right) => left - right);
+      let resultingNotes: ClipNote[];
+      try {
+        const transformed = applyContour(
+          contour,
+          indexes.map((index) => expectedNotes[index]!),
+          mode
+        );
+        resultingNotes = expectedNotes.map((note) => ({ ...note }));
+        indexes.forEach((index, offset) => {
+          resultingNotes[index] = transformed[offset]!;
+        });
+      } catch {
+        return false;
       }
-      const previous = lastVelocityPreview.current;
-      if (
-        previous &&
-        previous.noteIndex === noteIndex &&
-        Math.abs(previous.velocity - velocity) < 4
-      )
-        return;
-      const next = { noteIndex, velocity };
-      lastVelocityPreview.current = next;
-      setVelocityPreview(next);
+      const applied =
+        callbacks?.onVelocityContourApply?.(
+          contour,
+          mode,
+          noteIndexes,
+          expectedNotes
+        ) ?? false;
+      if (!applied) return false;
+
+      velocitySummaryNotes.current = resultingNotes;
+      velocitySummaryUndoNotes.current = expectedNotes;
+      const start = Math.min(contour.startBeat, contour.endBeat);
+      const end = Math.max(contour.startBeat, contour.endBeat);
+      const affected = noteIndexes.filter((index) => {
+        const note = expectedNotes[index];
+        return note && note.position >= start && note.position <= end;
+      }).length;
+      const summary = contourSummary(contour, affected);
+      setVelocityEditSummary(summary);
+      if (Platform.OS === 'ios') {
+        AccessibilityInfo.announceForAccessibility(summary);
+      }
+      return true;
     },
-    []
+    [callbacks]
   );
 
   // ── Piano roll ↔ NotePrecisionPanel scroll sync ──────────────────────────
@@ -886,13 +947,17 @@ export const ClipEditorView = memo(function ClipEditorView({
   const lastGridX = useRef(0);
   const lastPanelX = useRef(0);
   const handleGridScrollX = useCallback((x: number) => {
-    if (Math.abs(x - lastPanelX.current) < 0.5) return;
+    const panelAlreadyMatches = Math.abs(x - lastPanelX.current) < 0.5;
     lastGridX.current = x;
+    if (panelAlreadyMatches) return;
+    lastPanelX.current = x;
     panelRef.current?.scrollToX(x, false);
   }, []);
   const handlePanelScrollX = useCallback((x: number) => {
-    if (Math.abs(x - lastGridX.current) < 0.5) return;
+    const gridAlreadyMatches = Math.abs(x - lastGridX.current) < 0.5;
     lastPanelX.current = x;
+    if (gridAlreadyMatches) return;
+    lastGridX.current = x;
     gridRef.current?.scrollToX(x, false);
   }, []);
 
@@ -902,6 +967,7 @@ export const ClipEditorView = memo(function ClipEditorView({
     (barIndex: number) => {
       const targetX = barIndex * 4 * beatWidth;
       lastGridX.current = targetX;
+      lastPanelX.current = targetX;
       gridRef.current?.scrollToX(targetX, true);
       panelRef.current?.scrollToX(targetX, true);
     },
@@ -1087,7 +1153,9 @@ export const ClipEditorView = memo(function ClipEditorView({
               playheadPosX={playheadPosX}
               onVisibleBeatRangeChange={handleVisibleBeatRangeChange}
               onScrollXChange={handleGridScrollX}
-              velocityPreview={velocityPreview}
+              velocityContourPreview={
+                selectedPitchIndex == null ? undefined : velocityContourPreview
+              }
             />
           </View>
         </WithHint>
@@ -1158,7 +1226,8 @@ export const ClipEditorView = memo(function ClipEditorView({
               }
               onClose={() => setSelectedPitchIndex(null)}
               onVelocityChange={callbacks?.onVelocityChange}
-              onVelocityPreview={handleVelocityPreview}
+              velocityContourPreview={velocityContourPreview}
+              onVelocityContourApply={handleVelocityContourApply}
               onPositionChange={(idx, newPos) =>
                 callbacks?.onNoteMove?.(
                   idx,
@@ -1208,6 +1277,33 @@ export const ClipEditorView = memo(function ClipEditorView({
           ) : null}
         </View>
       )}
+      {velocityEditSummary && summaryMatchesCurrentNotes && (
+        <View style={styles.velocitySummary}>
+          <Text
+            variant="small"
+            color={colors.mcWhite}
+            accessibilityLiveRegion="polite"
+          >
+            {velocityEditSummary}
+          </Text>
+          <Pressable
+            onPress={() => {
+              if (!summaryMatchesCurrentNotes) return;
+              callbacks?.onUndo?.();
+              velocitySummaryNotes.current = null;
+              velocitySummaryUndoNotes.current = null;
+              setVelocityEditSummary(null);
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Undo velocity contour"
+            testID="velocity-contour-summary-undo"
+          >
+            <Text variant="small" color={colors.mcOrange}>
+              Undo
+            </Text>
+          </Pressable>
+        </View>
+      )}
       {/* Recording count-in overlay — matches iOS: big orange number in circle */}
       {showCountIn && (
         <View style={styles.countInOverlay} pointerEvents="none">
@@ -1247,6 +1343,20 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   /** iOS: splitHeight = availableHeight * 0.5 — each half gets equal flex */
   splitHalf: { flex: 1 },
+  velocitySummary: {
+    position: 'absolute',
+    left: 12,
+    right: 12,
+    bottom: 12,
+    zIndex: 90,
+    minHeight: 36,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    backgroundColor: 'rgba(0,0,0,0.88)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   countInOverlay: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',

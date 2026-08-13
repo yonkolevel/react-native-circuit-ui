@@ -1,0 +1,296 @@
+{
+  "version": 1,
+  "sampleCases": [
+    {
+      "name": "linear curve",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 4,
+        "variant": { "type": "curve", "from": 32, "to": 96, "bend": 0 }
+      },
+      "beats": [0, 1, 2, 3, 4],
+      "expected": [32, 48, 64, 80, 96]
+    },
+    {
+      "name": "positive bounded bend",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 4,
+        "variant": { "type": "curve", "from": 32, "to": 96, "bend": 0.5 }
+      },
+      "beats": [0, 1, 2, 3, 4],
+      "expected": [32, 76, 96, 97, 96]
+    },
+    {
+      "name": "negative bounded bend",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 4,
+        "variant": { "type": "curve", "from": 32, "to": 96, "bend": -0.5 }
+      },
+      "beats": [0, 1, 2, 3, 4],
+      "expected": [32, 31, 32, 52, 96]
+    },
+    {
+      "name": "polyline interpolation",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 4,
+        "variant": {
+          "type": "polyline",
+          "points": [
+            { "beat": 0, "velocity": 10 },
+            { "beat": 2, "velocity": 110 },
+            { "beat": 4, "velocity": 10 }
+          ]
+        }
+      },
+      "beats": [0, 1, 2, 3, 4],
+      "expected": [10, 60, 110, 60, 10]
+    },
+    {
+      "name": "polyline point values clamp before interpolation",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 1,
+        "variant": {
+          "type": "polyline",
+          "points": [
+            { "beat": 0, "velocity": -10 },
+            { "beat": 1, "velocity": 200 }
+          ]
+        }
+      },
+      "beats": [0, 0.5, 1],
+      "expected": [0, 64, 127]
+    },
+    {
+      "name": "reversed curve swaps endpoint values",
+      "contour": {
+        "startBeat": 4,
+        "endBeat": 0,
+        "variant": { "type": "curve", "from": 96, "to": 32, "bend": 0 }
+      },
+      "beats": [0, 2, 4],
+      "expected": [32, 64, 96]
+    },
+    {
+      "name": "curve sampling outside range extends endpoints",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 4,
+        "variant": { "type": "curve", "from": 32, "to": 96, "bend": 0 }
+      },
+      "beats": [-2, 6],
+      "expected": [32, 96]
+    },
+    {
+      "name": "curve bend clamps to one",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 4,
+        "variant": { "type": "curve", "from": 32, "to": 96, "bend": 2 }
+      },
+      "beats": [0, 1, 2, 3, 4],
+      "expected": [32, 104, 127, 113, 96]
+    },
+    {
+      "name": "curve endpoints clamp before interpolation",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 1,
+        "variant": { "type": "curve", "from": -10, "to": 200, "bend": 0 }
+      },
+      "beats": [0, 0.5, 1],
+      "expected": [0, 64, 127]
+    },
+    {
+      "name": "single-point polyline extends in both directions",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 4,
+        "variant": {
+          "type": "polyline",
+          "points": [
+            { "beat": 2, "velocity": 77 }
+          ]
+        }
+      },
+      "beats": [-1, 0, 2, 4, 5],
+      "expected": [77, 77, 77, 77, 77]
+    },
+    {
+      "name": "polyline stable-sorts and last duplicate wins",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 4,
+        "variant": {
+          "type": "polyline",
+          "points": [
+            { "beat": 2, "velocity": 100 },
+            { "beat": 0, "velocity": 10 },
+            { "beat": 2, "velocity": 60 },
+            { "beat": 4, "velocity": 110 }
+          ]
+        }
+      },
+      "beats": [0, 1, 2, 3, 4],
+      "expected": [10, 35, 60, 85, 110]
+    }
+  ],
+  "applyCases": [
+    {
+      "name": "absolute curve changes inclusive range only",
+      "mode": "absolute",
+      "contour": {
+        "startBeat": 1,
+        "endBeat": 3,
+        "variant": { "type": "curve", "from": 20, "to": 100, "bend": 0 }
+      },
+      "notes": [
+        { "id": 0, "position": 0, "velocity": 10 },
+        { "id": 1, "position": 1, "velocity": 10 },
+        { "id": 2, "position": 2, "velocity": 10 },
+        { "id": 3, "position": 3, "velocity": 10 },
+        { "id": 4, "position": 4, "velocity": 10 }
+      ],
+      "expectedVelocities": [10, 20, 60, 100, 10]
+    },
+    {
+      "name": "additive uses 64 as zero and clamps",
+      "mode": "additive",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 3,
+        "variant": {
+          "type": "polyline",
+          "points": [
+            { "beat": 0, "velocity": 0 },
+            { "beat": 1, "velocity": 64 },
+            { "beat": 2, "velocity": 127 },
+            { "beat": 3, "velocity": 80 }
+          ]
+        }
+      },
+      "notes": [
+        { "id": 0, "position": 0, "velocity": 20 },
+        { "id": 1, "position": 1, "velocity": 60 },
+        { "id": 2, "position": 2, "velocity": 100 },
+        { "id": 3, "position": 3, "velocity": 120 }
+      ],
+      "expectedVelocities": [0, 60, 127, 127]
+    },
+    {
+      "name": "scale uses 64 as unity and clamps",
+      "mode": "scale",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 3,
+        "variant": {
+          "type": "polyline",
+          "points": [
+            { "beat": 0, "velocity": 32 },
+            { "beat": 1, "velocity": 64 },
+            { "beat": 2, "velocity": 96 },
+            { "beat": 3, "velocity": 127 }
+          ]
+        }
+      },
+      "notes": [
+        { "id": 0, "position": 0, "velocity": 40 },
+        { "id": 1, "position": 1, "velocity": 55 },
+        { "id": 2, "position": 2, "velocity": 80 },
+        { "id": 3, "position": 3, "velocity": 100 }
+      ],
+      "expectedVelocities": [20, 55, 120, 127]
+    },
+    {
+      "name": "sample rounds before scale arithmetic",
+      "mode": "scale",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 1,
+        "variant": { "type": "curve", "from": 64, "to": 65, "bend": 0 }
+      },
+      "notes": [
+        { "id": 0, "position": 0.5, "velocity": 100 }
+      ],
+      "expectedVelocities": [102]
+    },
+    {
+      "name": "empty selection is unchanged",
+      "mode": "absolute",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 4,
+        "variant": { "type": "curve", "from": 0, "to": 127, "bend": 0 }
+      },
+      "notes": [],
+      "expectedVelocities": []
+    },
+    {
+      "name": "single note zero-width contour",
+      "mode": "absolute",
+      "contour": {
+        "startBeat": 2,
+        "endBeat": 2,
+        "variant": { "type": "curve", "from": 90, "to": 30, "bend": 1 }
+      },
+      "notes": [
+        { "id": 0, "position": 2, "velocity": 40 }
+      ],
+      "expectedVelocities": [90]
+    },
+    {
+      "name": "contour narrower than note spacing",
+      "mode": "absolute",
+      "contour": {
+        "startBeat": 1.9,
+        "endBeat": 2.1,
+        "variant": { "type": "curve", "from": 80, "to": 100, "bend": 0 }
+      },
+      "notes": [
+        { "id": 0, "position": 1, "velocity": 30 },
+        { "id": 1, "position": 2, "velocity": 30 },
+        { "id": 2, "position": 3, "velocity": 30 }
+      ],
+      "expectedVelocities": [30, 90, 30]
+    },
+    {
+      "name": "contour endpoints may sit outside clip",
+      "mode": "absolute",
+      "contour": {
+        "startBeat": -2,
+        "endBeat": 6,
+        "variant": { "type": "curve", "from": 0, "to": 127, "bend": 0 }
+      },
+      "notes": [
+        { "id": 0, "position": 0, "velocity": 10 },
+        { "id": 1, "position": 2, "velocity": 10 },
+        { "id": 2, "position": 4, "velocity": 10 }
+      ],
+      "expectedVelocities": [32, 64, 95]
+    },
+    {
+      "name": "polyline absolute values clamp to MIDI range",
+      "mode": "absolute",
+      "contour": {
+        "startBeat": 0,
+        "endBeat": 1,
+        "variant": {
+          "type": "polyline",
+          "points": [
+            { "beat": 0, "velocity": -10 },
+            { "beat": 1, "velocity": 200 }
+          ]
+        }
+      },
+      "notes": [
+        { "id": 0, "position": 0, "velocity": 64 },
+        { "id": 1, "position": 0.5, "velocity": 64 },
+        { "id": 2, "position": 1, "velocity": 64 }
+      ],
+      "expectedVelocities": [0, 64, 127]
+    }
+  ]
+}

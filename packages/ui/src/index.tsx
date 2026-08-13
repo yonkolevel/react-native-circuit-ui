@@ -25,3 +25,6 @@ export * from './theme';
 
 // Components
 export * from './components';
+
+// Playground domain primitives
+export * from './features/playground/core/velocityContour';

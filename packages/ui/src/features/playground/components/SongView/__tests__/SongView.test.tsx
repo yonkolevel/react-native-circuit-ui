@@ -50,6 +50,7 @@ function createTestStore(
     addNote: jest.fn(),
     removeNote: jest.fn(),
     updateNote: jest.fn(),
+    applyVelocityContour: jest.fn(),
     setClipNotes: jest.fn(),
     createClip: jest.fn(),
     duplicateClip: jest.fn(),

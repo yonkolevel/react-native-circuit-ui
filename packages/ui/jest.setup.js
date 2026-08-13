@@ -70,7 +70,7 @@ jest.mock('react-native-svg', () => {
 // that Jest does not transform by default.
 jest.mock('react-native-worklets', () => ({
   __esModule: true,
-  scheduleOnRN: (fn) => fn,
+  scheduleOnRN: (fn, ...args) => fn(...args),
 }));
 
 // ---------------------------------------------------------------------------
@@ -79,7 +79,8 @@ jest.mock('react-native-worklets', () => ({
 // Manual mock for react-native-reanimated v3+ providing the most common APIs
 // so that components using animations can be rendered in tests without crashing.
 jest.mock('react-native-reanimated', () => {
-  const mockSharedValue = (init) => ({ value: init });
+  const mockSharedValue = (init) =>
+    require('react').useRef({ value: init }).current;
   const mockAnimation = (toValue) => toValue;
 
   return {
@@ -288,9 +289,23 @@ jest.mock('@shopify/react-native-skia', () => {
 // Mock react-native-gesture-handler
 jest.mock('react-native-gesture-handler', () => {
   const { ScrollView, View } = require('react-native');
-  // Chainable gesture mock — every method returns `this`
+  const gestures = [];
+  // Preserve callbacks so focused tests can drive the production gesture chain.
   const chainable = () => {
-    const g = new Proxy({}, { get: () => () => g });
+    const callbacks = {};
+    const target = { __callbacks: callbacks };
+    const g = new Proxy(target, {
+      get: (object, property) => {
+        if (property in object) return object[property];
+        return (callback) => {
+          if (typeof property === 'string' && property.startsWith('on')) {
+            callbacks[property] = callback;
+          }
+          return g;
+        };
+      },
+    });
+    gestures.push(g);
     return g;
   };
   return {
@@ -306,6 +321,7 @@ jest.mock('react-native-gesture-handler', () => {
       Exclusive: (...args) => args[0] || chainable(),
       Race: (...args) => args[0] || chainable(),
     },
+    __getLastGesture: () => gestures[gestures.length - 1],
     PanGestureHandler: View,
     TapGestureHandler: View,
     State: {},

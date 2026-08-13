@@ -31,6 +31,7 @@ function createTestStore(tracks: ReturnType<typeof createMockTrack>[]) {
     addNote: noop,
     removeNote: noop,
     updateNote: noop,
+    applyVelocityContour: noop,
     setClipNotes: noop,
     createClip: noop,
     duplicateClip: noop,
