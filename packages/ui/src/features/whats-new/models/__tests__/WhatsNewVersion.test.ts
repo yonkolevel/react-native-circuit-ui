@@ -23,6 +23,19 @@ describe('WhatsNewVersion', () => {
       expect(parseVersion('7')).toEqual({ major: 7, minor: 0, patch: 0 });
     });
 
+    it('normalizes prerelease and build metadata to the release core', () => {
+      expect(parseVersion('2.1.3-beta.1')).toEqual({
+        major: 2,
+        minor: 1,
+        patch: 3,
+      });
+      expect(parseVersion('2.1.3+45')).toEqual({
+        major: 2,
+        minor: 1,
+        patch: 3,
+      });
+    });
+
     it('handles empty string', () => {
       expect(parseVersion('')).toEqual({ major: 0, minor: 0, patch: 0 });
     });

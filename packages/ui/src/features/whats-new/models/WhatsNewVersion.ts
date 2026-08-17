@@ -1,16 +1,17 @@
 /**
  * WhatsNew Version utilities — mirrors WhatsNew+Version.swift.
  *
- * Semantic versioning with parse, compare, and format.
+ * Numeric release versions with parse, compare, and format.
  */
 import type { WhatsNewVersion } from '../types';
 
 /**
- * Parse a version string "major.minor.patch" into a WhatsNewVersion.
- * Missing components default to 0.
+ * Parse a version string into a numeric WhatsNewVersion.
+ * Prerelease and build metadata are normalized to the release core; missing components default to 0.
  */
 export function parseVersion(versionString: string): WhatsNewVersion {
-  const parts = versionString.split('.').map(Number);
+  const coreVersion = versionString.split(/[+-]/, 1)[0] ?? '';
+  const parts = coreVersion.split('.').map(Number);
   return {
     major: Number.isFinite(parts[0]) ? parts[0]! : 0,
     minor: Number.isFinite(parts[1]) ? parts[1]! : 0,
