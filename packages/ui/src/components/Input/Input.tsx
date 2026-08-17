@@ -137,7 +137,6 @@ export const Input: React.FC<InputProps> = memo(function Input({
           onBlur={handleBlur}
           accessibilityLabel={accessibilityLabelProp || label}
           accessibilityState={{ disabled }}
-          accessibilityRole="text"
           accessibilityHint={error || helperText}
           testID={a11yId}
           {...rest}
