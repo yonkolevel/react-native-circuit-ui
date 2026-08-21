@@ -1249,10 +1249,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                 <RCTScrollView
                   horizontal={true}
                   nestedScrollEnabled={true}
-                  onMomentumScrollEnd={[Function]}
-                  onScroll={[Function]}
-                  onScrollEndDrag={[Function]}
-                  scrollEventThrottle={100}
+                  scrollEventThrottle={16}
                   showsHorizontalScrollIndicator={false}
                   style={
                     {
@@ -1282,409 +1279,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                         testID="Canvas"
                       >
                         <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={0}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={172.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={345}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={517.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={690}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={862.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1035}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1207.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1380}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1552.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1725}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1897.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2070}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2242.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2415}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2587.5}
-                          y={0}
-                        />
-                        <View
-                          color="#000000"
-                          path={
-                            {
-                              "addCircle": [Function],
-                              "addOval": [Function],
-                              "addRRect": [Function],
-                              "addRect": [Function],
-                              "arcTo": [Function],
-                              "close": [Function],
-                              "cubicTo": [Function],
-                              "detach": [Function],
-                              "lineTo": [Function],
-                              "moveTo": [Function],
-                              "quadTo": [Function],
-                            }
-                          }
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="SkiaPath"
-                        />
-                        <View
-                          color="#04ffa0"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={0}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={0}
-                          y={375}
-                        />
-                        <View
-                          color="#04ffa0"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={345}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={345}
-                          y={375}
-                        />
-                        <View
-                          color="#04ffa0"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={172.5}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={172.5}
-                          y={375}
-                        />
-                        <View
-                          color="#04ffa0"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={517.5}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={517.5}
-                          y={375}
-                        />
-                        <View
-                          color="#00f497"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={0}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={0}
-                          y={375}
-                        />
-                        <View
-                          color="#00e48d"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={86.25}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={86.25}
-                          y={375}
-                        />
-                        <View
-                          color="#00f497"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={172.5}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={172.5}
-                          y={375}
-                        />
-                        <View
-                          color="#00e48d"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={258.75}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={258.75}
-                          y={375}
-                        />
-                        <View
-                          color="#00f497"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={345}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={345}
-                          y={375}
-                        />
-                        <View
-                          color="#00e48d"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={431.25}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={431.25}
-                          y={375}
-                        />
-                        <View
-                          color="#00f497"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={517.5}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={517.5}
-                          y={375}
-                        />
-                        <View
-                          color="#00e48d"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={603.75}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={603.75}
-                          y={375}
-                        />
-                        <View
-                          color="#FF8D66"
-                          p1={
+                          origin={
                             {
                               "value": {
                                 "x": 0,
@@ -1692,17 +1287,440 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                               },
                             }
                           }
-                          p2={
+                          testID="Group"
+                          transform={
                             {
-                              "value": {
-                                "x": 0,
-                                "y": 408,
-                              },
+                              "value": [
+                                {
+                                  "scaleX": 1,
+                                },
+                              ],
                             }
                           }
-                          strokeWidth={2}
-                          testID="SkiaLine"
-                        />
+                        >
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={0}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={172.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={345}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={517.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={690}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={862.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1035}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1207.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1380}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1552.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1725}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1897.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2070}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2242.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2415}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2587.5}
+                            y={0}
+                          />
+                          <View
+                            color="#000000"
+                            path={
+                              {
+                                "addCircle": [Function],
+                                "addOval": [Function],
+                                "addRRect": [Function],
+                                "addRect": [Function],
+                                "arcTo": [Function],
+                                "close": [Function],
+                                "cubicTo": [Function],
+                                "detach": [Function],
+                                "lineTo": [Function],
+                                "moveTo": [Function],
+                                "quadTo": [Function],
+                              }
+                            }
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="SkiaPath"
+                          />
+                          <View
+                            color="#04ffa0"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={0}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={0}
+                            y={375}
+                          />
+                          <View
+                            color="#04ffa0"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={345}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={345}
+                            y={375}
+                          />
+                          <View
+                            color="#04ffa0"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={172.5}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={172.5}
+                            y={375}
+                          />
+                          <View
+                            color="#04ffa0"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={517.5}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={517.5}
+                            y={375}
+                          />
+                          <View
+                            color="#00f497"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={0}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={0}
+                            y={375}
+                          />
+                          <View
+                            color="#00e48d"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={86.25}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={86.25}
+                            y={375}
+                          />
+                          <View
+                            color="#00f497"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={172.5}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={172.5}
+                            y={375}
+                          />
+                          <View
+                            color="#00e48d"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={258.75}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={258.75}
+                            y={375}
+                          />
+                          <View
+                            color="#00f497"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={345}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={345}
+                            y={375}
+                          />
+                          <View
+                            color="#00e48d"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={431.25}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={431.25}
+                            y={375}
+                          />
+                          <View
+                            color="#00f497"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={517.5}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={517.5}
+                            y={375}
+                          />
+                          <View
+                            color="#00e48d"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={603.75}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={603.75}
+                            y={375}
+                          />
+                          <View
+                            color="#FF8D66"
+                            p1={
+                              {
+                                "value": {
+                                  "x": 0,
+                                  "y": 0,
+                                },
+                              }
+                            }
+                            p2={
+                              {
+                                "value": {
+                                  "x": 0,
+                                  "y": 408,
+                                },
+                              }
+                            }
+                            strokeWidth={2}
+                            testID="SkiaLine"
+                          />
+                        </View>
                       </View>
                       <View
                         style={
@@ -1841,6 +1859,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                 "borderRadius": 10,
                 "height": 20,
                 "justifyContent": "center",
+                "left": 0,
                 "position": "absolute",
                 "width": 20,
               },
@@ -1848,7 +1867,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                 "backgroundColor": "rgba(247, 247, 247, 0.80)",
               },
               {
-                "left": -10,
+                "transform": [
+                  {
+                    "translateX": -10,
+                  },
+                ],
               },
             ]
           }
@@ -1862,8 +1885,22 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
           </View>
         </View>
       </View>
-      <Text
-        accessibilityRole="text"
+      <TextInput
+        accessibilityLabel="Zoom level"
+        accessibilityValue={
+          {
+            "text": "100%",
+          }
+        }
+        animatedProps={
+          {
+            "defaultValue": "100%",
+            "text": "100%",
+          }
+        }
+        defaultValue="100%"
+        editable={false}
+        pointerEvents="none"
         style={
           [
             {
@@ -1873,18 +1910,20 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
               "lineHeight": 15,
             },
             {
-              "color": "rgba(247, 247, 247, 0.60)",
+              "height": 28,
+              "includeFontPadding": false,
+              "minWidth": 34,
+              "paddingHorizontal": 0,
+              "paddingVertical": 0,
+              "textAlign": "right",
+              "textAlignVertical": "center",
             },
             {
-              "minWidth": 34,
-              "textAlign": "right",
+              "color": "rgba(247, 247, 247, 0.60)",
             },
           ]
         }
-      >
-        100
-        %
-      </Text>
+      />
     </View>
     <View
       style={
@@ -2399,6 +2438,35 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
               4
             </Text>
           </View>
+          <View
+            pointerEvents="none"
+            style={
+              [
+                {
+                  "bottom": 0,
+                  "left": 0,
+                  "position": "absolute",
+                  "top": 0,
+                  "transformOrigin": "left center",
+                  "width": "100%",
+                },
+                {
+                  "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                },
+                {
+                  "opacity": 0,
+                  "transform": [
+                    {
+                      "translateX": 0,
+                    },
+                    {
+                      "scaleX": 0,
+                    },
+                  ],
+                },
+              ]
+            }
+          />
         </View>
         <View
           style={
@@ -2413,15 +2481,25 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
             style={
               [
                 {
-                  "borderRadius": 0,
                   "bottom": 0,
+                  "left": 0,
                   "position": "absolute",
                   "top": 0,
+                  "transformOrigin": "left center",
+                  "width": "100%",
                 },
                 {
                   "backgroundColor": "rgba(247, 247, 247, 0.80)",
-                  "left": "0%",
-                  "width": "25%",
+                },
+                {
+                  "transform": [
+                    {
+                      "translateX": 0,
+                    },
+                    {
+                      "scaleX": 0.25,
+                    },
+                  ],
                 },
               ]
             }
@@ -4344,10 +4422,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 <RCTScrollView
                   horizontal={true}
                   nestedScrollEnabled={true}
-                  onMomentumScrollEnd={[Function]}
-                  onScroll={[Function]}
-                  onScrollEndDrag={[Function]}
-                  scrollEventThrottle={100}
+                  scrollEventThrottle={16}
                   showsHorizontalScrollIndicator={false}
                   style={
                     {
@@ -4377,406 +4452,427 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                         testID="Canvas"
                       >
                         <View
-                          color="#25272B"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={0}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={172.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={345}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={517.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={690}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={862.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1035}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1207.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1380}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1552.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1725}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1897.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2070}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2242.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2415}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={544}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2587.5}
-                          y={0}
-                        />
-                        <View
-                          color="#000000"
-                          path={
+                          origin={
                             {
-                              "addCircle": [Function],
-                              "addOval": [Function],
-                              "addRRect": [Function],
-                              "addRect": [Function],
-                              "arcTo": [Function],
-                              "close": [Function],
-                              "cubicTo": [Function],
-                              "detach": [Function],
-                              "lineTo": [Function],
-                              "moveTo": [Function],
-                              "quadTo": [Function],
+                              "value": {
+                                "x": 0,
+                                "y": 0,
+                              },
                             }
                           }
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="SkiaPath"
-                        />
-                        <View
-                          color="#04ffa0"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={0}
-                          y={511}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={0}
-                          y={511}
-                        />
-                        <View
-                          color="#04ffa0"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={345}
-                          y={511}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={345}
-                          y={511}
-                        />
-                        <View
-                          color="#04ffa0"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={172.5}
-                          y={477}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={172.5}
-                          y={477}
-                        />
-                        <View
-                          color="#04ffa0"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={517.5}
-                          y={477}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={517.5}
-                          y={477}
-                        />
-                        <View
-                          color="#00f497"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={0}
-                          y={443}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={0}
-                          y={443}
-                        />
-                        <View
-                          color="#00e48d"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={86.25}
-                          y={443}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={86.25}
-                          y={443}
-                        />
-                        <View
-                          color="#00f497"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={172.5}
-                          y={443}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={172.5}
-                          y={443}
-                        />
-                        <View
-                          color="#00e48d"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={258.75}
-                          y={443}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={258.75}
-                          y={443}
-                        />
-                        <View
-                          color="#00f497"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={345}
-                          y={443}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={345}
-                          y={443}
-                        />
-                        <View
-                          color="#00e48d"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={431.25}
-                          y={443}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={431.25}
-                          y={443}
-                        />
-                        <View
-                          color="#00f497"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={517.5}
-                          y={443}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={517.5}
-                          y={443}
-                        />
-                        <View
-                          color="#00e48d"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={603.75}
-                          y={443}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={603.75}
-                          y={443}
-                        />
+                          testID="Group"
+                          transform={
+                            {
+                              "value": [
+                                {
+                                  "scaleX": 1,
+                                },
+                              ],
+                            }
+                          }
+                        >
+                          <View
+                            color="#25272B"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={0}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={172.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={345}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={517.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={690}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={862.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1035}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1207.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1380}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1552.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1725}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1897.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2070}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2242.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2415}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={544}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2587.5}
+                            y={0}
+                          />
+                          <View
+                            color="#000000"
+                            path={
+                              {
+                                "addCircle": [Function],
+                                "addOval": [Function],
+                                "addRRect": [Function],
+                                "addRect": [Function],
+                                "arcTo": [Function],
+                                "close": [Function],
+                                "cubicTo": [Function],
+                                "detach": [Function],
+                                "lineTo": [Function],
+                                "moveTo": [Function],
+                                "quadTo": [Function],
+                              }
+                            }
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="SkiaPath"
+                          />
+                          <View
+                            color="#04ffa0"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={0}
+                            y={511}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={0}
+                            y={511}
+                          />
+                          <View
+                            color="#04ffa0"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={345}
+                            y={511}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={345}
+                            y={511}
+                          />
+                          <View
+                            color="#04ffa0"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={172.5}
+                            y={477}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={172.5}
+                            y={477}
+                          />
+                          <View
+                            color="#04ffa0"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={517.5}
+                            y={477}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={517.5}
+                            y={477}
+                          />
+                          <View
+                            color="#00f497"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={0}
+                            y={443}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={0}
+                            y={443}
+                          />
+                          <View
+                            color="#00e48d"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={86.25}
+                            y={443}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={86.25}
+                            y={443}
+                          />
+                          <View
+                            color="#00f497"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={172.5}
+                            y={443}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={172.5}
+                            y={443}
+                          />
+                          <View
+                            color="#00e48d"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={258.75}
+                            y={443}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={258.75}
+                            y={443}
+                          />
+                          <View
+                            color="#00f497"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={345}
+                            y={443}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={345}
+                            y={443}
+                          />
+                          <View
+                            color="#00e48d"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={431.25}
+                            y={443}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={431.25}
+                            y={443}
+                          />
+                          <View
+                            color="#00f497"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={517.5}
+                            y={443}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={517.5}
+                            y={443}
+                          />
+                          <View
+                            color="#00e48d"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={603.75}
+                            y={443}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={603.75}
+                            y={443}
+                          />
+                        </View>
                       </View>
                       <View
                         style={
@@ -4915,6 +5011,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 "borderRadius": 10,
                 "height": 20,
                 "justifyContent": "center",
+                "left": 0,
                 "position": "absolute",
                 "width": 20,
               },
@@ -4922,7 +5019,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                 "backgroundColor": "rgba(247, 247, 247, 0.80)",
               },
               {
-                "left": -10,
+                "transform": [
+                  {
+                    "translateX": -10,
+                  },
+                ],
               },
             ]
           }
@@ -4936,8 +5037,22 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
           </View>
         </View>
       </View>
-      <Text
-        accessibilityRole="text"
+      <TextInput
+        accessibilityLabel="Zoom level"
+        accessibilityValue={
+          {
+            "text": "100%",
+          }
+        }
+        animatedProps={
+          {
+            "defaultValue": "100%",
+            "text": "100%",
+          }
+        }
+        defaultValue="100%"
+        editable={false}
+        pointerEvents="none"
         style={
           [
             {
@@ -4947,18 +5062,20 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
               "lineHeight": 15,
             },
             {
-              "color": "rgba(247, 247, 247, 0.60)",
+              "height": 28,
+              "includeFontPadding": false,
+              "minWidth": 34,
+              "paddingHorizontal": 0,
+              "paddingVertical": 0,
+              "textAlign": "right",
+              "textAlignVertical": "center",
             },
             {
-              "minWidth": 34,
-              "textAlign": "right",
+              "color": "rgba(247, 247, 247, 0.60)",
             },
           ]
         }
-      >
-        100
-        %
-      </Text>
+      />
     </View>
     <View
       style={
@@ -5473,6 +5590,35 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
               4
             </Text>
           </View>
+          <View
+            pointerEvents="none"
+            style={
+              [
+                {
+                  "bottom": 0,
+                  "left": 0,
+                  "position": "absolute",
+                  "top": 0,
+                  "transformOrigin": "left center",
+                  "width": "100%",
+                },
+                {
+                  "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                },
+                {
+                  "opacity": 0,
+                  "transform": [
+                    {
+                      "translateX": 0,
+                    },
+                    {
+                      "scaleX": 0,
+                    },
+                  ],
+                },
+              ]
+            }
+          />
         </View>
         <View
           style={
@@ -5487,15 +5633,25 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
             style={
               [
                 {
-                  "borderRadius": 0,
                   "bottom": 0,
+                  "left": 0,
                   "position": "absolute",
                   "top": 0,
+                  "transformOrigin": "left center",
+                  "width": "100%",
                 },
                 {
                   "backgroundColor": "rgba(247, 247, 247, 0.80)",
-                  "left": "0%",
-                  "width": "25%",
+                },
+                {
+                  "transform": [
+                    {
+                      "translateX": 0,
+                    },
+                    {
+                      "scaleX": 0.25,
+                    },
+                  ],
                 },
               ]
             }
@@ -8570,10 +8726,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                 <RCTScrollView
                   horizontal={true}
                   nestedScrollEnabled={true}
-                  onMomentumScrollEnd={[Function]}
-                  onScroll={[Function]}
-                  onScrollEndDrag={[Function]}
-                  scrollEventThrottle={100}
+                  scrollEventThrottle={16}
                   showsHorizontalScrollIndicator={false}
                   style={
                     {
@@ -8603,306 +8756,327 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                         testID="Canvas"
                       >
                         <View
-                          color="#25272B"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={0}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={172.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={345}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={517.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={690}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={862.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1035}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1207.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1380}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1552.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1725}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1897.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2070}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2242.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2415}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={816}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2587.5}
-                          y={0}
-                        />
-                        <View
-                          color="#000000"
-                          path={
+                          origin={
                             {
-                              "addCircle": [Function],
-                              "addOval": [Function],
-                              "addRRect": [Function],
-                              "addRect": [Function],
-                              "arcTo": [Function],
-                              "close": [Function],
-                              "cubicTo": [Function],
-                              "detach": [Function],
-                              "lineTo": [Function],
-                              "moveTo": [Function],
-                              "quadTo": [Function],
+                              "value": {
+                                "x": 0,
+                                "y": 0,
+                              },
                             }
                           }
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="SkiaPath"
-                        />
-                        <View
-                          color="#ff5920"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={171.5}
-                          x={0}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={171.5}
-                          x={0}
-                          y={375}
-                        />
-                        <View
-                          color="rgba(0,0,0,0.3)"
-                          p1={
+                          testID="Group"
+                          transform={
                             {
-                              "x": 168.5,
-                              "y": 379,
+                              "value": [
+                                {
+                                  "scaleX": 1,
+                                },
+                              ],
                             }
                           }
-                          p2={
-                            {
-                              "x": 168.5,
-                              "y": 403,
+                        >
+                          <View
+                            color="#25272B"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={0}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={172.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={345}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={517.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={690}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={862.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1035}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1207.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1380}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1552.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1725}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1897.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2070}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2242.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2415}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={816}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2587.5}
+                            y={0}
+                          />
+                          <View
+                            color="#000000"
+                            path={
+                              {
+                                "addCircle": [Function],
+                                "addOval": [Function],
+                                "addRRect": [Function],
+                                "addRect": [Function],
+                                "arcTo": [Function],
+                                "close": [Function],
+                                "cubicTo": [Function],
+                                "detach": [Function],
+                                "lineTo": [Function],
+                                "moveTo": [Function],
+                                "quadTo": [Function],
+                              }
                             }
-                          }
-                          strokeWidth={2}
-                          testID="SkiaLine"
-                        />
-                        <View
-                          color="#ff5920"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={171.5}
-                          x={172.5}
-                          y={239}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={171.5}
-                          x={172.5}
-                          y={239}
-                        />
-                        <View
-                          color="rgba(0,0,0,0.3)"
-                          p1={
-                            {
-                              "x": 341,
-                              "y": 243,
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="SkiaPath"
+                          />
+                          <View
+                            color="#ff5920"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={0}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={0}
+                            y={375}
+                          />
+                          <View
+                            color="rgba(0,0,0,0.3)"
+                            p1={
+                              {
+                                "x": 168.5,
+                                "y": 379,
+                              }
                             }
-                          }
-                          p2={
-                            {
-                              "x": 341,
-                              "y": 267,
+                            p2={
+                              {
+                                "x": 168.5,
+                                "y": 403,
+                              }
                             }
-                          }
-                          strokeWidth={2}
-                          testID="SkiaLine"
-                        />
-                        <View
-                          color="#ff5920"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={171.5}
-                          x={345}
-                          y={137}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={171.5}
-                          x={345}
-                          y={137}
-                        />
-                        <View
-                          color="rgba(0,0,0,0.3)"
-                          p1={
-                            {
-                              "x": 513.5,
-                              "y": 141,
+                            strokeWidth={2}
+                            testID="SkiaLine"
+                          />
+                          <View
+                            color="#ff5920"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={172.5}
+                            y={239}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={172.5}
+                            y={239}
+                          />
+                          <View
+                            color="rgba(0,0,0,0.3)"
+                            p1={
+                              {
+                                "x": 341,
+                                "y": 243,
+                              }
                             }
-                          }
-                          p2={
-                            {
-                              "x": 513.5,
-                              "y": 165,
+                            p2={
+                              {
+                                "x": 341,
+                                "y": 267,
+                              }
                             }
-                          }
-                          strokeWidth={2}
-                          testID="SkiaLine"
-                        />
-                        <View
-                          color="#ff5920"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={171.5}
-                          x={517.5}
-                          y={-33}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={171.5}
-                          x={517.5}
-                          y={-33}
-                        />
-                        <View
-                          color="rgba(0,0,0,0.3)"
-                          p1={
-                            {
-                              "x": 686,
-                              "y": -29,
+                            strokeWidth={2}
+                            testID="SkiaLine"
+                          />
+                          <View
+                            color="#ff5920"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={345}
+                            y={137}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={345}
+                            y={137}
+                          />
+                          <View
+                            color="rgba(0,0,0,0.3)"
+                            p1={
+                              {
+                                "x": 513.5,
+                                "y": 141,
+                              }
                             }
-                          }
-                          p2={
-                            {
-                              "x": 686,
-                              "y": -5,
+                            p2={
+                              {
+                                "x": 513.5,
+                                "y": 165,
+                              }
                             }
-                          }
-                          strokeWidth={2}
-                          testID="SkiaLine"
-                        />
+                            strokeWidth={2}
+                            testID="SkiaLine"
+                          />
+                          <View
+                            color="#ff5920"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={517.5}
+                            y={-33}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={517.5}
+                            y={-33}
+                          />
+                          <View
+                            color="rgba(0,0,0,0.3)"
+                            p1={
+                              {
+                                "x": 686,
+                                "y": -29,
+                              }
+                            }
+                            p2={
+                              {
+                                "x": 686,
+                                "y": -5,
+                              }
+                            }
+                            strokeWidth={2}
+                            testID="SkiaLine"
+                          />
+                        </View>
                       </View>
                       <View
                         style={
@@ -9041,6 +9215,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                 "borderRadius": 10,
                 "height": 20,
                 "justifyContent": "center",
+                "left": 0,
                 "position": "absolute",
                 "width": 20,
               },
@@ -9048,7 +9223,11 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                 "backgroundColor": "rgba(247, 247, 247, 0.80)",
               },
               {
-                "left": -10,
+                "transform": [
+                  {
+                    "translateX": -10,
+                  },
+                ],
               },
             ]
           }
@@ -9062,8 +9241,22 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
           </View>
         </View>
       </View>
-      <Text
-        accessibilityRole="text"
+      <TextInput
+        accessibilityLabel="Zoom level"
+        accessibilityValue={
+          {
+            "text": "100%",
+          }
+        }
+        animatedProps={
+          {
+            "defaultValue": "100%",
+            "text": "100%",
+          }
+        }
+        defaultValue="100%"
+        editable={false}
+        pointerEvents="none"
         style={
           [
             {
@@ -9073,18 +9266,20 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               "lineHeight": 15,
             },
             {
-              "color": "rgba(247, 247, 247, 0.60)",
+              "height": 28,
+              "includeFontPadding": false,
+              "minWidth": 34,
+              "paddingHorizontal": 0,
+              "paddingVertical": 0,
+              "textAlign": "right",
+              "textAlignVertical": "center",
             },
             {
-              "minWidth": 34,
-              "textAlign": "right",
+              "color": "rgba(247, 247, 247, 0.60)",
             },
           ]
         }
-      >
-        100
-        %
-      </Text>
+      />
     </View>
     <View
       style={
@@ -9447,6 +9642,35 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
               4
             </Text>
           </View>
+          <View
+            pointerEvents="none"
+            style={
+              [
+                {
+                  "bottom": 0,
+                  "left": 0,
+                  "position": "absolute",
+                  "top": 0,
+                  "transformOrigin": "left center",
+                  "width": "100%",
+                },
+                {
+                  "backgroundColor": "rgba(255, 108, 58, 0.35)",
+                },
+                {
+                  "opacity": 0,
+                  "transform": [
+                    {
+                      "translateX": 0,
+                    },
+                    {
+                      "scaleX": 0,
+                    },
+                  ],
+                },
+              ]
+            }
+          />
         </View>
         <View
           style={
@@ -9461,15 +9685,25 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
             style={
               [
                 {
-                  "borderRadius": 0,
                   "bottom": 0,
+                  "left": 0,
                   "position": "absolute",
                   "top": 0,
+                  "transformOrigin": "left center",
+                  "width": "100%",
                 },
                 {
                   "backgroundColor": "rgba(247, 247, 247, 0.80)",
-                  "left": "0%",
-                  "width": "25%",
+                },
+                {
+                  "transform": [
+                    {
+                      "translateX": 0,
+                    },
+                    {
+                      "scaleX": 0.25,
+                    },
+                  ],
                 },
               ]
             }
@@ -11580,10 +11814,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                 <RCTScrollView
                   horizontal={true}
                   nestedScrollEnabled={true}
-                  onMomentumScrollEnd={[Function]}
-                  onScroll={[Function]}
-                  onScrollEndDrag={[Function]}
-                  scrollEventThrottle={100}
+                  scrollEventThrottle={16}
                   showsHorizontalScrollIndicator={false}
                   style={
                     {
@@ -11613,406 +11844,427 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                         testID="Canvas"
                       >
                         <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={0}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={172.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={345}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={517.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={690}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={862.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1035}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1207.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1380}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1552.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1725}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={1897.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2070}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2242.5}
-                          y={0}
-                        />
-                        <View
-                          color="#25272B"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2415}
-                          y={0}
-                        />
-                        <View
-                          color="#1A1C20"
-                          height={408}
-                          testID="SkiaRect"
-                          width={172.5}
-                          x={2587.5}
-                          y={0}
-                        />
-                        <View
-                          color="#000000"
-                          path={
+                          origin={
                             {
-                              "addCircle": [Function],
-                              "addOval": [Function],
-                              "addRRect": [Function],
-                              "addRect": [Function],
-                              "arcTo": [Function],
-                              "close": [Function],
-                              "cubicTo": [Function],
-                              "detach": [Function],
-                              "lineTo": [Function],
-                              "moveTo": [Function],
-                              "quadTo": [Function],
+                              "value": {
+                                "x": 0,
+                                "y": 0,
+                              },
                             }
                           }
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="SkiaPath"
-                        />
-                        <View
-                          color="#04ffa0"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={0}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={0}
-                          y={375}
-                        />
-                        <View
-                          color="#04ffa0"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={345}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={345}
-                          y={375}
-                        />
-                        <View
-                          color="#04ffa0"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={172.5}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={172.5}
-                          y={375}
-                        />
-                        <View
-                          color="#04ffa0"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={517.5}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={517.5}
-                          y={375}
-                        />
-                        <View
-                          color="#00f497"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={0}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={0}
-                          y={375}
-                        />
-                        <View
-                          color="#00e48d"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={86.25}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={86.25}
-                          y={375}
-                        />
-                        <View
-                          color="#00f497"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={172.5}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={172.5}
-                          y={375}
-                        />
-                        <View
-                          color="#00e48d"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={258.75}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={258.75}
-                          y={375}
-                        />
-                        <View
-                          color="#00f497"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={345}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={345}
-                          y={375}
-                        />
-                        <View
-                          color="#00e48d"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={431.25}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={431.25}
-                          y={375}
-                        />
-                        <View
-                          color="#00f497"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={517.5}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={517.5}
-                          y={375}
-                        />
-                        <View
-                          color="#00e48d"
-                          height={32}
-                          opacity={1}
-                          r={3}
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={603.75}
-                          y={375}
-                        />
-                        <View
-                          color="#000000"
-                          height={32}
-                          r={3}
-                          strokeWidth={0.5}
-                          style="stroke"
-                          testID="RoundedRect"
-                          width={43.125}
-                          x={603.75}
-                          y={375}
-                        />
+                          testID="Group"
+                          transform={
+                            {
+                              "value": [
+                                {
+                                  "scaleX": 1,
+                                },
+                              ],
+                            }
+                          }
+                        >
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={0}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={172.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={345}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={517.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={690}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={862.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1035}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1207.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1380}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1552.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1725}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={1897.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2070}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2242.5}
+                            y={0}
+                          />
+                          <View
+                            color="#25272B"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2415}
+                            y={0}
+                          />
+                          <View
+                            color="#1A1C20"
+                            height={408}
+                            testID="SkiaRect"
+                            width={172.5}
+                            x={2587.5}
+                            y={0}
+                          />
+                          <View
+                            color="#000000"
+                            path={
+                              {
+                                "addCircle": [Function],
+                                "addOval": [Function],
+                                "addRRect": [Function],
+                                "addRect": [Function],
+                                "arcTo": [Function],
+                                "close": [Function],
+                                "cubicTo": [Function],
+                                "detach": [Function],
+                                "lineTo": [Function],
+                                "moveTo": [Function],
+                                "quadTo": [Function],
+                              }
+                            }
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="SkiaPath"
+                          />
+                          <View
+                            color="#04ffa0"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={0}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={0}
+                            y={375}
+                          />
+                          <View
+                            color="#04ffa0"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={345}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={345}
+                            y={375}
+                          />
+                          <View
+                            color="#04ffa0"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={172.5}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={172.5}
+                            y={375}
+                          />
+                          <View
+                            color="#04ffa0"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={517.5}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={517.5}
+                            y={375}
+                          />
+                          <View
+                            color="#00f497"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={0}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={0}
+                            y={375}
+                          />
+                          <View
+                            color="#00e48d"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={86.25}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={86.25}
+                            y={375}
+                          />
+                          <View
+                            color="#00f497"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={172.5}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={172.5}
+                            y={375}
+                          />
+                          <View
+                            color="#00e48d"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={258.75}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={258.75}
+                            y={375}
+                          />
+                          <View
+                            color="#00f497"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={345}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={345}
+                            y={375}
+                          />
+                          <View
+                            color="#00e48d"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={431.25}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={431.25}
+                            y={375}
+                          />
+                          <View
+                            color="#00f497"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={517.5}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={517.5}
+                            y={375}
+                          />
+                          <View
+                            color="#00e48d"
+                            height={32}
+                            opacity={1}
+                            r={3}
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={603.75}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={43.125}
+                            x={603.75}
+                            y={375}
+                          />
+                        </View>
                       </View>
                       <View
                         style={
@@ -12151,6 +12403,7 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                 "borderRadius": 10,
                 "height": 20,
                 "justifyContent": "center",
+                "left": 0,
                 "position": "absolute",
                 "width": 20,
               },
@@ -12158,7 +12411,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                 "backgroundColor": "rgba(247, 247, 247, 0.80)",
               },
               {
-                "left": -10,
+                "transform": [
+                  {
+                    "translateX": -10,
+                  },
+                ],
               },
             ]
           }
@@ -12172,8 +12429,22 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
           </View>
         </View>
       </View>
-      <Text
-        accessibilityRole="text"
+      <TextInput
+        accessibilityLabel="Zoom level"
+        accessibilityValue={
+          {
+            "text": "100%",
+          }
+        }
+        animatedProps={
+          {
+            "defaultValue": "100%",
+            "text": "100%",
+          }
+        }
+        defaultValue="100%"
+        editable={false}
+        pointerEvents="none"
         style={
           [
             {
@@ -12183,18 +12454,20 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
               "lineHeight": 15,
             },
             {
-              "color": "rgba(247, 247, 247, 0.60)",
+              "height": 28,
+              "includeFontPadding": false,
+              "minWidth": 34,
+              "paddingHorizontal": 0,
+              "paddingVertical": 0,
+              "textAlign": "right",
+              "textAlignVertical": "center",
             },
             {
-              "minWidth": 34,
-              "textAlign": "right",
+              "color": "rgba(247, 247, 247, 0.60)",
             },
           ]
         }
-      >
-        100
-        %
-      </Text>
+      />
     </View>
     <View
       style={
@@ -12709,6 +12982,35 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
               4
             </Text>
           </View>
+          <View
+            pointerEvents="none"
+            style={
+              [
+                {
+                  "bottom": 0,
+                  "left": 0,
+                  "position": "absolute",
+                  "top": 0,
+                  "transformOrigin": "left center",
+                  "width": "100%",
+                },
+                {
+                  "backgroundColor": "rgba(26, 255, 168, 0.35)",
+                },
+                {
+                  "opacity": 0,
+                  "transform": [
+                    {
+                      "translateX": 0,
+                    },
+                    {
+                      "scaleX": 0,
+                    },
+                  ],
+                },
+              ]
+            }
+          />
         </View>
         <View
           style={
@@ -12723,15 +13025,25 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
             style={
               [
                 {
-                  "borderRadius": 0,
                   "bottom": 0,
+                  "left": 0,
                   "position": "absolute",
                   "top": 0,
+                  "transformOrigin": "left center",
+                  "width": "100%",
                 },
                 {
                   "backgroundColor": "rgba(247, 247, 247, 0.80)",
-                  "left": "0%",
-                  "width": "25%",
+                },
+                {
+                  "transform": [
+                    {
+                      "translateX": 0,
+                    },
+                    {
+                      "scaleX": 0.25,
+                    },
+                  ],
                 },
               ]
             }

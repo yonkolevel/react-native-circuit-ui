@@ -15,7 +15,6 @@ import React, {
   useImperativeHandle,
   useMemo,
   useCallback,
-  useRef,
   useState,
 } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
@@ -33,7 +32,17 @@ import {
   Text as SkiaText,
   matchFont,
 } from '@shopify/react-native-skia';
-import { runOnJS, useSharedValue } from 'react-native-reanimated';
+import Animated, {
+  scrollTo,
+  useAnimatedStyle,
+  useAnimatedReaction,
+  useAnimatedRef,
+  useAnimatedScrollHandler,
+  useDerivedValue,
+  useSharedValue,
+} from 'react-native-reanimated';
+import type { SharedValue } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { Text } from '../Text';
 import { Icon, Icons } from '../SFSymbol';
 import { useTheme } from '../../theme';
@@ -43,6 +52,11 @@ import {
   getResizedNoteDuration,
   getVelocityColor,
 } from '../PianoRoll/pianoRollMath';
+
+const AnimatedScrollView = Animated.createAnimatedComponent(GHScrollView);
+
+/** Mirrors SkiaPianoRollGrid's scroll-owner ids — see the comment there. */
+const SCROLL_OWNER_PANEL = 1;
 
 const LABEL_COL = 60;
 const BEAT_LABEL_H = 16;
@@ -79,17 +93,23 @@ export interface NotePrecisionPanelProps {
   stepWidth: number;
   onClose?: () => void;
   onVelocityChange?: (noteIndex: number, velocity: number) => void;
-  /** Fired continuously while a velocity handle is being dragged (and once
-   * more with `null` on release) — lets the piano roll grid above mirror the
-   * in-progress value live, without touching the undo-tracked store on
-   * every drag tick the way a committed onVelocityChange call would. */
-  onVelocityPreview?: (noteIndex: number, velocity: number | null) => void;
+  /** Shared velocity preview consumed directly by both Skia canvases. */
+  velocityPreviewNoteIndex?: SharedValue<number>;
+  velocityPreviewValue?: SharedValue<number>;
   onPositionChange?: (noteIndex: number, newPosition: number) => void;
   onDurationChange?: (noteIndex: number, newDuration: number) => void;
   /** Fired on horizontal scroll with the raw scroll-x pixel offset — lets
    * callers keep the piano roll grid above (which shares the same
    * beat-to-pixel scale) in sync. */
   onScrollXChange?: (x: number) => void;
+  /** Shared horizontal scroll offset (pixels) linking this panel to the piano
+   * roll grid above — see SkiaPianoRollGridProps.scrollX. */
+  scrollX?: SharedValue<number>;
+  scrollOwner?: SharedValue<number>;
+  /** Live zoom relative to the committed one while the zoom scrubber handle is
+   * dragged — see SkiaPianoRollGridProps.zoomPreview. Scaled here too so this
+   * panel's timeline stays locked to the grid above during the drag. */
+  zoomPreview?: SharedValue<number>;
   /** Match the piano roll's move/resize snapping semantics. */
   snapToGrid?: boolean;
   /** Drum one-shots omit duration editing when locked. */
@@ -113,18 +133,24 @@ export const NotePrecisionPanel = memo(
         stepWidth,
         onClose,
         onVelocityChange,
-        onVelocityPreview,
+        velocityPreviewNoteIndex,
+        velocityPreviewValue,
         onPositionChange,
         onDurationChange,
         onScrollXChange,
+        scrollX,
+        scrollOwner,
+        zoomPreview,
         snapToGrid = false,
         lockNoteDuration = false,
       }: NotePrecisionPanelProps,
       ref
     ) {
       const { colors } = useTheme();
-      const hScrollRef = useRef<any>(null);
-      const lastReportedScrollX = useRef(0);
+      const hScrollRef = useAnimatedRef<any>();
+      // Shared, not a ref: reportScroll below is scheduled from worklets, so
+      // its closure is serialized (see the same note in SkiaPianoRollGrid).
+      const lastReportedScrollX = useSharedValue(0);
       useImperativeHandle(
         ref,
         () => ({
@@ -132,33 +158,56 @@ export const NotePrecisionPanel = memo(
             hScrollRef.current?.scrollTo?.({ x, animated });
           },
         }),
-        []
+        [hScrollRef]
       );
       const reportScroll = useCallback(
         (x: number, force = false) => {
-          if (
-            !force &&
-            x !== 0 &&
-            Math.abs(x - lastReportedScrollX.current) < 8
-          )
+          if (!force && x !== 0 && Math.abs(x - lastReportedScrollX.value) < 8)
             return;
-          lastReportedScrollX.current = x;
+          lastReportedScrollX.value = x;
           onScrollXChange?.(x);
         },
-        [onScrollXChange]
+        [onScrollXChange, lastReportedScrollX]
       );
-      const handleScroll = useCallback(
-        (e: { nativeEvent: { contentOffset: { x: number } } }) => {
-          reportScroll(e.nativeEvent.contentOffset.x);
+      // Scrolling this panel keeps the grid above locked to it entirely on the
+      // UI runtime — the RN runtime only hears about the offset the gesture
+      // finished on.
+      const scrollHandler = useAnimatedScrollHandler({
+        onBeginDrag: () => {
+          if (scrollOwner) scrollOwner.value = SCROLL_OWNER_PANEL;
         },
-        [reportScroll]
-      );
-      const flushScroll = useCallback(
-        (e: { nativeEvent: { contentOffset: { x: number } } }) => {
-          reportScroll(e.nativeEvent.contentOffset.x, true);
+        onScroll: (event) => {
+          if (scrollX && scrollOwner?.value === SCROLL_OWNER_PANEL) {
+            scrollX.value = Math.max(0, event.contentOffset.x);
+          }
         },
-        [reportScroll]
+        onEndDrag: (event) => {
+          scheduleOnRN(reportScroll, Math.max(0, event.contentOffset.x), true);
+        },
+        onMomentumEnd: (event) => {
+          scheduleOnRN(reportScroll, Math.max(0, event.contentOffset.x), true);
+        },
+      });
+      useAnimatedReaction(
+        () => scrollX?.value ?? 0,
+        (x) => {
+          if (!scrollX || scrollOwner?.value === SCROLL_OWNER_PANEL) return;
+          scrollTo(hScrollRef, x, 0, false);
+        }
       );
+
+      const zoomPreviewStyle = useAnimatedStyle(() => {
+        const scale = zoomPreview?.value ?? 1;
+        const anchor = scrollX?.value ?? 0;
+        return {
+          transform: [
+            // Scale about the viewport's left edge — the same anchor the grid
+            // above uses — instead of the content's start.
+            { translateX: -(scale - 1) * anchor },
+            { scaleX: scale },
+          ],
+        };
+      });
 
       // Computed here so CanvasKit is ready when matchFont runs (avoids web crash)
       const velFont = useMemo(
@@ -186,216 +235,32 @@ export const NotePrecisionPanel = memo(
 
       const [velAreaH, setVelAreaH] = useState(120);
 
-      // Velocity drag state
-      const [dragIdx, setDragIdx] = useState(-1);
-      const [dragVel, setDragVel] = useState(0);
-      const dragStartY = useRef(0);
-      const dragStartVel = useRef(0);
-      const dragIdxRef = useRef(-1);
-      const dragVelRef = useRef(0);
-      const lastRenderedDragVel = useRef(0);
-      const lastPreviewVelocity = useRef<{
-        noteIndex: number;
-        velocity: number;
-      } | null>(null);
-
-      // Position drag state (horizontal drag on note block body)
-      const [posBlockDragIdx, setPosBlockDragIdx] = useState(-1);
-      const [posBlockDragDx, setPosBlockDragDx] = useState(0);
-      const posBlockStartX = useRef(0);
-
-      // Duration drag state (horizontal drag on note block right edge)
-      const [durBlockDragIdx, setDurBlockDragIdx] = useState(-1);
-      const [durBlockDragDx, setDurBlockDragDx] = useState(0);
-      const durBlockStartX = useRef(0);
-
-      const handleVelDragStart = useCallback(
-        (idx: number, y: number) => {
-          const entry = notesAtPitch[idx];
-          if (!entry) return;
-          dragIdxRef.current = idx;
-          dragStartY.current = y;
-          dragStartVel.current = entry.note.velocity;
-          dragVelRef.current = entry.note.velocity;
-          lastRenderedDragVel.current = entry.note.velocity;
-          setDragIdx(idx);
-          setDragVel(entry.note.velocity);
-        },
-        [notesAtPitch]
+      // Continuous edit previews stay on the UI runtime. React/store state
+      // changes only once when a gesture commits on release.
+      const positionDragIndex = useSharedValue(-1);
+      const positionDragDx = useSharedValue(0);
+      const durationDragIndex = useSharedValue(-1);
+      const durationDragDx = useSharedValue(0);
+      const velocityDragIndex = useSharedValue(-1);
+      const internalVelocityPreviewNoteIndex = useSharedValue(-1);
+      const internalVelocityPreviewValue = useSharedValue(0);
+      const liveVelocityNoteIndex =
+        velocityPreviewNoteIndex ?? internalVelocityPreviewNoteIndex;
+      const liveVelocity = velocityPreviewValue ?? internalVelocityPreviewValue;
+      const velocityColors = useMemo(
+        () =>
+          Array.from({ length: 128 }, (_, velocity) =>
+            getVelocityColor(trackColor, velocity)
+          ),
+        [trackColor]
       );
-
-      const handleVelDragUpdate = useCallback(
-        (y: number) => {
-          const dy = y - dragStartY.current;
-          const usableH = velAreaH - BOTTOM_PAD - HANDLE_H;
-          const delta = (-dy / usableH) * 127;
-          const newVel = Math.round(
-            Math.max(1, Math.min(127, dragStartVel.current + delta))
-          );
-          dragVelRef.current = newVel;
-          if (Math.abs(lastRenderedDragVel.current - newVel) >= 4) {
-            lastRenderedDragVel.current = newVel;
-            setDragVel(newVel);
-          }
-          const idx = dragIdxRef.current;
-          if (idx >= 0 && idx < notesAtPitch.length) {
-            const globalIdx = notesAtPitch[idx]!.globalIdx;
-            const previous = lastPreviewVelocity.current;
-            if (
-              !previous ||
-              previous.noteIndex !== globalIdx ||
-              Math.abs(previous.velocity - newVel) >= 4
-            ) {
-              lastPreviewVelocity.current = {
-                noteIndex: globalIdx,
-                velocity: newVel,
-              };
-              onVelocityPreview?.(globalIdx, newVel);
-            }
-          }
-        },
-        [velAreaH, notesAtPitch, onVelocityPreview]
-      );
-
-      const handleVelDragEnd = useCallback(() => {
-        const idx = dragIdxRef.current;
-        const vel = dragVelRef.current;
-        if (idx >= 0 && idx < notesAtPitch.length) {
-          onVelocityChange?.(notesAtPitch[idx]!.globalIdx, vel);
-          lastPreviewVelocity.current = null;
-          onVelocityPreview?.(notesAtPitch[idx]!.globalIdx, null);
-        }
-        setDragVel(vel);
-        dragIdxRef.current = -1;
-        setDragIdx(-1);
-      }, [notesAtPitch, onVelocityChange, onVelocityPreview]);
-
-      // Reuse the piano-roll math so this precision surface follows the same
-      // snap and clip-boundary rules as the main editor.
-      const getLivePosition = useCallback(
-        (originalPosition: number, originalDuration: number, dx: number) => {
-          const maxPosition = Math.max(0, totalBeats - originalDuration);
-          return getMovedGridTarget(
-            dx,
-            0,
-            originalPosition,
-            0,
-            stepWidth,
-            1,
-            1,
-            maxPosition,
-            snapToGrid
-          ).position;
-        },
-        [stepWidth, totalBeats, snapToGrid]
-      );
-      const getLiveDuration = useCallback(
-        (originalDuration: number, originalPosition: number, dx: number) => {
-          const maxDuration = Math.max(0, totalBeats - originalPosition);
-          return Math.min(
-            maxDuration,
-            Math.max(
-              MIN_NOTE_DURATION,
-              getResizedNoteDuration(
-                originalDuration,
-                dx,
-                {
-                  beatWidth,
-                  stepWidth,
-                  gridWidth: totalWidth,
-                  isDrum: false,
-                  basePitch: 0,
-                  totalPitches: 1,
-                  rowHeight: NOTE_AREA_H,
-                  pitchToMidi: [],
-                },
-                originalPosition,
-                snapToGrid
-              )
-            )
-          );
-        },
-        [beatWidth, stepWidth, totalBeats, totalWidth, snapToGrid]
-      );
-
-      // Position drag handlers
-      const handlePosBlockDragStart = useCallback((idx: number, x: number) => {
-        setPosBlockDragIdx(idx);
-        setPosBlockDragDx(0);
-        posBlockStartX.current = x;
-      }, []);
-      const handlePosBlockDragUpdate = useCallback((x: number) => {
-        setPosBlockDragDx(x - posBlockStartX.current);
-      }, []);
-      const handlePosBlockDragEnd = useCallback(
-        (x: number) => {
-          if (posBlockDragIdx >= 0 && posBlockDragIdx < notesAtPitch.length) {
-            const dx = x - posBlockStartX.current;
-            const note = notesAtPitch[posBlockDragIdx]!.note;
-            const newPos = getLivePosition(note.position, note.duration, dx);
-            onPositionChange?.(
-              notesAtPitch[posBlockDragIdx]!.globalIdx,
-              newPos
-            );
-          }
-          setPosBlockDragIdx(-1);
-          setPosBlockDragDx(0);
-        },
-        [posBlockDragIdx, notesAtPitch, onPositionChange, getLivePosition]
-      );
-
-      // Duration drag handlers
-      const handleDurBlockDragStart = useCallback((idx: number, x: number) => {
-        setDurBlockDragIdx(idx);
-        setDurBlockDragDx(0);
-        durBlockStartX.current = x;
-      }, []);
-      const handleDurBlockDragUpdate = useCallback((x: number) => {
-        setDurBlockDragDx(x - durBlockStartX.current);
-      }, []);
-      const handleDurBlockDragEnd = useCallback(
-        (x: number) => {
-          if (durBlockDragIdx >= 0 && durBlockDragIdx < notesAtPitch.length) {
-            const dx = x - durBlockStartX.current;
-            const note = notesAtPitch[durBlockDragIdx]!.note;
-            const newDur = getLiveDuration(note.duration, note.position, dx);
-            onDurationChange?.(
-              notesAtPitch[durBlockDragIdx]!.globalIdx,
-              newDur
-            );
-          }
-          setDurBlockDragIdx(-1);
-          setDurBlockDragDx(0);
-        },
-        [durBlockDragIdx, notesAtPitch, onDurationChange, getLiveDuration]
-      );
-
-      /** Compute handle + stem geometry for a note (matches native VelocityHandle positioning) */
-      const noteGeom = useCallback(
-        (note: ClipNote, vel: number) => {
-          const fraction = vel / 127;
-          const baseline = velAreaH - BOTTOM_PAD; // velocity 0 sits here
-          const usableH = baseline - HANDLE_H; // range from vel 0 to vel 127
-          const stemH = Math.max(0, fraction * usableH);
-
-          const noteStartX = (note.position / 0.25) * stepWidth;
-          const handleX = noteStartX;
-          const stemX = noteStartX + HANDLE_W;
-          const handleY = baseline - stemH - HANDLE_H;
-          const stemTop = baseline - stemH;
-
-          return {
-            noteStartX,
-            stemX,
-            stemH,
-            stemTop,
-            handleX,
-            handleY,
-            fraction,
-            baseline,
-          };
-        },
-        [velAreaH, stepWidth]
+      const velocityTextWidths = useMemo(
+        () =>
+          Array.from(
+            { length: 128 },
+            (_, velocity) => velFont.measureText(String(velocity)).width
+          ),
+        [velFont]
       );
 
       return (
@@ -476,18 +341,20 @@ export const NotePrecisionPanel = memo(
             </View>
 
             {/* Scrollable timeline — SINGLE ScrollView for everything */}
-            <GHScrollView
+            <AnimatedScrollView
               ref={hScrollRef}
               horizontal
               showsHorizontalScrollIndicator
               style={{ flex: 1 }}
-              onScroll={handleScroll}
-              onScrollEndDrag={flushScroll}
-              onMomentumScrollEnd={flushScroll}
-              scrollEventThrottle={100}
+              onScroll={scrollHandler}
+              scrollEventThrottle={16}
             >
-              <View
-                style={{ width: Math.max(totalWidth, totalWidth + HANDLE_W) }}
+              <Animated.View
+                style={[
+                  { width: Math.max(totalWidth, totalWidth + HANDLE_W) },
+                  styles.zoomPreviewLayer,
+                  zoomPreviewStyle,
+                ]}
               >
                 {/* Beat labels */}
                 <View style={{ height: BEAT_LABEL_H, flexDirection: 'row' }}>
@@ -532,68 +399,26 @@ export const NotePrecisionPanel = memo(
                         />
                       );
                     })}
-                    {notesAtPitch.map(({ note }, i) => {
-                      const livePos =
-                        i === posBlockDragIdx
-                          ? getLivePosition(
-                              note.position,
-                              note.duration,
-                              posBlockDragDx
-                            )
-                          : note.position;
-                      const liveDur =
-                        i === durBlockDragIdx
-                          ? getLiveDuration(
-                              note.duration,
-                              note.position,
-                              durBlockDragDx
-                            )
-                          : note.duration;
-                      const x = (livePos / 0.25) * stepWidth;
-                      const w = Math.max(
-                        (liveDur / 0.25) * stepWidth - 1,
-                        stepWidth * 0.5
-                      );
-                      // Matches the piano roll grid's note styling exactly,
-                      // including velocity-scaled lightness — reads dragVel live
-                      // while this note's own velocity handle is being dragged,
-                      // same as the stem/handle below already do.
-                      const y = 2;
-                      const h = NOTE_AREA_H - 4;
-                      const liveVelocity =
-                        i === dragIdx ? dragVel : note.velocity;
-                      return (
-                        <React.Fragment key={i}>
-                          <RoundedRect
-                            x={x}
-                            y={y}
-                            width={w}
-                            height={h}
-                            r={3}
-                            color={getVelocityColor(trackColor, liveVelocity)}
-                            opacity={1}
-                          />
-                          <RoundedRect
-                            x={x}
-                            y={y}
-                            width={w}
-                            height={h}
-                            r={3}
-                            color="#000000"
-                            style="stroke"
-                            strokeWidth={0.5}
-                          />
-                          {!lockNoteDuration && (
-                            <Line
-                              p1={vec(x + w - 3, y + 4)}
-                              p2={vec(x + w - 3, y + h - 4)}
-                              color="rgba(0,0,0,0.3)"
-                              strokeWidth={2}
-                            />
-                          )}
-                        </React.Fragment>
-                      );
-                    })}
+                    {notesAtPitch.map(({ note }, i) => (
+                      <PrecisionNoteBlock
+                        key={i}
+                        index={i}
+                        note={note}
+                        stepWidth={stepWidth}
+                        beatWidth={beatWidth}
+                        totalBeats={totalBeats}
+                        totalWidth={totalWidth}
+                        snapToGrid={snapToGrid}
+                        lockNoteDuration={lockNoteDuration}
+                        positionDragIndex={positionDragIndex}
+                        positionDragDx={positionDragDx}
+                        durationDragIndex={durationDragIndex}
+                        durationDragDx={durationDragDx}
+                        velocityDragIndex={velocityDragIndex}
+                        velocityPreviewValue={liveVelocity}
+                        velocityColors={velocityColors}
+                      />
+                    ))}
                   </Canvas>
                   {/* Gesture targets: body = position drag, right edge = duration drag */}
                   {notesAtPitch.map(({ note }, i) => {
@@ -607,22 +432,36 @@ export const NotePrecisionPanel = memo(
                       <React.Fragment key={`bg${i}`}>
                         <PrecisionBlockDrag
                           index={i}
+                          globalIndex={notesAtPitch[i]!.globalIdx}
+                          note={note}
                           x={x}
                           width={w - edgeW}
                           type="position"
-                          onStart={handlePosBlockDragStart}
-                          onUpdate={handlePosBlockDragUpdate}
-                          onEnd={handlePosBlockDragEnd}
+                          stepWidth={stepWidth}
+                          beatWidth={beatWidth}
+                          totalBeats={totalBeats}
+                          totalWidth={totalWidth}
+                          snapToGrid={snapToGrid}
+                          dragIndex={positionDragIndex}
+                          dragDx={positionDragDx}
+                          onCommit={onPositionChange}
                         />
                         {!lockNoteDuration && (
                           <PrecisionBlockDrag
                             index={i}
+                            globalIndex={notesAtPitch[i]!.globalIdx}
+                            note={note}
                             x={x + w - edgeW}
                             width={edgeW}
                             type="duration"
-                            onStart={handleDurBlockDragStart}
-                            onUpdate={handleDurBlockDragUpdate}
-                            onEnd={handleDurBlockDragEnd}
+                            stepWidth={stepWidth}
+                            beatWidth={beatWidth}
+                            totalBeats={totalBeats}
+                            totalWidth={totalWidth}
+                            snapToGrid={snapToGrid}
+                            dragIndex={durationDragIndex}
+                            dragDx={durationDragDx}
+                            onCommit={onDurationChange}
                           />
                         )}
                       </React.Fragment>
@@ -665,61 +504,21 @@ export const NotePrecisionPanel = memo(
                       strokeWidth={0.5}
                     />
 
-                    {/* Stems — thin line from handle down to baseline */}
-                    {notesAtPitch.map(({ note }, i) => {
-                      const vel = i === dragIdx ? dragVel : note.velocity;
-                      const g = noteGeom(note, vel);
-                      return (
-                        <Rect
-                          key={`s${i}`}
-                          x={g.stemX - STEM_W / 2}
-                          y={g.stemTop}
-                          width={STEM_W}
-                          height={g.stemH}
-                          color={trackColor}
-                          opacity={0.4}
-                        />
-                      );
-                    })}
-
-                    {/* Handles — square rect with velocity number inside (all Skia, same GPU frame) */}
-                    {notesAtPitch.map(({ note }, i) => {
-                      const vel = i === dragIdx ? dragVel : note.velocity;
-                      const g = noteGeom(note, vel);
-                      const velStr = String(vel);
-                      // Center text in handle: measure width, offset to center
-                      const textW = velFont.measureText(velStr).width;
-                      const textX = g.handleX + (HANDLE_W - textW) / 2;
-                      const textY = g.handleY + HANDLE_H - 4; // baseline offset
-                      return (
-                        <React.Fragment key={`h${i}`}>
-                          <Rect
-                            x={g.handleX}
-                            y={g.handleY}
-                            width={HANDLE_W}
-                            height={HANDLE_H}
-                            color={trackColor}
-                            opacity={0.3 + 0.7 * g.fraction}
-                          />
-                          <Rect
-                            x={g.handleX}
-                            y={g.handleY}
-                            width={HANDLE_W}
-                            height={HANDLE_H}
-                            color="rgba(255,255,255,0.3)"
-                            style="stroke"
-                            strokeWidth={0.5}
-                          />
-                          <SkiaText
-                            x={textX}
-                            y={textY}
-                            text={velStr}
-                            font={velFont}
-                            color="white"
-                          />
-                        </React.Fragment>
-                      );
-                    })}
+                    {/* Handles and stems consume the velocity SharedValue directly. */}
+                    {notesAtPitch.map(({ note }, i) => (
+                      <VelocityHandleDrawing
+                        key={i}
+                        index={i}
+                        note={note}
+                        stepWidth={stepWidth}
+                        velAreaH={velAreaH}
+                        trackColor={trackColor}
+                        font={velFont}
+                        textWidths={velocityTextWidths}
+                        velocityDragIndex={velocityDragIndex}
+                        velocityPreviewValue={liveVelocity}
+                      />
+                    ))}
                   </Canvas>
 
                   {/* Drag touch targets — INSIDE the scroll container */}
@@ -727,26 +526,31 @@ export const NotePrecisionPanel = memo(
                     // Keep the gesture target anchored while its visual handle
                     // previews the dragged velocity; moving the target itself
                     // would rebuild the active gesture mid-drag.
-                    const g = noteGeom(note, note.velocity);
+                    const g = getVelocityGeometry(
+                      note,
+                      note.velocity,
+                      stepWidth,
+                      velAreaH
+                    );
                     return (
                       <VelDragTarget
                         key={`dt${i}`}
                         index={i}
+                        globalIndex={notesAtPitch[i]!.globalIdx}
+                        initialVelocity={note.velocity}
                         x={g.handleX - 8}
                         y={g.handleY - 8}
-                        updateThresholdPx={Math.max(
-                          2,
-                          (4 * (velAreaH - BOTTOM_PAD - HANDLE_H)) / 127
-                        )}
-                        onDragStart={handleVelDragStart}
-                        onDragUpdate={handleVelDragUpdate}
-                        onDragEnd={handleVelDragEnd}
+                        usableHeight={velAreaH - BOTTOM_PAD - HANDLE_H}
+                        velocityDragIndex={velocityDragIndex}
+                        velocityPreviewNoteIndex={liveVelocityNoteIndex}
+                        velocityPreviewValue={liveVelocity}
+                        onCommit={onVelocityChange}
                       />
                     );
                   })}
                 </View>
-              </View>
-            </GHScrollView>
+              </Animated.View>
+            </AnimatedScrollView>
           </View>
         </View>
       );
@@ -754,38 +558,366 @@ export const NotePrecisionPanel = memo(
   )
 );
 
-/** Drag target for note block position or duration adjustment */
+const getLivePosition = (
+  note: ClipNote,
+  dx: number,
+  stepWidth: number,
+  totalBeats: number,
+  snapToGrid: boolean
+): number => {
+  'worklet';
+  return getMovedGridTarget(
+    dx,
+    0,
+    note.position,
+    0,
+    stepWidth,
+    1,
+    1,
+    Math.max(0, totalBeats - note.duration),
+    snapToGrid
+  ).position;
+};
+
+const getLiveDuration = (
+  note: ClipNote,
+  dx: number,
+  beatWidth: number,
+  stepWidth: number,
+  totalBeats: number,
+  totalWidth: number,
+  snapToGrid: boolean
+): number => {
+  'worklet';
+  return Math.min(
+    Math.max(0, totalBeats - note.position),
+    Math.max(
+      MIN_NOTE_DURATION,
+      getResizedNoteDuration(
+        note.duration,
+        dx,
+        {
+          beatWidth,
+          stepWidth,
+          gridWidth: totalWidth,
+          isDrum: false,
+          basePitch: 0,
+          totalPitches: 1,
+          rowHeight: NOTE_AREA_H,
+          pitchToMidi: [],
+        },
+        note.position,
+        snapToGrid
+      )
+    )
+  );
+};
+
+const getVelocityGeometry = (
+  note: ClipNote,
+  velocity: number,
+  stepWidth: number,
+  velAreaH: number
+) => {
+  'worklet';
+  const fraction = velocity / 127;
+  const baseline = velAreaH - BOTTOM_PAD;
+  const stemH = Math.max(0, fraction * (baseline - HANDLE_H));
+  const handleX = (note.position / 0.25) * stepWidth;
+  return {
+    fraction,
+    handleX,
+    handleY: baseline - stemH - HANDLE_H,
+    stemX: handleX + HANDLE_W,
+    stemTop: baseline - stemH,
+    stemH,
+  };
+};
+
+const PrecisionNoteBlock = memo(function PrecisionNoteBlock({
+  index,
+  note,
+  stepWidth,
+  beatWidth,
+  totalBeats,
+  totalWidth,
+  snapToGrid,
+  lockNoteDuration,
+  positionDragIndex,
+  positionDragDx,
+  durationDragIndex,
+  durationDragDx,
+  velocityDragIndex,
+  velocityPreviewValue,
+  velocityColors,
+}: {
+  index: number;
+  note: ClipNote;
+  stepWidth: number;
+  beatWidth: number;
+  totalBeats: number;
+  totalWidth: number;
+  snapToGrid: boolean;
+  lockNoteDuration: boolean;
+  positionDragIndex: SharedValue<number>;
+  positionDragDx: SharedValue<number>;
+  durationDragIndex: SharedValue<number>;
+  durationDragDx: SharedValue<number>;
+  velocityDragIndex: SharedValue<number>;
+  velocityPreviewValue: SharedValue<number>;
+  velocityColors: string[];
+}) {
+  const x = useDerivedValue(() => {
+    const position =
+      positionDragIndex.value === index
+        ? getLivePosition(
+            note,
+            positionDragDx.value,
+            stepWidth,
+            totalBeats,
+            snapToGrid
+          )
+        : note.position;
+    return (position / 0.25) * stepWidth;
+  });
+  const width = useDerivedValue(() => {
+    const duration =
+      durationDragIndex.value === index
+        ? getLiveDuration(
+            note,
+            durationDragDx.value,
+            beatWidth,
+            stepWidth,
+            totalBeats,
+            totalWidth,
+            snapToGrid
+          )
+        : note.duration;
+    return Math.max((duration / 0.25) * stepWidth - 1, stepWidth * 0.5);
+  });
+  const color = useDerivedValue(() => {
+    const velocity =
+      velocityDragIndex.value === index
+        ? velocityPreviewValue.value
+        : note.velocity;
+    return velocityColors[Math.max(0, Math.min(127, Math.round(velocity)))]!;
+  });
+  const handleP1 = useDerivedValue(() => vec(x.value + width.value - 3, 6));
+  const handleP2 = useDerivedValue(() =>
+    vec(x.value + width.value - 3, NOTE_AREA_H - 6)
+  );
+
+  return (
+    <>
+      <RoundedRect
+        x={x}
+        y={2}
+        width={width}
+        height={NOTE_AREA_H - 4}
+        r={3}
+        color={color}
+      />
+      <RoundedRect
+        x={x}
+        y={2}
+        width={width}
+        height={NOTE_AREA_H - 4}
+        r={3}
+        color="#000000"
+        style="stroke"
+        strokeWidth={0.5}
+      />
+      {!lockNoteDuration && (
+        <Line
+          p1={handleP1}
+          p2={handleP2}
+          color="rgba(0,0,0,0.3)"
+          strokeWidth={2}
+        />
+      )}
+    </>
+  );
+});
+
+const VelocityHandleDrawing = memo(function VelocityHandleDrawing({
+  index,
+  note,
+  stepWidth,
+  velAreaH,
+  trackColor,
+  font,
+  textWidths,
+  velocityDragIndex,
+  velocityPreviewValue,
+}: {
+  index: number;
+  note: ClipNote;
+  stepWidth: number;
+  velAreaH: number;
+  trackColor: string;
+  font: ReturnType<typeof matchFont>;
+  textWidths: number[];
+  velocityDragIndex: SharedValue<number>;
+  velocityPreviewValue: SharedValue<number>;
+}) {
+  const velocity = useDerivedValue(() =>
+    velocityDragIndex.value === index
+      ? velocityPreviewValue.value
+      : note.velocity
+  );
+  const handleY = useDerivedValue(
+    () => getVelocityGeometry(note, velocity.value, stepWidth, velAreaH).handleY
+  );
+  const stemTop = useDerivedValue(
+    () => getVelocityGeometry(note, velocity.value, stepWidth, velAreaH).stemTop
+  );
+  const stemH = useDerivedValue(
+    () => getVelocityGeometry(note, velocity.value, stepWidth, velAreaH).stemH
+  );
+  const handleOpacity = useDerivedValue(
+    () => 0.3 + 0.7 * (velocity.value / 127)
+  );
+  const velocityText = useDerivedValue(() =>
+    String(Math.round(velocity.value))
+  );
+  const textX = useDerivedValue(() => {
+    const value = Math.max(0, Math.min(127, Math.round(velocity.value)));
+    const handleX = (note.position / 0.25) * stepWidth;
+    return handleX + (HANDLE_W - textWidths[value]!) / 2;
+  });
+  const textY = useDerivedValue(() => handleY.value + HANDLE_H - 4);
+  const handleX = (note.position / 0.25) * stepWidth;
+  const stemX = handleX + HANDLE_W;
+
+  return (
+    <>
+      <Rect
+        x={stemX - STEM_W / 2}
+        y={stemTop}
+        width={STEM_W}
+        height={stemH}
+        color={trackColor}
+        opacity={0.4}
+      />
+      <Rect
+        x={handleX}
+        y={handleY}
+        width={HANDLE_W}
+        height={HANDLE_H}
+        color={trackColor}
+        opacity={handleOpacity}
+      />
+      <Rect
+        x={handleX}
+        y={handleY}
+        width={HANDLE_W}
+        height={HANDLE_H}
+        color="rgba(255,255,255,0.3)"
+        style="stroke"
+        strokeWidth={0.5}
+      />
+      <SkiaText
+        x={textX}
+        y={textY}
+        text={velocityText}
+        font={font}
+        color="white"
+      />
+    </>
+  );
+});
+
+/** Drag target for note block position or duration adjustment. */
 const PrecisionBlockDrag = memo(function PrecisionBlockDrag({
   index,
+  globalIndex,
+  note,
   x,
   width,
   type,
-  onStart,
-  onUpdate,
-  onEnd,
+  stepWidth,
+  beatWidth,
+  totalBeats,
+  totalWidth,
+  snapToGrid,
+  dragIndex,
+  dragDx,
+  onCommit,
 }: {
   index: number;
+  globalIndex: number;
+  note: ClipNote;
   x: number;
   width: number;
   type: 'position' | 'duration';
-  onStart: (idx: number, x: number) => void;
-  onUpdate: (x: number) => void;
-  onEnd: (x: number) => void;
+  stepWidth: number;
+  beatWidth: number;
+  totalBeats: number;
+  totalWidth: number;
+  snapToGrid: boolean;
+  dragIndex: SharedValue<number>;
+  dragDx: SharedValue<number>;
+  onCommit?: (noteIndex: number, value: number) => void;
 }) {
-  const gesture = Gesture.Pan()
-    .minDistance(type === 'duration' ? 2 : 4)
-    .onStart((e) => {
-      'worklet';
-      runOnJS(onStart)(index, e.absoluteX);
-    })
-    .onUpdate((e) => {
-      'worklet';
-      runOnJS(onUpdate)(e.absoluteX);
-    })
-    .onEnd((e) => {
-      'worklet';
-      runOnJS(onEnd)(e.absoluteX);
-    });
+  const gesture = useMemo(
+    () =>
+      Gesture.Pan()
+        .minDistance(type === 'duration' ? 2 : 4)
+        .onStart(() => {
+          'worklet';
+          dragIndex.value = index;
+          dragDx.value = 0;
+        })
+        .onUpdate((e) => {
+          'worklet';
+          dragDx.value = e.translationX;
+        })
+        .onEnd((e, success) => {
+          'worklet';
+          if (!success) return;
+          const value =
+            type === 'position'
+              ? getLivePosition(
+                  note,
+                  e.translationX,
+                  stepWidth,
+                  totalBeats,
+                  snapToGrid
+                )
+              : getLiveDuration(
+                  note,
+                  e.translationX,
+                  beatWidth,
+                  stepWidth,
+                  totalBeats,
+                  totalWidth,
+                  snapToGrid
+                );
+          dragIndex.value = -1;
+          dragDx.value = 0;
+          if (onCommit) scheduleOnRN(onCommit, globalIndex, value);
+        })
+        .onFinalize((_e, success) => {
+          'worklet';
+          if (success) return;
+          dragIndex.value = -1;
+          dragDx.value = 0;
+        }),
+    [
+      beatWidth,
+      dragDx,
+      dragIndex,
+      globalIndex,
+      index,
+      note,
+      onCommit,
+      snapToGrid,
+      stepWidth,
+      totalBeats,
+      totalWidth,
+      type,
+    ]
+  );
 
   return (
     <GestureDetector gesture={gesture}>
@@ -804,38 +936,68 @@ const PrecisionBlockDrag = memo(function PrecisionBlockDrag({
 
 const VelDragTarget = memo(function VelDragTarget({
   index,
+  globalIndex,
+  initialVelocity,
   x,
   y,
-  onDragStart,
-  onDragUpdate,
-  onDragEnd,
-  updateThresholdPx,
+  usableHeight,
+  velocityDragIndex,
+  velocityPreviewNoteIndex,
+  velocityPreviewValue,
+  onCommit,
 }: {
   index: number;
+  globalIndex: number;
+  initialVelocity: number;
   x: number;
   y: number;
-  onDragStart: (idx: number, y: number) => void;
-  onDragUpdate: (y: number) => void;
-  onDragEnd: () => void;
-  updateThresholdPx: number;
+  usableHeight: number;
+  velocityDragIndex: SharedValue<number>;
+  velocityPreviewNoteIndex: SharedValue<number>;
+  velocityPreviewValue: SharedValue<number>;
+  onCommit?: (noteIndex: number, velocity: number) => void;
 }) {
-  const lastUpdateY = useSharedValue(0);
-  const gesture = Gesture.Pan()
-    .onStart((e) => {
-      'worklet';
-      lastUpdateY.value = e.absoluteY;
-      runOnJS(onDragStart)(index, e.absoluteY);
-    })
-    .onUpdate((e) => {
-      'worklet';
-      if (Math.abs(e.absoluteY - lastUpdateY.value) < updateThresholdPx) return;
-      lastUpdateY.value = e.absoluteY;
-      runOnJS(onDragUpdate)(e.absoluteY);
-    })
-    .onEnd(() => {
-      'worklet';
-      runOnJS(onDragEnd)();
-    });
+  const gesture = useMemo(
+    () =>
+      Gesture.Pan()
+        .onStart(() => {
+          'worklet';
+          velocityDragIndex.value = index;
+          velocityPreviewNoteIndex.value = globalIndex;
+          velocityPreviewValue.value = initialVelocity;
+        })
+        .onUpdate((e) => {
+          'worklet';
+          const delta = (-e.translationY / usableHeight) * 127;
+          velocityPreviewValue.value = Math.round(
+            Math.max(1, Math.min(127, initialVelocity + delta))
+          );
+        })
+        .onEnd((_e, success) => {
+          'worklet';
+          if (!success) return;
+          const velocity = velocityPreviewValue.value;
+          velocityDragIndex.value = -1;
+          velocityPreviewNoteIndex.value = -1;
+          if (onCommit) scheduleOnRN(onCommit, globalIndex, velocity);
+        })
+        .onFinalize((_e, success) => {
+          'worklet';
+          if (success) return;
+          velocityDragIndex.value = -1;
+          velocityPreviewNoteIndex.value = -1;
+        }),
+    [
+      globalIndex,
+      index,
+      initialVelocity,
+      onCommit,
+      usableHeight,
+      velocityDragIndex,
+      velocityPreviewNoteIndex,
+      velocityPreviewValue,
+    ]
+  );
 
   return (
     <GestureDetector gesture={gesture}>
@@ -854,6 +1016,9 @@ const VelDragTarget = memo(function VelDragTarget({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  // Anchor the live-zoom scale to the left edge; the translate in
+  // zoomPreviewStyle moves that anchor to the viewport.
+  zoomPreviewLayer: { transformOrigin: 'left center' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

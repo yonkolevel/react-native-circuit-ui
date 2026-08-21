@@ -41,7 +41,11 @@ import {
   Gesture,
   GestureDetector,
 } from 'react-native-gesture-handler';
-import {
+import Animated, {
+  scrollTo,
+  useAnimatedReaction,
+  useAnimatedRef,
+  useAnimatedScrollHandler,
   useDerivedValue,
   useSharedValue,
   withTiming,
@@ -71,6 +75,18 @@ import {
   type RecordingNotePreviewData,
 } from './pianoRollMath';
 
+const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
+
+/** Which of the two horizontally-linked timelines (this grid, or the
+ * NotePrecisionPanel below it) currently owns the shared scroll offset. The
+ * owner writes it from its own scroll handler; the other side mirrors it with
+ * Reanimated's `scrollTo` on the UI runtime, so neither view needs a scroll
+ * callback on the RN runtime. Kept as plain literals rather than a shared
+ * export so a hot reload of either file can never see the other in its
+ * temporal dead zone. */
+const SCROLL_OWNER_GRID = 0;
+const SCROLL_OWNER_PANEL = 1;
+
 // Bright red — reads as "actively recording" against any track color,
 // matching the convention most DAWs use for an in-progress take.
 const RECORDING_OUTLINE_COLOR = '#FF3B30';
@@ -81,6 +97,50 @@ const RECORDING_OUTLINE_COLOR = '#FF3B30';
  * thread — no React re-renders while recording (matches the drag-preview
  * and playhead patterns elsewhere in this file).
  */
+const VelocityAwareNoteBody = memo(function VelocityAwareNoteBody({
+  noteIndex,
+  x,
+  y,
+  width,
+  height,
+  radius,
+  committedVelocity,
+  velocityColors,
+  velocityPreviewNoteIndex,
+  velocityPreviewValue,
+}: {
+  noteIndex: number;
+  x: number | SharedValue<number>;
+  y: number | SharedValue<number>;
+  width: number | SharedValue<number>;
+  height: number;
+  radius: number;
+  committedVelocity: number;
+  velocityColors: string[];
+  velocityPreviewNoteIndex: SharedValue<number>;
+  velocityPreviewValue: SharedValue<number>;
+}) {
+  const color = useDerivedValue(() => {
+    const velocity =
+      velocityPreviewNoteIndex.value === noteIndex
+        ? velocityPreviewValue.value
+        : committedVelocity;
+    return velocityColors[Math.max(0, Math.min(127, Math.round(velocity)))]!;
+  });
+
+  return (
+    <RoundedRect
+      x={x}
+      y={y}
+      width={width}
+      height={height}
+      r={radius}
+      color={color}
+      opacity={1}
+    />
+  );
+});
+
 const RecordingNotePreview = memo(function RecordingNotePreview({
   x,
   rowIdx,
@@ -239,17 +299,28 @@ export interface SkiaPianoRollGridProps {
   /** Live playhead X position (pixels), updated on the UI thread via a
    * SharedValue. Also drives recordingNotes previews. */
   playheadPosX?: SharedValue<number>;
-  /** Fired on horizontal scroll with the visible beat range [start, end) — lets
-   * callers (e.g. the bar-range pill selector) show which bars are in view. */
+  /** UI-runtime, 0-indexed, half-open visible bar range. */
+  visibleBarStart?: SharedValue<number>;
+  visibleBarEnd?: SharedValue<number>;
+  /** Shared horizontal scroll offset (pixels) linking this grid to the
+   * NotePrecisionPanel below. Both write it from their own scroll handler
+   * while they own it and mirror it with `scrollTo` while they don't, so the
+   * two timelines stay locked without a per-frame RN-runtime round trip. */
+  scrollX?: SharedValue<number>;
+  scrollOwner?: SharedValue<number>;
+  /** Live zoom relative to `zoomLevel` while the zoom scrubber handle is
+   * dragged. The scene scales by it on the UI runtime so the grid follows the
+   * handle continuously, then adopts the real geometry when zoom commits. */
+  zoomPreview?: SharedValue<number>;
+  /** Optional RN-runtime notification for non-animated consumers. */
   onVisibleBeatRangeChange?: (start: number, end: number) => void;
   /** Fired on horizontal scroll with the raw scroll-x pixel offset — lets
    * callers keep another horizontally-scrolling view (e.g. NotePrecisionPanel,
    * which shares the same beat-to-pixel scale) in sync. */
   onScrollXChange?: (x: number) => void;
-  /** Live velocity override for a single note, keyed by index into `notes` —
-   * mirrors an in-progress velocity-handle drag on NotePrecisionPanel so this
-   * note's color updates in real time instead of only once the drag commits. */
-  velocityPreview?: { noteIndex: number; velocity: number } | null;
+  /** Shared velocity preview consumed directly by Skia on the UI runtime. */
+  velocityPreviewNoteIndex?: SharedValue<number>;
+  velocityPreviewValue?: SharedValue<number>;
 }
 
 /** Imperative handle for scrolling the grid programmatically (e.g. to jump to an isolated bar, or to mirror another view's scroll position). */
@@ -288,9 +359,15 @@ export const SkiaPianoRollGrid = memo(
         lockNoteDuration,
         recordingNotes,
         playheadPosX,
+        visibleBarStart,
+        visibleBarEnd,
+        scrollX,
+        scrollOwner,
+        zoomPreview,
         onVisibleBeatRangeChange,
         onScrollXChange,
-        velocityPreview,
+        velocityPreviewNoteIndex,
+        velocityPreviewValue,
       }: SkiaPianoRollGridProps,
       ref
     ) {
@@ -300,6 +377,14 @@ export const SkiaPianoRollGrid = memo(
       // recording) — recordingNotes is empty in that case, so this stays unused.
       const internalPlayheadPosX = useSharedValue(0);
       const effectivePlayheadPosX = playheadPosX ?? internalPlayheadPosX;
+      const internalVelocityPreviewNoteIndex = useSharedValue(-1);
+      const internalVelocityPreviewValue = useSharedValue(0);
+      const effectiveVelocityPreviewNoteIndex =
+        velocityPreviewNoteIndex ?? internalVelocityPreviewNoteIndex;
+      const effectiveVelocityPreviewValue =
+        velocityPreviewValue ?? internalVelocityPreviewValue;
+      const hasVelocityPreview =
+        velocityPreviewNoteIndex != null && velocityPreviewValue != null;
 
       // Computed here (not module scope) so CanvasKit is ready when matchFont runs
       const noteFont = useMemo(
@@ -340,15 +425,20 @@ export const SkiaPianoRollGrid = memo(
       // Scroll ref — keep the offset inside the current content bounds. Android
       // can retain an old offset after the content width shrinks, which exposes
       // the black viewport past the end of the Skia canvas.
-      const hScrollRef = useRef<any>(null);
-      const scrollXRef = useRef(0);
+      const hScrollRef = useAnimatedRef<any>();
+      // Scroll bookkeeping lives in shared values, not refs: reportScroll is
+      // handed to the UI runtime through scheduleOnRN, so its whole closure is
+      // serialized — a captured React ref that JS keeps mutating is what
+      // Worklets warns about ("tried to modify key `current`"), and the
+      // worklet would be reading a stale copy anyway.
+      const scrollXShared = useSharedValue(0);
 
       const availableGridWidth = screenWidth - LABEL_COL_WIDTH;
       const stepWidth = (availableGridWidth / 16) * zoomLevel;
       const beatWidth = stepWidth * 4;
       const gridWidth = lengthInBeats * beatWidth;
       const maxScrollX = Math.max(0, gridWidth - availableGridWidth);
-      const lastReportedScrollX = useRef(0);
+      const lastReportedScrollX = useSharedValue(0);
       const reportScroll = useCallback(
         (x: number, force = false) => {
           // Scroll is a visual interaction; only cross into React callbacks when
@@ -358,10 +448,11 @@ export const SkiaPianoRollGrid = memo(
             !force &&
             x !== 0 &&
             x < maxScrollX &&
-            Math.abs(x - lastReportedScrollX.current) < 8
+            Math.abs(x - lastReportedScrollX.value) < 8
           )
             return;
-          lastReportedScrollX.current = x;
+          lastReportedScrollX.value = x;
+          scrollXShared.value = x;
           onVisibleBeatRangeChange?.(
             x / beatWidth,
             (x + availableGridWidth) / beatWidth
@@ -372,6 +463,8 @@ export const SkiaPianoRollGrid = memo(
           maxScrollX,
           beatWidth,
           availableGridWidth,
+          lastReportedScrollX,
+          scrollXShared,
           onVisibleBeatRangeChange,
           onScrollXChange,
         ]
@@ -380,11 +473,14 @@ export const SkiaPianoRollGrid = memo(
       const scrollToX = useCallback(
         (x: number, animated = true) => {
           const clampedX = Math.max(0, Math.min(x, maxScrollX));
-          scrollXRef.current = clampedX;
+          scrollXShared.value = clampedX;
+          // A programmatic jump makes the grid the scroll source again, so the
+          // panel below follows it even if the panel was dragged last.
+          if (scrollOwner) scrollOwner.value = SCROLL_OWNER_GRID;
           hScrollRef.current?.scrollTo?.({ x: clampedX, animated });
           reportScroll(clampedX);
         },
-        [maxScrollX, reportScroll]
+        [maxScrollX, reportScroll, scrollOwner, hScrollRef, scrollXShared]
       );
 
       useImperativeHandle(ref, () => ({ scrollToX }), [scrollToX]);
@@ -401,40 +497,72 @@ export const SkiaPianoRollGrid = memo(
       // A shorter clip can make the previous offset invalid before the native
       // ScrollView clamps itself. Move to the last visible bar immediately.
       useEffect(() => {
-        const clampedX = Math.min(scrollXRef.current, maxScrollX);
-        if (clampedX === scrollXRef.current) return;
+        const clampedX = Math.min(scrollXShared.value, maxScrollX);
+        if (clampedX === scrollXShared.value) return;
         scrollToX(clampedX, false);
         reportScroll(clampedX);
-      }, [maxScrollX, scrollToX, reportScroll]);
+      }, [maxScrollX, scrollToX, reportScroll, scrollXShared]);
 
-      const handleGridScroll = useCallback(
-        (e: { nativeEvent: { contentOffset: { x: number } } }) => {
-          const scrollX = Math.max(
-            0,
-            Math.min(e.nativeEvent.contentOffset.x, maxScrollX)
-          );
-          scrollXRef.current = scrollX;
-          reportScroll(scrollX);
+      const scrollHandler = useAnimatedScrollHandler({
+        onBeginDrag: () => {
+          if (scrollOwner) scrollOwner.value = SCROLL_OWNER_GRID;
         },
-        [maxScrollX, reportScroll]
-      );
-      const flushGridScroll = useCallback(
-        (e: { nativeEvent: { contentOffset: { x: number } } }) => {
-          const scrollX = Math.max(
-            0,
-            Math.min(e.nativeEvent.contentOffset.x, maxScrollX)
-          );
-          scrollXRef.current = scrollX;
-          reportScroll(scrollX, true);
+        onScroll: (event) => {
+          const x = Math.max(0, Math.min(event.contentOffset.x, maxScrollX));
+          scrollXShared.value = x;
+          const maxBar = lengthInBeats / 4;
+          if (visibleBarStart) visibleBarStart.value = x / beatWidth / 4;
+          if (visibleBarEnd) {
+            visibleBarEnd.value = Math.min(
+              maxBar,
+              (x + availableGridWidth) / beatWidth / 4
+            );
+          }
+          // Publish the offset only while this grid is the one being dragged;
+          // mirrored frames must not write back or the two views fight.
+          if (scrollX && scrollOwner?.value !== SCROLL_OWNER_PANEL) {
+            scrollX.value = x;
+          }
         },
-        [maxScrollX, reportScroll]
+        // Once per gesture, not per frame: RN-side consumers (the web build,
+        // zoom anchoring) only need the offset the finger came to rest on.
+        onEndDrag: (event) => {
+          const x = Math.max(0, Math.min(event.contentOffset.x, maxScrollX));
+          scheduleOnRN(reportScroll, x, true);
+        },
+        onMomentumEnd: (event) => {
+          const x = Math.max(0, Math.min(event.contentOffset.x, maxScrollX));
+          scheduleOnRN(reportScroll, x, true);
+        },
+      });
+
+      // Mirror the precision panel's drag on the UI runtime.
+      useAnimatedReaction(
+        () => scrollX?.value ?? 0,
+        (x) => {
+          if (!scrollX || scrollOwner?.value !== SCROLL_OWNER_PANEL) return;
+          scrollTo(hScrollRef, x, 0, false);
+        }
       );
 
-      // Report the initial viewport (scroll resets to 0 on zoom-out above) so the
-      // bar selector's "in viewport" state isn't empty before the first scroll.
+      // Seed the initial viewport without rendering a parent.
       useEffect(() => {
+        if (visibleBarStart) visibleBarStart.value = 0;
+        if (visibleBarEnd) {
+          visibleBarEnd.value = Math.min(
+            lengthInBeats / 4,
+            availableGridWidth / beatWidth / 4
+          );
+        }
         reportScroll(0);
-      }, [reportScroll]);
+      }, [
+        availableGridWidth,
+        beatWidth,
+        lengthInBeats,
+        reportScroll,
+        visibleBarEnd,
+        visibleBarStart,
+      ]);
       const gridHeight = totalPitches * effectiveRowHeight;
       const totalSteps = lengthInBeats * 4;
       const playheadP1 = useDerivedValue(() =>
@@ -477,6 +605,22 @@ export const SkiaPianoRollGrid = memo(
       // makeBackgroundNotes (vertical bands, not per-row horizontal stripes).
       const colBgColor1 = colors.mcBlack3;
       const colBgColor2 = colors.mcBlack2;
+      const velocityPalettes = useMemo(() => {
+        const palettes = new Map<string, string[]>();
+        for (const baseColor of [
+          trackColor,
+          ...Object.values(noteColors ?? {}),
+        ]) {
+          if (palettes.has(baseColor)) continue;
+          palettes.set(
+            baseColor,
+            Array.from({ length: 128 }, (_, velocity) =>
+              getVelocityColor(baseColor, velocity)
+            )
+          );
+        }
+        return palettes;
+      }, [trackColor, noteColors]);
 
       // Pitch label helpers
       const getPitchLabel = useCallback(
@@ -833,7 +977,21 @@ export const SkiaPianoRollGrid = memo(
 
       // Pinch-to-zoom — matches iOS MagnificationGesture behavior
       const pinchStartZoom = useSharedValue(1);
-      const pinchLastCommittedZoom = useSharedValue(zoomLevel);
+      // Horizontal scale applied to the drawn scene while a pinch is in
+      // flight. Committing each intermediate zoom to React instead would
+      // re-render this grid and the precision panel ~40 times per pinch
+      // (every 0.05 step), which is the most expensive render on the screen.
+      const pinchPreviewScale = useSharedValue(1);
+      // Both live zoom sources — the pinch on this grid and the scrubber
+      // above it — feed the same scaled preview.
+      const pinchPreviewTransform = useDerivedValue(() => [
+        { scaleX: pinchPreviewScale.value * (zoomPreview?.value ?? 1) },
+      ]);
+      // Scale about the left edge of the viewport, so the bar under the
+      // fingers stays put instead of sliding in from the clip's start.
+      const pinchPreviewOrigin = useDerivedValue(() =>
+        vec(scrollX?.value ?? scrollXShared.value, 0)
+      );
       const handlePinchZoom = useCallback(
         (newZoom: number) => {
           onZoomChange?.(Math.max(1, Math.min(3, newZoom)));
@@ -847,21 +1005,29 @@ export const SkiaPianoRollGrid = memo(
             .onStart(() => {
               'worklet';
               pinchStartZoom.value = zoomLevel;
-              pinchLastCommittedZoom.value = zoomLevel;
             })
             .onUpdate((e) => {
               'worklet';
-              const nextZoom = pinchStartZoom.value * e.scale;
-              if (Math.abs(nextZoom - pinchLastCommittedZoom.value) >= 0.05) {
-                pinchLastCommittedZoom.value = nextZoom;
-                scheduleOnRN(handlePinchZoom, nextZoom);
-              }
+              // Preview only — clamped to the same 1×–3× range the commit
+              // below applies, so the scene never previews a zoom the grid
+              // will refuse to adopt.
+              const nextZoom = Math.max(
+                1,
+                Math.min(3, pinchStartZoom.value * e.scale)
+              );
+              pinchPreviewScale.value = nextZoom / pinchStartZoom.value;
             })
             .onEnd((e) => {
               'worklet';
               scheduleOnRN(handlePinchZoom, pinchStartZoom.value * e.scale);
+            })
+            .onFinalize(() => {
+              'worklet';
+              // Real geometry lands on the next React commit; a cancelled
+              // pinch simply drops back to the committed zoom.
+              pinchPreviewScale.value = 1;
             }),
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- pinchStartZoom is a stable SharedValue ref
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- pinchStartZoom / pinchPreviewScale are stable SharedValue refs
         [handlePinchZoom, zoomLevel]
       );
 
@@ -919,206 +1085,226 @@ export const SkiaPianoRollGrid = memo(
               </View>
 
               {/* Grid — Skia Canvas (single GPU draw) */}
-              <ScrollView
+              <AnimatedScrollView
                 ref={hScrollRef}
                 horizontal
                 nestedScrollEnabled
                 showsHorizontalScrollIndicator={false}
                 style={styles.gridScroll}
-                onScroll={handleGridScroll}
-                onScrollEndDrag={flushGridScroll}
-                onMomentumScrollEnd={flushGridScroll}
-                scrollEventThrottle={100}
+                onScroll={scrollHandler}
+                scrollEventThrottle={16}
               >
                 <View style={{ width: gridWidth, height: gridHeight }}>
                   <Canvas style={StyleSheet.absoluteFill}>
-                    {/* Column backgrounds — alternating per beat, matching native */}
-                    {Array.from(
-                      { length: Math.ceil(totalSteps / 4) },
-                      (_, i) => (
-                        <Rect
-                          key={`bg${i}`}
-                          x={i * beatWidth}
-                          y={0}
-                          width={beatWidth}
-                          height={gridHeight}
-                          color={i % 2 === 0 ? colBgColor1 : colBgColor2}
-                        />
-                      )
-                    )}
+                    <Group
+                      transform={pinchPreviewTransform}
+                      origin={pinchPreviewOrigin}
+                    >
+                      {/* Column backgrounds — alternating per beat, matching native */}
+                      {Array.from(
+                        { length: Math.ceil(totalSteps / 4) },
+                        (_, i) => (
+                          <Rect
+                            key={`bg${i}`}
+                            x={i * beatWidth}
+                            y={0}
+                            width={beatWidth}
+                            height={gridHeight}
+                            color={i % 2 === 0 ? colBgColor1 : colBgColor2}
+                          />
+                        )
+                      )}
 
-                    {/* Grid lines — single path, one draw call, uniform weight */}
-                    <SkiaPath
-                      path={gridPath}
-                      color={GRID_LINE_COLOR}
-                      style="stroke"
-                      strokeWidth={0.5}
-                    />
+                      {/* Grid lines — single path, one draw call, uniform weight */}
+                      <SkiaPath
+                        path={gridPath}
+                        color={GRID_LINE_COLOR}
+                        style="stroke"
+                        strokeWidth={0.5}
+                      />
 
-                    {/* Notes — styled to match AudioKit PianoRoll */}
-                    {notes.map((note, idx) => {
-                      let pitchIdx: number;
-                      if (isDrum) {
-                        const si = (samples ?? []).findIndex(
-                          (s) => s.noteNumber === note.noteNumber
+                      {/* Notes — styled to match AudioKit PianoRoll */}
+                      {notes.map((note, idx) => {
+                        let pitchIdx: number;
+                        if (isDrum) {
+                          const si = (samples ?? []).findIndex(
+                            (s) => s.noteNumber === note.noteNumber
+                          );
+                          pitchIdx = si >= 0 ? si : 0;
+                        } else {
+                          pitchIdx = note.noteNumber - basePitch;
+                        }
+                        const rowIdx = totalPitches - 1 - pitchIdx;
+                        const x = note.position * beatWidth;
+                        const y = rowIdx * effectiveRowHeight + 1;
+                        const w = Math.max(
+                          note.duration * beatWidth - 1,
+                          stepWidth
                         );
-                        pitchIdx = si >= 0 ? si : 0;
-                      } else {
-                        pitchIdx = note.noteNumber - basePitch;
-                      }
-                      const rowIdx = totalPitches - 1 - pitchIdx;
-                      const x = note.position * beatWidth;
-                      const y = rowIdx * effectiveRowHeight + 1;
-                      const w = Math.max(
-                        note.duration * beatWidth - 1,
-                        stepWidth
-                      );
-                      const h = effectiveRowHeight - 2;
-                      const r = 3;
-                      const isDragging = idx === activeNoteIdx;
-                      const liveVelocity =
-                        velocityPreview?.noteIndex === idx
-                          ? velocityPreview.velocity
-                          : note.velocity;
-                      const noteColor = getVelocityColor(
-                        noteColors?.[note.noteNumber] ?? trackColor,
-                        liveVelocity
-                      );
+                        const h = effectiveRowHeight - 2;
+                        const r = 3;
+                        const isDragging = idx === activeNoteIdx;
+                        const baseNoteColor =
+                          noteColors?.[note.noteNumber] ?? trackColor;
+                        const velocityColors =
+                          velocityPalettes.get(baseNoteColor)!;
 
-                      return (
-                        <React.Fragment key={`n${idx}`}>
-                          {/* Note body — uses shared values when dragging, static values otherwise */}
-                          <RoundedRect
-                            x={isDragging ? dragX : x}
-                            y={isDragging ? dragY : y}
-                            width={isDragging ? dragW : w}
-                            height={h}
-                            r={r}
-                            color={noteColor}
-                            opacity={1}
-                          />
-                          <RoundedRect
-                            x={isDragging ? dragX : x}
-                            y={isDragging ? dragY : y}
-                            width={isDragging ? dragW : w}
-                            height={h}
-                            r={r}
-                            color="#000000"
-                            style="stroke"
-                            strokeWidth={0.5}
-                          />
-                          {/* Resize handle — omitted for drum notes entirely,
-                           * not just disabled: a one-shot sample doesn't sustain
-                           * just because the note block is longer, so showing a
-                           * grip here would promise an edit that has no audible
-                           * effect. */}
-                          {!isNoteResizeLocked && (
-                            <Line
-                              p1={
-                                isDragging
-                                  ? dragHandleP1
-                                  : vec(x + w - 3, y + 4)
-                              }
-                              p2={
-                                isDragging
-                                  ? dragHandleP2
-                                  : vec(x + w - 3, y + h - 4)
-                              }
-                              color="rgba(0,0,0,0.3)"
-                              strokeWidth={2}
+                        return (
+                          <React.Fragment key={`n${idx}`}>
+                            {/* Note body consumes drag geometry and velocity preview shared values directly. */}
+                            {hasVelocityPreview ? (
+                              <VelocityAwareNoteBody
+                                noteIndex={idx}
+                                x={isDragging ? dragX : x}
+                                y={isDragging ? dragY : y}
+                                width={isDragging ? dragW : w}
+                                height={h}
+                                radius={r}
+                                committedVelocity={note.velocity}
+                                velocityColors={velocityColors}
+                                velocityPreviewNoteIndex={
+                                  effectiveVelocityPreviewNoteIndex
+                                }
+                                velocityPreviewValue={
+                                  effectiveVelocityPreviewValue
+                                }
+                              />
+                            ) : (
+                              <RoundedRect
+                                x={isDragging ? dragX : x}
+                                y={isDragging ? dragY : y}
+                                width={isDragging ? dragW : w}
+                                height={h}
+                                r={r}
+                                color={velocityColors[note.velocity]!}
+                                opacity={1}
+                              />
+                            )}
+                            <RoundedRect
+                              x={isDragging ? dragX : x}
+                              y={isDragging ? dragY : y}
+                              width={isDragging ? dragW : w}
+                              height={h}
+                              r={r}
+                              color="#000000"
+                              style="stroke"
+                              strokeWidth={0.5}
                             />
-                          )}
-                          {/* Note label — when enabled + note wide enough */}
-                          {(() => {
-                            if (!showNoteLabels || w <= 18) return null;
-                            // For melodic: show note name (C4, D#5, etc.)
-                            // For drums: show sample name (Kick, Snare, etc.)
-                            const labelText = isDrum
-                              ? ((samples ?? [])
-                                  .find((s) => s.noteNumber === note.noteNumber)
-                                  ?.name?.slice(0, 6) ?? '')
-                              : getNoteName(note.noteNumber);
-                            if (!labelText) return null;
-                            // While dragging, skip the bounds clip (its rect
-                            // would need to track the drag too) and follow the
-                            // live shared-value position instead of disappearing.
-                            if (isDragging) {
+                            {/* Resize handle — omitted for drum notes entirely,
+                             * not just disabled: a one-shot sample doesn't sustain
+                             * just because the note block is longer, so showing a
+                             * grip here would promise an edit that has no audible
+                             * effect. */}
+                            {!isNoteResizeLocked && (
+                              <Line
+                                p1={
+                                  isDragging
+                                    ? dragHandleP1
+                                    : vec(x + w - 3, y + 4)
+                                }
+                                p2={
+                                  isDragging
+                                    ? dragHandleP2
+                                    : vec(x + w - 3, y + h - 4)
+                                }
+                                color="rgba(0,0,0,0.3)"
+                                strokeWidth={2}
+                              />
+                            )}
+                            {/* Note label — when enabled + note wide enough */}
+                            {(() => {
+                              if (!showNoteLabels || w <= 18) return null;
+                              // For melodic: show note name (C4, D#5, etc.)
+                              // For drums: show sample name (Kick, Snare, etc.)
+                              const labelText = isDrum
+                                ? ((samples ?? [])
+                                    .find(
+                                      (s) => s.noteNumber === note.noteNumber
+                                    )
+                                    ?.name?.slice(0, 6) ?? '')
+                                : getNoteName(note.noteNumber);
+                              if (!labelText) return null;
+                              // While dragging, skip the bounds clip (its rect
+                              // would need to track the drag too) and follow the
+                              // live shared-value position instead of disappearing.
+                              if (isDragging) {
+                                return (
+                                  <SkiaText
+                                    key={`label${idx}`}
+                                    x={dragLabelX}
+                                    y={dragLabelY}
+                                    text={labelText}
+                                    font={noteFont}
+                                    color="white"
+                                  />
+                                );
+                              }
+                              // Clip text to note bounds
                               return (
-                                <SkiaText
+                                <Group
                                   key={`label${idx}`}
-                                  x={dragLabelX}
-                                  y={dragLabelY}
-                                  text={labelText}
-                                  font={noteFont}
-                                  color="white"
-                                />
+                                  clip={{ x, y, width: w, height: h }}
+                                >
+                                  <SkiaText
+                                    x={x + 4}
+                                    y={y + h - 4}
+                                    text={labelText}
+                                    font={noteFont}
+                                    color="white"
+                                  />
+                                </Group>
                               );
-                            }
-                            // Clip text to note bounds
-                            return (
-                              <Group
-                                key={`label${idx}`}
-                                clip={{ x, y, width: w, height: h }}
-                              >
-                                <SkiaText
-                                  x={x + 4}
-                                  y={y + h - 4}
-                                  text={labelText}
-                                  font={noteFont}
-                                  color="white"
-                                />
-                              </Group>
-                            );
-                          })()}
-                        </React.Fragment>
-                      );
-                    })}
-
-                    {/* Live recording preview — grows from press beat to the
-                    playhead as the key is held, before it's committed. */}
-                    {(recordingNotes ?? []).map((rn, i) => {
-                      let pitchIdx: number;
-                      if (isDrum) {
-                        const si = (samples ?? []).findIndex(
-                          (s) => s.noteNumber === rn.noteNumber
+                            })()}
+                          </React.Fragment>
                         );
-                        pitchIdx = si >= 0 ? si : 0;
-                      } else {
-                        pitchIdx = rn.noteNumber - basePitch;
-                      }
-                      const rowIdx = totalPitches - 1 - pitchIdx;
-                      const wrappedStart =
-                        lengthInBeats > 0
-                          ? rn.startBeat % lengthInBeats
-                          : rn.startBeat;
-                      const x = wrappedStart * beatWidth;
-                      const color = noteColors?.[rn.noteNumber] ?? trackColor;
-                      return (
-                        <RecordingNotePreview
-                          key={`rec${rn.noteNumber}-${i}`}
-                          x={x}
-                          rowIdx={rowIdx}
-                          effectiveRowHeight={effectiveRowHeight}
-                          playheadPosX={effectivePlayheadPosX}
-                          color={color}
-                          loopStartBeat={rn.loopStartBeat}
-                          loopBeats={rn.loopBeats}
-                          beatWidth={beatWidth}
-                        />
-                      );
-                    })}
+                      })}
 
-                    {/* Keep the playhead in the same Skia content layer as the
+                      {/* Live recording preview — grows from press beat to the
+                    playhead as the key is held, before it's committed. */}
+                      {(recordingNotes ?? []).map((rn, i) => {
+                        let pitchIdx: number;
+                        if (isDrum) {
+                          const si = (samples ?? []).findIndex(
+                            (s) => s.noteNumber === rn.noteNumber
+                          );
+                          pitchIdx = si >= 0 ? si : 0;
+                        } else {
+                          pitchIdx = rn.noteNumber - basePitch;
+                        }
+                        const rowIdx = totalPitches - 1 - pitchIdx;
+                        const wrappedStart =
+                          lengthInBeats > 0
+                            ? rn.startBeat % lengthInBeats
+                            : rn.startBeat;
+                        const x = wrappedStart * beatWidth;
+                        const color = noteColors?.[rn.noteNumber] ?? trackColor;
+                        return (
+                          <RecordingNotePreview
+                            key={`rec${rn.noteNumber}-${i}`}
+                            x={x}
+                            rowIdx={rowIdx}
+                            effectiveRowHeight={effectiveRowHeight}
+                            playheadPosX={effectivePlayheadPosX}
+                            color={color}
+                            loopStartBeat={rn.loopStartBeat}
+                            loopBeats={rn.loopBeats}
+                            beatWidth={beatWidth}
+                          />
+                        );
+                      })}
+
+                      {/* Keep the playhead in the same Skia content layer as the
                     notes. It then scrolls and composites with the grid as one
                     native-rendered surface instead of being a JS sibling. */}
-                    {isPlaying && (
-                      <Line
-                        p1={playheadP1}
-                        p2={playheadP2}
-                        color={colors.mcOrange3}
-                        strokeWidth={2}
-                      />
-                    )}
+                      {isPlaying && (
+                        <Line
+                          p1={playheadP1}
+                          p2={playheadP2}
+                          color={colors.mcOrange3}
+                          strokeWidth={2}
+                        />
+                      )}
+                    </Group>
                   </Canvas>
 
                   {/* Touch overlay — gesture handler for tap/drag/resize */}
@@ -1126,7 +1312,7 @@ export const SkiaPianoRollGrid = memo(
                     <View style={StyleSheet.absoluteFill} />
                   </GestureDetector>
                 </View>
-              </ScrollView>
+              </AnimatedScrollView>
             </View>
           </ScrollView>
 
