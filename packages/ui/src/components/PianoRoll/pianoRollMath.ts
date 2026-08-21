@@ -193,6 +193,7 @@ export const getResizedNoteDuration = (
   originalPosition = 0,
   snap = true
 ): number => {
+  'worklet';
   const newWidth = originalDuration * beatWidth + dx;
   let rawDuration: number;
   if (snap) {

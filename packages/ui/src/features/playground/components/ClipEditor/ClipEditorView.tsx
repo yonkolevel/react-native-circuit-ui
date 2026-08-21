@@ -23,18 +23,22 @@ import {
   View,
   Pressable,
   StyleSheet,
+  TextInput,
   useWindowDimensions,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
+  useAnimatedProps,
   useAnimatedStyle,
   useFrameCallback,
 } from 'react-native-reanimated';
+import type { SharedValue } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 import { Text } from '../../../../components/Text';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme, hexToRgba } from '../../../../theme';
+import { typography } from '../../../../theme/typography';
 import { makeSpacing, spacing } from '../../../../theme/spacing';
 import { ClipSettingsModal } from './ClipSettingsModal';
 import { DrumPadsView } from '../DrumPads/DrumPadsView';
@@ -216,8 +220,9 @@ interface ClipLengthBarProps {
   trackColor: string;
   /** Notes used to render each bar segment's mini note-thumbnail */
   notes: ClipNote[];
-  /** 0-indexed, half-open [start, end) range of bars currently scrolled into view on the grid above — drives the locator strip */
-  visibleBarRange?: { start: number; end: number };
+  /** UI-runtime, 0-indexed, half-open visible bar range from the grid above. */
+  visibleBarStart?: SharedValue<number>;
+  visibleBarEnd?: SharedValue<number>;
   onSetActiveBarRange?: (start: number, length: number) => void;
   onDecrease?: () => void;
   onIncrease?: () => void;
@@ -234,6 +239,7 @@ const LOCATOR_GAP = 0;
 
 /** Return the inclusive bar range between two 0-based bar indices. */
 export const rangeForBarDrag = (from: number, to: number): [number, number] => {
+  'worklet';
   const start = Math.min(from, to);
   return [start, Math.abs(to - from) + 1];
 };
@@ -267,7 +273,10 @@ const ClipLengthBarSegment = memo(function ClipLengthBarSegment({
   isLast: boolean;
   trackColor: string;
   dashes: { xFrac: number; yFrac: number }[];
-  onFocus: () => void;
+  /** Takes the 0-indexed bar so the parent can pass one stable callback —
+   * an inline `() => onFocus(i)` per segment would change identity on every
+   * ClipLengthBar render and defeat this component's memo(). */
+  onFocus: (barIndex: number) => void;
 }) {
   const { colors } = useTheme();
 
@@ -288,7 +297,7 @@ const ClipLengthBarSegment = memo(function ClipLengthBarSegment({
       accessibilityLabel={`Bar ${barIndex}`}
       accessibilityRole="button"
       accessibilityState={{ selected: isFocused }}
-      onAccessibilityTap={onFocus}
+      onAccessibilityTap={() => onFocus(barIndex - 1)}
     >
       <Text
         variant="extraSmall10SemiBold"
@@ -320,7 +329,8 @@ const ClipLengthBar = memo(function ClipLengthBar({
   activeLengthInBars,
   trackColor,
   notes,
-  visibleBarRange,
+  visibleBarStart,
+  visibleBarEnd,
   onSetActiveBarRange,
   onDecrease,
   onIncrease,
@@ -331,11 +341,19 @@ const ClipLengthBar = memo(function ClipLengthBar({
   const barCount = Math.max(1, lengthInBars);
   const [stripWidth, setStripWidth] = useState(0);
   const [focusedBarIndex, setFocusedBarIndex] = useState<number | null>(null);
-  const [dragPreview, setDragPreview] = useState<[number, number] | null>(null);
+  // The in-progress range highlight lives on the UI runtime: crossing a bar
+  // boundary mid-drag moves an overlay instead of re-rendering every segment.
+  // React only hears about the drag twice — once to hand the highlight over to
+  // the overlay, once to commit the range.
+  const [isRangeDragging, setIsRangeDragging] = useState(false);
+  const previewStart = useSharedValue(0);
+  const previewLength = useSharedValue(0);
   const dragStartBar = useSharedValue(0);
   const lastDragBar = useSharedValue(-1);
-  const displayActiveBarStart = dragPreview?.[0] ?? activeBarStart;
-  const displayActiveLength = dragPreview?.[1] ?? activeLengthInBars;
+  const fallbackVisibleBarStart = useSharedValue(0);
+  const fallbackVisibleBarEnd = useSharedValue(barCount);
+  const locatorStart = visibleBarStart ?? fallbackVisibleBarStart;
+  const locatorEnd = visibleBarEnd ?? fallbackVisibleBarEnd;
   const canAdd = barCount < 16;
   const canRemove = barCount > 1;
 
@@ -366,21 +384,17 @@ const ClipLengthBar = memo(function ClipLengthBar({
     },
     [onNavigateToBar]
   );
-  const updateDragPreview = useCallback((from: number, to: number) => {
-    const next = rangeForBarDrag(from, to);
-    setDragPreview((previous) =>
-      previous?.[0] === next[0] && previous?.[1] === next[1] ? previous : next
-    );
-  }, []);
+  const beginDrag = useCallback(() => setIsRangeDragging(true), []);
   const finishDrag = useCallback(
     (from: number, to: number) => {
       setFocusedBarIndex(to);
-      setDragPreview(null);
+      setIsRangeDragging(false);
       const [start, length] = rangeForBarDrag(from, to);
       onSetActiveBarRange?.(start, length);
     },
     [onSetActiveBarRange]
   );
+  const cancelDrag = useCallback(() => setIsRangeDragging(false), []);
   const barStripGesture = useMemo(() => {
     const drag = Gesture.Pan()
       .activeOffsetX([-8, 8])
@@ -390,19 +404,29 @@ const ClipLengthBar = memo(function ClipLengthBar({
         const index = barIndexAtX(e.x - e.translationX, stripWidth, barCount);
         dragStartBar.value = index;
         lastDragBar.value = index;
-        scheduleOnRN(updateDragPreview, index, index);
+        previewStart.value = index;
+        previewLength.value = 1;
+        scheduleOnRN(beginDrag);
       })
       .onUpdate((e) => {
         'worklet';
         const index = barIndexAtX(e.x, stripWidth, barCount);
         if (index === lastDragBar.value) return;
         lastDragBar.value = index;
-        scheduleOnRN(updateDragPreview, dragStartBar.value, index);
+        const [start, length] = rangeForBarDrag(dragStartBar.value, index);
+        previewStart.value = start;
+        previewLength.value = length;
       })
       .onEnd((e) => {
         'worklet';
         const index = barIndexAtX(e.x, stripWidth, barCount);
         scheduleOnRN(finishDrag, dragStartBar.value, index);
+      })
+      .onFinalize((_e, success) => {
+        'worklet';
+        // Covers the cancelled gesture too, which never reaches onEnd.
+        previewLength.value = 0;
+        if (!success) scheduleOnRN(cancelDrag);
       });
     const tap = Gesture.Tap().onEnd((e, success) => {
       'worklet';
@@ -414,8 +438,11 @@ const ClipLengthBar = memo(function ClipLengthBar({
     barCount,
     stripWidth,
     handleBarTap,
-    updateDragPreview,
+    beginDrag,
     finishDrag,
+    cancelDrag,
+    previewStart,
+    previewLength,
     dragStartBar,
     lastDragBar,
   ]);
@@ -449,16 +476,27 @@ const ClipLengthBar = memo(function ClipLengthBar({
     return perBar;
   }, [notes, barCount]);
 
-  const locatorLeftFrac = visibleBarRange
-    ? Math.max(0, visibleBarRange.start) / barCount
-    : 0;
-  const locatorWidthFrac = visibleBarRange
-    ? Math.max(
-        0,
-        Math.min(barCount, visibleBarRange.end) -
-          Math.max(0, visibleBarRange.start)
-      ) / barCount
-    : 1;
+  const rangePreviewStyle = useAnimatedStyle(() => {
+    const length = previewLength.value;
+    return {
+      opacity: length > 0 ? 1 : 0,
+      transform: [
+        { translateX: (previewStart.value / barCount) * stripWidth },
+        { scaleX: length / barCount },
+      ],
+    };
+  });
+
+  const locatorStyle = useAnimatedStyle(() => {
+    const start = Math.max(0, Math.min(barCount, locatorStart.value));
+    const end = Math.max(start, Math.min(barCount, locatorEnd.value));
+    return {
+      transform: [
+        { translateX: (start / barCount) * stripWidth },
+        { scaleX: (end - start) / barCount },
+      ],
+    };
+  });
 
   return (
     <View style={[styles.clipLengthBar, { backgroundColor: colors.mcBlack }]}>
@@ -483,8 +521,9 @@ const ClipLengthBar = memo(function ClipLengthBar({
           >
             {Array.from({ length: barCount }, (_, i) => {
               const isActive =
-                i >= displayActiveBarStart &&
-                i < displayActiveBarStart + displayActiveLength;
+                !isRangeDragging &&
+                i >= activeBarStart &&
+                i < activeBarStart + activeLengthInBars;
               return (
                 <ClipLengthBarSegment
                   key={i}
@@ -494,23 +533,30 @@ const ClipLengthBar = memo(function ClipLengthBar({
                   isLast={i === barCount - 1}
                   trackColor={trackColor}
                   dashes={notesByBar[i] ?? []}
-                  onFocus={() => handleBarTap(i)}
+                  onFocus={handleBarTap}
                 />
               );
             })}
+            {/* In-progress range highlight — same tint the segments use, drawn
+             * from shared values so a drag never re-renders them. */}
+            <Animated.View
+              pointerEvents="none"
+              style={[
+                styles.clipLengthRangePreview,
+                { backgroundColor: hexToRgba(trackColor, 0.35) },
+                rangePreviewStyle,
+              ]}
+            />
           </View>
         </GestureDetector>
 
         {/* Locator — read-only, mirrors the visible piano-roll range */}
         <View style={styles.clipLengthLocatorTrack}>
-          <View
+          <Animated.View
             style={[
               styles.clipLengthLocatorFill,
-              {
-                left: `${locatorLeftFrac * 100}%`,
-                width: `${locatorWidthFrac * 100}%`,
-                backgroundColor: colors.mcWhite2,
-              },
+              { backgroundColor: colors.mcWhite2 },
+              locatorStyle,
             ]}
           />
         </View>
@@ -546,14 +592,22 @@ const SCRUBBER_THUMB_SIZE = 20;
 const SCRUBBER_MIN_ZOOM = 1;
 const SCRUBBER_MAX_ZOOM = 3;
 
+const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
+
 interface ZoomScrubberProps {
   zoom: number;
   isExpanded: boolean;
   onToggleExpand: () => void;
   onZoomChange: (zoom: number) => void;
+  /** Live zoom relative to the committed `zoom`, written on the UI runtime
+   * while the handle is dragged. The piano roll and precision panel scale
+   * themselves by it so the grid tracks the handle continuously — matching
+   * the native editor — and adopt the real geometry when the drag commits. */
+  zoomPreview: SharedValue<number>;
 }
 
 const ZoomScrubber = memo(function ZoomScrubber({
+  zoomPreview,
   zoom,
   isExpanded,
   onToggleExpand,
@@ -594,6 +648,7 @@ const ZoomScrubber = memo(function ZoomScrubber({
             SCRUBBER_MIN_ZOOM +
             fraction * (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
           liveZoom.value = z;
+          zoomPreview.value = z / zoom;
         })
         .onUpdate((e) => {
           'worklet';
@@ -603,6 +658,7 @@ const ZoomScrubber = memo(function ZoomScrubber({
             SCRUBBER_MIN_ZOOM +
             fraction * (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
           liveZoom.value = z;
+          zoomPreview.value = z / zoom;
         })
         .onEnd((e) => {
           'worklet';
@@ -616,15 +672,27 @@ const ZoomScrubber = memo(function ZoomScrubber({
         .onFinalize((_e, success) => {
           'worklet';
           if (!success) liveZoom.value = zoom;
+          // The committed zoom lands on the next React commit and replaces
+          // the scaled preview with real geometry.
+          zoomPreview.value = 1;
         }),
-    [trackWidth, liveZoom, commitZoom, zoom]
+    [trackWidth, liveZoom, commitZoom, zoom, zoomPreview]
   );
+
+  const zoomLabelProps = useAnimatedProps(() => ({
+    text: `${Math.round(liveZoom.value * 100)}%`,
+    defaultValue: `${Math.round(liveZoom.value * 100)}%`,
+  }));
 
   const thumbStyle = useAnimatedStyle(() => {
     const fraction =
       (liveZoom.value - SCRUBBER_MIN_ZOOM) /
       (SCRUBBER_MAX_ZOOM - SCRUBBER_MIN_ZOOM);
-    return { left: fraction * trackWidth - SCRUBBER_THUMB_SIZE / 2 };
+    return {
+      transform: [
+        { translateX: fraction * trackWidth - SCRUBBER_THUMB_SIZE / 2 },
+      ],
+    };
   });
   const fillStyle = useAnimatedStyle(() => {
     const fraction =
@@ -677,13 +745,23 @@ const ZoomScrubber = memo(function ZoomScrubber({
           </Animated.View>
         </View>
       </GestureDetector>
-      <Text
-        variant="extraSmall10SemiBold"
-        color={colors.mcWhite3}
-        style={styles.scrubberZoomLabel}
-      >
-        {Math.round(displayZoom * 100)}%
-      </Text>
+      {/* Percentage readout — an AnimatedTextInput so the number follows the
+       * handle on the UI runtime instead of re-rendering per frame. */}
+      <AnimatedTextInput
+        animatedProps={zoomLabelProps}
+        editable={false}
+        pointerEvents="none"
+        accessibilityLabel="Zoom level"
+        // The live text comes from the UI runtime, which assistive tech can't
+        // observe — expose the committed value for it explicitly.
+        accessibilityValue={{ text: `${Math.round(displayZoom * 100)}%` }}
+        defaultValue={`${Math.round(displayZoom * 100)}%`}
+        style={[
+          typography.extraSmall10SemiBold,
+          styles.scrubberZoomLabel,
+          { color: colors.mcWhite3 },
+        ]}
+      />
     </View>
   );
 });
@@ -791,31 +869,22 @@ export const ClipEditorView = memo(function ClipEditorView({
     null
   );
   const [settingsVisible, setSettingsVisible] = useState(false);
-  // Seeded for the actual initial zoom (1 bar visible at zoom=1 — the
-  // grid always shows exactly 1/zoom bars regardless of screen width), not
-  // the whole clip — otherwise the locator strip below shows full-width
-  // and looks disconnected from the view until the first scroll or zoom.
-  const [visibleBarRange, setVisibleBarRange] = useState<{
-    start: number;
-    end: number;
-  }>({
-    start: 0,
-    end: Math.min(1, clip.lengthInBars),
-  });
+  // The locator reads these values directly on the UI runtime while the
+  // native ScrollView animates; scrolling never renders ClipEditorView.
+  const visibleBarStart = useSharedValue(0);
+  const visibleBarEnd = useSharedValue(Math.min(1, clip.lengthInBars));
+  // Live zoom while the scrubber handle is dragged, as a ratio of the
+  // committed zoom. 1 means "no preview, geometry is real".
+  const zoomPreview = useSharedValue(1);
+  // Single horizontal scroll source for the grid and the precision panel.
+  // Whichever one the finger is on writes it; the other mirrors it with
+  // Reanimated's scrollTo, so neither crosses to the RN runtime per frame.
+  const sharedScrollX = useSharedValue(0);
+  // 0 = the grid owns the scroll, 1 = the precision panel does.
+  const scrollOwner = useSharedValue(0);
   const beatWidth = ((screenWidth - LABEL_COL_WIDTH) / 16) * zoom * 4;
   const trackColor = clip.colorHex;
   const samplesList = samples || [];
-
-  const handleVisibleBeatRangeChange = useCallback(
-    (startBeat: number, endBeat: number) => {
-      // Fractional bars, not floor/ceil'd to whole ones — the ClipLengthBar
-      // locator draws this as a proportional strip width, so rounding to whole
-      // bars here would make it look frozen at "1 bar" for any zoom above 1x
-      // (anything under 1 full bar always ceils to 1).
-      setVisibleBarRange({ start: startBeat / 4, end: endBeat / 4 });
-    },
-    []
-  );
 
   // Changing zoom changes beatWidth, so the same scroll-x pixel offset would
   // otherwise land on a different beat after the fact — anchor to whatever
@@ -841,39 +910,10 @@ export const ClipEditorView = memo(function ClipEditorView({
     gridRef.current?.scrollToX(x, false);
   }, [zoom, beatWidth]);
 
-  // Live velocity value while a NotePrecisionPanel velocity handle is being
-  // dragged — bridged over to the piano roll grid below so that note's color
-  // updates in real time instead of only once the drag releases (the drag
-  // itself only commits to the undo-tracked store on release, same as every
-  // other gesture in this editor).
-  const [velocityPreview, setVelocityPreview] = useState<{
-    noteIndex: number;
-    velocity: number;
-  } | null>(null);
-  const lastVelocityPreview = useRef<{
-    noteIndex: number;
-    velocity: number;
-  } | null>(null);
-  const handleVelocityPreview = useCallback(
-    (noteIndex: number, velocity: number | null) => {
-      if (velocity == null) {
-        lastVelocityPreview.current = null;
-        setVelocityPreview(null);
-        return;
-      }
-      const previous = lastVelocityPreview.current;
-      if (
-        previous &&
-        previous.noteIndex === noteIndex &&
-        Math.abs(previous.velocity - velocity) < 4
-      )
-        return;
-      const next = { noteIndex, velocity };
-      lastVelocityPreview.current = next;
-      setVelocityPreview(next);
-    },
-    []
-  );
+  // Shared directly by both Skia surfaces: no React render or RN-runtime
+  // round trip while a velocity handle follows the finger.
+  const velocityPreviewNoteIndex = useSharedValue(-1);
+  const velocityPreviewValue = useSharedValue(0);
 
   // ── Piano roll ↔ NotePrecisionPanel scroll sync ──────────────────────────
   // Both share the same beat-to-pixel scale (stepWidth={beatWidth / 4}), so
@@ -987,37 +1027,59 @@ export const ClipEditorView = memo(function ClipEditorView({
     tempo,
   ]);
 
-  // Stable references for SkiaPianoRollGrid's callback props — inline arrow
-  // functions here would recreate on every ClipEditorView render (e.g. a
-  // toolbar-only state change like play/pause) and silently defeat that
-  // component's memo(), forcing a full re-render — and, before the grid's
-  // own gestures were memoized, a gesture-recognizer rebuild — for state
-  // changes that have nothing to do with the grid.
+  // Keep callback props stable across scroll/toolbar renders. The latest app
+  // adapter and clip notes live behind refs; gestures only rebuild after real
+  // geometry or note changes.
+  const callbacksRef = useRef(callbacks);
+  const clipNotesRef = useRef(clip.notes);
+  useEffect(() => {
+    callbacksRef.current = callbacks;
+    clipNotesRef.current = clip.notes;
+  }, [callbacks, clip.notes]);
   const handleNotePress = useCallback(
-    (idx: number) => callbacks?.onNoteDelete?.(idx),
-    [callbacks]
+    (idx: number) => callbacksRef.current?.onNoteDelete?.(idx),
+    []
   );
   const handleNoteResize = useCallback(
     (idx: number, newDuration: number) =>
-      callbacks?.onNoteResize?.(idx, newDuration),
-    [callbacks]
+      callbacksRef.current?.onNoteResize?.(idx, newDuration),
+    []
   );
   const handleNoteMove = useCallback(
     (idx: number, newPos: number, newNote: number) =>
-      callbacks?.onNoteMove?.(idx, newPos, newNote),
-    [callbacks]
+      callbacksRef.current?.onNoteMove?.(idx, newPos, newNote),
+    []
   );
-  const handleGridTap = useCallback(
-    (noteNumber: number, position: number) => {
-      callbacks?.onNoteAdd?.({
-        noteNumber,
-        velocity: 100,
-        position,
-        duration: 0.25,
-      });
-    },
-    [callbacks]
+  const handleGridTap = useCallback((noteNumber: number, position: number) => {
+    callbacksRef.current?.onNoteAdd?.({
+      noteNumber,
+      velocity: 100,
+      position,
+      duration: 0.25,
+    });
+  }, []);
+  const handleVelocityChange = useCallback(
+    (idx: number, velocity: number) =>
+      callbacksRef.current?.onVelocityChange?.(idx, velocity),
+    []
   );
+  const handlePrecisionPositionChange = useCallback(
+    (idx: number, newPosition: number) =>
+      callbacksRef.current?.onNoteMove?.(
+        idx,
+        newPosition,
+        clipNotesRef.current[idx]?.noteNumber ?? 0
+      ),
+    []
+  );
+  const handlePrecisionDurationChange = useCallback(
+    (idx: number, newDuration: number) =>
+      callbacksRef.current?.onNoteResize?.(idx, newDuration),
+    []
+  );
+  const handleClosePrecision = useCallback(() => {
+    setSelectedPitchIndex(null);
+  }, []);
   const handlePitchLabelTap = useCallback((pitch: number) => {
     setSelectedPitchIndex((current) => (current === pitch ? null : pitch));
   }, []);
@@ -1085,9 +1147,18 @@ export const ClipEditorView = memo(function ClipEditorView({
               recordingNotes={recordingNotes}
               isPlaying={isPlaying}
               playheadPosX={playheadPosX}
-              onVisibleBeatRangeChange={handleVisibleBeatRangeChange}
+              visibleBarStart={visibleBarStart}
+              visibleBarEnd={visibleBarEnd}
+              scrollX={sharedScrollX}
+              scrollOwner={scrollOwner}
+              zoomPreview={zoomPreview}
               onScrollXChange={handleGridScrollX}
-              velocityPreview={velocityPreview}
+              velocityPreviewNoteIndex={
+                showVelocityLane ? velocityPreviewNoteIndex : undefined
+              }
+              velocityPreviewValue={
+                showVelocityLane ? velocityPreviewValue : undefined
+              }
             />
           </View>
         </WithHint>
@@ -1098,6 +1169,7 @@ export const ClipEditorView = memo(function ClipEditorView({
          * stay reachable in expanded mode too, or there'd be no way back. */}
         <ZoomScrubber
           zoom={zoom}
+          zoomPreview={zoomPreview}
           isExpanded={isExpanded}
           onToggleExpand={handleToggleExpand}
           onZoomChange={handleZoomChange}
@@ -1112,7 +1184,8 @@ export const ClipEditorView = memo(function ClipEditorView({
           activeLengthInBars={clip.activeLengthInBars}
           trackColor={trackColor}
           notes={clip.notes}
-          visibleBarRange={visibleBarRange}
+          visibleBarStart={visibleBarStart}
+          visibleBarEnd={visibleBarEnd}
           onIncrease={onClipLengthIncrease}
           onDecrease={onClipLengthDecrease}
           onSetActiveBarRange={onSetActiveBarRange}
@@ -1156,19 +1229,15 @@ export const ClipEditorView = memo(function ClipEditorView({
               lockNoteDuration={
                 instrumentType === 'drum' && (clip.lockNoteDuration ?? true)
               }
-              onClose={() => setSelectedPitchIndex(null)}
-              onVelocityChange={callbacks?.onVelocityChange}
-              onVelocityPreview={handleVelocityPreview}
-              onPositionChange={(idx, newPos) =>
-                callbacks?.onNoteMove?.(
-                  idx,
-                  newPos,
-                  clip.notes[idx]?.noteNumber ?? 0
-                )
-              }
-              onDurationChange={(idx, newDur) =>
-                callbacks?.onNoteResize?.(idx, newDur)
-              }
+              onClose={handleClosePrecision}
+              onVelocityChange={handleVelocityChange}
+              velocityPreviewNoteIndex={velocityPreviewNoteIndex}
+              velocityPreviewValue={velocityPreviewValue}
+              onPositionChange={handlePrecisionPositionChange}
+              onDurationChange={handlePrecisionDurationChange}
+              scrollX={sharedScrollX}
+              scrollOwner={scrollOwner}
+              zoomPreview={zoomPreview}
               onScrollXChange={handlePanelScrollX}
             />
           ) : shouldShowPerformanceControls ? (
@@ -1300,11 +1369,21 @@ const styles = StyleSheet.create({
   },
   clipLengthLocatorFill: {
     position: 'absolute',
+    left: 0,
     top: 0,
     bottom: 0,
-    borderRadius: 0,
+    width: '100%',
+    transformOrigin: 'left center',
   },
   clipLengthNumbers: { flexDirection: 'row', height: BAR_HEIGHT },
+  clipLengthRangePreview: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: '100%',
+    transformOrigin: 'left center',
+  },
   clipLengthSegment: {
     flex: 1,
     position: 'relative',
@@ -1359,6 +1438,7 @@ const styles = StyleSheet.create({
   },
   scrubberThumb: {
     position: 'absolute',
+    left: 0,
     width: SCRUBBER_THUMB_SIZE,
     height: SCRUBBER_THUMB_SIZE,
     borderRadius: SCRUBBER_THUMB_SIZE / 2,
@@ -1368,6 +1448,13 @@ const styles = StyleSheet.create({
   scrubberZoomLabel: {
     minWidth: 34,
     textAlign: 'right',
+    // A TextInput's default line box is taller than this row and would clip
+    // the digits — pin it to the row height and drop the platform padding.
+    height: BAR_HEIGHT,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
 });
 

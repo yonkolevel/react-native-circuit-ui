@@ -278,8 +278,10 @@ export interface SkiaPianoRollGridProps {
    * without React re-renders. Falls back to a static internal value (no
    * growth) if not provided. */
   playheadPosX?: SharedValue<number>;
-  /** Fired on horizontal scroll with the visible beat range [start, end) — lets
-   * callers (e.g. the bar-range pill selector) show which bars are in view. */
+  /** Shared, 0-indexed, half-open visible bar range. */
+  visibleBarStart?: SharedValue<number>;
+  visibleBarEnd?: SharedValue<number>;
+  /** Optional notification for non-animated consumers. */
   onVisibleBeatRangeChange?: (start: number, end: number) => void;
   /** Fired on horizontal scroll with the raw scroll-x pixel offset — lets
    * callers keep another horizontally-scrolling view (e.g. NotePrecisionPanel,
@@ -327,6 +329,8 @@ export const SkiaPianoRollGrid = memo(
         isPlaying = false,
         recordingNotes,
         playheadPosX,
+        visibleBarStart,
+        visibleBarEnd,
         onVisibleBeatRangeChange,
         onScrollXChange,
         velocityPreview,
@@ -444,6 +448,13 @@ export const SkiaPianoRollGrid = memo(
           )
             return;
           lastReportedScrollX.current = x;
+          if (visibleBarStart) visibleBarStart.value = x / beatWidth / 4;
+          if (visibleBarEnd) {
+            visibleBarEnd.value = Math.min(
+              lengthInBeats / 4,
+              (x + availableGridWidth) / beatWidth / 4
+            );
+          }
           onVisibleBeatRangeChange?.(
             x / beatWidth,
             (x + availableGridWidth) / beatWidth
@@ -454,6 +465,9 @@ export const SkiaPianoRollGrid = memo(
           gridWidth,
           availableGridWidth,
           beatWidth,
+          lengthInBeats,
+          visibleBarEnd,
+          visibleBarStart,
           onVisibleBeatRangeChange,
           onScrollXChange,
         ]

@@ -79,7 +79,15 @@ jest.mock('react-native-worklets', () => ({
 // Manual mock for react-native-reanimated v3+ providing the most common APIs
 // so that components using animations can be rendered in tests without crashing.
 jest.mock('react-native-reanimated', () => {
-  const mockSharedValue = (init) => ({ value: init });
+  const React = require('react');
+  // A real useSharedValue keeps the SAME object across renders — components
+  // rely on that to carry state (e.g. the piano roll's scroll offset). A mock
+  // that returns a fresh object every render silently loses it.
+  const mockSharedValue = (init) => {
+    const ref = React.useRef(null);
+    if (ref.current === null) ref.current = { value: init };
+    return ref.current;
+  };
   const mockAnimation = (toValue) => toValue;
 
   return {
@@ -104,6 +112,8 @@ jest.mock('react-native-reanimated', () => {
       callbackId: 0,
     }),
     useAnimatedScrollHandler: () => {},
+    useAnimatedReaction: () => {},
+    scrollTo: () => {},
     useAnimatedRef: () => ({ current: null }),
     useAnimatedGestureHandler: () => {},
     withTiming: mockAnimation,
