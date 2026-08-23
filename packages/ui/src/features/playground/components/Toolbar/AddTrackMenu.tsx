@@ -27,6 +27,10 @@ export interface AddTrackMenuProps {
   testIDs?: AddTrackMenuTestIDs;
 }
 
+/**
+ * @deprecated App-domain add-track browser behavior belongs in the consuming app.
+ * Midicircuit RN owns its YON-159 replacement in `src/features/sound-browser`.
+ */
 export const AddTrackMenu = memo(function AddTrackMenu({
   onSelect,
   onClose: _onClose,

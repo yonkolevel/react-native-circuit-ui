@@ -190,6 +190,71 @@ describe('SongMixerTabBar behavior', () => {
 });
 
 describe('SongView context menus', () => {
+  it('hides Change Sound when no callback is provided', () => {
+    const store = createTestStore();
+    const screen = renderWithStore(<SongView />, store);
+
+    fireEvent.press(screen.getByTestId('track-label-1'));
+
+    expect(screen.queryByTestId('change-track-sound-action')).toBeNull();
+  });
+
+  it('shows Change Sound for drum, melodic, and bass tracks', () => {
+    const onChangeTrackSound = jest.fn();
+    const store = createTestStore();
+    const screen = renderWithStore(
+      <SongView onChangeTrackSound={onChangeTrackSound} />,
+      store
+    );
+
+    [1, 2, 3].forEach((trackId) => {
+      fireEvent.press(screen.getByTestId(`track-label-${trackId}`));
+      expect(screen.getByTestId('change-track-sound-action')).toBeTruthy();
+      expect(
+        screen.getByTestId('change-track-sound-action').props.accessibilityLabel
+      ).toBe('Change sound');
+      expect(
+        screen.getByTestId('change-track-sound-action').props.accessibilityRole
+      ).toBe('button');
+      fireEvent.press(screen.getByTestId('close-song-menu-action'));
+    });
+  });
+
+  it('omits Change Sound for audio tracks', () => {
+    const store = createTestStore({
+      tracks: [
+        createMockTrack({ id: 1, type: 'drum' }),
+        createMockTrack({ id: 4, type: 'audio', title: 'Audio' }),
+      ],
+    });
+    const screen = renderWithStore(
+      <SongView onChangeTrackSound={jest.fn()} />,
+      store
+    );
+
+    fireEvent.press(screen.getByTestId('track-label-4'));
+
+    expect(screen.queryByTestId('change-track-sound-action')).toBeNull();
+  });
+
+  it('closes the track menu before calling Change Sound with the track id', async () => {
+    const onChangeTrackSound = jest.fn();
+    const store = createTestStore();
+    const screen = renderWithStore(
+      <SongView onChangeTrackSound={onChangeTrackSound} />,
+      store
+    );
+
+    fireEvent.press(screen.getByTestId('track-label-2'));
+    fireEvent.press(screen.getByTestId('change-track-sound-action'));
+
+    expect(onChangeTrackSound).toHaveBeenCalledTimes(1);
+    expect(onChangeTrackSound).toHaveBeenCalledWith(2);
+    await waitFor(() =>
+      expect(screen.queryByTestId('song-context-menu')).toBeNull()
+    );
+  });
+
   it('explains why the last track cannot be deleted', () => {
     const store = createTestStore({ tracks: [createMockTrack({ id: 1 })] });
     const screen = renderWithStore(<SongView />, store);
