@@ -199,6 +199,8 @@ export interface SongViewProps {
   onExportBundle?: () => void;
   /** Share the current beat as a remixable link. Omit when unavailable. */
   onShareBeat?: () => void | Promise<void>;
+  /** Open the app-owned sound browser for this track. Omit to hide the action. */
+  onChangeTrackSound?: (trackId: number) => void;
   /** Playground name shown in the export view. */
   playgroundName?: string;
   /** Artist/author name shown in the export view. */
@@ -215,6 +217,7 @@ export const SongView = memo(function SongView({
   onExportAudio,
   onExportBundle,
   onShareBeat,
+  onChangeTrackSound,
   playgroundName,
   artistName,
   coverImageUrl,
@@ -253,6 +256,15 @@ export const SongView = memo(function SongView({
   const canEditClips = isEditorCapabilityAllowed(policy, 'clips');
   const canEditTracks = isEditorCapabilityAllowed(policy, 'tracks');
   const showTab = currentTab === 'song' || currentTab === 'mixer';
+  const trackMenuTrack =
+    menuTarget?.kind === 'track'
+      ? tracks.find((track) => track.id === menuTarget.trackId)
+      : undefined;
+  const canChangeTrackSound =
+    !!onChangeTrackSound &&
+    (trackMenuTrack?.type === 'drum' ||
+      trackMenuTrack?.type === 'melodic' ||
+      trackMenuTrack?.type === 'bass');
 
   return (
     <View
@@ -558,6 +570,23 @@ export const SongView = memo(function SongView({
             accessibilityViewIsModal
             testID="song-context-menu"
           >
+            {menuTarget?.kind === 'track' && canChangeTrackSound && (
+              <Pressable
+                style={s.menuAction}
+                onPress={() => {
+                  const trackId = menuTarget.trackId;
+                  setMenuTarget(null);
+                  onChangeTrackSound?.(trackId);
+                }}
+                accessibilityLabel="Change sound"
+                accessibilityRole="button"
+                testID="change-track-sound-action"
+              >
+                <Text variant="label" color={colors.mcWhite}>
+                  Change Sound
+                </Text>
+              </Pressable>
+            )}
             {menuTarget?.kind === 'track' &&
               (tracks.length > 1 ? (
                 <Pressable
