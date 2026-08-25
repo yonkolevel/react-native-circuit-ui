@@ -106,17 +106,21 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
       <View style={styles.toolbarSpacer} />
 
       <View style={styles.toolbarCenter}>
-        <Pressable
-          onPress={onPlayPause}
-          hitSlop={8}
-          accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
-        >
-          <Icon
-            icon={isPlaying ? Icons.pause : Icons.play}
-            size={22}
-            color={colors.mcWhite}
-          />
-        </Pressable>
+        {/* Anchored so a lesson can point at the real transport control rather
+         * than growing a play button of its own somewhere else on screen. */}
+        <WithHint hintID={HintIDs.playButton}>
+          <Pressable
+            onPress={onPlayPause}
+            hitSlop={8}
+            accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
+          >
+            <Icon
+              icon={isPlaying ? Icons.pause : Icons.play}
+              size={22}
+              color={colors.mcWhite}
+            />
+          </Pressable>
+        </WithHint>
         <Pressable onPress={onRecord} hitSlop={8} accessibilityLabel="Record">
           <Icon
             icon={Icons.record}

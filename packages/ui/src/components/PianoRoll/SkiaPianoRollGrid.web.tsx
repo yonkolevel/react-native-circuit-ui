@@ -59,6 +59,8 @@ const SNAP_EASE_MS = 90;
 // Bright red — reads as "actively recording" against any track color,
 // matching the convention most DAWs use for an in-progress take.
 const RECORDING_OUTLINE_COLOR = '#FF3B30';
+const UNFOCUSED_ROW_REMAINING = 0.45;
+const UNFOCUSED_ROW_SCRIM_OPACITY = 1 - UNFOCUSED_ROW_REMAINING;
 
 /**
  * Live preview of a note currently held during recording. Grows from its
@@ -279,6 +281,8 @@ export interface SkiaPianoRollGridProps {
    * cells render as outlined slots under the notes layer.
    */
   targetNotes?: TargetNoteCell[];
+  /** Kit rows the current lesson step is about; other rows are dimmed. */
+  focusNoteNumbers?: number[];
   /** Live playhead X position (pixels), updated at display frame rate via a
    * SharedValue — required for recordingNotes previews to grow smoothly
    * without React re-renders. Falls back to a static internal value (no
@@ -335,6 +339,7 @@ export const SkiaPianoRollGrid = memo(
         isPlaying = false,
         recordingNotes,
         targetNotes,
+        focusNoteNumbers,
         playheadPosX,
         visibleBarStart,
         visibleBarEnd,
@@ -514,6 +519,44 @@ export const SkiaPianoRollGrid = memo(
         },
         [gridHeight, containerH]
       );
+
+      const focusKey = (focusNoteNumbers ?? []).join(',');
+      const focusRowTop = useMemo(() => {
+        const rowIdxs = (focusNoteNumbers ?? [])
+          .map((noteNumber) => {
+            const pitchIdx = isDrum
+              ? (samples ?? []).findIndex(
+                  (sample) => sample.noteNumber === noteNumber
+                )
+              : noteNumber - basePitch;
+            return pitchIdx < 0 ? -1 : totalPitches - 1 - pitchIdx;
+          })
+          .filter((rowIdx) => rowIdx >= 0);
+        return rowIdxs.length > 0 ? Math.min(...rowIdxs) : null;
+      }, [focusNoteNumbers, isDrum, samples, basePitch, totalPitches]);
+
+      useEffect(() => {
+        if (focusRowTop == null || containerH <= 0) return;
+        const rowsInView = Math.max(
+          1,
+          Math.floor(containerH / effectiveRowHeight)
+        );
+        const contextRows = Math.max(
+          0,
+          Math.floor((rowsInView - (focusNoteNumbers ?? []).length) / 2)
+        );
+        applyOuterTransform(
+          Math.max(0, (focusRowTop - contextRows) * effectiveRowHeight),
+          true
+        );
+      }, [
+        applyOuterTransform,
+        containerH,
+        effectiveRowHeight,
+        focusKey,
+        focusNoteNumbers,
+        focusRowTop,
+      ]);
 
       // Momentum after a fling release — see startMomentum below. Manual
       // panning has no native scroll behind it, so without this a "swipe" reads
@@ -1093,6 +1136,10 @@ export const SkiaPianoRollGrid = memo(
                       style={[
                         styles.label,
                         {
+                          ...((focusNoteNumbers ?? []).length > 0 &&
+                          !(focusNoteNumbers ?? []).includes(noteNumber)
+                            ? { opacity: UNFOCUSED_ROW_REMAINING }
+                            : null),
                           height: effectiveRowHeight,
                           backgroundColor:
                             selectedPitchIndex === pitchIdx
@@ -1216,9 +1263,11 @@ export const SkiaPianoRollGrid = memo(
                           height: rect.height,
                           borderRadius: 3,
                           borderWidth: 1.5,
-                          borderColor: color,
-                          backgroundColor: color,
-                          opacity: 0.3,
+                          // Outline first, faint wash second — matching the
+                          // native slot. A slot filled at the note's own
+                          // opacity reads as an already-placed note.
+                          borderColor: hexToRgba(color, 0.75),
+                          backgroundColor: hexToRgba(color, 0.14),
                         }}
                       />
                     );
@@ -1385,6 +1434,37 @@ export const SkiaPianoRollGrid = memo(
                       </Fragment>
                     );
                   })}
+
+                  {/* Rows this lesson step is not about — dimmed rather than
+                   * hidden, so earlier layers stay visible as context. */}
+                  {(focusNoteNumbers ?? []).length > 0 &&
+                    Array.from({ length: totalPitches }, (_, rowIdx) => {
+                      const pitchIdx = totalPitches - 1 - rowIdx;
+                      const noteNumber = isDrum
+                        ? (samples ?? [])[pitchIdx]?.noteNumber
+                        : basePitch + pitchIdx;
+                      if (
+                        noteNumber != null &&
+                        (focusNoteNumbers ?? []).includes(noteNumber)
+                      ) {
+                        return null;
+                      }
+                      return (
+                        <View
+                          key={`dim${rowIdx}`}
+                          pointerEvents="none"
+                          style={{
+                            position: 'absolute',
+                            left: 0,
+                            top: rowIdx * effectiveRowHeight,
+                            width: gridWidth,
+                            height: effectiveRowHeight,
+                            backgroundColor: colors.mcBlack,
+                            opacity: UNFOCUSED_ROW_SCRIM_OPACITY,
+                          }}
+                        />
+                      );
+                    })}
 
                   {/* Live recording preview — grows from press beat to the
                   playhead as the key is held, before it's committed. */}

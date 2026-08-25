@@ -78,6 +78,14 @@ import {
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
+/**
+ * How much of an unfocused row survives when a lesson step focuses a few rows.
+ * The grid scrim and the pitch label have to agree, or the labels read as a
+ * different amount of "off" than the rows they name.
+ */
+const UNFOCUSED_ROW_REMAINING = 0.45;
+const UNFOCUSED_ROW_SCRIM_OPACITY = 1 - UNFOCUSED_ROW_REMAINING;
+
 /** Which of the two horizontally-linked timelines (this grid, or the
  * NotePrecisionPanel below it) currently owns the shared scroll offset. The
  * owner writes it from its own scroll handler; the other side mirrors it with
@@ -476,7 +484,7 @@ export const SkiaPianoRollGrid = memo(
         const y = Math.max(0, (focusRowTop - contextRows) * effectiveRowHeight);
         vScrollRef.current?.scrollTo({ y, animated: true });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [focusRowTop, containerH, effectiveRowHeight]);
+      }, [focusKey, focusRowTop, containerH, effectiveRowHeight]);
 
       // Scroll ref — keep the offset inside the current content bounds. Android
       // can retain an old offset after the content width shrinks, which exposes
@@ -1121,7 +1129,9 @@ export const SkiaPianoRollGrid = memo(
                       style={[
                         styles.label,
                         {
-                          ...(isDimmed ? { opacity: 0.3 } : null),
+                          ...(isDimmed
+                            ? { opacity: UNFOCUSED_ROW_REMAINING }
+                            : null),
                           height: effectiveRowHeight,
                           backgroundColor:
                             selectedPitchIndex === pitchIdx
@@ -1434,7 +1444,7 @@ export const SkiaPianoRollGrid = memo(
                               width={gridWidth}
                               height={effectiveRowHeight}
                               color="#000000"
-                              opacity={0.55}
+                              opacity={UNFOCUSED_ROW_SCRIM_OPACITY}
                             />
                           );
                         })}
