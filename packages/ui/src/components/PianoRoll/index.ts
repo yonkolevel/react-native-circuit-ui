@@ -3,4 +3,4 @@ export type {
   SkiaPianoRollGridProps,
   SkiaPianoRollGridHandle,
 } from './SkiaPianoRollGrid';
-export type { RecordingNotePreviewData } from './pianoRollMath';
+export type { RecordingNotePreviewData, TargetNoteCell } from './pianoRollMath';

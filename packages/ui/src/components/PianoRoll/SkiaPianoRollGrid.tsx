@@ -73,6 +73,7 @@ import {
   hitTestPianoRollNote,
   UNSNAPPED_MIN_DURATION_STEPS,
   type RecordingNotePreviewData,
+  type TargetNoteCell,
 } from './pianoRollMath';
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
@@ -293,6 +294,19 @@ export interface SkiaPianoRollGridProps {
   /** Notes currently held during live recording — rendered as a growing
    * "in progress" preview from the press beat to the live playhead. */
   recordingNotes?: RecordingNotePreviewData[];
+  /**
+   * Lesson target cells — where a guided step wants notes placed. Cells the
+   * learner has not filled yet are outlined as empty slots so "where do I add
+   * notes" is answered on the grid instead of in prose. Cells already filled
+   * are left alone; the learner's own note covers them.
+   */
+  targetNotes?: TargetNoteCell[];
+  /**
+   * Kit rows the current lesson step is about. Other rows are dimmed and the
+   * view scrolls to bring these into range, so a step's canvas is the handful
+   * of rows it actually uses rather than the whole kit.
+   */
+  focusNoteNumbers?: number[];
   /** Whether the transport is playing; draws the playhead inside the
    * horizontally scrolling Skia content when true. */
   isPlaying?: boolean;
@@ -358,6 +372,8 @@ export const SkiaPianoRollGrid = memo(
         snapToGrid = false,
         lockNoteDuration,
         recordingNotes,
+        targetNotes,
+        focusNoteNumbers,
         playheadPosX,
         visibleBarStart,
         visibleBarEnd,
@@ -414,6 +430,11 @@ export const SkiaPianoRollGrid = memo(
         setContainerH(e.nativeEvent.layout.height);
       }, []);
 
+      // Vertical scroll is driven programmatically when a lesson step focuses a
+      // few rows — the row it wants is often below the fold on a 12-piece kit.
+      const vScrollRef = useRef<ScrollView | null>(null);
+      const focusKey = (focusNoteNumbers ?? []).join(',');
+
       // When expanded: grow row height to fill available space (matching native behavior)
       // Native: isExpandedAndDrum ? max(28, availableH / pitchCount) : 34
       const MIN_EXPANDED_ROW = 28;
@@ -421,6 +442,41 @@ export const SkiaPianoRollGrid = memo(
         isExpanded && containerH > 0
           ? Math.max(MIN_EXPANDED_ROW, containerH / totalPitches)
           : rowHeight;
+
+      // Bring the focused rows into view whenever the step's focus changes.
+      const focusRowTop = useMemo(() => {
+        const focus = focusNoteNumbers ?? [];
+        if (focus.length === 0) return null;
+        const rowIdxs = focus
+          .map((noteNumber) => {
+            const pitchIdx = isDrum
+              ? (samples ?? []).findIndex(
+                  (sample) => sample.noteNumber === noteNumber
+                )
+              : noteNumber - basePitch;
+            return pitchIdx < 0 ? -1 : totalPitches - 1 - pitchIdx;
+          })
+          .filter((rowIdx) => rowIdx >= 0);
+        return rowIdxs.length > 0 ? Math.min(...rowIdxs) : null;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [focusKey, isDrum, samples, basePitch, totalPitches]);
+
+      useEffect(() => {
+        if (focusRowTop == null || containerH <= 0) return;
+        const rowsInView = Math.max(
+          1,
+          Math.floor(containerH / effectiveRowHeight)
+        );
+        const focusCount = (focusNoteNumbers ?? []).length;
+        // Leave a row of context above the focused block where there is room.
+        const contextRows = Math.max(
+          0,
+          Math.floor((rowsInView - focusCount) / 2)
+        );
+        const y = Math.max(0, (focusRowTop - contextRows) * effectiveRowHeight);
+        vScrollRef.current?.scrollTo({ y, animated: true });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [focusRowTop, containerH, effectiveRowHeight]);
 
       // Scroll ref — keep the offset inside the current content bounds. Android
       // can retain an old offset after the content width shrinks, which exposes
@@ -1042,7 +1098,11 @@ export const SkiaPianoRollGrid = memo(
 
       return (
         <View style={styles.container} onLayout={onContainerLayout}>
-          <ScrollView style={styles.scrollV} nestedScrollEnabled>
+          <ScrollView
+            ref={vScrollRef}
+            style={styles.scrollV}
+            nestedScrollEnabled
+          >
             <View style={styles.row}>
               {/* Pitch labels — React Views (interactive, need text) */}
               <View style={[styles.labels, { width: LABEL_COL_WIDTH }]}>
@@ -1051,6 +1111,9 @@ export const SkiaPianoRollGrid = memo(
                   const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
                   const pitchColor = noteColors?.[noteNumber] ?? trackColor;
                   const hasName = !getPitchLabel(pitchIdx).startsWith('Note ');
+                  const isDimmed =
+                    (focusNoteNumbers ?? []).length > 0 &&
+                    !(focusNoteNumbers ?? []).includes(noteNumber);
                   return (
                     <Pressable
                       key={pitchIdx}
@@ -1058,6 +1121,7 @@ export const SkiaPianoRollGrid = memo(
                       style={[
                         styles.label,
                         {
+                          ...(isDimmed ? { opacity: 0.3 } : null),
                           height: effectiveRowHeight,
                           backgroundColor:
                             selectedPitchIndex === pitchIdx
@@ -1122,6 +1186,60 @@ export const SkiaPianoRollGrid = memo(
                         style="stroke"
                         strokeWidth={0.5}
                       />
+
+                      {/* Lesson target slots — drawn under the notes layer so a
+                       * placed note always paints over its own slot. */}
+                      {(targetNotes ?? []).map((cell, i) => {
+                        const isFilled = notes.some(
+                          (note) =>
+                            note.noteNumber === cell.noteNumber &&
+                            note.position === cell.position
+                        );
+                        if (isFilled) return null;
+                        let pitchIdx: number;
+                        if (isDrum) {
+                          const si = (samples ?? []).findIndex(
+                            (s) => s.noteNumber === cell.noteNumber
+                          );
+                          if (si < 0) return null;
+                          pitchIdx = si;
+                        } else {
+                          pitchIdx = cell.noteNumber - basePitch;
+                        }
+                        const rowIdx = totalPitches - 1 - pitchIdx;
+                        const x = cell.position * beatWidth;
+                        const y = rowIdx * effectiveRowHeight + 1;
+                        const w = Math.max(stepWidth - 1, 1);
+                        const h = effectiveRowHeight - 2;
+                        const color =
+                          noteColors?.[cell.noteNumber] ?? trackColor;
+                        return (
+                          <React.Fragment
+                            key={`target${cell.noteNumber}-${cell.position}-${i}`}
+                          >
+                            <RoundedRect
+                              x={x}
+                              y={y}
+                              width={w}
+                              height={h}
+                              r={3}
+                              color={color}
+                              opacity={0.14}
+                            />
+                            <RoundedRect
+                              x={x}
+                              y={y}
+                              width={w}
+                              height={h}
+                              r={3}
+                              color={color}
+                              style="stroke"
+                              strokeWidth={1.5}
+                              opacity={0.75}
+                            />
+                          </React.Fragment>
+                        );
+                      })}
 
                       {/* Notes — styled to match AudioKit PianoRoll */}
                       {notes.map((note, idx) => {
@@ -1292,6 +1410,34 @@ export const SkiaPianoRollGrid = memo(
                           />
                         );
                       })}
+
+                      {/* Rows this lesson step is not about — dimmed rather
+                       * than hidden, so earlier layers stay visible as context
+                       * without competing with the row being worked on. */}
+                      {(focusNoteNumbers ?? []).length > 0 &&
+                        Array.from({ length: totalPitches }, (_, rowIdx) => {
+                          const pitchIdx = totalPitches - 1 - rowIdx;
+                          const noteNumber = isDrum
+                            ? (samples ?? [])[pitchIdx]?.noteNumber
+                            : basePitch + pitchIdx;
+                          if (
+                            noteNumber != null &&
+                            (focusNoteNumbers ?? []).includes(noteNumber)
+                          ) {
+                            return null;
+                          }
+                          return (
+                            <Rect
+                              key={`dim${rowIdx}`}
+                              x={0}
+                              y={rowIdx * effectiveRowHeight}
+                              width={gridWidth}
+                              height={effectiveRowHeight}
+                              color="#000000"
+                              opacity={0.55}
+                            />
+                          );
+                        })}
 
                       {/* Keep the playhead in the same Skia content layer as the
                     notes. It then scrolls and composites with the grid as one

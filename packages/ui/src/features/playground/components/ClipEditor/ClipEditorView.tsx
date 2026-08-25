@@ -46,6 +46,7 @@ import { PianoKeyboard } from '../PianoKeyboard/PianoKeyboard';
 import { SkiaPianoRollGrid } from '../../../../components/PianoRoll';
 import type {
   RecordingNotePreviewData,
+  TargetNoteCell,
   SkiaPianoRollGridHandle,
 } from '../../../../components/PianoRoll';
 import { NotePrecisionPanel } from '../../../../components/NotePrecisionPanel';
@@ -823,6 +824,10 @@ export interface ClipEditorViewProps {
   /** Notes currently held during live recording (this clip only) — shown as
    * a growing "in progress" preview on the piano roll. */
   recordingNotes?: RecordingNotePreviewData[];
+  /** Lesson target cells outlined on the grid (guided steps). */
+  targetNotes?: TargetNoteCell[];
+  /** Kit rows the current lesson step is about; others dim. */
+  focusNoteNumbers?: number[];
 }
 
 export const ClipEditorView = memo(function ClipEditorView({
@@ -860,6 +865,8 @@ export const ClipEditorView = memo(function ClipEditorView({
   onToggleSnapToGrid,
   onToggleLockNoteDuration,
   recordingNotes,
+  targetNotes,
+  focusNoteNumbers,
 }: ClipEditorViewProps) {
   const { colors } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
@@ -1145,6 +1152,8 @@ export const ClipEditorView = memo(function ClipEditorView({
                 instrumentType === 'drum' && (clip.lockNoteDuration ?? true)
               }
               recordingNotes={recordingNotes}
+              targetNotes={targetNotes}
+              focusNoteNumbers={focusNoteNumbers}
               isPlaying={isPlaying}
               playheadPosX={playheadPosX}
               visibleBarStart={visibleBarStart}

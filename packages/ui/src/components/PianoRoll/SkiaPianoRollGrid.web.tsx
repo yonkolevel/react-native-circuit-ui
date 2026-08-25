@@ -45,6 +45,7 @@ import {
   getVelocityColor,
   hitTestPianoRollNote,
   type RecordingNotePreviewData,
+  type TargetNoteCell,
 } from './pianoRollMath';
 
 const LABEL_COL_WIDTH = 60;
@@ -273,6 +274,11 @@ export interface SkiaPianoRollGridProps {
   /** Notes currently held during live recording — rendered as a growing
    * "in progress" preview from the press beat to the live playhead. */
   recordingNotes?: RecordingNotePreviewData[];
+  /**
+   * Lesson target cells — where a guided step wants notes placed. Unfilled
+   * cells render as outlined slots under the notes layer.
+   */
+  targetNotes?: TargetNoteCell[];
   /** Live playhead X position (pixels), updated at display frame rate via a
    * SharedValue — required for recordingNotes previews to grow smoothly
    * without React re-renders. Falls back to a static internal value (no
@@ -328,6 +334,7 @@ export const SkiaPianoRollGrid = memo(
         lockNoteDuration,
         isPlaying = false,
         recordingNotes,
+        targetNotes,
         playheadPosX,
         visibleBarStart,
         visibleBarEnd,
@@ -1180,6 +1187,42 @@ export const SkiaPianoRollGrid = memo(
                       ]}
                     />
                   )}
+
+                  {/* Lesson target slots — under the notes layer, so a placed
+                   * note always paints over its own slot. */}
+                  {(targetNotes ?? []).map((cell, i) => {
+                    const isFilled = notes.some(
+                      (note) =>
+                        note.noteNumber === cell.noteNumber &&
+                        note.position === cell.position
+                    );
+                    if (isFilled) return null;
+                    if (pitchToMidi.indexOf(cell.noteNumber) < 0) return null;
+                    const rect = getPianoRollNoteRect(
+                      { ...cell, duration: 0, velocity: 0 } as ClipNote,
+                      pianoRollMathContext
+                    );
+                    const color = noteColors?.[cell.noteNumber] ?? trackColor;
+                    return (
+                      <View
+                        key={`target${cell.noteNumber}-${cell.position}-${i}`}
+                        pointerEvents="none"
+                        accessible={false}
+                        style={{
+                          position: 'absolute',
+                          left: rect.x,
+                          top: rect.y,
+                          width: Math.max(stepWidth - 1, 1),
+                          height: rect.height,
+                          borderRadius: 3,
+                          borderWidth: 1.5,
+                          borderColor: color,
+                          backgroundColor: color,
+                          opacity: 0.3,
+                        }}
+                      />
+                    );
+                  })}
 
                   {/* Notes */}
                   {notes.map((note, idx) => {

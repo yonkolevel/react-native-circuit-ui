@@ -35,7 +35,9 @@ export const TrophyAwardedModal = memo(function TrophyAwardedModal({
       <View style={styles.overlay}>
         <View style={styles.card}>
           {/* Header */}
-          <Text style={styles.header}>🏆 Trophy Earned!</Text>
+          <Text variant="h4" style={styles.header}>
+            Trophy Earned!
+          </Text>
 
           {/* Trophy image */}
           {trophy.imageUrl ? (
@@ -51,7 +53,9 @@ export const TrophyAwardedModal = memo(function TrophyAwardedModal({
           )}
 
           {/* Title + description */}
-          <Text style={styles.title}>{trophy.title}</Text>
+          <Text variant="quote" style={styles.title}>
+            {trophy.title}
+          </Text>
           <Text style={styles.description}>{trophy.description}</Text>
 
           {/* Buttons */}
@@ -109,10 +113,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: makeSpacing(3),
   },
+  // Size and line height both come from the `h4` variant. Overriding fontSize
+  // alone would leave the default body line box (21pt) around 28pt glyphs and
+  // shear the top off the text.
   header: {
     color: '#FF5C24',
-    fontSize: 28,
-    fontWeight: '700',
     textAlign: 'center',
   },
   image: { width: 100, height: 100, borderRadius: 50 },
@@ -124,11 +129,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  emoji: { fontSize: 40 },
+  emoji: { fontSize: 40, lineHeight: 46 },
   title: {
     color: '#F7F7F7',
-    fontSize: 22,
-    fontWeight: '600',
     textAlign: 'center',
   },
   description: {

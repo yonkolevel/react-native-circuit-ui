@@ -24,6 +24,15 @@ export interface RecordingNotePreviewData {
   loopBeats?: number;
 }
 
+/**
+ * A lesson's target cell: which kit row, at which beat. Duration is not part
+ * of it — a guided step asks where a note goes, not how long it lasts.
+ */
+export interface TargetNoteCell {
+  noteNumber: number;
+  position: number;
+}
+
 const TOUCH_PADDING = 12;
 const MIN_RESIZE_ZONE = 20;
 

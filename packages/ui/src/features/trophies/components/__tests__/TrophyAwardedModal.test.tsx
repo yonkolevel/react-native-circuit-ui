@@ -22,7 +22,10 @@ describe('TrophyAwardedModal', () => {
     const texts = renderer.root
       .findAllByType(Text)
       .map((t) => t.props.children);
-    expect(texts).toContain('🏆 Trophy Earned!');
+    // The trophy glyph lives in the award badge below the header, not inline
+    // in the heading — one trophy symbol per card, not two.
+    expect(texts).toContain('Trophy Earned!');
+    expect(texts).toContain('🏆');
   });
 
   it('renders trophy title and description', () => {
