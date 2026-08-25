@@ -104,6 +104,9 @@ export type {
 export { GradientCover, gradientColorsForId } from './GradientCover';
 export type { GradientCoverProps } from './GradientCover';
 
+export { MissionRail, missionRailColors } from './MissionRail';
+export type { MissionRailMode, MissionRailProps } from './MissionRail';
+
 export { CircularLoadingView } from './CircularLoadingView';
 export type { CircularLoadingViewProps } from './CircularLoadingView';
 

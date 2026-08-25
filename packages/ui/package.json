@@ -67,6 +67,11 @@
       "import": "./lib/module/components/GradientCover/index.js",
       "require": "./lib/commonjs/components/GradientCover/index.js"
     },
+    "./MissionRail": {
+      "source": "./src/components/MissionRail/index.ts",
+      "import": "./lib/module/components/MissionRail/index.js",
+      "require": "./lib/commonjs/components/MissionRail/index.js"
+    },
     "./HintBubble": {
       "source": "./src/components/HintBubble/index.ts",
       "import": "./lib/module/components/HintBubble/index.js",
