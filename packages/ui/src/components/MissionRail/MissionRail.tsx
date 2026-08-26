@@ -30,6 +30,10 @@ export interface MissionRailProps {
   onCheck?: () => void;
   onContinue?: () => void;
   a11yId?: string;
+  feedbackA11yId?: string;
+  helpA11yId?: string;
+  checkA11yId?: string;
+  continueA11yId?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -48,6 +52,10 @@ export const MissionRail = memo(function MissionRail({
   onCheck,
   onContinue,
   a11yId = 'mission-rail',
+  feedbackA11yId = `${a11yId}-feedback`,
+  helpA11yId = `${a11yId}-help`,
+  checkA11yId = `${a11yId}-check`,
+  continueA11yId = `${a11yId}-continue`,
   style,
 }: MissionRailProps) {
   const { colors } = useTheme();
@@ -93,7 +101,7 @@ export const MissionRail = memo(function MissionRail({
         <View
           accessibilityRole="alert"
           accessibilityLabel={`Check feedback: ${feedback.join('. ')}`}
-          testID={`${a11yId}-feedback`}
+          testID={feedbackA11yId}
           style={[styles.feedback, { borderColor: colors.mcPink }]}
         >
           {feedback.map((item, index) => (
@@ -115,7 +123,7 @@ export const MissionRail = memo(function MissionRail({
             variant="secondary"
             onPress={onHelp}
             disabled={disabled || helpDisabled}
-            a11yId={`${a11yId}-help`}
+            a11yId={helpA11yId}
           />
         )}
         {onCheck && (
@@ -124,7 +132,7 @@ export const MissionRail = memo(function MissionRail({
             variant="secondary"
             onPress={onCheck}
             disabled={disabled || checkDisabled}
-            a11yId={`${a11yId}-check`}
+            a11yId={checkA11yId}
           />
         )}
         {onContinue && (
@@ -132,7 +140,7 @@ export const MissionRail = memo(function MissionRail({
             label="Continue"
             onPress={onContinue}
             disabled={disabled || continueDisabled}
-            a11yId={`${a11yId}-continue`}
+            a11yId={continueA11yId}
           />
         )}
       </View>

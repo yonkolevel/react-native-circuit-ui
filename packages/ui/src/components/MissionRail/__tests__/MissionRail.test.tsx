@@ -57,6 +57,23 @@ describe('MissionRail', () => {
     );
   });
 
+  it('accepts cross-platform action and feedback identifiers', () => {
+    const { getByTestId } = renderRail({
+      feedback: ['Try again'],
+      onHelp: jest.fn(),
+      onCheck: jest.fn(),
+      onContinue: jest.fn(),
+      feedbackA11yId: 'CircuitInteraction.Feedback',
+      helpA11yId: 'CircuitInteraction.Help',
+      checkA11yId: 'CircuitInteraction.Check',
+      continueA11yId: 'CircuitInteraction.Continue',
+    });
+    expect(getByTestId('CircuitInteraction.Feedback')).toBeTruthy();
+    expect(getByTestId('CircuitInteraction.Help')).toBeTruthy();
+    expect(getByTestId('CircuitInteraction.Check')).toBeTruthy();
+    expect(getByTestId('CircuitInteraction.Continue')).toBeTruthy();
+  });
+
   it('announces read-only and disabled states', () => {
     const { getByLabelText } = renderRail({ readOnly: true, disabled: true });
     expect(
