@@ -2,6 +2,7 @@ import React from 'react';
 import { Alert, ScrollView } from 'react-native';
 import { render, fireEvent } from '@testing-library/react-native';
 import { ThemeProvider } from '../../../../../theme';
+import { EditorPolicyProvider } from '../../../stores/editorPolicy';
 import { SkiaPianoRollGrid } from '../../../../../components/PianoRoll';
 import {
   ClipEditorView,
@@ -331,6 +332,108 @@ describe('ClipEditorView interactions', () => {
     );
     fireEvent.press(getByLabelText('Redo'));
     expect(onRedo).toHaveBeenCalled();
+  });
+
+  it('blocks note, precision, recording, clip, undo, and transport paths in read-only mode except Play', () => {
+    const callbacks = {
+      onNoteAdd: jest.fn(),
+      onNoteDelete: jest.fn(),
+      onNoteMove: jest.fn(),
+      onNoteResize: jest.fn(),
+      onVelocityChange: jest.fn(),
+      onUndo: jest.fn(),
+    };
+    const onPlayPause = jest.fn();
+    const onToggleRecord = jest.fn();
+    const clip = createMockDrumClip({ id: 8, trackID: 1, sectionID: 1 });
+    const { UNSAFE_getByType, getByLabelText } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        callbacks={callbacks}
+        onPlayPause={onPlayPause}
+        onToggleRecord={onToggleRecord}
+        canUndo
+        editorPolicy={{ readOnly: true }}
+      />
+    );
+    const grid = UNSAFE_getByType(SkiaPianoRollGrid);
+
+    grid.props.onGridTap(36, 0);
+    grid.props.onNotePress(0);
+    fireEvent.press(getByLabelText('Undo'));
+    fireEvent.press(getByLabelText('Record'));
+    fireEvent.press(getByLabelText('Play'));
+
+    expect(grid.props.editable).toBe(false);
+    expect(callbacks.onNoteAdd).not.toHaveBeenCalled();
+    expect(callbacks.onNoteDelete).not.toHaveBeenCalled();
+    expect(callbacks.onUndo).not.toHaveBeenCalled();
+    expect(onToggleRecord).not.toHaveBeenCalled();
+    expect(onPlayPause).toHaveBeenCalledTimes(1);
+    expect(getByLabelText('Record').props.accessibilityState.disabled).toBe(
+      true
+    );
+  });
+
+  it('does not let an optional prop bypass contextual read-only policy', () => {
+    const onToggleRecord = jest.fn();
+    const clip = createMockDrumClip({ id: 11, trackID: 1, sectionID: 1 });
+    const { getByLabelText } = renderWithTheme(
+      <EditorPolicyProvider policy={{ readOnly: true }}>
+        <ClipEditorView
+          clip={clip}
+          instrumentType="drum"
+          onToggleRecord={onToggleRecord}
+          editorPolicy={{
+            readOnly: false,
+            capabilities: { recording: true, notes: true },
+          }}
+        />
+      </EditorPolicyProvider>
+    );
+
+    fireEvent.press(getByLabelText('Record'));
+    expect(onToggleRecord).not.toHaveBeenCalled();
+    expect(getByLabelText('Record').props.accessibilityState.disabled).toBe(
+      true
+    );
+  });
+
+  it('applies individual capability restrictions', () => {
+    const onPlayPause = jest.fn();
+    const clip = createMockDrumClip({ id: 9, trackID: 1, sectionID: 1 });
+    const { getByLabelText } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        onPlayPause={onPlayPause}
+        editorPolicy={{ capabilities: { transport: false } }}
+      />
+    );
+    fireEvent.press(getByLabelText('Play'));
+    expect(onPlayPause).not.toHaveBeenCalled();
+    expect(getByLabelText('Play').props.accessibilityState.disabled).toBe(true);
+  });
+
+  it('keeps continuous scroll visual-only and emits edits only at semantic boundaries', () => {
+    const onNoteMove = jest.fn();
+    const clip = createMockDrumClip({ id: 10, trackID: 1, sectionID: 1 });
+    const { UNSAFE_getByType } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        callbacks={{ onNoteMove }}
+      />
+    );
+    const grid = UNSAFE_getByType(SkiaPianoRollGrid);
+
+    for (let x = 0; x < 100; x += 1) grid.props.onScrollXChange(x);
+    expect(onNoteMove).not.toHaveBeenCalled();
+
+    grid.props.onNoteMove(0, 1, 36);
+    expect(onNoteMove).toHaveBeenCalledTimes(1);
   });
 
   it('keeps the piano roll callback props stable across an unrelated re-render', () => {

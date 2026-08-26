@@ -16,7 +16,7 @@
  *   changes — not when tempo, tracks, or anything else changes.
  *   Splitting into multiple stores adds sync complexity for zero perf gain.
  */
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type {
   SongState,
@@ -26,6 +26,12 @@ import type {
   Track,
   Clip,
 } from '../types';
+import {
+  isEditorCapabilityAllowed,
+  useResolvedEditorPolicy,
+  type EditorCapability,
+  type EditorPolicy,
+} from './editorPolicy';
 
 // ---------------------------------------------------------------------------
 // Actions — everything the UI can dispatch
@@ -132,7 +138,17 @@ export type SongStore = SongState & SongActions;
 // Context + Provider
 // ---------------------------------------------------------------------------
 
-/** The zustand hook type the app passes in (zustand v5 signature) */
+/** Read-only zustand access supplied by the app. Selectors cannot reach actions. */
+export type UseSongStateHook = {
+  (): SongState;
+  <T>(selector: (state: SongState) => T): T;
+  getState: () => SongState;
+  subscribe: (
+    listener: (state: SongState, prevState: SongState) => void
+  ) => () => void;
+};
+
+/** Backward-compatible combined store type. Prefer stateAccess + actions. */
 export type UseSongStoreHook = {
   (): SongStore;
   <T>(selector: (state: SongStore) => T): T;
@@ -142,25 +158,169 @@ export type UseSongStoreHook = {
   ) => () => void;
 };
 
-const SongStoreContext = createContext<UseSongStoreHook | null>(null);
+export type SongActionName = keyof SongActions;
+export interface SongMutationEvent {
+  type: SongActionName;
+  arguments: readonly unknown[];
+}
+
+const ACTION_CAPABILITIES: Record<SongActionName, EditorCapability | null> = {
+  setPlaying: 'transport',
+  setRecording: 'recording',
+  setTempo: 'tempo',
+  toggleMetronome: 'metronome',
+  toggleLoop: 'loop',
+  setCurrentSection: 'arrangement',
+  addSection: 'sections',
+  renameSection: 'sections',
+  duplicateSection: 'sections',
+  removeSection: 'sections',
+  setTrackVolume: 'mixer',
+  setTrackPan: 'mixer',
+  toggleTrackMute: 'mixer',
+  toggleTrackSolo: 'mixer',
+  addNote: 'notes',
+  removeNote: 'notes',
+  updateNote: 'notes',
+  setClipNotes: 'quantize',
+  createClip: 'clips',
+  duplicateClip: 'clips',
+  removeClip: 'clips',
+  setClipLength: 'clips',
+  addNewTrack: 'tracks',
+  removeTrack: 'tracks',
+  setMasterVolume: 'mixer',
+  showSongView: null,
+  showAddTrackMenu: 'tracks',
+  showSoundBankPicker: 'sound',
+  openClipEditor: null,
+  setCurrentTab: null,
+  fetchSoundBanks: 'sound',
+  selectSoundBank: 'sound',
+  previewSoundBank: 'sound',
+  stopPreview: 'sound',
+  confirmSoundBank: 'sound',
+  undoClipEdit: 'undoRedo',
+  redoClipEdit: 'undoRedo',
+  liveNoteOn: 'liveRecording',
+  liveNoteOff: 'liveRecording',
+  showClipSettings: null,
+  hideClipSettings: null,
+  togglePianoNoteNames: null,
+};
+
+const NON_MUTATION_ACTIONS = new Set<SongActionName>([
+  'showSongView',
+  'showAddTrackMenu',
+  'showSoundBankPicker',
+  'openClipEditor',
+  'setCurrentTab',
+  'fetchSoundBanks',
+  'previewSoundBank',
+  'stopPreview',
+  'showClipSettings',
+  'hideClipSettings',
+  'togglePianoNoteNames',
+]);
+
+const SongStateContext = createContext<UseSongStateHook | null>(null);
+const SongActionsContext = createContext<SongActions | null>(null);
+const SongMutationContext = createContext<
+  ((event: SongMutationEvent) => void) | undefined
+>(undefined);
+
+function pickSongActions(store: UseSongStoreHook): SongActions {
+  const raw = store.getState();
+  return Object.fromEntries(
+    (Object.keys(ACTION_CAPABILITIES) as SongActionName[]).map((name) => [
+      name,
+      raw[name],
+    ])
+  ) as unknown as SongActions;
+}
+
+type SongStoreProviderProps = {
+  children: ReactNode;
+  /** Called after an allowed synchronous musical action returns. */
+  onMutation?: (event: SongMutationEvent) => void;
+} & (
+  | {
+      /** State-only access, paired with an app-guarded action surface. */
+      stateAccess: UseSongStateHook;
+      actions: SongActions;
+      store?: never;
+    }
+  | {
+      /** @deprecated Standalone compatibility. Prefer stateAccess + actions. */
+      store: UseSongStoreHook;
+      stateAccess?: never;
+      actions?: never;
+    }
+);
 
 export function SongStoreProvider({
+  stateAccess,
+  actions,
+  onMutation,
   store,
   children,
-}: {
-  store: UseSongStoreHook;
-  children: ReactNode;
-}) {
+}: SongStoreProviderProps) {
+  const resolvedState = stateAccess ?? (store as unknown as UseSongStateHook);
+  const resolvedActions = useMemo(
+    () => actions ?? (store ? pickSongActions(store) : undefined),
+    [actions, store]
+  );
+  if (!resolvedState || !resolvedActions) {
+    throw new Error(
+      'SongStoreProvider requires stateAccess and actions (or legacy store)'
+    );
+  }
   return (
-    <SongStoreContext.Provider value={store}>
-      {children}
-    </SongStoreContext.Provider>
+    <SongStateContext.Provider value={resolvedState}>
+      <SongActionsContext.Provider value={resolvedActions}>
+        <SongMutationContext.Provider value={onMutation}>
+          {children}
+        </SongMutationContext.Provider>
+      </SongActionsContext.Provider>
+    </SongStateContext.Provider>
   );
 }
 
-/** Raw hook access — for building custom selectors */
-function useStoreHook(): UseSongStoreHook {
-  const hook = useContext(SongStoreContext);
+const stateOnlyCache = new WeakMap<object, SongState>();
+const isFunctionProperty = (
+  target: SongState,
+  property: PropertyKey
+): boolean => typeof Reflect.get(target, property) === 'function';
+
+function toStateOnly(state: SongState): SongState {
+  const object = state as unknown as object;
+  const cached = stateOnlyCache.get(object);
+  if (cached) return cached;
+  const safe = new Proxy(state, {
+    get(target, property, receiver) {
+      if (isFunctionProperty(target, property)) return undefined;
+      return Reflect.get(target, property, receiver);
+    },
+    has(target, property) {
+      if (isFunctionProperty(target, property)) return false;
+      return Reflect.has(target, property);
+    },
+    ownKeys(target) {
+      return Reflect.ownKeys(target).filter(
+        (key) => !isFunctionProperty(target, key)
+      );
+    },
+    getOwnPropertyDescriptor(target, property) {
+      if (isFunctionProperty(target, property)) return undefined;
+      return Reflect.getOwnPropertyDescriptor(target, property);
+    },
+  });
+  stateOnlyCache.set(object, safe);
+  return safe;
+}
+
+function useStateHook(): UseSongStateHook {
+  const hook = useContext(SongStateContext);
   if (!hook) throw new Error('useSongContext requires <SongStoreProvider>');
   return hook;
 }
@@ -180,16 +340,85 @@ function useStoreHook(): UseSongStoreHook {
  *
  * Do NOT pass an equalityFn — zustand v5 hooks ignore it.
  */
-export function useSongContext<T>(selector: (state: SongStore) => T): T {
-  const useStore = useStoreHook();
-  return useStore(selector);
+export function useSongContext<T>(selector: (state: SongState) => T): T {
+  return useStateHook()((state) => selector(toStateOnly(state)));
 }
 
-/** Get store for imperative access in callbacks (no subscription, no re-render) */
-export function useSongActions(): SongActions {
-  const useStore = useStoreHook();
-  // Actions are stable references — reading them doesn't cause re-renders
-  return useStore.getState();
+/** The policy-filtered app action surface. Raw state-store actions never escape. */
+const COMMIT_REVISION_KEYS = [
+  'saveRevision',
+  'transportRevision',
+  'contentRevision',
+  'revision',
+] as const;
+
+function captureCommit(state: SongState) {
+  const record = state as unknown as Record<string, unknown>;
+  return {
+    state,
+    revisions: COMMIT_REVISION_KEYS.map((key) => record[key]),
+  };
+}
+
+function didCommit(
+  before: ReturnType<typeof captureCommit>,
+  after: ReturnType<typeof captureCommit>
+): boolean {
+  return (
+    before.state !== after.state ||
+    before.revisions.some(
+      (revision, index) => revision !== after.revisions[index]
+    )
+  );
+}
+
+const isPromiseLike = (value: unknown): value is PromiseLike<unknown> =>
+  !!value && typeof (value as PromiseLike<unknown>).then === 'function';
+
+export function useSongActions(policyOverride?: EditorPolicy): SongActions {
+  const actions = useContext(SongActionsContext);
+  const stateAccess = useContext(SongStateContext);
+  const onMutation = useContext(SongMutationContext);
+  const policy = useResolvedEditorPolicy(policyOverride);
+
+  const wrappedActions = useMemo(() => {
+    if (!actions || !stateAccess) return null;
+    const wrapped = {} as Record<SongActionName, (...args: any[]) => any>;
+    for (const name of Object.keys(ACTION_CAPABILITIES) as SongActionName[]) {
+      wrapped[name] = (...args: unknown[]) => {
+        const capability = ACTION_CAPABILITIES[name];
+        if (capability && !isEditorCapabilityAllowed(policy, capability))
+          return;
+        if (NON_MUTATION_ACTIONS.has(name)) {
+          return (actions[name] as (...values: unknown[]) => unknown)(...args);
+        }
+
+        const before = captureCommit(stateAccess.getState());
+        const result = (actions[name] as (...values: unknown[]) => unknown)(
+          ...args
+        );
+        const emitIfCommitted = () => {
+          const after = captureCommit(stateAccess.getState());
+          if (didCommit(before, after)) {
+            onMutation?.({ type: name, arguments: args });
+          }
+        };
+        if (isPromiseLike(result)) {
+          return Promise.resolve(result).then((value) => {
+            emitIfCommitted();
+            return value;
+          });
+        }
+        emitIfCommitted();
+        return result;
+      };
+    }
+    return wrapped as unknown as SongActions;
+  }, [actions, stateAccess, onMutation, policy]);
+
+  if (!wrappedActions)
+    throw new Error('useSongActions requires <SongStoreProvider>');
+  return wrappedActions;
 }
 
 // ---------------------------------------------------------------------------

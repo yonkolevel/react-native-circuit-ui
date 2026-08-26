@@ -16,6 +16,11 @@ import { MultiTouchOverlay } from '../../../../components/MultiTouchOverlay';
 import { useTheme } from '../../../../theme';
 import { palette } from '../../../../theme/colors';
 import type { Sample } from '../../types';
+import {
+  isEditorCapabilityAllowed,
+  useResolvedEditorPolicy,
+  type EditorPolicy,
+} from '../../stores/editorPolicy';
 
 function visualToSample(visualIndex: number): number {
   const row = Math.floor(visualIndex / 4);
@@ -55,6 +60,8 @@ export interface DrumPadsViewProps {
   onPadRelease?: (sampleIndex: number) => void;
   externalPressedNotes?: Set<number>;
   highlightColor?: string;
+  disabled?: boolean;
+  editorPolicy?: EditorPolicy;
 }
 
 export const DrumPadsView = memo(function DrumPadsView({
@@ -63,13 +70,19 @@ export const DrumPadsView = memo(function DrumPadsView({
   onPadRelease,
   externalPressedNotes = new Set(),
   highlightColor = palette.mcGreen,
+  disabled: disabledProp = false,
+  editorPolicy,
 }: DrumPadsViewProps) {
   const { colors } = useTheme();
+  const policy = useResolvedEditorPolicy(editorPolicy);
+  const disabled =
+    disabledProp || !isEditorCapabilityAllowed(policy, 'liveRecording');
   const [pressedPads, setPressedPads] = useState<Set<number>>(new Set());
   const pressCounts = useRef(new Map<number, number>());
 
   const handleNativePress = useCallback(
     (visualIdx: number) => {
+      if (disabled) return;
       const sampleIdx = visualToSample(visualIdx);
       if (!samples[sampleIdx]) return;
       const count = pressCounts.current.get(sampleIdx) ?? 0;
@@ -78,7 +91,7 @@ export const DrumPadsView = memo(function DrumPadsView({
       setPressedPads((prev) => new Set(prev).add(sampleIdx));
       onPadPress?.(sampleIdx);
     },
-    [onPadPress, samples]
+    [disabled, onPadPress, samples]
   );
 
   const handleNativeRelease = useCallback(
@@ -100,6 +113,14 @@ export const DrumPadsView = memo(function DrumPadsView({
     },
     [onPadRelease]
   );
+
+  useEffect(() => {
+    if (!disabled || pressCounts.current.size === 0) return;
+    const heldPads = [...pressCounts.current.keys()];
+    pressCounts.current.clear();
+    setPressedPads(new Set());
+    heldPads.forEach((sampleIdx) => onPadRelease?.(sampleIdx));
+  }, [disabled, onPadRelease]);
 
   const handleAccessibleActivation = useCallback(
     (visualIdx: number) => {
@@ -168,7 +189,11 @@ export const DrumPadsView = memo(function DrumPadsView({
     visualToSample(row * 4 + col);
 
   return (
-    <View style={styles.container} accessibilityLabel="Drum pads">
+    <View
+      style={styles.container}
+      accessibilityLabel="Drum pads"
+      accessibilityState={disabled ? { disabled: true } : undefined}
+    >
       {/* Visual grid — pointer events disabled, touch handled by overlay */}
       <View style={[styles.grid, { pointerEvents: 'none' }]}>
         {[0, 1, 2, 3].map((row) => (
@@ -187,8 +212,9 @@ export const DrumPadsView = memo(function DrumPadsView({
                   accessibilityRole={sample ? 'button' : undefined}
                   accessibilityLabel={sample?.name}
                   accessibilityHint={sample ? 'Play sample' : undefined}
+                  accessibilityState={disabled ? { disabled: true } : undefined}
                   accessibilityActions={
-                    sample ? [{ name: 'activate' }] : undefined
+                    sample && !disabled ? [{ name: 'activate' }] : undefined
                   }
                   onAccessibilityAction={(event) => {
                     if (sample && event.nativeEvent.actionName === 'activate')

@@ -37,6 +37,7 @@ import type {
 } from '../../features/playground/types';
 import {
   getGridPointNoteTarget,
+  getPianoRollGuidanceRow,
   getMovedNoteTarget,
   getPianoRollNoteRect,
   getResizedNoteDuration,
@@ -46,6 +47,7 @@ import {
   hitTestPianoRollNote,
   type RecordingNotePreviewData,
 } from './pianoRollMath';
+import type { PianoRollGuidance } from '../../features/playground/stores/editorPolicy';
 
 const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
@@ -291,6 +293,8 @@ export interface SkiaPianoRollGridProps {
    * mirrors an in-progress velocity-handle drag on NotePrecisionPanel so this
    * note's color updates in real time instead of only once the drag commits. */
   velocityPreview?: { noteIndex: number; velocity: number } | null;
+  editable?: boolean;
+  guidance?: PianoRollGuidance;
 }
 
 /** Imperative handle for scrolling the grid programmatically (e.g. to jump to an isolated bar, or to mirror another view's scroll position). */
@@ -334,6 +338,8 @@ export const SkiaPianoRollGrid = memo(
         onVisibleBeatRangeChange,
         onScrollXChange,
         velocityPreview,
+        editable = true,
+        guidance,
       }: SkiaPianoRollGridProps,
       ref
     ) {
@@ -638,6 +644,35 @@ export const SkiaPianoRollGrid = memo(
         [isDrum, totalPitches, samples, basePitch]
       );
 
+      const guidanceRows = useMemo(
+        () =>
+          (guidance?.focusedNoteNumbers ?? []).flatMap((noteNumber) => {
+            const row = getPianoRollGuidanceRow(noteNumber, pitchToMidi);
+            if (row == null) return [];
+            const label = isDrum
+              ? ((samples ?? []).find(
+                  (sample) => sample.noteNumber === noteNumber
+                )?.name ?? `MIDI ${noteNumber}`)
+              : getNoteName(noteNumber);
+            return [{ noteNumber, row, label }];
+          }),
+        [guidance?.focusedNoteNumbers, isDrum, pitchToMidi, samples]
+      );
+      const guidanceTargets = useMemo(
+        () =>
+          (guidance?.targets ?? []).flatMap((target) => {
+            const row = getPianoRollGuidanceRow(target.noteNumber, pitchToMidi);
+            if (row == null) return [];
+            const label = isDrum
+              ? ((samples ?? []).find(
+                  (sample) => sample.noteNumber === target.noteNumber
+                )?.name ?? `MIDI ${target.noteNumber}`)
+              : getNoteName(target.noteNumber);
+            return [{ ...target, row, label }];
+          }),
+        [guidance?.targets, isDrum, pitchToMidi, samples]
+      );
+
       const pianoRollMathContext = useMemo(
         () => ({
           samples,
@@ -794,7 +829,9 @@ export const SkiaPianoRollGrid = memo(
           if (nativeEvent.button != null && nativeEvent.button !== 0) return;
           const rect = e.currentTarget.getBoundingClientRect();
           const { x, y } = getPointerPoint(e, rect);
-          const hit = hitTestPianoRollNote(notes, x, y, pianoRollMathContext);
+          const hit = editable
+            ? hitTestPianoRollNote(notes, x, y, pianoRollMathContext)
+            : null;
           // Any new touch takes over immediately — including one that lands
           // mid-coast, same as native scroll would.
           cancelMomentum();
@@ -830,7 +867,7 @@ export const SkiaPianoRollGrid = memo(
             // ignore — capture is a nice-to-have, not required for the logic below
           }
         },
-        [getPointerPoint, notes, pianoRollMathContext, cancelMomentum]
+        [getPointerPoint, notes, pianoRollMathContext, cancelMomentum, editable]
       );
 
       const handlePointerMove = useCallback(
@@ -926,7 +963,7 @@ export const SkiaPianoRollGrid = memo(
 
           if (interaction.type === 'grid') {
             reportScroll(panXRef.current, true);
-            if (!wasDragging) {
+            if (!wasDragging && editable) {
               const target = getGridPointNoteTarget(x, y, pianoRollMathContext);
               if (target) onGridTap?.(target.noteNumber, target.position);
             } else {
@@ -985,6 +1022,7 @@ export const SkiaPianoRollGrid = memo(
           reportScroll,
           startMomentum,
           isNoteResizeLocked,
+          editable,
         ]
       );
 
@@ -1025,10 +1063,11 @@ export const SkiaPianoRollGrid = memo(
       );
 
       const addNoteAtKeyboardCursor = useCallback(() => {
+        if (!editable) return;
         const noteNumber =
           pitchToMidi[keyboardCursor.pitchIndex] ?? keyboardCursor.pitchIndex;
         onGridTap?.(noteNumber, keyboardCursor.step * 0.25);
-      }, [keyboardCursor, onGridTap, pitchToMidi]);
+      }, [editable, keyboardCursor, onGridTap, pitchToMidi]);
 
       const handleGridKeyDown = useCallback(
         (e: WebKeyboardEvent) => {
@@ -1056,9 +1095,13 @@ export const SkiaPianoRollGrid = memo(
 
       const webGridHandlers = {
         ...webPointerHandlers,
-        onKeyDown: handleGridKeyDown,
-        onFocus: () => setIsKeyboardFocused(true),
-        onBlur: () => setIsKeyboardFocused(false),
+        ...(editable
+          ? {
+              onKeyDown: handleGridKeyDown,
+              onFocus: () => setIsKeyboardFocused(true),
+              onBlur: () => setIsKeyboardFocused(false),
+            }
+          : null),
         tabIndex: 0,
       } as unknown as ViewProps;
 
@@ -1067,6 +1110,8 @@ export const SkiaPianoRollGrid = memo(
           ref={containerRef}
           style={styles.container}
           onLayout={onContainerLayout}
+          accessibilityLabel={!editable ? 'Piano roll, read only' : undefined}
+          accessibilityState={!editable ? { disabled: true } : undefined}
         >
           <View style={[styles.scrollV, styles.hidden]}>
             <View ref={rowRef} style={styles.row}>
@@ -1080,9 +1125,18 @@ export const SkiaPianoRollGrid = memo(
                   return (
                     <Pressable
                       key={pitchIdx}
-                      onPress={() => onPitchLabelTap?.(pitchIdx)}
+                      onPress={
+                        editable ? () => onPitchLabelTap?.(pitchIdx) : undefined
+                      }
+                      disabled={!editable}
                       accessibilityRole="button"
-                      accessibilityLabel={`Edit ${getPitchLabel(pitchIdx)} notes`}
+                      accessibilityLabel={`${editable ? 'Edit' : 'View'} ${getPitchLabel(pitchIdx)} notes`}
+                      accessibilityHint={
+                        editable ? undefined : 'Listen during playback'
+                      }
+                      accessibilityState={
+                        editable ? undefined : { disabled: true }
+                      }
                       style={[
                         styles.label,
                         {
@@ -1138,6 +1192,60 @@ export const SkiaPianoRollGrid = memo(
                       />
                     )
                   )}
+
+                  {/* Authored guidance overlays — exact MIDI rows, pointer transparent. */}
+                  {guidanceRows.map((focus) => (
+                    <View
+                      key={`focus-${focus.noteNumber}`}
+                      pointerEvents="none"
+                      accessible
+                      accessibilityLabel={
+                        isDrum
+                          ? `Focused drum row ${focus.label}`
+                          : `Focused pitch ${focus.label}`
+                      }
+                      accessibilityValue={{
+                        text: `MIDI note ${focus.noteNumber}`,
+                      }}
+                      testID={`piano-roll-focus-midi-${focus.noteNumber}`}
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: focus.row * effectiveRowHeight,
+                        width: gridWidth,
+                        height: effectiveRowHeight,
+                        backgroundColor:
+                          guidance?.focusColor ?? colors.mcOrange,
+                        opacity: 0.18,
+                      }}
+                    />
+                  ))}
+                  {guidanceTargets.map((target, index) => (
+                    <View
+                      key={`target-${index}`}
+                      pointerEvents="none"
+                      accessible
+                      accessibilityLabel={`Target ${target.label} at beat ${target.position}`}
+                      accessibilityValue={{
+                        text: `MIDI note ${target.noteNumber}`,
+                      }}
+                      testID={`piano-roll-target-${index}`}
+                      style={{
+                        position: 'absolute',
+                        left: target.position * beatWidth,
+                        top: target.row * effectiveRowHeight + 2,
+                        width: Math.max(
+                          (target.duration ?? 0.25) * beatWidth,
+                          stepWidth
+                        ),
+                        height: effectiveRowHeight - 4,
+                        borderRadius: 3,
+                        borderWidth: 2,
+                        borderColor: guidance?.targetColor ?? colors.mcWhite,
+                        opacity: 0.35,
+                      }}
+                    />
+                  ))}
 
                   {/* Step lines — uniform weight, no beat/bar emphasis */}
                   {Array.from({ length: totalSteps + 1 }, (_, i) => (
@@ -1264,17 +1372,31 @@ export const SkiaPianoRollGrid = memo(
                       else return;
                       e.preventDefault?.();
                     };
-                    const noteKeyboardProps = {
-                      onKeyDown: handleNoteKeyDown,
-                    } as unknown as ViewProps;
+                    const noteKeyboardProps = (editable
+                      ? { onKeyDown: handleNoteKeyDown }
+                      : {}) as unknown as ViewProps;
 
                     return (
                       <Fragment key={`n${idx}`}>
                         <Pressable
-                          onPress={() => onNotePress?.(idx)}
+                          onPress={
+                            editable ? () => onNotePress?.(idx) : undefined
+                          }
+                          disabled={!editable}
                           accessibilityRole="button"
-                          accessibilityLabel={`Delete note ${getNoteName(note.noteNumber)} at beat ${note.position}, duration ${note.duration}. Arrow keys move${isNoteResizeLocked ? '' : '; Shift plus Left or Right resizes'}`}
-                          accessibilityHint="Press Enter to delete"
+                          accessibilityState={
+                            !editable ? { disabled: true } : undefined
+                          }
+                          accessibilityLabel={
+                            editable
+                              ? `Delete note ${getNoteName(note.noteNumber)} at beat ${note.position}, duration ${note.duration}. Arrow keys move${isNoteResizeLocked ? '' : '; Shift plus Left or Right resizes'}`
+                              : `View note ${getNoteName(note.noteNumber)} at beat ${note.position}, duration ${note.duration}`
+                          }
+                          accessibilityHint={
+                            editable
+                              ? 'Press Enter to delete'
+                              : 'Listen during playback'
+                          }
                           {...noteKeyboardProps}
                           style={{
                             position: 'absolute',
@@ -1307,7 +1429,7 @@ export const SkiaPianoRollGrid = memo(
                            * just because the note block is longer, so showing a
                            * grip here would promise an edit that has no audible
                            * effect. */}
-                          {!isNoteResizeLocked && (
+                          {editable && !isNoteResizeLocked && (
                             <View
                               style={{
                                 position: 'absolute',
@@ -1390,8 +1512,19 @@ export const SkiaPianoRollGrid = memo(
                     style={[StyleSheet.absoluteFill, GRID_TOUCH_ACTION_STYLE]}
                     accessible
                     accessibilityRole="button"
-                    accessibilityLabel={`Piano roll note grid, ${getPitchLabel(keyboardCursor.pitchIndex)} at beat ${keyboardCursor.step * 0.25}. Arrow keys move; Enter adds`}
-                    accessibilityHint="Choose a pitch and beat, then add a note"
+                    accessibilityLabel={
+                      editable
+                        ? `Piano roll note grid, ${getPitchLabel(keyboardCursor.pitchIndex)} at beat ${keyboardCursor.step * 0.25}. Arrow keys move; Enter adds`
+                        : 'Piano roll note grid, read only. View notes and guidance'
+                    }
+                    accessibilityHint={
+                      editable
+                        ? 'Choose a pitch and beat, then add a note'
+                        : 'Use Play to listen'
+                    }
+                    accessibilityState={
+                      editable ? undefined : { disabled: true }
+                    }
                     {...webGridHandlers}
                   >
                     {isKeyboardFocused && (

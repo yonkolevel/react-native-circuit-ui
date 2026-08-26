@@ -12,6 +12,11 @@ import { Icon, Icons } from '../../../../components/SFSymbol';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
 import { useSongContext, useSongActions } from '../../stores/playgroundStore';
+import {
+  isEditorCapabilityAllowed,
+  useResolvedEditorPolicy,
+  type EditorPolicy,
+} from '../../stores/editorPolicy';
 
 // Re-exported for backward compatibility. The canonical definition now lives in
 // playground/utils so the export view and native side share one rule.
@@ -33,6 +38,7 @@ export interface SongSettingsProps {
   onExportBundle?: () => void;
   onShareBeat?: () => void | Promise<void>;
   a11yId?: string;
+  editorPolicy?: EditorPolicy;
 }
 
 export const SongSettings = memo(function SongSettings({
@@ -40,15 +46,21 @@ export const SongSettings = memo(function SongSettings({
   onExportBundle,
   onShareBeat,
   a11yId,
+  editorPolicy,
 }: SongSettingsProps) {
   const { colors } = useTheme();
+  const policy = useResolvedEditorPolicy(editorPolicy);
+  const canTempo = isEditorCapabilityAllowed(policy, 'tempo');
+  const canMix = isEditorCapabilityAllowed(policy, 'mixer');
+  const canMetronome = isEditorCapabilityAllowed(policy, 'metronome');
+  const canExport = isEditorCapabilityAllowed(policy, 'export');
 
   // State — fine-grained selectors
   const tempo = useSongContext((s) => s.tempo);
   const masterVolume = useSongContext((s) => s.masterVolume);
   const isMetronomeEnabled = useSongContext((s) => s.isMetronomeEnabled);
   // Actions — stable refs, no subscription
-  const { setTempo, setMasterVolume, toggleMetronome } = useSongActions();
+  const { setTempo, setMasterVolume, toggleMetronome } = useSongActions(policy);
 
   // Local display values while dragging (avoids store updates on every frame)
   const [tempoDisplay, setTempoDisplay] = useState<number | null>(null);
@@ -72,6 +84,8 @@ export const SongSettings = memo(function SongSettings({
             maximumValue={240}
             value={tempo}
             step={1}
+            disabled={canTempo ? undefined : true}
+            accessibilityState={canTempo ? undefined : { disabled: true }}
             onValueChange={setTempoDisplay}
             onSlidingComplete={(v: number) => {
               setTempoDisplay(null);
@@ -105,6 +119,8 @@ export const SongSettings = memo(function SongSettings({
             maximumValue={100}
             value={masterVolume}
             step={1}
+            disabled={canMix ? undefined : true}
+            accessibilityState={canMix ? undefined : { disabled: true }}
             onValueChange={setVolumeDisplay}
             onSlidingComplete={(v: number) => {
               setVolumeDisplay(null);
@@ -133,6 +149,8 @@ export const SongSettings = memo(function SongSettings({
       <SettingRow label="METRONOME">
         <Switch
           value={isMetronomeEnabled}
+          disabled={canMetronome ? undefined : true}
+          accessibilityState={canMetronome ? undefined : { disabled: true }}
           onValueChange={toggleMetronome}
           trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}
           accessibilityLabel="Metronome"
@@ -146,6 +164,7 @@ export const SongSettings = memo(function SongSettings({
             icon={Icons.more}
             label="SHARE BEAT"
             onPress={onShareBeat}
+            disabled={!canExport}
             testID="shareBeatButton"
           />
         )}
@@ -153,11 +172,13 @@ export const SongSettings = memo(function SongSettings({
           icon={Icons.audioTrack}
           label="EXPORT AUDIO"
           onPress={onExportAudio}
+          disabled={!canExport}
         />
         <ActionButton
           icon={Icons.settings}
           label="EXPORT BUNDLE"
           onPress={onExportBundle}
+          disabled={!canExport}
         />
       </View>
     </View>

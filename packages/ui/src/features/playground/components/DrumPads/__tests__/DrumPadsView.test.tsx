@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, fireEvent, render } from '@testing-library/react-native';
 import { ThemeProvider } from '../../../../../theme';
+import { DrumPad } from '../DrumPad';
 import { DrumPadsView } from '../DrumPadsView';
 import { createDrumSamples, resetMockIds } from '../../../mocks';
 
@@ -80,6 +81,81 @@ describe('DrumPadsView interactions', () => {
 
     act(() => getByTestId('MultiTouchOverlay').props.onPadPress(0));
     expect(onPadPress).toHaveBeenCalledWith(12);
+  });
+
+  it('releases every active native pad at a prop-policy transition', () => {
+    const samples = createDrumSamples();
+    const onPadPress = jest.fn();
+    const onPadRelease = jest.fn();
+    const view = renderWithTheme(
+      <DrumPadsView
+        samples={samples}
+        onPadPress={onPadPress}
+        onPadRelease={onPadRelease}
+      />
+    );
+
+    act(() => {
+      view.getByTestId('MultiTouchOverlay').props.onPadPress(12);
+      view.getByTestId('MultiTouchOverlay').props.onPadPress(13);
+    });
+    view.rerender(
+      <ThemeProvider initialMode="dark">
+        <DrumPadsView
+          samples={samples}
+          onPadPress={onPadPress}
+          onPadRelease={onPadRelease}
+          editorPolicy={{ capabilities: { liveRecording: false } }}
+        />
+      </ThemeProvider>
+    );
+
+    expect(onPadPress.mock.calls).toEqual([[0], [1]]);
+    expect(onPadRelease.mock.calls).toEqual([[0], [1]]);
+
+    act(() => {
+      view.getByTestId('MultiTouchOverlay').props.onPadRelease(12);
+      view.getByTestId('MultiTouchOverlay').props.onPadRelease(13);
+    });
+    view.unmount();
+    expect(onPadRelease).toHaveBeenCalledTimes(2);
+  });
+
+  it('releases a held public DrumPad immediately when policy disables', () => {
+    const onPress = jest.fn();
+    const onRelease = jest.fn();
+    const sample = createDrumSamples()[0];
+    const view = renderWithTheme(
+      <DrumPad
+        sample={sample}
+        index={0}
+        isExternallyPressed={false}
+        highlightColor="#FF5C24"
+        onPress={onPress}
+        onRelease={onRelease}
+      />
+    );
+
+    fireEvent(view.getByRole('button'), 'pressIn');
+    expect(onPress).toHaveBeenCalledWith(0);
+
+    view.rerender(
+      <ThemeProvider initialMode="dark">
+        <DrumPad
+          sample={sample}
+          index={0}
+          isExternallyPressed={false}
+          highlightColor="#FF5C24"
+          onPress={onPress}
+          onRelease={onRelease}
+          editorPolicy={{ capabilities: { liveRecording: false } }}
+        />
+      </ThemeProvider>
+    );
+    expect(onRelease).toHaveBeenCalledWith(0);
+
+    fireEvent(view.getByRole('button'), 'pressOut');
+    expect(onRelease).toHaveBeenCalledTimes(1);
   });
 
   it('ignores touches on empty visual cells', () => {

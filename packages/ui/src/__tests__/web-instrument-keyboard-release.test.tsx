@@ -2,6 +2,7 @@ import { act, render } from '@testing-library/react-native';
 import { ThemeProvider } from '../theme';
 import { DrumPadsView } from '../features/playground/components/DrumPads/DrumPadsView.web';
 import { PianoKeyboard } from '../features/playground/components/PianoKeyboard/PianoKeyboard.web';
+import { EditorPolicyProvider } from '../features/playground/stores/editorPolicy';
 
 type Listener = (event: any) => void;
 let listeners: Record<string, Listener[]>;
@@ -65,6 +66,45 @@ describe('web instrument QWERTY release', () => {
     expect(onPadRelease).toHaveBeenCalledTimes(1);
   });
 
+  it('releases every held drum pad at a prop-policy transition, before key-up', () => {
+    const onPadPress = jest.fn();
+    const onPadRelease = jest.fn();
+    const samples = Array.from({ length: 16 }, (_, noteNumber) => ({
+      id: String(noteNumber),
+      name: `Pad ${noteNumber}`,
+      fileName: `pad-${noteNumber}.wav`,
+      noteNumber,
+    }));
+    const view = render(
+      <DrumPadsView
+        samples={samples}
+        onPadPress={onPadPress}
+        onPadRelease={onPadRelease}
+      />
+    );
+
+    dispatch('keydown', { key: 'a' });
+    dispatch('keydown', { key: 's' });
+    view.rerender(
+      <DrumPadsView
+        samples={samples}
+        onPadPress={onPadPress}
+        onPadRelease={onPadRelease}
+        editorPolicy={{ capabilities: { liveRecording: false } }}
+      />
+    );
+
+    expect(onPadPress.mock.calls).toEqual([[8], [9]]);
+    expect(onPadRelease.mock.calls).toEqual([[8], [9]]);
+
+    dispatch('keydown', { key: 'd' });
+    dispatch('keyup', { key: 'a' });
+    dispatch('keyup', { key: 's' });
+    view.unmount();
+    expect(onPadPress).toHaveBeenCalledTimes(2);
+    expect(onPadRelease).toHaveBeenCalledTimes(2);
+  });
+
   it('releases every held drum pad on visibility loss', () => {
     const onPadRelease = jest.fn();
     const samples = Array.from({ length: 16 }, (_, noteNumber) => ({
@@ -106,6 +146,34 @@ describe('web instrument QWERTY release', () => {
 
     dispatch('keyup', { key: 'a' });
     expect(onNoteOff).toHaveBeenCalledTimes(1);
+  });
+
+  it('releases every held piano key at a contextual read-only transition, before key-up', () => {
+    const onNoteOn = jest.fn();
+    const onNoteOff = jest.fn();
+    const view = render(
+      <EditorPolicyProvider>
+        <PianoKeyboard onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
+      </EditorPolicyProvider>
+    );
+
+    dispatch('keydown', { key: 'a' });
+    dispatch('keydown', { key: 'w' });
+    view.rerender(
+      <EditorPolicyProvider policy={{ readOnly: true }}>
+        <PianoKeyboard onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
+      </EditorPolicyProvider>
+    );
+
+    expect(onNoteOn.mock.calls).toEqual([[0], [1]]);
+    expect(onNoteOff.mock.calls).toEqual([[0], [1]]);
+
+    dispatch('keydown', { key: 's' });
+    dispatch('keyup', { key: 'a' });
+    dispatch('keyup', { key: 'w' });
+    view.unmount();
+    expect(onNoteOn).toHaveBeenCalledTimes(2);
+    expect(onNoteOff).toHaveBeenCalledTimes(2);
   });
 
   it('releases every held piano key on unmount', () => {

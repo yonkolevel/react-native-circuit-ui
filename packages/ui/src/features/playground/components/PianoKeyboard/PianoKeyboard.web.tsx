@@ -9,6 +9,11 @@ import { memo, useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { View, StyleSheet, Pressable, useWindowDimensions } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { palette } from '../../../../theme/colors';
+import {
+  isEditorCapabilityAllowed,
+  useResolvedEditorPolicy,
+  type EditorPolicy,
+} from '../../stores/editorPolicy';
 
 const ALL_SHARP = new Set([1, 3, 6, 8, 10, 13, 15, 18, 20, 22]);
 const SQUARE_SHARPS = new Set([8, 20]);
@@ -72,6 +77,8 @@ export interface PianoKeyboardProps {
   highlightColor?: string;
   showNoteNames?: boolean;
   a11yId?: string;
+  disabled?: boolean;
+  editorPolicy?: EditorPolicy;
 }
 
 export const PianoKeyboard = memo(function PianoKeyboard({
@@ -82,10 +89,16 @@ export const PianoKeyboard = memo(function PianoKeyboard({
   highlightColor = palette.mcGreen,
   showNoteNames = false,
   a11yId,
+  disabled: disabledProp = false,
+  editorPolicy,
 }: PianoKeyboardProps) {
   const { width: screenW } = useWindowDimensions();
   const isPhone = screenW < 768;
+  const policy = useResolvedEditorPolicy(editorPolicy);
+  const disabled =
+    disabledProp || !isEditorCapabilityAllowed(policy, 'liveRecording');
   const [pressed, setPressed] = useState<Set<number>>(new Set());
+  const pressCounts = useRef(new Map<number, number>());
 
   const totalKeys = numberOfOctaves * 12;
   const keys = useMemo(
@@ -99,14 +112,25 @@ export const PianoKeyboard = memo(function PianoKeyboard({
 
   const handlePress = useCallback(
     (k: number) => {
+      if (disabled) return;
+      const count = pressCounts.current.get(k) ?? 0;
+      pressCounts.current.set(k, count + 1);
+      if (count > 0) return;
       setPressed((prev) => new Set(prev).add(k));
       onNoteOn?.(k);
     },
-    [onNoteOn]
+    [disabled, onNoteOn]
   );
 
   const handleRelease = useCallback(
     (k: number) => {
+      const count = pressCounts.current.get(k) ?? 0;
+      if (count > 1) {
+        pressCounts.current.set(k, count - 1);
+        return;
+      }
+      if (count === 0) return;
+      pressCounts.current.delete(k);
       setPressed((prev) => {
         const s = new Set(prev);
         s.delete(k);
@@ -116,6 +140,14 @@ export const PianoKeyboard = memo(function PianoKeyboard({
     },
     [onNoteOff]
   );
+
+  useEffect(() => {
+    if (!disabled || pressCounts.current.size === 0) return;
+    const heldKeys = [...pressCounts.current.keys()];
+    pressCounts.current.clear();
+    setPressed(new Set());
+    heldKeys.forEach((key) => onNoteOff?.(key));
+  }, [disabled, onNoteOff]);
 
   // QWERTY keyboard input.
   // Handlers go through a ref so the effect mounts once — depending on the
@@ -203,6 +235,7 @@ export const PianoKeyboard = memo(function PianoKeyboard({
                       : 'rgba(247,247,247,0.8)',
                   },
                 ]}
+                accessibilityState={disabled ? { disabled: true } : undefined}
                 onPressIn={() => handlePress(k)}
                 onPressOut={() => handleRelease(k)}
               >
@@ -232,6 +265,7 @@ export const PianoKeyboard = memo(function PianoKeyboard({
                       : 'rgba(247,247,247,0.8)',
                   },
                 ]}
+                accessibilityState={disabled ? { disabled: true } : undefined}
                 onPressIn={() => handlePress(k)}
                 onPressOut={() => handleRelease(k)}
               >
@@ -261,6 +295,7 @@ export const PianoKeyboard = memo(function PianoKeyboard({
     <View
       style={[isPhone ? styles.vCont : styles.hCont, styles.relative]}
       accessibilityLabel="Piano keyboard"
+      accessibilityState={disabled ? { disabled: true } : undefined}
       testID={a11yId}
     >
       {octaves.map(renderOctave)}

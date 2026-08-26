@@ -15,6 +15,11 @@ import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
 import { Icon, Icons } from '../../../../components/SFSymbol';
 import type { SoundBankDisplay, InstrumentType } from '../../types';
+import {
+  isEditorCapabilityAllowed,
+  useResolvedEditorPolicy,
+  type EditorPolicy,
+} from '../../stores/editorPolicy';
 
 export interface SoundBankViewProps {
   soundBanks: SoundBankDisplay[];
@@ -25,6 +30,7 @@ export interface SoundBankViewProps {
   onDone?: (selectedName: string) => void;
   onPreview?: (slug: string) => void;
   onStopPreview?: () => void;
+  editorPolicy?: EditorPolicy;
 }
 
 export const SoundBankView = memo(function SoundBankView({
@@ -36,9 +42,12 @@ export const SoundBankView = memo(function SoundBankView({
   onDone,
   onPreview,
   onStopPreview,
+  editorPolicy,
 }: SoundBankViewProps) {
   const { colors } = useTheme();
   const [playingSlug, setPlayingSlug] = useState<string | null>(null);
+  const policy = useResolvedEditorPolicy(editorPolicy);
+  const canChangeSound = isEditorCapabilityAllowed(policy, 'sound');
 
   const filtered = useMemo(
     () =>
@@ -66,6 +75,8 @@ export const SoundBankView = memo(function SoundBankView({
         {selectedBank && (
           <Pressable
             onPress={() => onDone?.(selectedBank.name)}
+            disabled={canChangeSound ? undefined : true}
+            accessibilityState={canChangeSound ? undefined : { disabled: true }}
             style={styles.doneButton}
             accessibilityRole="button"
             accessibilityLabel="Done"
@@ -87,9 +98,13 @@ export const SoundBankView = memo(function SoundBankView({
             <View key={sb.slug}>
               <Pressable
                 onPress={() => onSelect?.(sb.slug)}
+                disabled={canChangeSound ? undefined : true}
                 style={styles.item}
                 accessibilityRole="button"
-                accessibilityState={{ selected: isSelected }}
+                accessibilityState={{
+                  selected: isSelected,
+                  disabled: canChangeSound ? undefined : true,
+                }}
                 accessibilityLabel={sb.name}
               >
                 {/* Name — mcOrange when selected, mcWhite otherwise */}
@@ -113,8 +128,12 @@ export const SoundBankView = memo(function SoundBankView({
                       onPreview?.(sb.slug);
                     }
                   }}
+                  disabled={canChangeSound ? undefined : true}
                   hitSlop={8}
                   accessibilityRole="button"
+                  accessibilityState={
+                    canChangeSound ? undefined : { disabled: true }
+                  }
                   accessibilityLabel={
                     isPlaying ? 'Stop preview' : 'Preview sound'
                   }

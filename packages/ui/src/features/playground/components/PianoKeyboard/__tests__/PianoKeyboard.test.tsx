@@ -1,8 +1,9 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { act, render } from '@testing-library/react-native';
 import { ThemeProvider } from '../../../../../theme';
 import { PianoKeyboard } from '../PianoKeyboard';
 import { resetMockIds } from '../../../mocks';
+import { EditorPolicyProvider } from '../../../stores/editorPolicy';
 
 function renderWithTheme(ui: React.ReactElement) {
   return render(<ThemeProvider initialMode="dark">{ui}</ThemeProvider>);
@@ -36,6 +37,46 @@ describe('PianoKeyboard snapshots', () => {
 });
 
 describe('PianoKeyboard interactions', () => {
+  it('releases every active native key at a contextual read-only transition', () => {
+    const onNoteOn = jest.fn();
+    const onNoteOff = jest.fn();
+    const view = renderWithTheme(
+      <EditorPolicyProvider>
+        <PianoKeyboard
+          numberOfOctaves={1}
+          onNoteOn={onNoteOn}
+          onNoteOff={onNoteOff}
+        />
+      </EditorPolicyProvider>
+    );
+
+    act(() => {
+      view.getByTestId('MultiTouchOverlay').props.onPadPress(7);
+      view.getByTestId('MultiTouchOverlay').props.onPadPress(8);
+    });
+    view.rerender(
+      <ThemeProvider initialMode="dark">
+        <EditorPolicyProvider policy={{ readOnly: true }}>
+          <PianoKeyboard
+            numberOfOctaves={1}
+            onNoteOn={onNoteOn}
+            onNoteOff={onNoteOff}
+          />
+        </EditorPolicyProvider>
+      </ThemeProvider>
+    );
+
+    expect(onNoteOn.mock.calls).toEqual([[0], [2]]);
+    expect(onNoteOff.mock.calls).toEqual([[0], [2]]);
+
+    act(() => {
+      view.getByTestId('MultiTouchOverlay').props.onPadRelease(7);
+      view.getByTestId('MultiTouchOverlay').props.onPadRelease(8);
+    });
+    view.unmount();
+    expect(onNoteOff).toHaveBeenCalledTimes(2);
+  });
+
   it('renders keys without crashing', () => {
     const onNoteOn = jest.fn();
     const tree = renderWithTheme(

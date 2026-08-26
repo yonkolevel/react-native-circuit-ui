@@ -21,7 +21,23 @@ export {
   type SongStore,
   type SongActions,
   type UseSongStoreHook,
+  type UseSongStateHook,
+  type SongMutationEvent,
+  type SongActionName,
 } from './stores/playgroundStore';
+export {
+  EditorPolicyProvider,
+  useEditorPolicy,
+  useEditorCapability,
+  useResolvedEditorPolicy,
+  mergeEditorPolicies,
+  isEditorCapabilityAllowed,
+  DEFAULT_EDITOR_POLICY,
+  type EditorPolicy,
+  type EditorCapability,
+  type PianoRollGuidance,
+  type PianoRollTarget,
+} from './stores/editorPolicy';
 
 // Mocks
 export * from './mocks';

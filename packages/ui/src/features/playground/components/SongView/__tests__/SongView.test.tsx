@@ -12,6 +12,7 @@ import { SongView } from '../SongView';
 import { SongToolbar } from '../SongToolbar';
 import { SongMixerTabBar } from '../SongMixerTabBar';
 import { SongStoreProvider } from '../../../stores/playgroundStore';
+import { EditorPolicyProvider } from '../../../stores/editorPolicy';
 import type { SongStore } from '../../../stores/playgroundStore';
 import {
   createMockClip,
@@ -142,6 +143,60 @@ describe('SongMixerTabBar snapshots', () => {
 });
 
 // ─── Behavioral Tests ───────────────────────────────────────────────────────
+
+describe('SongView policy accessibility', () => {
+  it('does not let SongView, toolbar, mixer, or settings props bypass contextual read-only', () => {
+    const store = createTestStore();
+    const permissive = {
+      readOnly: false,
+      capabilities: { metronome: true, mixer: true, tempo: true },
+    } as const;
+    const { getByTestId, getByLabelText, getAllByLabelText } = render(
+      <ThemeProvider initialMode="dark">
+        <SongStoreProvider store={store as any}>
+          <EditorPolicyProvider policy={{ readOnly: true }}>
+            <SongView editorPolicy={permissive} />
+          </EditorPolicyProvider>
+        </SongStoreProvider>
+      </ThemeProvider>
+    );
+
+    fireEvent.press(getByTestId('transport-metronome'));
+    expect(store.getState().toggleMetronome).not.toHaveBeenCalled();
+
+    fireEvent.press(getByTestId('tab-mixer'));
+    expect(
+      getAllByLabelText('Mute track').every(
+        (control) => control.props.accessibilityState?.disabled === true
+      )
+    ).toBe(true);
+
+    fireEvent.press(getByTestId('transport-settings'));
+    expect(getByLabelText('Tempo').props.accessibilityState.disabled).toBe(
+      true
+    );
+    expect(
+      getByLabelText('Master volume').props.accessibilityState.disabled
+    ).toBe(true);
+  });
+
+  it('announces read-only without disabling the editor container while Play remains enabled', () => {
+    const store = createTestStore();
+    const { getByLabelText, getByTestId } = renderWithStore(
+      <SongView editorPolicy={{ readOnly: true }} />,
+      store
+    );
+
+    const editor = getByLabelText('Song editor, read only');
+    expect(editor.props.accessibilityState?.disabled).not.toBe(true);
+    expect(editor.props.accessibilityValue).toEqual({
+      text: 'Read only; playback available',
+    });
+    expect(
+      getByTestId('transport-play-pause').props.accessibilityState.disabled
+    ).not.toBe(true);
+  });
+});
 
 describe('SongToolbar behavior', () => {
   it('calls setPlaying(true) when not playing', () => {

@@ -42,6 +42,11 @@ export interface ClipSettingsModalProps {
   onToggleLockNoteDuration?: () => void;
   onSampleKit?: () => void;
   sampleKitButtonTestID?: string;
+  canTempo?: boolean;
+  canMetronome?: boolean;
+  canEditNotes?: boolean;
+  canQuantize?: boolean;
+  canSound?: boolean;
 }
 
 export const ClipSettingsModal = memo(function ClipSettingsModal({
@@ -60,6 +65,11 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
   onToggleLockNoteDuration,
   onSampleKit,
   sampleKitButtonTestID,
+  canTempo = true,
+  canMetronome = true,
+  canEditNotes = true,
+  canQuantize = true,
+  canSound = true,
 }: ClipSettingsModalProps) {
   const { colors } = useTheme();
   const [tempoDisplay, setTempoDisplay] = useState<number | null>(null);
@@ -102,6 +112,8 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
             </Text>
             <Switch
               value={isMetronomeEnabled}
+              disabled={!canMetronome}
+              accessibilityState={canMetronome ? undefined : { disabled: true }}
               accessibilityLabel="Metronome"
               accessibilityHint="Play a click with the song"
               onValueChange={() => onToggleMetronome?.()}
@@ -132,6 +144,8 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
                 maximumValue={240}
                 value={tempo}
                 step={1}
+                disabled={!canTempo}
+                accessibilityState={canTempo ? undefined : { disabled: true }}
                 onValueChange={setTempoDisplay}
                 onSlidingComplete={(v: number) => {
                   setTempoDisplay(null);
@@ -185,6 +199,8 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
             </View>
             <Switch
               value={snapToGrid}
+              disabled={canQuantize ? undefined : true}
+              accessibilityState={canQuantize ? undefined : { disabled: true }}
               accessibilityLabel="Snap note edits to grid"
               onValueChange={() => onToggleSnapToGrid?.()}
               trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}
@@ -214,6 +230,10 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
               </View>
               <Switch
                 value={lockNoteDuration}
+                disabled={!canEditNotes}
+                accessibilityState={
+                  canEditNotes ? undefined : { disabled: true }
+                }
                 accessibilityLabel="Lock drum note length"
                 onValueChange={() => onToggleLockNoteDuration?.()}
                 trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}
@@ -221,7 +241,7 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
             </View>
           )}
 
-          {onSampleKit && (
+          {onSampleKit && canSound && (
             <Pressable
               onPress={() => {
                 onClose();

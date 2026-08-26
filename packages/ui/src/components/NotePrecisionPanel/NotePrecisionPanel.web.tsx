@@ -79,6 +79,8 @@ export interface NotePrecisionPanelProps {
   snapToGrid?: boolean;
   /** Drum one-shots omit duration editing when locked. */
   lockNoteDuration?: boolean;
+  editable?: boolean;
+  velocityEditable?: boolean;
 }
 
 /** Imperative handle for scrolling the panel programmatically (e.g. to mirror the piano roll grid's scroll position). */
@@ -104,6 +106,8 @@ export const NotePrecisionPanel = memo(
         onScrollXChange,
         snapToGrid = false,
         lockNoteDuration = false,
+        editable = true,
+        velocityEditable = true,
       }: NotePrecisionPanelProps,
       ref
     ) {
@@ -368,7 +372,11 @@ export const NotePrecisionPanel = memo(
       );
 
       return (
-        <View style={[styles.container, { backgroundColor: colors.mcBlack2 }]}>
+        <View
+          style={[styles.container, { backgroundColor: colors.mcBlack2 }]}
+          accessibilityLabel="Note precision editor"
+          accessibilityState={!editable ? { disabled: true } : undefined}
+        >
           {/* Header */}
           <View style={[styles.header, { backgroundColor: colors.mcBlack3 }]}>
             <Text
@@ -566,38 +574,39 @@ export const NotePrecisionPanel = memo(
                   </View>
 
                   {/* Drag gesture targets */}
-                  {notesAtPitch.map(({ note }, i) => {
-                    const x = (note.position / 0.25) * stepWidth;
-                    const w = Math.max(
-                      (note.duration / 0.25) * stepWidth,
-                      stepWidth
-                    );
-                    const edgeW = 12;
-                    return (
-                      <React.Fragment key={`bg${i}`}>
-                        <PrecisionBlockDrag
-                          index={i}
-                          x={x}
-                          width={w - edgeW}
-                          type="position"
-                          onStart={handlePosBlockDragStart}
-                          onUpdate={handlePosBlockDragUpdate}
-                          onEnd={handlePosBlockDragEnd}
-                        />
-                        {!lockNoteDuration && (
+                  {editable &&
+                    notesAtPitch.map(({ note }, i) => {
+                      const x = (note.position / 0.25) * stepWidth;
+                      const w = Math.max(
+                        (note.duration / 0.25) * stepWidth,
+                        stepWidth
+                      );
+                      const edgeW = 12;
+                      return (
+                        <React.Fragment key={`bg${i}`}>
                           <PrecisionBlockDrag
                             index={i}
-                            x={x + w - edgeW}
-                            width={edgeW}
-                            type="duration"
-                            onStart={handleDurBlockDragStart}
-                            onUpdate={handleDurBlockDragUpdate}
-                            onEnd={handleDurBlockDragEnd}
+                            x={x}
+                            width={w - edgeW}
+                            type="position"
+                            onStart={handlePosBlockDragStart}
+                            onUpdate={handlePosBlockDragUpdate}
+                            onEnd={handlePosBlockDragEnd}
                           />
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
+                          {!lockNoteDuration && (
+                            <PrecisionBlockDrag
+                              index={i}
+                              x={x + w - edgeW}
+                              width={edgeW}
+                              type="duration"
+                              onStart={handleDurBlockDragStart}
+                              onUpdate={handleDurBlockDragUpdate}
+                              onEnd={handleDurBlockDragEnd}
+                            />
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
 
                   {notesAtPitch.length === 0 && (
                     <View style={styles.emptyState}>
@@ -694,27 +703,29 @@ export const NotePrecisionPanel = memo(
                   </View>
 
                   {/* Velocity drag targets */}
-                  {notesAtPitch.map(({ note }, i) => {
-                    // Keep the gesture target anchored while its visual handle
-                    // previews the dragged velocity; moving the target itself
-                    // would rebuild the active gesture mid-drag.
-                    const g = noteGeom(note, note.velocity);
-                    return (
-                      <VelDragTarget
-                        key={`dt${i}`}
-                        index={i}
-                        x={g.handleX - 8}
-                        y={g.handleY - 8}
-                        updateThresholdPx={Math.max(
-                          2,
-                          (4 * (velAreaH - BOTTOM_PAD - HANDLE_H)) / 127
-                        )}
-                        onDragStart={handleVelDragStart}
-                        onDragUpdate={handleVelDragUpdate}
-                        onDragEnd={handleVelDragEnd}
-                      />
-                    );
-                  })}
+                  {editable &&
+                    velocityEditable &&
+                    notesAtPitch.map(({ note }, i) => {
+                      // Keep the gesture target anchored while its visual handle
+                      // previews the dragged velocity; moving the target itself
+                      // would rebuild the active gesture mid-drag.
+                      const g = noteGeom(note, note.velocity);
+                      return (
+                        <VelDragTarget
+                          key={`dt${i}`}
+                          index={i}
+                          x={g.handleX - 8}
+                          y={g.handleY - 8}
+                          updateThresholdPx={Math.max(
+                            2,
+                            (4 * (velAreaH - BOTTOM_PAD - HANDLE_H)) / 127
+                          )}
+                          onDragStart={handleVelDragStart}
+                          onDragUpdate={handleVelDragUpdate}
+                          onDragEnd={handleVelDragEnd}
+                        />
+                      );
+                    })}
                 </View>
               </View>
             </GHScrollView>

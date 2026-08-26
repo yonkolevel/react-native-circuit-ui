@@ -62,6 +62,7 @@ import type {
 } from '../../features/playground/types';
 import {
   getDragPreviewSeed,
+  getPianoRollGuidanceRow,
   getGridPointNoteTarget,
   getMovedGridTarget,
   getMovedNoteTarget,
@@ -74,6 +75,7 @@ import {
   UNSNAPPED_MIN_DURATION_STEPS,
   type RecordingNotePreviewData,
 } from './pianoRollMath';
+import type { PianoRollGuidance } from '../../features/playground/stores/editorPolicy';
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
@@ -321,6 +323,8 @@ export interface SkiaPianoRollGridProps {
   /** Shared velocity preview consumed directly by Skia on the UI runtime. */
   velocityPreviewNoteIndex?: SharedValue<number>;
   velocityPreviewValue?: SharedValue<number>;
+  editable?: boolean;
+  guidance?: PianoRollGuidance;
 }
 
 /** Imperative handle for scrolling the grid programmatically (e.g. to jump to an isolated bar, or to mirror another view's scroll position). */
@@ -368,6 +372,8 @@ export const SkiaPianoRollGrid = memo(
         onScrollXChange,
         velocityPreviewNoteIndex,
         velocityPreviewValue,
+        editable = true,
+        guidance,
       }: SkiaPianoRollGridProps,
       ref
     ) {
@@ -643,6 +649,35 @@ export const SkiaPianoRollGrid = memo(
         [isDrum, totalPitches, samples, basePitch]
       );
 
+      const guidanceRows = useMemo(
+        () =>
+          (guidance?.focusedNoteNumbers ?? []).flatMap((noteNumber) => {
+            const row = getPianoRollGuidanceRow(noteNumber, pitchToMidi);
+            if (row == null) return [];
+            const label = isDrum
+              ? ((samples ?? []).find(
+                  (sample) => sample.noteNumber === noteNumber
+                )?.name ?? `MIDI ${noteNumber}`)
+              : getNoteName(noteNumber);
+            return [{ noteNumber, row, label }];
+          }),
+        [guidance?.focusedNoteNumbers, isDrum, pitchToMidi, samples]
+      );
+      const guidanceTargets = useMemo(
+        () =>
+          (guidance?.targets ?? []).flatMap((target) => {
+            const row = getPianoRollGuidanceRow(target.noteNumber, pitchToMidi);
+            if (row == null) return [];
+            const label = isDrum
+              ? ((samples ?? []).find(
+                  (sample) => sample.noteNumber === target.noteNumber
+                )?.name ?? `MIDI ${target.noteNumber}`)
+              : getNoteName(target.noteNumber);
+            return [{ ...target, row, label }];
+          }),
+        [guidance?.targets, isDrum, pitchToMidi, samples]
+      );
+
       const pianoRollMathContext = useMemo(
         () => ({
           samples,
@@ -862,17 +897,19 @@ export const SkiaPianoRollGrid = memo(
       const tapGesture = useMemo(
         () =>
           Gesture.Tap()
+            .enabled(editable)
             .maxDuration(DRAG_HOLD_MS)
             .onEnd((e) => {
               'worklet';
               scheduleOnRN(handleTap, e.x, e.y);
             }),
-        [handleTap]
+        [editable, handleTap]
       );
 
       const panGesture = useMemo(
         () =>
           Gesture.Pan()
+            .enabled(editable)
             // Let an immediate horizontal swipe belong to the ScrollView. Note moves
             // still work after a short hold, matching the previous note-view gesture.
             // Vertical movement should fail quickly so the outer vertical ScrollView
@@ -964,6 +1001,7 @@ export const SkiaPianoRollGrid = memo(
             }),
         // eslint-disable-next-line react-hooks/exhaustive-deps -- Reanimated SharedValues (dragType, dragStartX/Y, dragBeginX/Y, dragOrig*, dragX/Y/W) are stable refs
         [
+          editable,
           handleDragStart,
           handleDragEnd,
           swRef,
@@ -1041,7 +1079,12 @@ export const SkiaPianoRollGrid = memo(
       );
 
       return (
-        <View style={styles.container} onLayout={onContainerLayout}>
+        <View
+          style={styles.container}
+          onLayout={onContainerLayout}
+          accessibilityLabel={!editable ? 'Piano roll, read only' : undefined}
+          accessibilityState={!editable ? { disabled: true } : undefined}
+        >
           <ScrollView style={styles.scrollV} nestedScrollEnabled>
             <View style={styles.row}>
               {/* Pitch labels — React Views (interactive, need text) */}
@@ -1114,6 +1157,36 @@ export const SkiaPianoRollGrid = memo(
                           />
                         )
                       )}
+
+                      {/* Authored guidance is visual-only and remains behind notes. */}
+                      {guidanceRows.map((focus) => (
+                        <Rect
+                          key={`focus-${focus.noteNumber}`}
+                          x={0}
+                          y={focus.row * effectiveRowHeight}
+                          width={gridWidth}
+                          height={effectiveRowHeight}
+                          color={guidance?.focusColor ?? colors.mcOrange}
+                          opacity={0.18}
+                        />
+                      ))}
+                      {guidanceTargets.map((target, index) => (
+                        <RoundedRect
+                          key={`target-${index}`}
+                          x={target.position * beatWidth}
+                          y={target.row * effectiveRowHeight + 2}
+                          width={Math.max(
+                            (target.duration ?? 0.25) * beatWidth,
+                            stepWidth
+                          )}
+                          height={effectiveRowHeight - 4}
+                          r={3}
+                          color={guidance?.targetColor ?? colors.mcWhite}
+                          opacity={0.35}
+                          style="stroke"
+                          strokeWidth={2}
+                        />
+                      ))}
 
                       {/* Grid lines — single path, one draw call, uniform weight */}
                       <SkiaPath
@@ -1306,6 +1379,53 @@ export const SkiaPianoRollGrid = memo(
                       )}
                     </Group>
                   </Canvas>
+
+                  {/* Semantic guidance mirrors the Skia drawing without intercepting touch. */}
+                  {guidanceRows.map((focus) => (
+                    <View
+                      key={`focus-a11y-${focus.noteNumber}`}
+                      pointerEvents="none"
+                      accessible
+                      accessibilityLabel={
+                        isDrum
+                          ? `Focused drum row ${focus.label}`
+                          : `Focused pitch ${focus.label}`
+                      }
+                      accessibilityValue={{
+                        text: `MIDI note ${focus.noteNumber}`,
+                      }}
+                      testID={`piano-roll-focus-midi-${focus.noteNumber}`}
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: focus.row * effectiveRowHeight,
+                        width: gridWidth,
+                        height: effectiveRowHeight,
+                      }}
+                    />
+                  ))}
+                  {guidanceTargets.map((target, index) => (
+                    <View
+                      key={`target-a11y-${index}`}
+                      pointerEvents="none"
+                      accessible
+                      accessibilityLabel={`Target ${target.label} at beat ${target.position}`}
+                      accessibilityValue={{
+                        text: `MIDI note ${target.noteNumber}`,
+                      }}
+                      testID={`piano-roll-target-${index}`}
+                      style={{
+                        position: 'absolute',
+                        left: target.position * beatWidth,
+                        top: target.row * effectiveRowHeight + 2,
+                        width: Math.max(
+                          (target.duration ?? 0.25) * beatWidth,
+                          stepWidth
+                        ),
+                        height: effectiveRowHeight - 4,
+                      }}
+                    />
+                  ))}
 
                   {/* Touch overlay — gesture handler for tap/drag/resize */}
                   <GestureDetector gesture={composedGesture}>

@@ -8,11 +8,16 @@
  * - Empty pads: mcBlack2 fill
  * - Press state tracked via onPressIn/onPressOut
  */
-import { memo, useState, useCallback } from 'react';
+import { memo, useState, useCallback, useEffect, useRef } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
 import type { Sample } from '../../types';
+import {
+  isEditorCapabilityAllowed,
+  useResolvedEditorPolicy,
+  type EditorPolicy,
+} from '../../stores/editorPolicy';
 
 export interface DrumPadProps {
   sample?: Sample;
@@ -22,6 +27,7 @@ export interface DrumPadProps {
   onPress?: (sampleIndex: number) => void;
   onRelease?: (sampleIndex: number) => void;
   a11yId?: string;
+  editorPolicy?: EditorPolicy;
 }
 
 export const DrumPad = memo(function DrumPad({
@@ -32,21 +38,33 @@ export const DrumPad = memo(function DrumPad({
   onPress,
   onRelease,
   a11yId,
+  editorPolicy,
 }: DrumPadProps) {
   const { colors } = useTheme();
   const [isDown, setIsDown] = useState(false);
+  const isDownRef = useRef(false);
+  const policy = useResolvedEditorPolicy(editorPolicy);
+  const disabled = !isEditorCapabilityAllowed(policy, 'liveRecording');
 
   const isActive = isDown || isExternallyPressed;
 
   const handlePressIn = useCallback(() => {
+    if (disabled || isDownRef.current) return;
+    isDownRef.current = true;
     setIsDown(true);
     onPress?.(index);
-  }, [index, onPress]);
+  }, [disabled, index, onPress]);
 
   const handlePressOut = useCallback(() => {
+    if (!isDownRef.current) return;
+    isDownRef.current = false;
     setIsDown(false);
     onRelease?.(index);
   }, [index, onRelease]);
+
+  useEffect(() => {
+    if (disabled) handlePressOut();
+  }, [disabled, handlePressOut]);
 
   // Empty pad — mcBlack2. A View, not a Pressable: there is nothing to play,
   // so it must not present itself to touch or assistive tech as a control.
@@ -64,7 +82,10 @@ export const DrumPad = memo(function DrumPad({
       ]}
       accessibilityRole="button"
       accessibilityLabel={`Drum pad: ${sample.fileName}`}
-      accessibilityState={{ selected: isActive }}
+      accessibilityState={{
+        selected: isActive,
+        disabled: disabled || undefined,
+      }}
       accessibilityHint="Double tap to play"
       testID={a11yId}
     >
