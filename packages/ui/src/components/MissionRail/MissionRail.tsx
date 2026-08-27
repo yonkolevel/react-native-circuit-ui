@@ -12,8 +12,10 @@ import {
 } from 'react-native';
 import { Button } from '../Button';
 import { ProgressBar } from '../ProgressBar';
+import { Icon, Icons, type IconDef } from '../SFSymbol';
 import { Text } from '../Text';
 import { useTheme } from '../../theme';
+import { hexToRgba } from '../../theme/colors';
 import { makeSpacing } from '../../theme/spacing';
 
 export type MissionMode = 'Learn' | 'Practice' | 'Recall' | 'Creative';
@@ -129,13 +131,20 @@ export const MissionRail = memo(function MissionRail({
     : feedback?.announce
       ? 'polite'
       : 'none';
-  const feedbackColors: Record<MissionFeedbackTone, string> = {
-    neutral: colors.mcWhite4,
-    failure: colors.mcPink,
-    success: colors.mcGreen,
-    runtime: colors.mcOrange,
+  // One tone reads as one colour plus one platform glyph. The glyph carries the
+  // state when colour alone is too quiet (small text, dark surface, colour
+  // vision deficiency) — SF Symbols on iOS, Material on Android, Lucide on web.
+  const feedbackTones: Record<
+    MissionFeedbackTone,
+    { color: string; icon: IconDef }
+  > = {
+    neutral: { color: colors.mcWhite3, icon: Icons.infoCircle },
+    failure: { color: colors.mcPink, icon: Icons.warning },
+    success: { color: colors.mcGreen, icon: Icons.checkmark },
+    runtime: { color: colors.mcOrange, icon: Icons.warning },
   };
-  const feedbackColor = feedbackColors[feedback?.tone ?? 'neutral'];
+  const feedbackTone = feedbackTones[feedback?.tone ?? 'neutral'];
+  const feedbackColor = feedbackTone.color;
 
   useEffect(() => {
     if (previousExpanded.current !== isExpanded) {
@@ -202,11 +211,7 @@ export const MissionRail = memo(function MissionRail({
       <View
         style={[
           styles.panel,
-          {
-            backgroundColor: colors.mcBlack2,
-            borderColor: colors.mcBlack4,
-            borderLeftColor: accent,
-          },
+          { backgroundColor: colors.mcBlack2, borderColor: colors.mcBlack4 },
           isExpanded && styles.expandedPanel,
           placement === 'side' && styles.sidePanel,
         ]}
@@ -267,14 +272,21 @@ export const MissionRail = memo(function MissionRail({
             >
               <View style={styles.expandedTitle}>
                 {modeAndProgress}
-                <Text variant="h4" color={colors.mcWhite} numberOfLines={2}>
+                <Text variant="quote" color={colors.mcWhite} numberOfLines={2}>
                   {title}
                 </Text>
               </View>
               {placement !== 'side' ? (
-                <Text variant="small" color={colors.mcWhite3} uppercase>
-                  Hide
-                </Text>
+                <View style={styles.disclosure} accessible={false}>
+                  <Text variant="small" color={colors.mcWhite3} uppercase>
+                    Hide
+                  </Text>
+                  <Icon
+                    icon={Icons.chevronDown}
+                    size={16}
+                    color={colors.mcWhite3}
+                  />
+                </View>
               ) : null}
             </Pressable>
 
@@ -282,7 +294,6 @@ export const MissionRail = memo(function MissionRail({
               ref={bodyScrollRef}
               style={styles.bodyScroll}
               contentContainerStyle={styles.bodyContent}
-              showsVerticalScrollIndicator={false}
               nestedScrollEnabled
               onContentSizeChange={() => {
                 if (helpMessage || contextAction) {
@@ -305,12 +316,22 @@ export const MissionRail = memo(function MissionRail({
                   style={[
                     styles.feedback,
                     {
-                      borderColor: feedbackColor,
-                      backgroundColor: colors.mcBlack3,
+                      borderColor: hexToRgba(feedbackColor, 0.4),
+                      backgroundColor: hexToRgba(feedbackColor, 0.12),
                     },
                   ]}
                 >
-                  <Text variant="small" color={colors.mcWhite}>
+                  <Icon
+                    icon={feedbackTone.icon}
+                    size={18}
+                    color={feedbackColor}
+                    style={styles.feedbackIcon}
+                  />
+                  <Text
+                    variant="body"
+                    color={colors.mcWhite}
+                    style={styles.feedbackText}
+                  >
                     {feedback.message}
                   </Text>
                 </View>
@@ -322,7 +343,7 @@ export const MissionRail = memo(function MissionRail({
                   accessibilityLabel={
                     secondaryAction.accessibilityLabel ?? secondaryAction.label
                   }
-                  variant="outline"
+                  variant="normal"
                   onPress={secondaryAction.onPress}
                   disabled={disabled || secondaryAction.disabled}
                   loading={secondaryAction.loading}
@@ -352,7 +373,7 @@ export const MissionRail = memo(function MissionRail({
                       accessibilityLabel={
                         contextAction.accessibilityLabel ?? contextAction.label
                       }
-                      variant="outline"
+                      variant="normal"
                       onPress={contextAction.onPress}
                       disabled={disabled || contextAction.disabled}
                       loading={contextAction.loading}
@@ -364,7 +385,12 @@ export const MissionRail = memo(function MissionRail({
               ) : null}
             </ScrollView>
 
-            <View style={styles.expandedFooter}>
+            <View
+              style={[
+                styles.expandedFooter,
+                { borderTopColor: colors.mcBlack4 },
+              ]}
+            >
               {onExit ? (
                 <View style={styles.quitSlot}>
                   <Button
@@ -402,7 +428,9 @@ export const MissionRail = memo(function MissionRail({
                   : undefined,
               ]}
             >
-              <View style={styles.titleRow}>
+              {/* Meta and disclosure sit on their own line so the task title
+                  owns the full width instead of truncating at 320pt. */}
+              <View style={styles.metaRow} accessible={false}>
                 <Text
                   variant="small"
                   color={accent}
@@ -411,32 +439,52 @@ export const MissionRail = memo(function MissionRail({
                 >
                   {mode}
                 </Text>
-                <Text
-                  variant="label"
-                  color={colors.mcWhite}
-                  numberOfLines={1}
-                  style={styles.compactTitle}
-                >
-                  {title}
-                </Text>
                 {progress ? (
                   <Text
                     variant="small"
                     color={colors.mcWhite3}
                     numberOfLines={1}
+                    style={styles.metaProgress}
                     accessible={false}
                   >
                     {progress.label ??
                       `${progress.current} of ${progress.total}`}
                   </Text>
-                ) : null}
-                <Text variant="label" color={accent} accessible={false}>
-                  ›
-                </Text>
+                ) : (
+                  <View style={styles.metaProgress} />
+                )}
+                <Icon icon={Icons.chevronUp} size={16} color={accent} />
               </View>
-              <Text variant="small" color={colors.mcWhite2} numberOfLines={1}>
-                {feedback?.message ?? instructions}
+              <Text
+                variant="label"
+                color={colors.mcWhite}
+                numberOfLines={2}
+                accessible={false}
+              >
+                {title}
               </Text>
+              {feedback ? (
+                <View style={styles.compactStatus} accessible={false}>
+                  <Icon
+                    icon={feedbackTone.icon}
+                    size={14}
+                    color={feedbackColor}
+                    style={styles.compactStatusIcon}
+                  />
+                  <Text
+                    variant="small"
+                    color={feedbackColor}
+                    numberOfLines={2}
+                    style={styles.compactStatusText}
+                  >
+                    {feedback.message}
+                  </Text>
+                </View>
+              ) : (
+                <Text variant="small" color={colors.mcWhite2} numberOfLines={2}>
+                  {instructions}
+                </Text>
+              )}
             </Pressable>
             {action}
           </View>
@@ -456,7 +504,6 @@ const styles = StyleSheet.create({
     margin: makeSpacing(2),
     marginBottom: 0,
     borderWidth: 1,
-    borderLeftWidth: 4,
     borderRadius: 12,
     overflow: 'hidden',
   },
@@ -490,14 +537,23 @@ const styles = StyleSheet.create({
     minWidth: 0,
     justifyContent: 'center',
     minHeight: 48,
+    gap: makeSpacing(1),
   },
-  titleRow: {
+  metaRow: {
     minWidth: 0,
     flexDirection: 'row',
     alignItems: 'center',
     gap: makeSpacing(2),
   },
-  compactTitle: { flex: 1, minWidth: 0 },
+  metaProgress: { flex: 1, minWidth: 0, textAlign: 'right' },
+  compactStatus: {
+    minWidth: 0,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: makeSpacing(1),
+  },
+  compactStatusIcon: { marginTop: 2 },
+  compactStatusText: { flex: 1, minWidth: 0 },
   expandedHeader: {
     minHeight: 48,
     flexDirection: 'row',
@@ -511,12 +567,23 @@ const styles = StyleSheet.create({
   bodyContent: {
     gap: makeSpacing(3),
     paddingHorizontal: makeSpacing(3),
-    paddingVertical: makeSpacing(2),
+    paddingTop: makeSpacing(2),
+    paddingBottom: makeSpacing(3),
   },
   feedback: {
-    borderLeftWidth: 3,
-    borderRadius: 6,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: makeSpacing(2),
+    borderWidth: 1,
+    borderRadius: 8,
     padding: makeSpacing(3),
+  },
+  feedbackIcon: { marginTop: 1 },
+  feedbackText: { flex: 1, minWidth: 0 },
+  disclosure: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: makeSpacing(1),
   },
   help: {
     gap: makeSpacing(2),
@@ -527,7 +594,9 @@ const styles = StyleSheet.create({
   expandedFooter: {
     flexDirection: 'row',
     gap: makeSpacing(2),
+    borderTopWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: makeSpacing(3),
+    paddingTop: makeSpacing(3),
     paddingBottom: makeSpacing(2),
   },
   quitSlot: { flex: 3 },

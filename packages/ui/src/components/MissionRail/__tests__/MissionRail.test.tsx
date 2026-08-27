@@ -117,6 +117,26 @@ describe('MissionRail', () => {
     expect(onExit).toHaveBeenCalledTimes(1);
   });
 
+  it('shows the compact task title in full alongside a tone-marked status', () => {
+    const { getAllByText, getByText, queryByText } = renderRail({
+      title: 'Build four-on-the-floor',
+      progress: { current: 1, total: 4, label: '1 of 4 notes' },
+      feedback: {
+        message: 'Add the highlighted note, then check again.',
+        tone: 'failure',
+        announce: true,
+      },
+    });
+
+    // Title and status coexist compactly; instructions yield to the correction.
+    expect(getByText('Build four-on-the-floor')).toBeTruthy();
+    expect(
+      getAllByText('Add the highlighted note, then check again.').length
+    ).toBeGreaterThan(0);
+    expect(queryByText('Add the missing kick.')).toBeNull();
+    expect(getByText('1 of 4 notes')).toBeTruthy();
+  });
+
   it('keeps neutral guidance out of alert semantics', () => {
     const { getByTestId } = renderRail({
       expanded: true,
