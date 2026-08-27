@@ -79,6 +79,14 @@ import type { PianoRollGuidance } from '../../features/playground/stores/editorP
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
+/**
+ * How much of an unfocused row survives while a lesson step focuses a few rows.
+ * The grid scrim and the pitch label read from the same number, or the labels
+ * look like a different amount of "off" than the rows they name.
+ */
+const UNFOCUSED_ROW_REMAINING = 0.45;
+const UNFOCUSED_ROW_SCRIM_OPACITY = 1 - UNFOCUSED_ROW_REMAINING;
+
 /** Which of the two horizontally-linked timelines (this grid, or the
  * NotePrecisionPanel below it) currently owns the shared scroll offset. The
  * owner writes it from its own scroll handler; the other side mirrors it with
@@ -1110,6 +1118,11 @@ export const SkiaPianoRollGrid = memo(
                   const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
                   const pitchColor = noteColors?.[noteNumber] ?? trackColor;
                   const hasName = !getPitchLabel(pitchIdx).startsWith('Note ');
+                  // Dim in step with the grid scrim, or the label reads as a
+                  // different amount of "off" than the row it names.
+                  const isUnfocused =
+                    guidanceRows.length > 0 &&
+                    !guidanceRows.some((focus) => focus.row === i);
                   return (
                     <Pressable
                       key={pitchIdx}
@@ -1117,6 +1130,9 @@ export const SkiaPianoRollGrid = memo(
                       style={[
                         styles.label,
                         {
+                          ...(isUnfocused
+                            ? { opacity: UNFOCUSED_ROW_REMAINING }
+                            : null),
                           height: effectiveRowHeight,
                           backgroundColor:
                             selectedPitchIndex === pitchIdx
@@ -1174,35 +1190,56 @@ export const SkiaPianoRollGrid = memo(
                         )
                       )}
 
-                      {/* Authored guidance is visual-only and remains behind notes. */}
-                      {guidanceRows.map((focus) => (
-                        <Rect
-                          key={`focus-${focus.noteNumber}`}
-                          x={0}
-                          y={focus.row * effectiveRowHeight}
-                          width={gridWidth}
-                          height={effectiveRowHeight}
-                          color={guidance?.focusColor ?? colors.mcOrange}
-                          opacity={0.18}
-                        />
-                      ))}
-                      {guidanceTargets.map((target, index) => (
-                        <RoundedRect
-                          key={`target-${index}`}
-                          x={target.position * beatWidth}
-                          y={target.row * effectiveRowHeight + 2}
-                          width={Math.max(
-                            (target.duration ?? 0.25) * beatWidth,
-                            stepWidth
-                          )}
-                          height={effectiveRowHeight - 4}
-                          r={3}
-                          color={guidance?.targetColor ?? colors.mcWhite}
-                          opacity={0.35}
-                          style="stroke"
-                          strokeWidth={2}
-                        />
-                      ))}
+                      {/* Target slots read as an empty version of the note that
+                       * belongs there — same geometry, same colour — so placing
+                       * one simply fills its own outline. Behind the notes layer,
+                       * and dropped once the learner has filled the cell. */}
+                      {guidanceTargets.map((target, index) => {
+                        if (
+                          notes.some(
+                            (note) =>
+                              note.noteNumber === target.noteNumber &&
+                              Math.abs(note.position - target.position) < 1e-6
+                          )
+                        ) {
+                          return null;
+                        }
+                        const x = target.position * beatWidth;
+                        const y = target.row * effectiveRowHeight + 1;
+                        const w = Math.max(
+                          (target.duration ?? 0.25) * beatWidth - 1,
+                          stepWidth
+                        );
+                        const h = effectiveRowHeight - 2;
+                        const slotColor =
+                          guidance?.targetColor ??
+                          noteColors?.[target.noteNumber] ??
+                          trackColor;
+                        return (
+                          <React.Fragment key={`target-${index}`}>
+                            <RoundedRect
+                              x={x}
+                              y={y}
+                              width={w}
+                              height={h}
+                              r={3}
+                              color={slotColor}
+                              opacity={0.14}
+                            />
+                            <RoundedRect
+                              x={x}
+                              y={y}
+                              width={w}
+                              height={h}
+                              r={3}
+                              color={slotColor}
+                              style="stroke"
+                              strokeWidth={1.5}
+                              opacity={0.75}
+                            />
+                          </React.Fragment>
+                        );
+                      })}
 
                       {/* Grid lines — single path, one draw call, uniform weight */}
                       <SkiaPath
@@ -1381,6 +1418,27 @@ export const SkiaPianoRollGrid = memo(
                           />
                         );
                       })}
+
+                      {/* Focus dims what the step is not about, rather than
+                       * painting a band over what it is. Drawn after the notes so
+                       * unfocused rows recede with their contents, and only while
+                       * a step actually names rows. */}
+                      {guidanceRows.length > 0 &&
+                        Array.from({ length: totalPitches }, (_, rowIdx) =>
+                          guidanceRows.some(
+                            (focus) => focus.row === rowIdx
+                          ) ? null : (
+                            <Rect
+                              key={`unfocused-${rowIdx}`}
+                              x={0}
+                              y={rowIdx * effectiveRowHeight}
+                              width={gridWidth}
+                              height={effectiveRowHeight}
+                              color="#000000"
+                              opacity={UNFOCUSED_ROW_SCRIM_OPACITY}
+                            />
+                          )
+                        )}
 
                       {/* Keep the playhead in the same Skia content layer as the
                     notes. It then scrolls and composites with the grid as one

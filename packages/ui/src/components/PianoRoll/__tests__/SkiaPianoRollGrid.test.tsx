@@ -61,27 +61,33 @@ describe('SkiaPianoRollGrid gestures', () => {
     expect(exclusiveSpy.mock.calls[0]?.[1]).toBe(panSpy.mock.results[0]?.value);
   });
 
-  it('renders pointer-transparent authored focus rows and targets in native Skia', () => {
+  it('dims unfocused rows and draws targets as empty note slots', () => {
     const { UNSAFE_getAllByType, getByTestId } = renderWithTheme(
       <SkiaPianoRollGrid
         {...baseProps}
         guidance={{
           focusedNoteNumbers: [36],
           targets: [{ noteNumber: 38, position: 1 }],
-          focusColor: '#123456',
           targetColor: '#654321',
         }}
       />
     );
-    expect(
-      UNSAFE_getAllByType(Rect).some((node) => node.props.color === '#123456')
-    ).toBe(true);
-    expect(
-      UNSAFE_getAllByType(RoundedRect).some(
-        (node) =>
-          node.props.color === '#654321' && node.props.style === 'stroke'
-      )
-    ).toBe(true);
+
+    // Focus is subtractive: the rows the step is not about recede behind a
+    // scrim, instead of a band being painted over the row it is about.
+    const scrims = UNSAFE_getAllByType(Rect).filter(
+      (node) => node.props.color === '#000000'
+    );
+    expect(scrims.length).toBeGreaterThan(0);
+    expect(scrims.every((node) => node.props.opacity === 0.55)).toBe(true);
+
+    // The slot is an empty version of the note: same colour, filled and stroked.
+    const slots = UNSAFE_getAllByType(RoundedRect).filter(
+      (node) => node.props.color === '#654321'
+    );
+    expect(slots.some((node) => node.props.style === 'stroke')).toBe(true);
+    expect(slots.some((node) => node.props.style !== 'stroke')).toBe(true);
+
     expect(getByTestId('piano-roll-focus-midi-36').props).toMatchObject({
       pointerEvents: 'none',
       accessibilityLabel: 'Focused drum row Kick',
@@ -92,6 +98,25 @@ describe('SkiaPianoRollGrid gestures', () => {
       accessibilityLabel: 'Target Snare at beat 1',
       accessibilityValue: { text: 'MIDI note 38' },
     });
+  });
+
+  it('drops a target slot once the learner has filled that cell', () => {
+    const { UNSAFE_getAllByType } = renderWithTheme(
+      <SkiaPianoRollGrid
+        {...baseProps}
+        notes={[{ noteNumber: 38, position: 1, duration: 0.25, velocity: 100 }]}
+        guidance={{
+          targets: [{ noteNumber: 38, position: 1 }],
+          targetColor: '#654321',
+        }}
+      />
+    );
+
+    expect(
+      UNSAFE_getAllByType(RoundedRect).some(
+        (node) => node.props.color === '#654321'
+      )
+    ).toBe(false);
   });
 
   it('rebuilds the gesture when zoom changes the underlying step/beat width', () => {

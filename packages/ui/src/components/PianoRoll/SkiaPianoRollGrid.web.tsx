@@ -49,6 +49,10 @@ import {
 } from './pianoRollMath';
 import type { PianoRollGuidance } from '../../features/playground/stores/editorPolicy';
 
+/** Mirrors the native grid: the scrim and the pitch label read the same number. */
+const UNFOCUSED_ROW_REMAINING = 0.45;
+const UNFOCUSED_ROW_SCRIM_OPACITY = 1 - UNFOCUSED_ROW_REMAINING;
+
 const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
 const MELODIC_PITCH_COUNT = 24;
@@ -1148,6 +1152,12 @@ export const SkiaPianoRollGrid = memo(
                       style={[
                         styles.label,
                         {
+                          // Dim in step with the grid scrim, or the label reads as
+                          // a different amount of "off" than the row it names.
+                          ...(guidanceRows.length > 0 &&
+                          !guidanceRows.some((focus) => focus.row === i)
+                            ? { opacity: UNFOCUSED_ROW_REMAINING }
+                            : null),
                           height: effectiveRowHeight,
                           backgroundColor:
                             selectedPitchIndex === pitchIdx
@@ -1201,7 +1211,9 @@ export const SkiaPianoRollGrid = memo(
                     )
                   )}
 
-                  {/* Authored guidance overlays — exact MIDI rows, pointer transparent. */}
+                  {/* Authored guidance overlays — exact MIDI rows, pointer transparent.
+                   * The focused row carries the semantics only; the visual work is
+                   * done by dimming the rows the step is not about, below. */}
                   {guidanceRows.map((focus) => (
                     <View
                       key={`focus-${focus.noteNumber}`}
@@ -1222,38 +1234,53 @@ export const SkiaPianoRollGrid = memo(
                         top: focus.row * effectiveRowHeight,
                         width: gridWidth,
                         height: effectiveRowHeight,
-                        backgroundColor:
-                          guidance?.focusColor ?? colors.mcOrange,
-                        opacity: 0.18,
                       }}
                     />
                   ))}
-                  {guidanceTargets.map((target, index) => (
-                    <View
-                      key={`target-${index}`}
-                      pointerEvents="none"
-                      accessible
-                      accessibilityLabel={`Target ${target.label} at beat ${target.position}`}
-                      accessibilityValue={{
-                        text: `MIDI note ${target.noteNumber}`,
-                      }}
-                      testID={`piano-roll-target-${index}`}
-                      style={{
-                        position: 'absolute',
-                        left: target.position * beatWidth,
-                        top: target.row * effectiveRowHeight + 2,
-                        width: Math.max(
-                          (target.duration ?? 0.25) * beatWidth,
-                          stepWidth
-                        ),
-                        height: effectiveRowHeight - 4,
-                        borderRadius: 3,
-                        borderWidth: 2,
-                        borderColor: guidance?.targetColor ?? colors.mcWhite,
-                        opacity: 0.35,
-                      }}
-                    />
-                  ))}
+                  {/* Target slots read as an empty version of the note that
+                   * belongs there — same geometry, same colour — so placing one
+                   * simply fills its own outline, and it drops once filled. */}
+                  {guidanceTargets.map((target, index) => {
+                    const isFilled = notes.some(
+                      (note) =>
+                        note.noteNumber === target.noteNumber &&
+                        Math.abs(note.position - target.position) < 1e-6
+                    );
+                    const slotColor =
+                      guidance?.targetColor ??
+                      noteColors?.[target.noteNumber] ??
+                      trackColor;
+                    return (
+                      <View
+                        key={`target-${index}`}
+                        pointerEvents="none"
+                        accessible
+                        accessibilityLabel={`Target ${target.label} at beat ${target.position}`}
+                        accessibilityValue={{
+                          text: `MIDI note ${target.noteNumber}`,
+                        }}
+                        testID={`piano-roll-target-${index}`}
+                        style={{
+                          position: 'absolute',
+                          left: target.position * beatWidth,
+                          top: target.row * effectiveRowHeight + 1,
+                          width: Math.max(
+                            (target.duration ?? 0.25) * beatWidth - 1,
+                            stepWidth
+                          ),
+                          height: effectiveRowHeight - 2,
+                          ...(isFilled
+                            ? null
+                            : {
+                                borderRadius: 3,
+                                borderWidth: 1.5,
+                                borderColor: hexToRgba(slotColor, 0.75),
+                                backgroundColor: hexToRgba(slotColor, 0.14),
+                              }),
+                        }}
+                      />
+                    );
+                  })}
 
                   {/* Step lines — uniform weight, no beat/bar emphasis */}
                   {Array.from({ length: totalSteps + 1 }, (_, i) => (
@@ -1472,6 +1499,30 @@ export const SkiaPianoRollGrid = memo(
                       </Fragment>
                     );
                   })}
+
+                  {/* Focus dims what the step is not about, rather than painting
+                   * a band over what it is. After the notes, so unfocused rows
+                   * recede with their contents. */}
+                  {guidanceRows.length > 0 &&
+                    Array.from({ length: totalPitches }, (_, rowIdx) =>
+                      guidanceRows.some(
+                        (focus) => focus.row === rowIdx
+                      ) ? null : (
+                        <View
+                          key={`unfocused-${rowIdx}`}
+                          pointerEvents="none"
+                          style={{
+                            position: 'absolute',
+                            left: 0,
+                            top: rowIdx * effectiveRowHeight,
+                            width: gridWidth,
+                            height: effectiveRowHeight,
+                            backgroundColor: '#000000',
+                            opacity: UNFOCUSED_ROW_SCRIM_OPACITY,
+                          }}
+                        />
+                      )
+                    )}
 
                   {/* Live recording preview — grows from press beat to the
                   playhead as the key is held, before it's committed. */}
