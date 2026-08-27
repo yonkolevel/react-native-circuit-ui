@@ -50,14 +50,36 @@ export const Text: React.FC<TextProps> = memo(function Text({
 
   const textColor = color || colors.mcWhite;
 
+  // A variant bakes in its own lineHeight, and the caller's `style` is applied
+  // last — so overriding `fontSize` alone silently keeps the variant's smaller
+  // line box and clips the glyph tops. A line box can never be shorter than the
+  // font size, so restore the variant's own ratio when an override outgrows it.
+  const variantStyle = typography[variant];
+  const overrides = StyleSheet.flatten(style) as TextStyle | undefined;
+  const overriddenFontSize = overrides?.fontSize;
+  const clampedLineHeight =
+    typeof overriddenFontSize === 'number' &&
+    overrides?.lineHeight == null &&
+    typeof variantStyle.lineHeight === 'number' &&
+    typeof variantStyle.fontSize === 'number' &&
+    variantStyle.lineHeight < overriddenFontSize
+      ? {
+          lineHeight: Math.round(
+            overriddenFontSize *
+              (variantStyle.lineHeight / variantStyle.fontSize)
+          ),
+        }
+      : null;
+
   const textStyle: TextStyle[] = [
-    typography[variant],
+    variantStyle,
     { color: textColor },
     bold && styles.bold,
     center && styles.center,
     right && styles.right,
     uppercase && styles.uppercase,
     style as TextStyle,
+    clampedLineHeight,
   ].filter(Boolean) as TextStyle[];
 
   return (
