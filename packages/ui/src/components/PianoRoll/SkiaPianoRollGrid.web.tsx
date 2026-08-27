@@ -1237,6 +1237,48 @@ export const SkiaPianoRollGrid = memo(
                       }}
                     />
                   ))}
+                  {/* Step lines — uniform weight, no beat/bar emphasis */}
+                  {Array.from({ length: totalSteps + 1 }, (_, i) => (
+                    <View
+                      key={`v${i}`}
+                      style={{
+                        position: 'absolute',
+                        left: i * stepWidth,
+                        top: 0,
+                        width: 0.5,
+                        height: gridHeight,
+                        backgroundColor: GRID_LINE_COLOR,
+                      }}
+                    />
+                  ))}
+
+                  {/* Horizontal row lines */}
+                  {Array.from({ length: totalPitches + 1 }, (_, i) => (
+                    <View
+                      key={`h${i}`}
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: i * effectiveRowHeight,
+                        width: gridWidth,
+                        height: 0.5,
+                        backgroundColor: GRID_LINE_COLOR,
+                      }}
+                    />
+                  ))}
+
+                  {isPlaying && (
+                    <Animated.View
+                      pointerEvents="none"
+                      accessibilityLabel="Playback playhead"
+                      style={[
+                        styles.playhead,
+                        { height: gridHeight },
+                        playheadStyle,
+                      ]}
+                    />
+                  )}
+
                   {/* Target slots read as an empty version of the note that
                    * belongs there — same geometry, same colour — so placing one
                    * simply fills its own outline, and it drops once filled. */}
@@ -1281,48 +1323,6 @@ export const SkiaPianoRollGrid = memo(
                       />
                     );
                   })}
-
-                  {/* Step lines — uniform weight, no beat/bar emphasis */}
-                  {Array.from({ length: totalSteps + 1 }, (_, i) => (
-                    <View
-                      key={`v${i}`}
-                      style={{
-                        position: 'absolute',
-                        left: i * stepWidth,
-                        top: 0,
-                        width: 0.5,
-                        height: gridHeight,
-                        backgroundColor: GRID_LINE_COLOR,
-                      }}
-                    />
-                  ))}
-
-                  {/* Horizontal row lines */}
-                  {Array.from({ length: totalPitches + 1 }, (_, i) => (
-                    <View
-                      key={`h${i}`}
-                      style={{
-                        position: 'absolute',
-                        left: 0,
-                        top: i * effectiveRowHeight,
-                        width: gridWidth,
-                        height: 0.5,
-                        backgroundColor: GRID_LINE_COLOR,
-                      }}
-                    />
-                  ))}
-
-                  {isPlaying && (
-                    <Animated.View
-                      pointerEvents="none"
-                      accessibilityLabel="Playback playhead"
-                      style={[
-                        styles.playhead,
-                        { height: gridHeight },
-                        playheadStyle,
-                      ]}
-                    />
-                  )}
 
                   {/* Notes */}
                   {notes.map((note, idx) => {

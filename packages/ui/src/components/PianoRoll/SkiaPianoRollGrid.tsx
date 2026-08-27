@@ -1190,6 +1190,14 @@ export const SkiaPianoRollGrid = memo(
                         )
                       )}
 
+                      {/* Grid lines — single path, one draw call, uniform weight */}
+                      <SkiaPath
+                        path={gridPath}
+                        color={GRID_LINE_COLOR}
+                        style="stroke"
+                        strokeWidth={0.5}
+                      />
+
                       {/* Target slots read as an empty version of the note that
                        * belongs there — same geometry, same colour — so placing
                        * one simply fills its own outline. Behind the notes layer,
@@ -1240,14 +1248,6 @@ export const SkiaPianoRollGrid = memo(
                           </React.Fragment>
                         );
                       })}
-
-                      {/* Grid lines — single path, one draw call, uniform weight */}
-                      <SkiaPath
-                        path={gridPath}
-                        color={GRID_LINE_COLOR}
-                        style="stroke"
-                        strokeWidth={0.5}
-                      />
 
                       {/* Notes — styled to match AudioKit PianoRoll */}
                       {notes.map((note, idx) => {
