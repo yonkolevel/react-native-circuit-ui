@@ -207,7 +207,15 @@ export const Button: React.FC<ButtonProps> = memo(function Button({
         return (
           <View style={styles.content}>
             {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
-            <Text variant={textVariant} color={s.text} uppercase>
+            {/* A label must never paint outside its own button; at large text
+                or heavy zoom it truncates rather than overlapping a neighbour. */}
+            <Text
+              variant={textVariant}
+              color={s.text}
+              uppercase
+              numberOfLines={1}
+              style={styles.label}
+            >
               {label}
             </Text>
             {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
@@ -234,7 +242,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    minWidth: 0,
   },
+  label: { flexShrink: 1 },
   leftIcon: {
     marginRight: 8,
   },

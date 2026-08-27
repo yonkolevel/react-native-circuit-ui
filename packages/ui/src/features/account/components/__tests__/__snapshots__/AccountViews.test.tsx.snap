@@ -315,11 +315,13 @@ exports[`CreateAccountView matches snapshot 1`] = `
           "alignItems": "center",
           "flexDirection": "row",
           "justifyContent": "center",
+          "minWidth": 0,
         }
       }
     >
       <Text
         accessibilityRole="text"
+        numberOfLines={1}
         style={
           [
             {
@@ -333,6 +335,9 @@ exports[`CreateAccountView matches snapshot 1`] = `
             },
             {
               "textTransform": "uppercase",
+            },
+            {
+              "flexShrink": 1,
             },
           ]
         }
@@ -588,11 +593,13 @@ exports[`SignInView matches snapshot 1`] = `
           "alignItems": "center",
           "flexDirection": "row",
           "justifyContent": "center",
+          "minWidth": 0,
         }
       }
     >
       <Text
         accessibilityRole="text"
+        numberOfLines={1}
         style={
           [
             {
@@ -606,6 +613,9 @@ exports[`SignInView matches snapshot 1`] = `
             },
             {
               "textTransform": "uppercase",
+            },
+            {
+              "flexShrink": 1,
             },
           ]
         }
@@ -678,11 +688,13 @@ exports[`SignInView matches snapshot 1`] = `
           "alignItems": "center",
           "flexDirection": "row",
           "justifyContent": "center",
+          "minWidth": 0,
         }
       }
     >
       <Text
         accessibilityRole="text"
+        numberOfLines={1}
         style={
           [
             {
@@ -696,6 +708,9 @@ exports[`SignInView matches snapshot 1`] = `
             },
             {
               "textTransform": "uppercase",
+            },
+            {
+              "flexShrink": 1,
             },
           ]
         }

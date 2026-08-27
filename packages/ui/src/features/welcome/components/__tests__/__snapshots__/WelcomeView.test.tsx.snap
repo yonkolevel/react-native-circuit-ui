@@ -147,11 +147,13 @@ exports[`WelcomeView snapshots matches snapshot 1`] = `
             "alignItems": "center",
             "flexDirection": "row",
             "justifyContent": "center",
+            "minWidth": 0,
           }
         }
       >
         <Text
           accessibilityRole="text"
+          numberOfLines={1}
           style={
             [
               {
@@ -165,6 +167,9 @@ exports[`WelcomeView snapshots matches snapshot 1`] = `
               },
               {
                 "textTransform": "uppercase",
+              },
+              {
+                "flexShrink": 1,
               },
             ]
           }
@@ -237,11 +242,13 @@ exports[`WelcomeView snapshots matches snapshot 1`] = `
             "alignItems": "center",
             "flexDirection": "row",
             "justifyContent": "center",
+            "minWidth": 0,
           }
         }
       >
         <Text
           accessibilityRole="text"
+          numberOfLines={1}
           style={
             [
               {
@@ -255,6 +262,9 @@ exports[`WelcomeView snapshots matches snapshot 1`] = `
               },
               {
                 "textTransform": "uppercase",
+              },
+              {
+                "flexShrink": 1,
               },
             ]
           }

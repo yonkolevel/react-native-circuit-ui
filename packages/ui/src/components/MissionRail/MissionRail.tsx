@@ -16,7 +16,7 @@ import { Icon, Icons, type IconDef } from '../SFSymbol';
 import { Text } from '../Text';
 import { useTheme } from '../../theme';
 import { hexToRgba } from '../../theme/colors';
-import { makeSpacing } from '../../theme/spacing';
+import { spacing } from '../../theme/spacing';
 
 export type MissionMode = 'Learn' | 'Practice' | 'Recall' | 'Creative';
 export type MissionFeedbackTone = 'neutral' | 'failure' | 'success' | 'runtime';
@@ -202,7 +202,9 @@ export const MissionRail = memo(function MissionRail({
     <View
       style={[
         styles.container,
-        { backgroundColor: colors.mcBlack, paddingBottom: safeAreaBottom },
+        // The deck owns its safe-area strip, so it paints the panel surface
+        // rather than letting the editor's black show through beneath it.
+        { backgroundColor: colors.mcBlack2, paddingBottom: safeAreaBottom },
         placement === 'side' && styles.sideContainer,
         style,
       ]}
@@ -212,8 +214,8 @@ export const MissionRail = memo(function MissionRail({
         style={[
           styles.panel,
           { backgroundColor: colors.mcBlack2, borderColor: colors.mcBlack4 },
+          placement === 'side' ? styles.sidePanel : styles.bottomPanel,
           isExpanded && styles.expandedPanel,
-          placement === 'side' && styles.sidePanel,
         ]}
       >
         {progress ? (
@@ -222,6 +224,7 @@ export const MissionRail = memo(function MissionRail({
             tintColor={accent}
             height={3}
             animated={false}
+            style={styles.progressRule}
             accessibilityLabel={progress.label ?? 'Mission progress'}
             a11yId={progressA11yId}
           />
@@ -500,19 +503,17 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     overflow: 'hidden',
   },
-  panel: {
-    margin: makeSpacing(2),
-    marginBottom: 0,
-    borderWidth: 1,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  expandedPanel: { flex: 1, minHeight: 0 },
+  // The deck docks to the edge it belongs to. A floating rounded card left
+  // black gutters around it and clipped the progress rule into rounded corners;
+  // flush edges let that rule read as the deck's own top boundary.
+  panel: { flexShrink: 1, minHeight: 0 },
+  bottomPanel: { borderTopWidth: StyleSheet.hairlineWidth },
   sideContainer: { height: '100%' },
-  sidePanel: {
-    flex: 1,
-    marginBottom: makeSpacing(2),
-  },
+  sidePanel: { flex: 1, borderLeftWidth: StyleSheet.hairlineWidth },
+  expandedPanel: { flex: 1, minHeight: 0 },
+  // ProgressBar rounds its own ends by default; squared off here so the rule
+  // reads as the deck's top boundary rather than a pill floating on the edge.
+  progressRule: { borderRadius: 0 },
   accentRule: { height: 3, width: '100%' },
   liveRegion: {
     position: 'absolute',
@@ -521,36 +522,44 @@ const styles = StyleSheet.create({
     opacity: 0.01,
     overflow: 'hidden',
   },
+
+  // ─── Vertical rhythm ──────────────────────────────────────────────────────
+  // Four steps off the 4pt grid, used consistently:
+  //   spacing.xs  (4)  — label to its value
+  //   spacing.sm  (8)  — within one group
+  //   spacing.md  (12) — between stacked blocks
+  //   spacing.lg  (16) — edge gutter and section separation
+
   modeRow: {
     minWidth: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: makeSpacing(2),
+    gap: spacing.sm,
   },
   compactDeck: {
-    gap: makeSpacing(1),
-    paddingHorizontal: makeSpacing(3),
-    paddingVertical: makeSpacing(1),
+    gap: spacing.md,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
   },
   compactCopy: {
     minWidth: 0,
     justifyContent: 'center',
     minHeight: 48,
-    gap: makeSpacing(1),
+    gap: spacing.xs,
   },
   metaRow: {
     minWidth: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: makeSpacing(2),
+    gap: spacing.sm,
   },
   metaProgress: { flex: 1, minWidth: 0, textAlign: 'right' },
   compactStatus: {
     minWidth: 0,
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: makeSpacing(1),
+    gap: spacing.sm,
   },
   compactStatusIcon: { marginTop: 2 },
   compactStatusText: { flex: 1, minWidth: 0 },
@@ -558,46 +567,46 @@ const styles = StyleSheet.create({
     minHeight: 48,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: makeSpacing(3),
-    paddingHorizontal: makeSpacing(3),
-    paddingTop: makeSpacing(2),
+    gap: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
   },
-  expandedTitle: { flex: 1, minWidth: 0, gap: makeSpacing(1) },
+  expandedTitle: { flex: 1, minWidth: 0, gap: spacing.xs },
   bodyScroll: { flex: 1, minHeight: 0 },
   bodyContent: {
-    gap: makeSpacing(3),
-    paddingHorizontal: makeSpacing(3),
-    paddingTop: makeSpacing(2),
-    paddingBottom: makeSpacing(3),
+    gap: spacing.md,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.lg,
   },
   feedback: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: makeSpacing(2),
+    gap: spacing.sm,
     borderWidth: 1,
     borderRadius: 8,
-    padding: makeSpacing(3),
+    padding: spacing.md,
   },
   feedbackIcon: { marginTop: 1 },
   feedbackText: { flex: 1, minWidth: 0 },
   disclosure: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: makeSpacing(1),
+    gap: spacing.xs,
   },
   help: {
-    gap: makeSpacing(2),
+    gap: spacing.sm,
     borderWidth: 1,
     borderRadius: 8,
-    padding: makeSpacing(3),
+    padding: spacing.md,
   },
   expandedFooter: {
     flexDirection: 'row',
-    gap: makeSpacing(2),
+    gap: spacing.sm,
     borderTopWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: makeSpacing(3),
-    paddingTop: makeSpacing(3),
-    paddingBottom: makeSpacing(2),
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.md,
   },
   quitSlot: { flex: 3 },
   primarySlot: { flex: 7 },
