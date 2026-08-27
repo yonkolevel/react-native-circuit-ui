@@ -401,6 +401,35 @@ describe('ClipEditorView interactions', () => {
     );
   });
 
+  it('gives the piano roll the full editor when performance controls are inert', () => {
+    const clip = createMockDrumClip({ id: 40, trackID: 1, sectionID: 1 });
+    const inert = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        editorPolicy={{ capabilities: { liveRecording: false } }}
+      />
+    );
+
+    // Nothing can occupy the bottom half, so it is not rendered at all and the
+    // expand toggle disappears rather than becoming a no-op control.
+    expect(inert.queryByLabelText('Drum pads')).toBeNull();
+    expect(inert.queryByLabelText('Expand piano roll')).toBeNull();
+    expect(inert.queryByLabelText('Collapse piano roll')).toBeNull();
+
+    // The standalone editor is unchanged: pads render and the toggle is live.
+    const playable = renderWithTheme(
+      <ClipEditorView
+        clip={createMockDrumClip({ id: 41, trackID: 1, sectionID: 1 })}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+      />
+    );
+    expect(playable.queryByLabelText('Drum pads')).toBeTruthy();
+    expect(playable.queryByLabelText('Expand piano roll')).toBeTruthy();
+  });
+
   it('can hide the editor Play control when an external tray owns transport', () => {
     const clip = createMockDrumClip({ id: 12, trackID: 1, sectionID: 1 });
     const { getByLabelText, queryByLabelText } = renderWithTheme(

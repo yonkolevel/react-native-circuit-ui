@@ -647,6 +647,9 @@ const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 interface ZoomScrubberProps {
   zoom: number;
   isExpanded: boolean;
+  /** False when the bottom half has nothing to collapse into, so the toggle
+   * would be a control that visibly does nothing. */
+  canToggleExpand: boolean;
   onToggleExpand: () => void;
   onZoomChange: (zoom: number) => void;
   /** Live zoom relative to the committed `zoom`, written on the UI runtime
@@ -660,6 +663,7 @@ const ZoomScrubber = memo(function ZoomScrubber({
   zoomPreview,
   zoom,
   isExpanded,
+  canToggleExpand,
   onToggleExpand,
   onZoomChange,
 }: ZoomScrubberProps) {
@@ -753,19 +757,23 @@ const ZoomScrubber = memo(function ZoomScrubber({
 
   return (
     <View style={[styles.scrubberRow, { backgroundColor: colors.mcBlack }]}>
-      <Pressable
-        onPress={onToggleExpand}
-        style={styles.scrubberExpandBtn}
-        accessibilityLabel={
-          isExpanded ? 'Collapse piano roll' : 'Expand piano roll'
-        }
-      >
-        <Icon
-          icon={isExpanded ? Icons.collapse : Icons.expand}
-          size={12}
-          color={colors.mcWhite2}
-        />
-      </Pressable>
+      {canToggleExpand ? (
+        <Pressable
+          onPress={onToggleExpand}
+          style={styles.scrubberExpandBtn}
+          accessibilityLabel={
+            isExpanded ? 'Collapse piano roll' : 'Expand piano roll'
+          }
+        >
+          <Icon
+            icon={isExpanded ? Icons.collapse : Icons.expand}
+            size={12}
+            color={colors.mcWhite2}
+          />
+        </Pressable>
+      ) : (
+        <View style={styles.scrubberExpandBtn} />
+      )}
       <GestureDetector gesture={zoomGesture}>
         <View
           style={styles.scrubberTrack}
@@ -930,7 +938,7 @@ export const ClipEditorView = memo(function ClipEditorView({
   const canTempo = isEditorCapabilityAllowed(policy, 'tempo');
   const canSound = isEditorCapabilityAllowed(policy, 'sound');
   const { width: screenWidth } = useWindowDimensions();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpandedByUser, setIsExpandedByUser] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [selectedPitchIndex, setSelectedPitchIndex] = useState<number | null>(
     null
@@ -1168,7 +1176,7 @@ export const ClipEditorView = memo(function ClipEditorView({
     setSelectedPitchIndex((current) => (current === pitch ? null : pitch));
   }, []);
   const handleToggleExpand = useCallback(() => {
-    setIsExpanded((current) => !current);
+    setIsExpandedByUser((current) => !current);
   }, []);
   const handlePianoNoteOn = useCallback(
     (noteIndex: number) =>
@@ -1184,9 +1192,20 @@ export const ClipEditorView = memo(function ClipEditorView({
     [melodicMinPitch]
   );
 
+  // The bottom half hosts either the performance controls or the velocity lane.
+  // Pads and keys go inert when the policy withholds `liveRecording`, so a
+  // lesson that only wants piano-roll editing would otherwise surrender half
+  // the editor to a grid nobody can touch. When neither occupant is available
+  // the roll takes the full height instead.
+  const performanceControlsAvailable =
+    showPerformanceControls && canLiveRecord && instrumentType !== 'audio';
+  const bottomHalfHasContent =
+    performanceControlsAvailable || selectedPitchIndex != null;
+  const isExpanded = isExpandedByUser || !bottomHalfHasContent;
+
   // iOS: PerformanceControlsView visible when config.isPerformanceControlsVisible && !isExpanded
   const shouldShowPerformanceControls =
-    showPerformanceControls && !isExpanded && instrumentType !== 'audio';
+    performanceControlsAvailable && !isExpanded;
 
   // iOS: velocity lane only shows when a pitch label is tapped (selectedPitchForEditing)
   const showVelocityLane = selectedPitchIndex != null && !isExpanded;
@@ -1274,6 +1293,7 @@ export const ClipEditorView = memo(function ClipEditorView({
           zoom={zoom}
           zoomPreview={zoomPreview}
           isExpanded={isExpanded}
+          canToggleExpand={bottomHalfHasContent}
           onToggleExpand={handleToggleExpand}
           onZoomChange={handleZoomChange}
         />
