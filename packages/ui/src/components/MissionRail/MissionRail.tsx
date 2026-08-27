@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type ReactNode } from 'react';
 import { View, StyleSheet } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Button } from '../Button';
@@ -29,6 +29,7 @@ export interface MissionRailProps {
   onHelp?: () => void;
   onCheck?: () => void;
   onContinue?: () => void;
+  leadingActions?: ReactNode;
   a11yId?: string;
   feedbackA11yId?: string;
   helpA11yId?: string;
@@ -51,6 +52,7 @@ export const MissionRail = memo(function MissionRail({
   onHelp,
   onCheck,
   onContinue,
+  leadingActions,
   a11yId = 'mission-rail',
   feedbackA11yId = `${a11yId}-feedback`,
   helpA11yId = `${a11yId}-help`,
@@ -117,6 +119,9 @@ export const MissionRail = memo(function MissionRail({
       )}
 
       <View style={styles.actions}>
+        {leadingActions ? (
+          <View style={styles.leadingActions}>{leadingActions}</View>
+        ) : null}
         {onHelp && (
           <Button
             label="Help"
@@ -162,7 +167,13 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    alignItems: 'center',
     flexWrap: 'wrap',
+    gap: makeSpacing(2),
+  },
+  leadingActions: {
+    flexDirection: 'row',
+    marginRight: 'auto',
     gap: makeSpacing(2),
   },
 });

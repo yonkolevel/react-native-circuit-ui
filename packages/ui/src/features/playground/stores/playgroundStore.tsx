@@ -17,6 +17,7 @@
  *   Splitting into multiple stores adds sync complexity for zero perf gain.
  */
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
+import { useStore } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import type {
   SongState,
@@ -143,6 +144,7 @@ export type UseSongStateHook = {
   (): SongState;
   <T>(selector: (state: SongState) => T): T;
   getState: () => SongState;
+  getInitialState: () => SongState;
   subscribe: (
     listener: (state: SongState, prevState: SongState) => void
   ) => () => void;
@@ -153,6 +155,7 @@ export type UseSongStoreHook = {
   (): SongStore;
   <T>(selector: (state: SongStore) => T): T;
   getState: () => SongStore;
+  getInitialState: () => SongStore;
   subscribe: (
     listener: (state: SongStore, prevState: SongStore) => void
   ) => () => void;
@@ -341,7 +344,8 @@ function useStateHook(): UseSongStateHook {
  * Do NOT pass an equalityFn — zustand v5 hooks ignore it.
  */
 export function useSongContext<T>(selector: (state: SongState) => T): T {
-  return useStateHook()((state) => selector(toStateOnly(state)));
+  const store = useStateHook();
+  return useStore(store, (state) => selector(toStateOnly(state)));
 }
 
 /** The policy-filtered app action surface. Raw state-store actions never escape. */

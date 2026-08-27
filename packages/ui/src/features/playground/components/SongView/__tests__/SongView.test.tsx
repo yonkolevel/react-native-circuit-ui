@@ -180,6 +180,20 @@ describe('SongView policy accessibility', () => {
     ).toBe(true);
   });
 
+  it('rerenders the whole editor when toolbar playback state changes', async () => {
+    const store = createTestStore({ isPlaying: false });
+    const screen = renderWithStore(<SongView />, store);
+
+    fireEvent.press(screen.getByTestId('transport-play-pause'));
+
+    await waitFor(() => {
+      expect(store.getState().isPlaying).toBe(true);
+      expect(
+        screen.getByTestId('transport-play-pause').props.accessibilityLabel
+      ).toBe('Pause');
+    });
+  });
+
   it('announces read-only without disabling the editor container while Play remains enabled', () => {
     const store = createTestStore();
     const { getByLabelText, getByTestId } = renderWithStore(
@@ -195,6 +209,28 @@ describe('SongView policy accessibility', () => {
     expect(
       getByTestId('transport-play-pause').props.accessibilityState.disabled
     ).not.toBe(true);
+  });
+
+  it('exposes stable accessible controls for empty clips, tracks, and sections', () => {
+    const track = createMockTrack({ clips: [] });
+    const store = createTestStore({ tracks: [track] });
+    const section = store.getState().sections[0]!;
+    const screen = renderWithStore(<SongView />, store);
+
+    expect(screen.getByTestId('add-track-button').props).toMatchObject({
+      accessibilityLabel: 'Add track',
+      accessibilityRole: 'button',
+    });
+    expect(screen.getByTestId('add-section-button').props).toMatchObject({
+      accessibilityLabel: 'Add section',
+      accessibilityRole: 'button',
+    });
+    expect(
+      screen.getByTestId(`empty-clip-${track.id}-${section.id}`).props
+    ).toMatchObject({
+      accessibilityLabel: 'Create clip',
+      accessibilityRole: 'button',
+    });
   });
 });
 

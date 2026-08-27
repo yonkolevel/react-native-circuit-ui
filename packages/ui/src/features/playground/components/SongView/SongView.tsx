@@ -29,7 +29,6 @@ import { MixerView } from '../Mixer';
 import { SongSettings } from '../Settings';
 import { ExportAudioView } from '../ExportAudio';
 import { useSongContext, useSongActions } from '../../stores/playgroundStore';
-import { useShallow } from 'zustand/react/shallow';
 import type { Clip, InstrumentType } from '../../types';
 import {
   isEditorCapabilityAllowed,
@@ -102,6 +101,9 @@ const ClipCell = memo(function ClipCell({
     return (
       <Pressable
         onPress={onPress}
+        testID={testID}
+        accessibilityLabel="Create clip"
+        accessibilityRole="button"
         style={[s.emptyCell, { borderColor: color }]}
       >
         <Icon icon={Icons.plus} size={17} color={color} />
@@ -222,8 +224,8 @@ export const SongView = memo(function SongView({
 
   // State — fine-grained selectors
   const currentTab = useSongContext((s) => s.currentTab);
-  const tracks = useSongContext(useShallow((s) => s.tracks));
-  const sections = useSongContext(useShallow((s) => s.sections));
+  const tracks = useSongContext((s) => s.tracks);
+  const sections = useSongContext((s) => s.sections);
   const currentSectionId = useSongContext((s) => s.currentSectionId);
 
   // Actions — stable refs, no subscription
@@ -326,9 +328,12 @@ export const SongView = memo(function SongView({
               <Pressable
                 onPress={showAddTrackMenu}
                 disabled={canEditTracks ? undefined : true}
+                accessibilityLabel="Add track"
+                accessibilityRole="button"
                 accessibilityState={
                   !canEditTracks ? { disabled: true } : undefined
                 }
+                testID="add-track-button"
                 style={
                   canEditTracks ? s.addTrack : [s.addTrack, { opacity: 0.4 }]
                 }
@@ -415,9 +420,12 @@ export const SongView = memo(function SongView({
                   <Pressable
                     onPress={addSection}
                     disabled={canEditSections ? undefined : true}
+                    accessibilityLabel="Add section"
+                    accessibilityRole="button"
                     accessibilityState={
                       !canEditSections ? { disabled: true } : undefined
                     }
+                    testID="add-section-button"
                     style={
                       canEditSections
                         ? [s.addSecBtn, { borderColor: colors.black5 }]
@@ -455,7 +463,9 @@ export const SongView = memo(function SongView({
                               sampleCount={t.soundBank?.samples?.length}
                               defaultOctave={t.soundBank?.defaultOctave}
                               testID={
-                                clip ? `clip-${t.id}-${clip.id}` : undefined
+                                clip
+                                  ? `clip-${t.id}-${clip.id}`
+                                  : `empty-clip-${t.id}-${sec.id}`
                               }
                               onLongPress={openClipMenu}
                               onPress={() => {
