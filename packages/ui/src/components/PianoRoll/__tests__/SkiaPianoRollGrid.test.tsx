@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import { GestureDetector } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { Rect, RoundedRect } from '@shopify/react-native-skia';
 import { ThemeProvider } from '../../../theme';
 import { SkiaPianoRollGrid } from '../SkiaPianoRollGrid';
@@ -15,6 +15,8 @@ function renderWithTheme(ui: React.ReactElement) {
 }
 
 describe('SkiaPianoRollGrid gestures', () => {
+  afterEach(() => jest.restoreAllMocks());
+
   const baseProps: SkiaPianoRollGridProps = {
     notes: [createMockNote({ noteNumber: 36, position: 0, duration: 0.25 })],
     samples: createDrumSamples(),
@@ -43,6 +45,20 @@ describe('SkiaPianoRollGrid gestures', () => {
     const secondGesture = UNSAFE_getByType(GestureDetector).props.gesture;
 
     expect(secondGesture).toBe(firstGesture);
+  });
+
+  it('gives a single tap priority over the delayed drag recognizer', () => {
+    const tapSpy = jest.spyOn(Gesture, 'Tap');
+    const panSpy = jest.spyOn(Gesture, 'Pan');
+    const exclusiveSpy = jest.spyOn(Gesture, 'Exclusive');
+
+    renderWithTheme(
+      <SkiaPianoRollGrid {...baseProps} editable onGridTap={jest.fn()} />
+    );
+
+    expect(exclusiveSpy).toHaveBeenCalledTimes(1);
+    expect(exclusiveSpy.mock.calls[0]?.[0]).toBe(tapSpy.mock.results[0]?.value);
+    expect(exclusiveSpy.mock.calls[0]?.[1]).toBe(panSpy.mock.results[0]?.value);
   });
 
   it('renders pointer-transparent authored focus rows and targets in native Skia', () => {

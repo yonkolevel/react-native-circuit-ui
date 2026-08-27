@@ -658,6 +658,14 @@ export const SkiaPianoRollGrid = memo(
           }),
         [guidance?.focusedNoteNumbers, isDrum, pitchToMidi, samples]
       );
+      const firstGuidanceRow = guidanceRows[0]?.row;
+      useEffect(() => {
+        if (firstGuidanceRow == null) return;
+        applyOuterTransform(
+          Math.max(0, (firstGuidanceRow - 2) * effectiveRowHeight)
+        );
+      }, [applyOuterTransform, effectiveRowHeight, firstGuidanceRow]);
+
       const guidanceTargets = useMemo(
         () =>
           (guidance?.targets ?? []).flatMap((target) => {

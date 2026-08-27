@@ -5,7 +5,7 @@
  * Supports all SwiftUI variants: primary, secondary, normal, outline, solid.
  * Press-state color inversion matches SwiftUI ButtonStyle implementations.
  */
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, type Ref } from 'react';
 import { Pressable, StyleSheet, ActivityIndicator, View } from 'react-native';
 import type { PressableProps, StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../Text';
@@ -48,6 +48,8 @@ export interface ButtonProps extends Omit<
   color?: string;
   /** Custom style for the outer pressable */
   style?: StyleProp<ViewStyle>;
+  /** Native view ref used for explicit accessibility focus restoration. */
+  buttonRef?: Ref<View>;
   a11yId?: string;
 }
 
@@ -65,6 +67,7 @@ export const Button: React.FC<ButtonProps> = memo(function Button({
   disabled = false,
   color,
   style,
+  buttonRef,
   a11yId,
   onPress,
   ...rest
@@ -166,6 +169,7 @@ export const Button: React.FC<ButtonProps> = memo(function Button({
 
   return (
     <Pressable
+      ref={buttonRef}
       onPress={onPress}
       disabled={disabled || loading}
       accessibilityRole="button"

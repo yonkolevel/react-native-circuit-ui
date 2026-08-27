@@ -23,6 +23,8 @@ export type EditorCapability =
 export interface EditorPolicy {
   /** Locks every musical mutation. Playback remains separately controllable. */
   readOnly?: boolean;
+  /** Hides editor transport chrome when an external control owns playback. */
+  hideTransport?: boolean;
   /** Omitted capabilities are allowed, preserving the standalone editor. */
   capabilities?: Readonly<Partial<Record<EditorCapability, boolean>>>;
 }
@@ -63,6 +65,8 @@ export function mergeEditorPolicies(
   }
   return {
     readOnly: inherited.readOnly === true || override.readOnly === true,
+    hideTransport:
+      inherited.hideTransport === true || override.hideTransport === true,
     capabilities,
   };
 }

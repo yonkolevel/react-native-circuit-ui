@@ -432,6 +432,7 @@ export const SkiaPianoRollGrid = memo(
       // can retain an old offset after the content width shrinks, which exposes
       // the black viewport past the end of the Skia canvas.
       const hScrollRef = useAnimatedRef<any>();
+      const vScrollRef = useRef<any>(null);
       // Scroll bookkeeping lives in shared values, not refs: reportScroll is
       // handed to the UI runtime through scheduleOnRN, so its whole closure is
       // serialized — a captured React ref that JS keeps mutating is what
@@ -663,6 +664,15 @@ export const SkiaPianoRollGrid = memo(
           }),
         [guidance?.focusedNoteNumbers, isDrum, pitchToMidi, samples]
       );
+      const firstGuidanceRow = guidanceRows[0]?.row;
+      useEffect(() => {
+        if (firstGuidanceRow == null) return;
+        vScrollRef.current?.scrollTo?.({
+          y: Math.max(0, (firstGuidanceRow - 2) * effectiveRowHeight),
+          animated: false,
+        });
+      }, [effectiveRowHeight, firstGuidanceRow]);
+
       const guidanceTargets = useMemo(
         () =>
           (guidance?.targets ?? []).flatMap((target) => {
@@ -1073,7 +1083,9 @@ export const SkiaPianoRollGrid = memo(
         () =>
           Gesture.Simultaneous(
             pinchGesture,
-            Gesture.Exclusive(panGesture, tapGesture)
+            // Tap must resolve before the delayed long-press pan. Giving pan
+            // priority makes Android consume the first touch while it waits.
+            Gesture.Exclusive(tapGesture, panGesture)
           ),
         [pinchGesture, panGesture, tapGesture]
       );
@@ -1085,7 +1097,11 @@ export const SkiaPianoRollGrid = memo(
           accessibilityLabel={!editable ? 'Piano roll, read only' : undefined}
           accessibilityState={!editable ? { disabled: true } : undefined}
         >
-          <ScrollView style={styles.scrollV} nestedScrollEnabled>
+          <ScrollView
+            ref={vScrollRef}
+            style={styles.scrollV}
+            nestedScrollEnabled
+          >
             <View style={styles.row}>
               {/* Pitch labels — React Views (interactive, need text) */}
               <View style={[styles.labels, { width: LABEL_COL_WIDTH }]}>

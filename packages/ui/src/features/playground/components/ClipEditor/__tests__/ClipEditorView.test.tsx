@@ -401,6 +401,21 @@ describe('ClipEditorView interactions', () => {
     );
   });
 
+  it('can hide the editor Play control when an external tray owns transport', () => {
+    const clip = createMockDrumClip({ id: 12, trackID: 1, sectionID: 1 });
+    const { getByLabelText, queryByLabelText } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        editorPolicy={{ hideTransport: true }}
+      />
+    );
+
+    expect(queryByLabelText('Play')).toBeNull();
+    expect(queryByLabelText('Record')).toBeNull();
+    expect(getByLabelText('Settings')).toBeTruthy();
+  });
+
   it('applies individual capability restrictions', () => {
     const onPlayPause = jest.fn();
     const clip = createMockDrumClip({ id: 9, trackID: 1, sectionID: 1 });

@@ -86,6 +86,7 @@ interface ClipEditorToolbarProps {
   onRedo?: () => void;
   onSettings?: () => void;
   canPlay?: boolean;
+  hideTransport?: boolean;
   canRecord?: boolean;
   canMetronome?: boolean;
   canOpenSettings?: boolean;
@@ -105,6 +106,7 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
   onRedo,
   onSettings,
   canPlay = true,
+  hideTransport = false,
   canRecord = true,
   canMetronome = true,
   canOpenSettings = true,
@@ -119,45 +121,51 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
       <View style={styles.toolbarSpacer} />
 
       <View style={styles.toolbarCenter}>
-        <Pressable
-          onPress={onPlayPause}
-          disabled={canPlay ? undefined : true}
-          hitSlop={8}
-          accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
-          accessibilityState={canPlay ? undefined : { disabled: true }}
-        >
-          <Icon
-            icon={isPlaying ? Icons.pause : Icons.play}
-            size={22}
-            color={colors.mcWhite}
-          />
-        </Pressable>
-        <Pressable
-          onPress={onRecord}
-          disabled={canRecord ? undefined : true}
-          hitSlop={8}
-          accessibilityLabel="Record"
-          accessibilityState={canRecord ? undefined : { disabled: true }}
-        >
-          <Icon
-            icon={Icons.record}
-            size={22}
-            color={isRecording ? colors.mcPink : colors.mcWhite}
-          />
-        </Pressable>
-        <Pressable
-          onPress={onMetronome}
-          disabled={canMetronome ? undefined : true}
-          hitSlop={8}
-          accessibilityLabel="Metronome"
-          accessibilityState={canMetronome ? undefined : { disabled: true }}
-        >
-          <Icon
-            icon={isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff}
-            size={22}
-            color={colors.mcWhite}
-          />
-        </Pressable>
+        {!hideTransport ? (
+          <>
+            <Pressable
+              onPress={onPlayPause}
+              disabled={canPlay ? undefined : true}
+              hitSlop={8}
+              accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
+              accessibilityState={canPlay ? undefined : { disabled: true }}
+            >
+              <Icon
+                icon={isPlaying ? Icons.pause : Icons.play}
+                size={22}
+                color={colors.mcWhite}
+              />
+            </Pressable>
+            <Pressable
+              onPress={onRecord}
+              disabled={canRecord ? undefined : true}
+              hitSlop={8}
+              accessibilityLabel="Record"
+              accessibilityState={canRecord ? undefined : { disabled: true }}
+            >
+              <Icon
+                icon={Icons.record}
+                size={22}
+                color={isRecording ? colors.mcPink : colors.mcWhite}
+              />
+            </Pressable>
+            <Pressable
+              onPress={onMetronome}
+              disabled={canMetronome ? undefined : true}
+              hitSlop={8}
+              accessibilityLabel="Metronome"
+              accessibilityState={canMetronome ? undefined : { disabled: true }}
+            >
+              <Icon
+                icon={
+                  isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff
+                }
+                size={22}
+                color={colors.mcWhite}
+              />
+            </Pressable>
+          </>
+        ) : null}
         <Pressable
           onPress={onUndo}
           hitSlop={8}
@@ -1205,6 +1213,7 @@ export const ClipEditorView = memo(function ClipEditorView({
           onRedo={canUndoRedo ? callbacks?.onRedo : undefined}
           onSettings={() => setSettingsVisible(true)}
           canPlay={canPlay}
+          hideTransport={policy.hideTransport}
           canRecord={canRecord}
           canMetronome={canMetronome}
         />
