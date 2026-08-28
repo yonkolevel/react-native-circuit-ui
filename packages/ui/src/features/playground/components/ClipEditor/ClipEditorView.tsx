@@ -88,7 +88,11 @@ interface ClipEditorToolbarProps {
   canPlay?: boolean;
   hideTransport?: boolean;
   canRecord?: boolean;
+  /** False when the policy withholds recording outright — hides the control. */
+  showRecord?: boolean;
   canMetronome?: boolean;
+  /** False when the policy withholds the metronome outright — hides the control. */
+  showMetronome?: boolean;
   canOpenSettings?: boolean;
 }
 
@@ -108,7 +112,9 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
   canPlay = true,
   hideTransport = false,
   canRecord = true,
+  showRecord = true,
   canMetronome = true,
+  showMetronome = true,
   canOpenSettings = true,
 }: ClipEditorToolbarProps) {
   const { colors } = useTheme();
@@ -136,34 +142,43 @@ const ClipEditorToolbar = memo(function ClipEditorToolbar({
                 color={colors.mcWhite}
               />
             </Pressable>
-            <Pressable
-              onPress={onRecord}
-              disabled={canRecord ? undefined : true}
-              hitSlop={8}
-              accessibilityLabel="Record"
-              accessibilityState={canRecord ? undefined : { disabled: true }}
-            >
-              <Icon
-                icon={Icons.record}
-                size={22}
-                color={isRecording ? colors.mcPink : colors.mcWhite}
-              />
-            </Pressable>
-            <Pressable
-              onPress={onMetronome}
-              disabled={canMetronome ? undefined : true}
-              hitSlop={8}
-              accessibilityLabel="Metronome"
-              accessibilityState={canMetronome ? undefined : { disabled: true }}
-            >
-              <Icon
-                icon={
-                  isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff
+            {/* A capability the policy withholds outright takes its control
+             * away rather than leaving a dead one in the toolbar. Controls that
+             * are merely unavailable right now stay put and disable. */}
+            {showRecord ? (
+              <Pressable
+                onPress={onRecord}
+                disabled={canRecord ? undefined : true}
+                hitSlop={8}
+                accessibilityLabel="Record"
+                accessibilityState={canRecord ? undefined : { disabled: true }}
+              >
+                <Icon
+                  icon={Icons.record}
+                  size={22}
+                  color={isRecording ? colors.mcPink : colors.mcWhite}
+                />
+              </Pressable>
+            ) : null}
+            {showMetronome ? (
+              <Pressable
+                onPress={onMetronome}
+                disabled={canMetronome ? undefined : true}
+                hitSlop={8}
+                accessibilityLabel="Metronome"
+                accessibilityState={
+                  canMetronome ? undefined : { disabled: true }
                 }
-                size={22}
-                color={colors.mcWhite}
-              />
-            </Pressable>
+              >
+                <Icon
+                  icon={
+                    isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff
+                  }
+                  size={22}
+                  color={colors.mcWhite}
+                />
+              </Pressable>
+            ) : null}
           </>
         ) : null}
         <Pressable
@@ -1234,7 +1249,9 @@ export const ClipEditorView = memo(function ClipEditorView({
           canPlay={canPlay}
           hideTransport={policy.hideTransport}
           canRecord={canRecord}
+          showRecord={policy.capabilities?.recording !== false}
           canMetronome={canMetronome}
+          showMetronome={policy.capabilities?.metronome !== false}
         />
 
         {/* Piano Roll (Skia GPU-rendered) + Playhead */}

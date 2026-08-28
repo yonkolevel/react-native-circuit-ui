@@ -60,7 +60,7 @@ function actions(): SongActions {
 }
 
 describe('guarded Song action surface', () => {
-  it('uses only app-supplied actions and blocks every mutation in read-only mode while Play remains', () => {
+  it('uses only app-supplied actions and blocks every mutation in read-only mode while playback control remains', () => {
     const stateAccess = create<SongStore>()(
       () =>
         ({
@@ -97,10 +97,12 @@ describe('guarded Song action surface', () => {
         .extraRawAction
     ).toBeUndefined();
     result.current.actions.setPlaying(true);
+    // Playback control is not a musical mutation: transport and the metronome
+    // that guides it stay available while read-only locks everything else.
+    result.current.actions.toggleMetronome();
     const blocked = [
       'setRecording',
       'setTempo',
-      'toggleMetronome',
       'toggleLoop',
       'setCurrentSection',
       'addSection',
@@ -139,6 +141,7 @@ describe('guarded Song action surface', () => {
     );
 
     expect(guarded.setPlaying).toHaveBeenCalledWith(true);
+    expect(guarded.toggleMetronome).toHaveBeenCalled();
     blocked.forEach((name) => expect(guarded[name]).not.toHaveBeenCalled());
   });
 

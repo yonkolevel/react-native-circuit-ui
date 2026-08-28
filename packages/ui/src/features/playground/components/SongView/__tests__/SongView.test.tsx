@@ -161,8 +161,11 @@ describe('SongView policy accessibility', () => {
       </ThemeProvider>
     );
 
+    // The metronome is playback control, not a musical mutation, so read-only
+    // leaves it working. Everything below is a real bypass attempt and stays
+    // blocked by the contextual policy.
     fireEvent.press(getByTestId('transport-metronome'));
-    expect(store.getState().toggleMetronome).not.toHaveBeenCalled();
+    expect(store.getState().toggleMetronome).toHaveBeenCalled();
 
     fireEvent.press(getByTestId('tab-mixer'));
     expect(

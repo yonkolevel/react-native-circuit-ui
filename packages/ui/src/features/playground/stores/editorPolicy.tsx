@@ -45,7 +45,12 @@ export interface PianoRollGuidance {
 
 export const DEFAULT_EDITOR_POLICY: Readonly<EditorPolicy> = Object.freeze({});
 
-const READ_ONLY_CAPABILITIES = new Set<EditorCapability>(['transport']);
+/** Read-only locks musical mutation. Playback control is not a mutation, so
+ * transport and the metronome that guides it stay available. */
+const READ_ONLY_CAPABILITIES = new Set<EditorCapability>([
+  'transport',
+  'metronome',
+]);
 
 export function mergeEditorPolicies(
   inherited: EditorPolicy | undefined,
