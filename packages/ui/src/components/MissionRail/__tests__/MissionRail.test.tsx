@@ -30,8 +30,8 @@ const renderRail = (
 describe('MissionRail', () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it.each(['Learn', 'Practice', 'Recall', 'Creative'] as const)(
-    'exposes neutral %s vocabulary',
+  it.each(['Learn', 'Practice', 'Challenge'] as const)(
+    'exposes neutral %s chapter vocabulary',
     (mode) => {
       const { getByText, queryByText } = renderRail({ mode });
       expect(getByText(mode)).toBeTruthy();

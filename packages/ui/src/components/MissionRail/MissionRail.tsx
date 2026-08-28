@@ -18,7 +18,13 @@ import { useTheme } from '../../theme';
 import { hexToRgba } from '../../theme/colors';
 import { spacing } from '../../theme/spacing';
 
-export type MissionMode = 'Learn' | 'Practice' | 'Recall' | 'Creative';
+/**
+ * The chapter a step belongs to — the only structure a learner is shown.
+ * Steps still carry their own purpose internally (a Challenge chapter runs
+ * questions, then a recall, then a free-make), but that never surfaces as a
+ * fourth or fifth thing to understand.
+ */
+export type MissionMode = 'Learn' | 'Practice' | 'Challenge';
 export type MissionFeedbackTone = 'neutral' | 'failure' | 'success' | 'runtime';
 export type MissionRailFocusTarget = 'details' | 'feedback' | 'primary';
 
@@ -117,8 +123,7 @@ export const MissionRail = memo(function MissionRail({
   const accent = {
     Learn: colors.mcOrange,
     Practice: colors.mcBlue,
-    Recall: colors.mcPurple,
-    Creative: colors.mcGreen,
+    Challenge: colors.mcPurple,
   }[mode];
   const progressValue = progress
     ? (progress.current / Math.max(1, progress.total)) * 100
