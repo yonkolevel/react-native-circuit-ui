@@ -432,6 +432,27 @@ describe('ClipEditorView interactions', () => {
     expect(onAuditionNote).toHaveBeenCalledWith(existing.noteNumber + 2);
   });
 
+  it('does not audition placement or repitch rejected by the app', () => {
+    const onAuditionNote = jest.fn();
+    const clip = createMockDrumClip({ id: 55, trackID: 1, sectionID: 1 });
+    const { UNSAFE_getByType } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        callbacks={{
+          onAuditionNote,
+          onNoteAdd: () => false,
+          onNoteMove: () => false,
+        }}
+      />
+    );
+    const grid = UNSAFE_getByType(SkiaPianoRollGrid);
+    grid.props.onGridTap(38, 1);
+    grid.props.onNoteMove(0, 1, clip.notes[0]!.noteNumber + 2);
+    expect(onAuditionNote).not.toHaveBeenCalled();
+  });
+
   it('stays silent when the learner has turned note preview off', () => {
     const onAuditionNote = jest.fn();
     const { UNSAFE_getByType } = renderWithTheme(

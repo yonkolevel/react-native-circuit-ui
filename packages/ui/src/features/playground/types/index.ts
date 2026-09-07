@@ -184,7 +184,8 @@ export interface MixerCallbacks {
 }
 
 export interface ClipEditorCallbacks {
-  onNoteAdd?: (note: ClipNote) => void;
+  /** Return false when the app rejects the edit; rejected edits must not audition. */
+  onNoteAdd?: (note: ClipNote) => void | boolean;
   /**
    * Sound the note the editor just committed. Placing a note in a sequencer
    * should be audible — without this the grid is the only silent instrument
@@ -197,7 +198,7 @@ export interface ClipEditorCallbacks {
     noteIndex: number,
     newPosition: number,
     newNoteNumber: number
-  ) => void;
+  ) => void | boolean;
   onNoteResize?: (noteIndex: number, newDuration: number) => void;
   onVelocityChange?: (noteIndex: number, velocity: number) => void;
   onQuantize?: (precision: NotePrecision) => void;

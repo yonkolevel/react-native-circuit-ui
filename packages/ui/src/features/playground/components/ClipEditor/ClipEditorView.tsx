@@ -1160,8 +1160,12 @@ export const ClipEditorView = memo(function ClipEditorView({
     (idx: number, newPos: number, newNote: number) => {
       if (!canEditNotes) return;
       const previousNote = clipNotesRef.current[idx]?.noteNumber;
-      callbacksRef.current?.onNoteMove?.(idx, newPos, newNote);
-      if (previousNote !== newNote && auditionOnPlaceRef.current) {
+      const accepted = callbacksRef.current?.onNoteMove?.(idx, newPos, newNote);
+      if (
+        accepted !== false &&
+        previousNote !== newNote &&
+        auditionOnPlaceRef.current
+      ) {
         callbacksRef.current?.onAuditionNote?.(newNote);
       }
     },
@@ -1170,13 +1174,13 @@ export const ClipEditorView = memo(function ClipEditorView({
   const handleGridTap = useCallback(
     (noteNumber: number, position: number) => {
       if (!canEditNotes) return;
-      callbacksRef.current?.onNoteAdd?.({
+      const accepted = callbacksRef.current?.onNoteAdd?.({
         noteNumber,
         velocity: 100,
         position,
         duration: 0.25,
       });
-      if (auditionOnPlaceRef.current) {
+      if (accepted !== false && auditionOnPlaceRef.current) {
         callbacksRef.current?.onAuditionNote?.(noteNumber);
       }
     },
