@@ -47,6 +47,7 @@ import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useDerivedValue,
+  useReducedMotion,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
@@ -118,6 +119,9 @@ const VelocityAwareNoteBody = memo(function VelocityAwareNoteBody({
   velocityColors,
   velocityPreviewNoteIndex,
   velocityPreviewValue,
+  appearKey,
+  appearingKey,
+  appearProgress,
 }: {
   noteIndex: number;
   x: number | SharedValue<number>;
@@ -129,7 +133,17 @@ const VelocityAwareNoteBody = memo(function VelocityAwareNoteBody({
   velocityColors: string[];
   velocityPreviewNoteIndex: SharedValue<number>;
   velocityPreviewValue: SharedValue<number>;
+  /** Stable identity of this note, compared on the UI runtime. */
+  appearKey: string;
+  appearingKey: SharedValue<string>;
+  appearProgress: SharedValue<number>;
 }) {
+  // Which note is arriving is read on the UI runtime, so placing a note costs
+  // the one React render the new note already required — not three.
+  const opacity = useDerivedValue(() =>
+    appearingKey.value === appearKey ? appearProgress.value : 1
+  );
+
   const color = useDerivedValue(() => {
     const velocity =
       velocityPreviewNoteIndex.value === noteIndex
@@ -146,7 +160,7 @@ const VelocityAwareNoteBody = memo(function VelocityAwareNoteBody({
       height={height}
       r={radius}
       color={color}
-      opacity={1}
+      opacity={opacity}
     />
   );
 });
@@ -680,6 +694,32 @@ export const SkiaPianoRollGrid = memo(
           animated: false,
         });
       }, [effectiveRowHeight, firstGuidanceRow]);
+
+      // A newly placed note fades in over the target slot it just filled.
+      // The slot shares its exact geometry and is drawn underneath, so the
+      // fade reads as the outline becoming the note rather than a note
+      // appearing on top of one.
+      const appearProgress = useSharedValue(1);
+      const appearingKey = useSharedValue('');
+      const previousNotesRef = useRef(notes);
+      const prefersReducedMotion = useReducedMotion();
+      useEffect(() => {
+        const previous = previousNotesRef.current;
+        previousNotesRef.current = notes;
+        if (prefersReducedMotion || notes.length <= previous.length) return;
+        const added = notes.find(
+          (note) =>
+            !previous.some(
+              (old) =>
+                old.noteNumber === note.noteNumber &&
+                old.position === note.position
+            )
+        );
+        if (!added) return;
+        appearingKey.value = `${added.noteNumber}:${added.position}`;
+        appearProgress.value = 0;
+        appearProgress.value = withTiming(1, { duration: 140 });
+      }, [notes, prefersReducedMotion, appearProgress, appearingKey]);
 
       const guidanceTargets = useMemo(
         () =>
@@ -1286,6 +1326,9 @@ export const SkiaPianoRollGrid = memo(
                                 width={isDragging ? dragW : w}
                                 height={h}
                                 radius={r}
+                                appearKey={`${note.noteNumber}:${note.position}`}
+                                appearingKey={appearingKey}
+                                appearProgress={appearProgress}
                                 committedVelocity={note.velocity}
                                 velocityColors={velocityColors}
                                 velocityPreviewNoteIndex={

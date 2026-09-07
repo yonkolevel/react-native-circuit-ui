@@ -56,6 +56,7 @@ function actions(): SongActions {
     showClipSettings: jest.fn(),
     hideClipSettings: jest.fn(),
     togglePianoNoteNames: jest.fn(),
+    toggleAuditionOnPlace: jest.fn(),
   };
 }
 

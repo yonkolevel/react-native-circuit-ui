@@ -152,8 +152,12 @@ const styles = StyleSheet.create({
   closeButton: {
     padding: 4,
   },
+  // The card sizes to its content, so a `flex: 1` body would resolve to zero
+  // height and hide the children. Shrink-only lets it grow with the content and
+  // start scrolling once the card hits `maxHeight`.
   body: {
-    flex: 1,
+    flexGrow: 0,
+    flexShrink: 1,
   },
 });
 

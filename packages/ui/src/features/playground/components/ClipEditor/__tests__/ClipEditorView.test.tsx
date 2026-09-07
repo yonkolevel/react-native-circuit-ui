@@ -401,6 +401,95 @@ describe('ClipEditorView interactions', () => {
     );
   });
 
+  it('sounds a note as it is placed, and on a move that changes pitch', () => {
+    const onAuditionNote = jest.fn();
+    const clip = createMockDrumClip({ id: 50, trackID: 1, sectionID: 1 });
+    const { UNSAFE_getByType } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        callbacks={{
+          onAuditionNote,
+          onNoteAdd: jest.fn(),
+          onNoteMove: jest.fn(),
+        }}
+      />
+    );
+    const grid = UNSAFE_getByType(SkiaPianoRollGrid);
+
+    grid.props.onGridTap(38, 1);
+    expect(onAuditionNote).toHaveBeenCalledWith(38);
+
+    onAuditionNote.mockClear();
+    const existing = clip.notes[0]!;
+    // Sliding a note along its own row is the same sound — do not retrigger.
+    grid.props.onNoteMove(0, existing.position + 0.25, existing.noteNumber);
+    expect(onAuditionNote).not.toHaveBeenCalled();
+
+    // Dragging it to another row is a different sound.
+    grid.props.onNoteMove(0, existing.position, existing.noteNumber + 2);
+    expect(onAuditionNote).toHaveBeenCalledWith(existing.noteNumber + 2);
+  });
+
+  it('stays silent when the learner has turned note preview off', () => {
+    const onAuditionNote = jest.fn();
+    const { UNSAFE_getByType } = renderWithTheme(
+      <ClipEditorView
+        clip={createMockDrumClip({ id: 52, trackID: 1, sectionID: 1 })}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        callbacks={{ onAuditionNote, onNoteAdd: jest.fn() }}
+        auditionOnPlace={false}
+      />
+    );
+    UNSAFE_getByType(SkiaPianoRollGrid).props.onGridTap(38, 1);
+    expect(onAuditionNote).not.toHaveBeenCalled();
+  });
+
+  it('takes the bar controls away when the clip length is fixed', () => {
+    const fixed = renderWithTheme(
+      <ClipEditorView
+        clip={createMockDrumClip({ id: 53, trackID: 1, sectionID: 1 })}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        editorPolicy={{ capabilities: { clips: false } }}
+      />
+    );
+    // Gone, not dimmed — a lesson that fixes the length should not frame the
+    // bar with two buttons that do nothing.
+    expect(fixed.queryByLabelText('Add bar')).toBeNull();
+    expect(fixed.queryByLabelText('Remove bar')).toBeNull();
+
+    const editable = renderWithTheme(
+      <ClipEditorView
+        clip={createMockDrumClip({ id: 54, trackID: 1, sectionID: 1 })}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+      />
+    );
+    // Both present and live: the mock clip is 4 bars, so removing is available.
+    expect(editable.queryByLabelText('Add bar')).toBeTruthy();
+    expect(
+      editable.getByLabelText('Remove bar').props.accessibilityState.disabled
+    ).toBeFalsy();
+  });
+
+  it('stays silent when the policy forbids note editing', () => {
+    const onAuditionNote = jest.fn();
+    const { UNSAFE_getByType } = renderWithTheme(
+      <ClipEditorView
+        clip={createMockDrumClip({ id: 51, trackID: 1, sectionID: 1 })}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        callbacks={{ onAuditionNote, onNoteAdd: jest.fn() }}
+        editorPolicy={{ readOnly: true }}
+      />
+    );
+    UNSAFE_getByType(SkiaPianoRollGrid).props.onGridTap(38, 1);
+    expect(onAuditionNote).not.toHaveBeenCalled();
+  });
+
   it('gives the piano roll the full editor when performance controls are inert', () => {
     const clip = createMockDrumClip({ id: 40, trackID: 1, sectionID: 1 });
     const inert = renderWithTheme(

@@ -228,7 +228,6 @@ export const MissionRail = memo(function MissionRail({
             value={progressValue}
             tintColor={accent}
             height={3}
-            animated={false}
             style={styles.progressRule}
             accessibilityLabel={progress.label ?? 'Mission progress'}
             a11yId={progressA11yId}

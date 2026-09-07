@@ -127,6 +127,7 @@ export interface SongActions {
   showClipSettings: () => void;
   hideClipSettings: () => void;
   togglePianoNoteNames: () => void;
+  toggleAuditionOnPlace: () => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -210,6 +211,7 @@ const ACTION_CAPABILITIES: Record<SongActionName, EditorCapability | null> = {
   showClipSettings: null,
   hideClipSettings: null,
   togglePianoNoteNames: null,
+  toggleAuditionOnPlace: null,
 };
 
 const NON_MUTATION_ACTIONS = new Set<SongActionName>([
@@ -224,6 +226,7 @@ const NON_MUTATION_ACTIONS = new Set<SongActionName>([
   'showClipSettings',
   'hideClipSettings',
   'togglePianoNoteNames',
+  'toggleAuditionOnPlace',
 ]);
 
 const SongStateContext = createContext<UseSongStateHook | null>(null);

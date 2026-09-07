@@ -6,7 +6,6 @@
  */
 import { memo, useState } from 'react';
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Switch,
@@ -14,6 +13,7 @@ import {
   Modal,
   StyleSheet,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
@@ -34,12 +34,15 @@ export interface ClipSettingsModalProps {
   showLockNoteDuration?: boolean;
   /** Whether notes on this (drum) clip can be resized longer */
   lockNoteDuration?: boolean;
+  /** Whether placing a note sounds it. */
+  auditionOnPlace?: boolean;
   onClose: () => void;
   onTempoChange?: (bpm: number) => void;
   onToggleMetronome?: () => void;
   onToggleNoteLabels?: () => void;
   onToggleSnapToGrid?: () => void;
   onToggleLockNoteDuration?: () => void;
+  onToggleAuditionOnPlace?: () => void;
   onSampleKit?: () => void;
   sampleKitButtonTestID?: string;
   canTempo?: boolean;
@@ -57,12 +60,14 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
   snapToGrid = false,
   showLockNoteDuration = false,
   lockNoteDuration = true,
+  auditionOnPlace = true,
   onClose,
   onTempoChange,
   onToggleMetronome,
   onToggleNoteLabels,
   onToggleSnapToGrid,
   onToggleLockNoteDuration,
+  onToggleAuditionOnPlace,
   onSampleKit,
   sampleKitButtonTestID,
   canTempo = true,
@@ -156,6 +161,30 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
                 thumbTintColor={colors.mcWhite}
               />
             )}
+          </View>
+
+          {/* Hearing the note you place is the default; some people would
+              rather work in silence. */}
+          <View
+            style={[
+              styles.row,
+              { borderBottomColor: colors.mcBlack4, alignItems: 'flex-start' },
+            ]}
+          >
+            <View style={styles.labelWithSubtitle}>
+              <Text variant="label" color={colors.mcWhite}>
+                Play Notes as You Add Them
+              </Text>
+              <Text variant="small" color={colors.mcGray}>
+                Hear each note when you place or move it
+              </Text>
+            </View>
+            <Switch
+              value={auditionOnPlace}
+              accessibilityLabel="Play notes as you add them"
+              onValueChange={() => onToggleAuditionOnPlace?.()}
+              trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}
+            />
           </View>
 
           {/* Show Note Labels on Piano Roll Notes */}

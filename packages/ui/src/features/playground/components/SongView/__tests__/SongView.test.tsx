@@ -73,6 +73,7 @@ function createTestStore(
     showClipSettings: jest.fn(),
     hideClipSettings: jest.fn(),
     togglePianoNoteNames: jest.fn(),
+    toggleAuditionOnPlace: jest.fn(),
     openClipEditor: jest.fn(),
     setCurrentTab: jest.fn((tab: string) => set({ currentTab: tab as any })),
     setMasterVolume: jest.fn(),

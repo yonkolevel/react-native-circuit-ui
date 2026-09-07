@@ -563,18 +563,23 @@ const ClipLengthBar = memo(function ClipLengthBar({
 
   return (
     <View style={[styles.clipLengthBar, { backgroundColor: colors.mcBlack }]}>
-      <Pressable
-        onPress={onDecrease}
-        disabled={!canRemove || !editable}
-        style={[
-          styles.clipLengthEndBtn,
-          { backgroundColor: colors.mcBlack, opacity: canRemove ? 1 : 0.4 },
-        ]}
-        accessibilityLabel="Remove bar"
-        accessibilityState={!editable ? { disabled: true } : undefined}
-      >
-        <Icon icon={Icons.minus} size={12} color={colors.mcWhite2} />
-      </Pressable>
+      {/* A lesson that fixes the clip length takes these controls away rather
+       * than leaving two dead buttons framing the bar. `canRemove` is a
+       * moment-to-moment limit (one bar left), so that one still dims. */}
+      {editable ? (
+        <Pressable
+          onPress={onDecrease}
+          disabled={!canRemove}
+          style={[
+            styles.clipLengthEndBtn,
+            { backgroundColor: colors.mcBlack, opacity: canRemove ? 1 : 0.4 },
+          ]}
+          accessibilityLabel="Remove bar"
+          accessibilityState={!canRemove ? { disabled: true } : undefined}
+        >
+          <Icon icon={Icons.minus} size={12} color={colors.mcWhite2} />
+        </Pressable>
+      ) : null}
 
       <View style={styles.clipLengthMain}>
         {/* Bar segments: tap selects one bar; horizontal drag selects a range. */}
@@ -626,18 +631,20 @@ const ClipLengthBar = memo(function ClipLengthBar({
         </View>
       </View>
 
-      <Pressable
-        onPress={handlePlusPress}
-        disabled={!canAdd || !editable}
-        style={[
-          styles.clipLengthEndBtn,
-          { backgroundColor: colors.mcBlack, opacity: canAdd ? 1 : 0.4 },
-        ]}
-        accessibilityLabel="Add bar"
-        accessibilityState={!editable ? { disabled: true } : undefined}
-      >
-        <Icon icon={Icons.plus} size={12} color={colors.mcWhite2} />
-      </Pressable>
+      {editable ? (
+        <Pressable
+          onPress={handlePlusPress}
+          disabled={!canAdd}
+          style={[
+            styles.clipLengthEndBtn,
+            { backgroundColor: colors.mcBlack, opacity: canAdd ? 1 : 0.4 },
+          ]}
+          accessibilityLabel="Add bar"
+          accessibilityState={!canAdd ? { disabled: true } : undefined}
+        >
+          <Icon icon={Icons.plus} size={12} color={colors.mcWhite2} />
+        </Pressable>
+      ) : null}
     </View>
   );
 });
@@ -885,11 +892,14 @@ export interface ClipEditorViewProps {
   tempo?: number;
   /** Whether to show note names on piano keyboard */
   showPianoNoteNames?: boolean;
+  /** Whether placing or repitching a note sounds it. Defaults on. */
+  auditionOnPlace?: boolean;
   /** Whether dragging notes to move/resize snaps to the step grid. Placing a
    *  new note always snaps regardless — matches the melodic-sequencer reference. */
   snapToGrid?: boolean;
   onTempoChange?: (bpm: number) => void;
   onTogglePianoNoteNames?: () => void;
+  onToggleAuditionOnPlace?: () => void;
   onToggleSnapToGrid?: () => void;
   /** Drum clips only — toggles whether notes can be resized longer */
   onToggleLockNoteDuration?: () => void;
@@ -929,9 +939,11 @@ export const ClipEditorView = memo(function ClipEditorView({
   recordingCountIn,
   tempo = 120,
   showPianoNoteNames = false,
+  auditionOnPlace = true,
   snapToGrid = false,
   onTempoChange,
   onTogglePianoNoteNames,
+  onToggleAuditionOnPlace,
   onToggleSnapToGrid,
   onToggleLockNoteDuration,
   recordingNotes,
@@ -1123,11 +1135,15 @@ export const ClipEditorView = memo(function ClipEditorView({
   const callbacksRef = useRef(callbacks);
   const pianoKeyCallbacksRef = useRef(pianoKeyCallbacks);
   const clipNotesRef = useRef(clip.notes);
+  // Read through a ref so toggling the setting never rebuilds the memoised
+  // grid gesture handlers.
+  const auditionOnPlaceRef = useRef(auditionOnPlace);
   useEffect(() => {
     callbacksRef.current = callbacks;
     pianoKeyCallbacksRef.current = pianoKeyCallbacks;
     clipNotesRef.current = clip.notes;
-  }, [callbacks, pianoKeyCallbacks, clip.notes]);
+    auditionOnPlaceRef.current = auditionOnPlace;
+  }, [callbacks, pianoKeyCallbacks, clip.notes, auditionOnPlace]);
   const handleNotePress = useCallback(
     (idx: number) => {
       if (canEditNotes) callbacksRef.current?.onNoteDelete?.(idx);
@@ -1142,8 +1158,12 @@ export const ClipEditorView = memo(function ClipEditorView({
   );
   const handleNoteMove = useCallback(
     (idx: number, newPos: number, newNote: number) => {
-      if (canEditNotes)
-        callbacksRef.current?.onNoteMove?.(idx, newPos, newNote);
+      if (!canEditNotes) return;
+      const previousNote = clipNotesRef.current[idx]?.noteNumber;
+      callbacksRef.current?.onNoteMove?.(idx, newPos, newNote);
+      if (previousNote !== newNote && auditionOnPlaceRef.current) {
+        callbacksRef.current?.onAuditionNote?.(newNote);
+      }
     },
     [canEditNotes]
   );
@@ -1156,6 +1176,9 @@ export const ClipEditorView = memo(function ClipEditorView({
         position,
         duration: 0.25,
       });
+      if (auditionOnPlaceRef.current) {
+        callbacksRef.current?.onAuditionNote?.(noteNumber);
+      }
     },
     [canEditNotes]
   );
@@ -1433,6 +1456,8 @@ export const ClipEditorView = memo(function ClipEditorView({
         onTempoChange={canTempo ? onTempoChange : undefined}
         onToggleMetronome={canMetronome ? onToggleMetronome : undefined}
         onToggleNoteLabels={onTogglePianoNoteNames}
+        auditionOnPlace={auditionOnPlace}
+        onToggleAuditionOnPlace={onToggleAuditionOnPlace}
         onToggleSnapToGrid={canQuantize ? onToggleSnapToGrid : undefined}
         onToggleLockNoteDuration={
           canEditNotes ? onToggleLockNoteDuration : undefined

@@ -12,6 +12,7 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  useReducedMotion,
   interpolate,
   Extrapolation,
 } from 'react-native-reanimated';
@@ -48,20 +49,23 @@ export const ProgressBar: React.FC<ProgressBarProps> = memo(
   }) {
     const { colors, isDark } = useTheme();
     const progress = useSharedValue(0);
+    // Reduced motion is a system rule, not something each caller opts into.
+    const reducedMotion = useReducedMotion();
+    const shouldAnimate = animated && !reducedMotion;
 
     const clampedValue = Math.min(Math.max(0, value), 100);
     const progressColor =
       tintColor || (isDark ? colors.mcWhite : colors.mcOrange);
 
     useEffect(() => {
-      if (animated) {
+      if (shouldAnimate) {
         progress.value = withTiming(clampedValue, {
           duration: animationDuration,
         });
       } else {
         progress.value = clampedValue;
       }
-    }, [clampedValue, progress, animated, animationDuration]);
+    }, [clampedValue, progress, shouldAnimate, animationDuration]);
 
     const fillStyle = useAnimatedStyle(() => {
       const widthPercent = interpolate(

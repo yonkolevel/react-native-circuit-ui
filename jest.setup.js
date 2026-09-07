@@ -85,6 +85,7 @@ jest.mock('react-native-reanimated', () => {
       addWhitelistedUIProps: () => {},
     },
     useSharedValue: mockSharedValue,
+    useReducedMotion: () => false,
     useDerivedValue: (fn) => ({ value: fn() }),
     useAnimatedStyle: (fn) => fn(),
     useAnimatedProps: (fn) => fn(),
