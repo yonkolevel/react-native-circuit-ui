@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   loader: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.flatten(StyleSheet.absoluteFill),
     justifyContent: 'center',
     alignItems: 'center',
   },

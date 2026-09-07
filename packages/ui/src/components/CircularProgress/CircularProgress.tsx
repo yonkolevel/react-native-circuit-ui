@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   centerContent: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.flatten(StyleSheet.absoluteFill),
     alignItems: 'center',
     justifyContent: 'center',
   },

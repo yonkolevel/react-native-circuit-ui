@@ -1049,7 +1049,7 @@ const styles = StyleSheet.create({
   rulerNum: { fontSize: 7, width: 20, textAlign: 'right', marginRight: 4 },
   rulerDash: { flex: 1, height: 0.5, backgroundColor: 'rgba(255,255,255,0.1)' },
   emptyState: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.flatten(StyleSheet.absoluteFill),
     justifyContent: 'center',
     alignItems: 'center',
   },

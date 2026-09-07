@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
   },
   confettiContainer: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.flatten(StyleSheet.absoluteFill),
     overflow: 'hidden',
   },
   confettiDot: {

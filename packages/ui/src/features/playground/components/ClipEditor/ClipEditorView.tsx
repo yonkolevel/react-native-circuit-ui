@@ -1483,7 +1483,7 @@ const styles = StyleSheet.create({
   /** iOS: splitHeight = availableHeight * 0.5 — each half gets equal flex */
   splitHalf: { flex: 1 },
   countInOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.flatten(StyleSheet.absoluteFill),
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 100,

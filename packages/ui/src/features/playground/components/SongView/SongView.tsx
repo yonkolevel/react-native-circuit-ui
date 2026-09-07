@@ -844,7 +844,7 @@ const s = StyleSheet.create({
     padding: 24,
   },
   menuBackdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.flatten(StyleSheet.absoluteFill),
     backgroundColor: 'rgba(0,0,0,0.7)',
   },
   menuCard: {

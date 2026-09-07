@@ -127,7 +127,7 @@ export const Modal: React.FC<ModalProps> = memo(function Modal({
 
 const styles = StyleSheet.create({
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.flatten(StyleSheet.absoluteFill),
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   centeredView: {
