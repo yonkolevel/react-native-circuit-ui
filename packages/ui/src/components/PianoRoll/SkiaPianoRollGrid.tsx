@@ -232,7 +232,6 @@ const SNAP_EASE_MS = 90;
 
 const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
-const MELODIC_PITCH_COUNT = 24;
 
 // Matches native's PianoRoll package: every grid line (step, beat, and bar
 // boundary alike) is drawn with the same uniform black stroke — no separate
@@ -285,6 +284,8 @@ export interface SkiaPianoRollGridProps {
   isExpanded?: boolean;
   selectedPitchIndex?: number | null;
   melodicMinPitch?: number;
+  /** Rows above melodicMinPitch; defaults to the existing two-octave window. */
+  melodicPitchCount?: number;
   onNotePress?: (index: number) => void;
   onNoteResize?: (index: number, newDuration: number) => void;
   onNoteMove?: (
@@ -368,6 +369,7 @@ export const SkiaPianoRollGrid = memo(
         isExpanded,
         selectedPitchIndex,
         melodicMinPitch,
+        melodicPitchCount = 24,
         onNotePress,
         onNoteResize,
         onNoteMove,
@@ -433,8 +435,16 @@ export const SkiaPianoRollGrid = memo(
         ? 0
         : (melodicMinPitch ?? DEFAULT_MELODIC_MIN_PITCH);
       const totalPitches = isDrum
-        ? (samples ?? []).length || 12 // Use exact sample count (no minimum)
-        : MELODIC_PITCH_COUNT;
+        ? (samples ?? []).length || 12
+        : Math.max(
+            1,
+            Math.min(
+              128,
+              Number.isFinite(melodicPitchCount)
+                ? Math.trunc(melodicPitchCount)
+                : 24
+            )
+          );
 
       // Fit the actual editor pane, which can be narrower than the window.
       const [containerW, setContainerW] = useState<number>();

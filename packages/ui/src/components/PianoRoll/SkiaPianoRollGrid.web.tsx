@@ -56,7 +56,6 @@ const UNFOCUSED_ROW_SCRIM_OPACITY = 1 - UNFOCUSED_ROW_REMAINING;
 
 const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
-const MELODIC_PITCH_COUNT = 24;
 
 // Snap-zone ease duration for resize live-preview — short enough to feel
 // immediate, long enough to read as a glide rather than a jump.
@@ -252,6 +251,8 @@ export interface SkiaPianoRollGridProps {
   isExpanded?: boolean;
   selectedPitchIndex?: number | null;
   melodicMinPitch?: number;
+  /** Rows above melodicMinPitch; defaults to the existing two-octave window. */
+  melodicPitchCount?: number;
   onNotePress?: (index: number) => void;
   onNoteResize?: (index: number, newDuration: number) => void;
   onNoteMove?: (
@@ -327,6 +328,7 @@ export const SkiaPianoRollGrid = memo(
         isExpanded,
         selectedPitchIndex,
         melodicMinPitch,
+        melodicPitchCount = 24,
         onNotePress,
         onNoteResize,
         onNoteMove,
@@ -443,10 +445,10 @@ export const SkiaPianoRollGrid = memo(
         duration: number;
         isSnapping: boolean;
       } | null>(null);
-      const [keyboardCursor, setKeyboardCursor] = useState({
-        pitchIndex: 0,
-        step: 0,
-      });
+      const [keyboardSelection, setKeyboardSelection] = useState<{
+        noteNumber: number | null;
+        step: number;
+      }>({ noteNumber: null, step: 0 });
       const [isKeyboardFocused, setIsKeyboardFocused] = useState(false);
 
       const isDrum = instrumentType === 'drum';
@@ -458,7 +460,15 @@ export const SkiaPianoRollGrid = memo(
         : (melodicMinPitch ?? DEFAULT_MELODIC_MIN_PITCH);
       const totalPitches = isDrum
         ? (samples ?? []).length || 12
-        : MELODIC_PITCH_COUNT;
+        : Math.max(
+            1,
+            Math.min(
+              128,
+              Number.isFinite(melodicPitchCount)
+                ? Math.trunc(melodicPitchCount)
+                : 24
+            )
+          );
 
       // Fit the actual editor pane, which can be narrower than the window.
       const [containerW, setContainerW] = useState<number>();
@@ -821,6 +831,29 @@ export const SkiaPianoRollGrid = memo(
               )
             : Array.from({ length: totalPitches }, (_, i) => basePitch + i),
         [isDrum, totalPitches, samples, basePitch]
+      );
+
+      // Content can reframe the roll without a key event. Preserve MIDI
+      // identity where it still fits, and use the same bounded cursor for
+      // its label, visual position, arrow movement and note dispatch.
+      const resolveKeyboardCursor = useCallback(
+        (selection: { noteNumber: number | null; step: number }) => {
+          const index =
+            selection.noteNumber == null
+              ? 0
+              : isDrum
+                ? pitchToMidi.indexOf(selection.noteNumber)
+                : selection.noteNumber - basePitch;
+          return {
+            pitchIndex: Math.max(0, Math.min(totalPitches - 1, index)),
+            step: Math.max(0, Math.min(totalSteps - 1, selection.step)),
+          };
+        },
+        [basePitch, isDrum, pitchToMidi, totalPitches, totalSteps]
+      );
+      const keyboardCursor = useMemo(
+        () => resolveKeyboardCursor(keyboardSelection),
+        [keyboardSelection, resolveKeyboardCursor]
       );
 
       const guidanceRows = useMemo(
@@ -1264,24 +1297,29 @@ export const SkiaPianoRollGrid = memo(
 
       const moveKeyboardCursor = useCallback(
         (stepDelta: number, pitchDelta: number) => {
-          setKeyboardCursor((cursor) => ({
-            step: Math.max(
-              0,
-              Math.min(totalSteps - 1, cursor.step + stepDelta)
-            ),
-            pitchIndex: Math.max(
+          setKeyboardSelection((selection) => {
+            const cursor = resolveKeyboardCursor(selection);
+            const pitchIndex = Math.max(
               0,
               Math.min(totalPitches - 1, cursor.pitchIndex + pitchDelta)
-            ),
-          }));
+            );
+            return {
+              step: Math.max(
+                0,
+                Math.min(totalSteps - 1, cursor.step + stepDelta)
+              ),
+              noteNumber: pitchToMidi[pitchIndex] ?? null,
+            };
+          });
         },
-        [totalPitches, totalSteps]
+        [pitchToMidi, resolveKeyboardCursor, totalPitches, totalSteps]
       );
 
       const addNoteAtKeyboardCursor = useCallback(() => {
         if (!editable) return;
-        const noteNumber =
-          pitchToMidi[keyboardCursor.pitchIndex] ?? keyboardCursor.pitchIndex;
+        const noteNumber = pitchToMidi[keyboardCursor.pitchIndex];
+        if (noteNumber == null) return;
+        setKeyboardSelection({ noteNumber, step: keyboardCursor.step });
         onGridTap?.(noteNumber, keyboardCursor.step * 0.25);
       }, [editable, keyboardCursor, onGridTap, pitchToMidi]);
 

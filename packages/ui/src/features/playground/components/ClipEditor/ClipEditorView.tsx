@@ -44,6 +44,7 @@ import { ClipSettingsModal } from './ClipSettingsModal';
 import { DrumPadsView } from '../DrumPads/DrumPadsView';
 import { PianoKeyboard } from '../PianoKeyboard/PianoKeyboard';
 import { SkiaPianoRollGrid } from '../../../../components/PianoRoll';
+import { getMelodicPitchRange } from '../../../../components/PianoRoll/pianoRollPitchRange';
 import type {
   RecordingNotePreviewData,
   SkiaPianoRollGridHandle,
@@ -925,7 +926,7 @@ export const ClipEditorView = memo(function ClipEditorView({
   drumPadCallbacks,
   pianoKeyCallbacks,
   externalPressedNotes,
-  melodicMinPitch = DEFAULT_MELODIC_MIN_PITCH,
+  melodicMinPitch: keyboardMinPitch = DEFAULT_MELODIC_MIN_PITCH,
   onBack,
   onPlayPause,
   onToggleRecord,
@@ -968,9 +969,43 @@ export const ClipEditorView = memo(function ClipEditorView({
   const [containerWidth, setContainerWidth] = useState<number>();
   const [isExpandedByUser, setIsExpandedByUser] = useState(false);
   const [zoom, setZoom] = useState(1);
-  const [selectedPitchIndex, setSelectedPitchIndex] = useState<number | null>(
-    null
+  // Selection is a MIDI pitch, not a shifting row index. Reframing the grid
+  // must not retarget precision edits. Drum selection remains a sample index.
+  const [selectedPitch, setSelectedPitch] = useState<{
+    clipID: Clip['id'];
+    instrumentType: InstrumentType;
+    value: number;
+  } | null>(null);
+  const selectedValue =
+    selectedPitch?.instrumentType === instrumentType &&
+    selectedPitch.clipID === clip.id
+      ? selectedPitch.value
+      : null;
+  const melodicRange = useMemo(
+    () =>
+      instrumentType === 'drum'
+        ? null
+        : getMelodicPitchRange(
+            keyboardMinPitch,
+            clip.notes,
+            guidance,
+            selectedValue ?? undefined
+          ),
+    [instrumentType, keyboardMinPitch, clip.notes, guidance, selectedValue]
   );
+  const melodicMinPitch = melodicRange?.minPitch ?? keyboardMinPitch;
+  const selectedRow =
+    selectedValue == null
+      ? null
+      : instrumentType === 'drum'
+        ? selectedValue
+        : selectedValue - melodicMinPitch;
+  const selectedPitchIndex =
+    selectedRow != null &&
+    selectedRow >= 0 &&
+    selectedRow < (melodicRange?.pitchCount ?? (samples?.length || 12))
+      ? selectedRow
+      : null;
   const [settingsVisible, setSettingsVisible] = useState(false);
   // The locator reads these values directly on the UI runtime while the
   // native ScrollView animates; scrolling never renders ClipEditorView.
@@ -1216,26 +1251,40 @@ export const ClipEditorView = memo(function ClipEditorView({
     [canEditPrecision, canEditNotes]
   );
   const handleClosePrecision = useCallback(() => {
-    setSelectedPitchIndex(null);
+    setSelectedPitch(null);
   }, []);
-  const handlePitchLabelTap = useCallback((pitch: number) => {
-    setSelectedPitchIndex((current) => (current === pitch ? null : pitch));
-  }, []);
+  const handlePitchLabelTap = useCallback(
+    (pitch: number) => {
+      const value = instrumentType === 'drum' ? pitch : pitch + melodicMinPitch;
+      setSelectedPitch((current) =>
+        current?.clipID === clip.id &&
+        current.instrumentType === instrumentType &&
+        current.value === value
+          ? null
+          : { clipID: clip.id, instrumentType, value }
+      );
+    },
+    [clip.id, instrumentType, melodicMinPitch]
+  );
   const handleToggleExpand = useCallback(() => {
     setIsExpandedByUser((current) => !current);
   }, []);
+  // Fitting the piano roll is visual only; don't transpose the existing
+  // performance keyboard or change the caller's pressed-key mapping.
   const handlePianoNoteOn = useCallback(
     (noteIndex: number) =>
       pianoKeyCallbacksRef.current?.onKeyPress?.(
-        noteIndex + melodicMinPitch,
+        noteIndex + keyboardMinPitch,
         100
       ),
-    [melodicMinPitch]
+    [keyboardMinPitch]
   );
   const handlePianoNoteOff = useCallback(
     (noteIndex: number) =>
-      pianoKeyCallbacksRef.current?.onKeyRelease?.(noteIndex + melodicMinPitch),
-    [melodicMinPitch]
+      pianoKeyCallbacksRef.current?.onKeyRelease?.(
+        noteIndex + keyboardMinPitch
+      ),
+    [keyboardMinPitch]
   );
 
   // The bottom half hosts either the performance controls or the velocity lane.
@@ -1302,6 +1351,7 @@ export const ClipEditorView = memo(function ClipEditorView({
               isExpanded={isExpanded}
               selectedPitchIndex={selectedPitchIndex}
               melodicMinPitch={melodicMinPitch}
+              melodicPitchCount={melodicRange?.pitchCount}
               editable={canEditNotes}
               guidance={guidance}
               onNotePress={handleNotePress}

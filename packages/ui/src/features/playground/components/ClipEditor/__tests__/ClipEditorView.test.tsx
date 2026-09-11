@@ -70,6 +70,119 @@ describe('ClipEditorView snapshots', () => {
   });
 });
 
+describe('Melodic pitch-range integration', () => {
+  it('keeps precision editing on the selected MIDI pitch when the visible range changes', () => {
+    const clip = createMockMelodyClip({
+      id: 21,
+      notes: [
+        { noteNumber: 60, velocity: 100, position: 0, duration: 1 },
+        { noteNumber: 72, velocity: 100, position: 1, duration: 1 },
+      ],
+    });
+    const view = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="melodic"
+        melodicMinPitch={24}
+      />
+    );
+    const grid = view.UNSAFE_getByType(SkiaPianoRollGrid);
+    expect(grid.props.melodicMinPitch).toBe(60);
+    fireEvent(grid, 'pitchLabelTap', 12);
+    expect(
+      view.UNSAFE_getByType(NotePrecisionPanel).props.pitchMidiNumber
+    ).toBe(72);
+
+    const widened = {
+      ...clip,
+      notes: [
+        ...clip.notes,
+        { noteNumber: 12, velocity: 100, position: 2, duration: 1 },
+      ],
+    };
+    view.rerender(
+      <ThemeProvider initialMode="dark">
+        <ClipEditorView
+          clip={widened}
+          instrumentType="melodic"
+          melodicMinPitch={24}
+        />
+      </ThemeProvider>
+    );
+    expect(view.UNSAFE_getByType(SkiaPianoRollGrid).props.melodicMinPitch).toBe(
+      12
+    );
+    expect(
+      view.UNSAFE_getByType(SkiaPianoRollGrid).props.selectedPitchIndex
+    ).toBe(60);
+    expect(
+      view.UNSAFE_getByType(NotePrecisionPanel).props.pitchMidiNumber
+    ).toBe(72);
+    expect(clip.notes.map((note) => note.noteNumber)).toEqual([60, 72]);
+  });
+
+  it('keeps an empty selected melodic lane available without carrying it into another clip', () => {
+    const clip = createMockMelodyClip({ id: 21 });
+    const view = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="melodic"
+        melodicMinPitch={24}
+      />
+    );
+    fireEvent(view.UNSAFE_getByType(SkiaPianoRollGrid), 'pitchLabelTap', 12);
+    view.rerender(
+      <ThemeProvider initialMode="dark">
+        <ClipEditorView
+          clip={{ ...clip, notes: [] }}
+          instrumentType="melodic"
+          melodicMinPitch={24}
+        />
+      </ThemeProvider>
+    );
+    expect(
+      view.UNSAFE_getByType(NotePrecisionPanel).props.pitchMidiNumber
+    ).toBe(72);
+    view.rerender(
+      <ThemeProvider initialMode="dark">
+        <ClipEditorView
+          clip={{ ...clip, id: 22, notes: [] }}
+          instrumentType="melodic"
+          melodicMinPitch={24}
+        />
+      </ThemeProvider>
+    );
+    expect(view.UNSAFE_getByType(SkiaPianoRollGrid).props.melodicMinPitch).toBe(
+      24
+    );
+    expect(
+      view.UNSAFE_getByType(SkiaPianoRollGrid).props.selectedPitchIndex
+    ).toBeNull();
+  });
+
+  it('does not transpose the performance keyboard when reframing imported notes', () => {
+    const onKeyPress = jest.fn();
+    const onKeyRelease = jest.fn();
+    const view = renderWithTheme(
+      <ClipEditorView
+        clip={createMockMelodyClip()}
+        instrumentType="melodic"
+        melodicMinPitch={24}
+        pianoKeyCallbacks={{ onKeyPress, onKeyRelease }}
+      />
+    );
+    expect(view.UNSAFE_getByType(SkiaPianoRollGrid).props.melodicMinPitch).toBe(
+      60
+    );
+    expect(view.getByLabelText('Piano keyboard')).toBeTruthy();
+    const keyboard = view.UNSAFE_root.findByProps({ numberOfOctaves: 2 });
+    fireEvent(keyboard, 'noteOn', 0);
+    fireEvent(keyboard, 'noteOff', 0);
+    expect(onKeyPress).toHaveBeenCalledWith(24, 100);
+    expect(onKeyRelease).toHaveBeenCalledWith(24);
+  });
+});
+
 describe('Drum sampler action', () => {
   it('labels every interactive clip setting', () => {
     const clip = createMockDrumClip({ id: 5, trackID: 1, sectionID: 1 });
