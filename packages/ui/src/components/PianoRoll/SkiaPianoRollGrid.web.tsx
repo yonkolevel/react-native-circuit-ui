@@ -416,16 +416,24 @@ export const SkiaPianoRollGrid = memo(
       const zoomScaleRef = useRef(1);
       const wheelZoomRef = useRef<{ target: number } | null>(null);
       const wheelZoomTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-      const committedZoomAnchor = useRef<{ zoom: number; beat: number } | null>(null);
+      const committedZoomAnchor = useRef<{ zoom: number; beat: number } | null>(
+        null
+      );
       const zoomReleaseMomentum = useRef<{
-        zoom: number; vx: number; vy: number;
+        zoom: number;
+        vx: number;
+        vy: number;
       } | null>(null);
       const callbacksRef = useRef({
-        onZoomChange, onScrollXChange, onVisibleBeatRangeChange,
+        onZoomChange,
+        onScrollXChange,
+        onVisibleBeatRangeChange,
       });
       useLayoutEffect(() => {
         callbacksRef.current = {
-          onZoomChange, onScrollXChange, onVisibleBeatRangeChange,
+          onZoomChange,
+          onScrollXChange,
+          onVisibleBeatRangeChange,
         };
       }, [onZoomChange, onScrollXChange, onVisibleBeatRangeChange]);
       const [dragPreview, setDragPreview] = useState<{
@@ -516,13 +524,13 @@ export const SkiaPianoRollGrid = memo(
           const clamped = Math.max(0, Math.min(maxX, x));
           panXRef.current = clamped;
           if (node?.style) {
-            node.style.transition = transition ?? (animated
-              ? 'transform 200ms ease-out'
-              : 'none');
+            node.style.transition =
+              transition ?? (animated ? 'transform 200ms ease-out' : 'none');
             node.style.transformOrigin = '0 0';
-            node.style.transform = scale === 1
-              ? `translateX(${-clamped}px)`
-              : `translateX(${-clamped * scale}px) scaleX(${scale})`;
+            node.style.transform =
+              scale === 1
+                ? `translateX(${-clamped}px)`
+                : `translateX(${-clamped * scale}px) scaleX(${scale})`;
           }
           // The host uses committed geometry. Notify it once at zoom end,
           // never per wheel event (nor per animation frame).
@@ -644,8 +652,12 @@ export const SkiaPianoRollGrid = memo(
         };
         callbacksRef.current.onZoomChange?.(pending.target);
       }, [
-        beatWidth, zoomLevel, cancelMomentum, cancelWheelZoom,
-        clearWheelZoomTimer, reportScroll,
+        beatWidth,
+        zoomLevel,
+        cancelMomentum,
+        cancelWheelZoom,
+        clearWheelZoomTimer,
+        reportScroll,
       ]);
 
       const pauseWheelZoom = useCallback(() => {
@@ -656,13 +668,16 @@ export const SkiaPianoRollGrid = memo(
         // wheel event/frame. Freeze here until pointerup so hit testing and
         // dragging use the same geometry the user touched, even mid-settle.
         if (node && typeof DOMMatrixReadOnly !== 'undefined') {
-          const matrix = new DOMMatrixReadOnly(window.getComputedStyle(node).transform);
+          const matrix = new DOMMatrixReadOnly(
+            window.getComputedStyle(node).transform
+          );
           zoomScaleRef.current = matrix.a;
           panXRef.current = -matrix.e / matrix.a;
         }
         // Computed CSS matrices may round their coefficients at a hard limit.
         wheelZoomRef.current.target = Math.max(
-          1, Math.min(3, zoomLevel * zoomScaleRef.current)
+          1,
+          Math.min(3, zoomLevel * zoomScaleRef.current)
         );
         zoomScaleRef.current = wheelZoomRef.current.target / zoomLevel;
         applyGridTransform(panXRef.current);
@@ -692,13 +707,25 @@ export const SkiaPianoRollGrid = memo(
           if (ev.ctrlKey || ev.metaKey) {
             if (
               !callbacksRef.current.onZoomChange ||
-              !Number.isFinite(ev.deltaY) || ev.deltaY === 0
-            ) return;
-            const unit = ev.deltaMode === 1 ? 16
-              : ev.deltaMode === 2 ? Math.max(1, containerH) : 1;
-            const exponent = Math.max(-50, Math.min(50, -ev.deltaY * unit / 100));
+              !Number.isFinite(ev.deltaY) ||
+              ev.deltaY === 0
+            )
+              return;
+            const unit =
+              ev.deltaMode === 1
+                ? 16
+                : ev.deltaMode === 2
+                  ? Math.max(1, containerH)
+                  : 1;
+            const exponent = Math.max(
+              -50,
+              Math.min(50, (-ev.deltaY * unit) / 100)
+            );
             const previous = wheelZoomRef.current?.target ?? zoomLevel;
-            const target = Math.max(1, Math.min(3, previous * Math.exp(exponent)));
+            const target = Math.max(
+              1,
+              Math.min(3, previous * Math.exp(exponent))
+            );
             if (target === previous) return;
             clearWheelZoomTimer();
             wheelZoomRef.current = { target };
@@ -706,23 +733,39 @@ export const SkiaPianoRollGrid = memo(
             const reduced = window.matchMedia?.(
               '(prefers-reduced-motion: reduce)'
             ).matches;
-            applyGridTransform(panXRef.current, false, reduced ? 'none'
-              : `transform ${WHEEL_ZOOM_SETTLE_MS}ms ${WHEEL_ZOOM_EASING}`);
-            wheelZoomTimer.current = setTimeout(finishWheelZoom, WHEEL_ZOOM_SETTLE_MS);
+            applyGridTransform(
+              panXRef.current,
+              false,
+              reduced
+                ? 'none'
+                : `transform ${WHEEL_ZOOM_SETTLE_MS}ms ${WHEEL_ZOOM_EASING}`
+            );
+            wheelZoomTimer.current = setTimeout(
+              finishWheelZoom,
+              WHEEL_ZOOM_SETTLE_MS
+            );
             return;
           }
           // Native trackpad scroll already carries inertia. Don't add a second
           // coast; stop a pending zoom at its visible value before panning.
           pauseWheelZoom();
-          applyGridTransform(panXRef.current + (ev.deltaX ?? 0) / zoomScaleRef.current);
+          applyGridTransform(
+            panXRef.current + (ev.deltaX ?? 0) / zoomScaleRef.current
+          );
           applyOuterTransform(panYRef.current + (ev.deltaY ?? 0));
           finishWheelZoom();
         };
         el.addEventListener('wheel', handleWheel, { passive: false });
         return () => el.removeEventListener('wheel', handleWheel);
       }, [
-        zoomLevel, containerH, applyGridTransform, applyOuterTransform,
-        cancelMomentum, clearWheelZoomTimer, finishWheelZoom, pauseWheelZoom,
+        zoomLevel,
+        containerH,
+        applyGridTransform,
+        applyOuterTransform,
+        cancelMomentum,
+        clearWheelZoomTimer,
+        finishWheelZoom,
+        pauseWheelZoom,
       ]);
 
       // Unlike native scrollLeft, a manual transform doesn't auto-correct itself
@@ -882,7 +925,8 @@ export const SkiaPianoRollGrid = memo(
           const rect = cachedRect ?? e.currentTarget.getBoundingClientRect();
           const nativeEvent = e.nativeEvent;
           return {
-            x: getWebGridTapX(e as WebGridTapEvent, rect) / zoomScaleRef.current,
+            x:
+              getWebGridTapX(e as WebGridTapEvent, rect) / zoomScaleRef.current,
             y: nativeEvent.clientY - rect.top,
           };
         },
@@ -1017,8 +1061,12 @@ export const SkiaPianoRollGrid = memo(
           }
         },
         [
-          getPointerPoint, notes, pianoRollMathContext,
-          cancelMomentum, pauseWheelZoom, editable,
+          getPointerPoint,
+          notes,
+          pianoRollMathContext,
+          cancelMomentum,
+          pauseWheelZoom,
+          editable,
         ]
       );
 
@@ -1260,7 +1308,12 @@ export const SkiaPianoRollGrid = memo(
             addNoteAtKeyboardCursor();
           }
         },
-        [addNoteAtKeyboardCursor, moveKeyboardCursor, pauseWheelZoom, finishWheelZoom]
+        [
+          addNoteAtKeyboardCursor,
+          moveKeyboardCursor,
+          pauseWheelZoom,
+          finishWheelZoom,
+        ]
       );
 
       const webGridHandlers = {
