@@ -436,9 +436,11 @@ export const SkiaPianoRollGrid = memo(
         ? (samples ?? []).length || 12 // Use exact sample count (no minimum)
         : MELODIC_PITCH_COUNT;
 
-      // Measure available height for expanded mode
+      // Fit the actual editor pane, which can be narrower than the window.
+      const [containerW, setContainerW] = useState<number>();
       const [containerH, setContainerH] = useState(0);
       const onContainerLayout = useCallback((e: LayoutChangeEvent) => {
+        setContainerW(e.nativeEvent.layout.width);
         setContainerH(e.nativeEvent.layout.height);
       }, []);
 
@@ -462,7 +464,10 @@ export const SkiaPianoRollGrid = memo(
       // worklet would be reading a stale copy anyway.
       const scrollXShared = useSharedValue(0);
 
-      const availableGridWidth = screenWidth - LABEL_COL_WIDTH;
+      const availableGridWidth = Math.max(
+        1,
+        (containerW ?? screenWidth) - LABEL_COL_WIDTH
+      );
       const stepWidth = (availableGridWidth / 16) * zoomLevel;
       const beatWidth = stepWidth * 4;
       const gridWidth = lengthInBeats * beatWidth;

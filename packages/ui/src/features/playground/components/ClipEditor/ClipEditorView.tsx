@@ -965,6 +965,7 @@ export const ClipEditorView = memo(function ClipEditorView({
   const canTempo = isEditorCapabilityAllowed(policy, 'tempo');
   const canSound = isEditorCapabilityAllowed(policy, 'sound');
   const { width: screenWidth } = useWindowDimensions();
+  const [containerWidth, setContainerWidth] = useState<number>();
   const [isExpandedByUser, setIsExpandedByUser] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [selectedPitchIndex, setSelectedPitchIndex] = useState<number | null>(
@@ -984,7 +985,10 @@ export const ClipEditorView = memo(function ClipEditorView({
   const sharedScrollX = useSharedValue(0);
   // 0 = the grid owns the scroll, 1 = the precision panel does.
   const scrollOwner = useSharedValue(0);
-  const beatWidth = ((screenWidth - LABEL_COL_WIDTH) / 16) * zoom * 4;
+  const beatWidth =
+    (Math.max(1, (containerWidth ?? screenWidth) - LABEL_COL_WIDTH) / 16) *
+    zoom *
+    4;
   const trackColor = clip.colorHex;
   const samplesList = samples || [];
 
@@ -1254,7 +1258,10 @@ export const ClipEditorView = memo(function ClipEditorView({
   const showCountIn = recordingCountIn != null;
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.mcBlack }]}>
+    <View
+      style={[styles.container, { backgroundColor: colors.mcBlack }]}
+      onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width)}
+    >
       {/* Top section: toolbar + piano roll + clip length bar
        * Always flex:1. When bottom half renders (not expanded), they split 50/50.
        * When expanded, bottom is hidden → top gets 100%. */}

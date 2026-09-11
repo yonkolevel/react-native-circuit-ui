@@ -2,6 +2,7 @@
 
 exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
 <View
+  onLayout={[Function]}
   style={
     [
       {
@@ -2895,6 +2896,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
 
 exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
 <View
+  onLayout={[Function]}
   style={
     [
       {
@@ -6639,6 +6641,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
 
 exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
 <View
+  onLayout={[Function]}
   style={
     [
       {
@@ -10567,6 +10570,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
 
 exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = `
 <View
+  onLayout={[Function]}
   style={
     [
       {

@@ -18,6 +18,7 @@ import {
   useMemo,
   useState,
   useEffect,
+  useLayoutEffect,
   useRef,
 } from 'react';
 import { View, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
@@ -60,6 +61,12 @@ const MELODIC_PITCH_COUNT = 24;
 // Snap-zone ease duration for resize live-preview — short enough to feel
 // immediate, long enough to read as a glide rather than a jump.
 const SNAP_EASE_MS = 90;
+
+// A short compositor-only settle, not an extra velocity coast on top of the
+// trackpad's own deltas. Keep precision edits interruptible and honor reduced
+// motion. Pixel deltas map exponentially, so event frequency doesn't set speed.
+const WHEEL_ZOOM_SETTLE_MS = 140;
+const WHEEL_ZOOM_EASING = 'cubic-bezier(0.23, 1, 0.32, 1)';
 
 // Bright red — reads as "actively recording" against any track color,
 // matching the convention most DAWs use for an in-progress take.
@@ -406,6 +413,21 @@ export const SkiaPianoRollGrid = memo(
       // a drag never triggers a React re-render.
       const panXRef = useRef(0);
       const panYRef = useRef(0);
+      const zoomScaleRef = useRef(1);
+      const wheelZoomRef = useRef<{ target: number } | null>(null);
+      const wheelZoomTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+      const committedZoomAnchor = useRef<{ zoom: number; beat: number } | null>(null);
+      const zoomReleaseMomentum = useRef<{
+        zoom: number; vx: number; vy: number;
+      } | null>(null);
+      const callbacksRef = useRef({
+        onZoomChange, onScrollXChange, onVisibleBeatRangeChange,
+      });
+      useLayoutEffect(() => {
+        callbacksRef.current = {
+          onZoomChange, onScrollXChange, onVisibleBeatRangeChange,
+        };
+      }, [onZoomChange, onScrollXChange, onVisibleBeatRangeChange]);
       const [dragPreview, setDragPreview] = useState<{
         noteIndex: number;
         position: number;
@@ -430,9 +452,11 @@ export const SkiaPianoRollGrid = memo(
         ? (samples ?? []).length || 12
         : MELODIC_PITCH_COUNT;
 
-      // Measure container height for expanded mode
+      // Fit the actual editor pane, which can be narrower than the window.
+      const [containerW, setContainerW] = useState<number>();
       const [containerH, setContainerH] = useState(0);
       const onContainerLayout = useCallback((e: LayoutChangeEvent) => {
+        setContainerW(e.nativeEvent.layout.width);
         setContainerH(e.nativeEvent.layout.height);
       }, []);
 
@@ -442,7 +466,10 @@ export const SkiaPianoRollGrid = memo(
           ? Math.max(MIN_EXPANDED_ROW, containerH / totalPitches)
           : rowHeight;
 
-      const availableGridWidth = screenWidth - LABEL_COL_WIDTH;
+      const availableGridWidth = Math.max(
+        1,
+        (containerW ?? screenWidth) - LABEL_COL_WIDTH
+      );
       const stepWidth = (availableGridWidth / 16) * zoomLevel;
       const beatWidth = stepWidth * 4;
       const gridWidth = lengthInBeats * beatWidth;
@@ -465,11 +492,11 @@ export const SkiaPianoRollGrid = memo(
               (x + availableGridWidth) / beatWidth / 4
             );
           }
-          onVisibleBeatRangeChange?.(
+          callbacksRef.current.onVisibleBeatRangeChange?.(
             x / beatWidth,
             (x + availableGridWidth) / beatWidth
           );
-          onScrollXChange?.(x);
+          callbacksRef.current.onScrollXChange?.(x);
         },
         [
           gridWidth,
@@ -478,24 +505,28 @@ export const SkiaPianoRollGrid = memo(
           lengthInBeats,
           visibleBarEnd,
           visibleBarStart,
-          onVisibleBeatRangeChange,
-          onScrollXChange,
         ]
       );
 
       const applyGridTransform = useCallback(
-        (x: number, animated = false) => {
+        (x: number, animated = false, transition?: string) => {
           const node = gridContentRef.current;
-          const maxX = Math.max(0, gridWidth - availableGridWidth);
+          const scale = zoomScaleRef.current;
+          const maxX = Math.max(0, gridWidth - availableGridWidth / scale);
           const clamped = Math.max(0, Math.min(maxX, x));
           panXRef.current = clamped;
           if (node?.style) {
-            node.style.transition = animated
+            node.style.transition = transition ?? (animated
               ? 'transform 200ms ease-out'
-              : 'none';
-            node.style.transform = `translateX(${-clamped}px)`;
+              : 'none');
+            node.style.transformOrigin = '0 0';
+            node.style.transform = scale === 1
+              ? `translateX(${-clamped}px)`
+              : `translateX(${-clamped * scale}px) scaleX(${scale})`;
           }
-          reportScroll(clamped);
+          // The host uses committed geometry. Notify it once at zoom end,
+          // never per wheel event (nor per animation frame).
+          if (!wheelZoomRef.current) reportScroll(clamped);
           return clamped;
         },
         [gridWidth, availableGridWidth, reportScroll]
@@ -574,41 +605,125 @@ export const SkiaPianoRollGrid = memo(
         [applyGridTransform, applyOuterTransform, cancelMomentum, reportScroll]
       );
 
+      const clearWheelZoomTimer = useCallback(() => {
+        if (wheelZoomTimer.current != null) {
+          clearTimeout(wheelZoomTimer.current);
+          wheelZoomTimer.current = null;
+        }
+      }, []);
+
+      const cancelWheelZoom = useCallback(() => {
+        clearWheelZoomTimer();
+        wheelZoomRef.current = null;
+        zoomScaleRef.current = 1;
+        applyGridTransform(panXRef.current);
+      }, [applyGridTransform, clearWheelZoomTimer]);
+      const cancelWheelZoomRef = useRef(cancelWheelZoom);
+      useLayoutEffect(() => {
+        cancelWheelZoomRef.current = cancelWheelZoom;
+      }, [cancelWheelZoom]);
+      // Timer cleanup must also work without a DOM (SSR/tests).
+      useEffect(() => clearWheelZoomTimer, [clearWheelZoomTimer]);
+
+      const finishWheelZoom = useCallback(() => {
+        const pending = wheelZoomRef.current;
+        if (!pending) return;
+        clearWheelZoomTimer();
+        cancelMomentum();
+        // Preserve the leftmost visible beat, including the finite end clamp
+        // when zooming out. Keep the preview until real geometry is committed.
+        reportScroll(panXRef.current, true);
+        wheelZoomRef.current = null;
+        if (pending.target === zoomLevel) {
+          cancelWheelZoom();
+          return;
+        }
+        committedZoomAnchor.current = {
+          zoom: pending.target,
+          beat: panXRef.current / beatWidth,
+        };
+        callbacksRef.current.onZoomChange?.(pending.target);
+      }, [
+        beatWidth, zoomLevel, cancelMomentum, cancelWheelZoom,
+        clearWheelZoomTimer, reportScroll,
+      ]);
+
+      const pauseWheelZoom = useCallback(() => {
+        if (!wheelZoomRef.current) return;
+        clearWheelZoomTimer();
+        const node = gridContentRef.current;
+        // Read the actually displayed scale ONCE at interruption, not on each
+        // wheel event/frame. Freeze here until pointerup so hit testing and
+        // dragging use the same geometry the user touched, even mid-settle.
+        if (node && typeof DOMMatrixReadOnly !== 'undefined') {
+          const matrix = new DOMMatrixReadOnly(window.getComputedStyle(node).transform);
+          zoomScaleRef.current = matrix.a;
+          panXRef.current = -matrix.e / matrix.a;
+        }
+        // Computed CSS matrices may round their coefficients at a hard limit.
+        wheelZoomRef.current.target = Math.max(
+          1, Math.min(3, zoomLevel * zoomScaleRef.current)
+        );
+        zoomScaleRef.current = wheelZoomRef.current.target / zoomLevel;
+        applyGridTransform(panXRef.current);
+      }, [applyGridTransform, clearWheelZoomTimer, zoomLevel]);
+
       useImperativeHandle(
         ref,
         () => ({
           scrollToX: (x: number, animated = true) => {
+            // Explicit bar navigation takes ownership from a pending pinch.
+            cancelWheelZoom();
             applyGridTransform(x, animated);
           },
         }),
-        [applyGridTransform]
+        [applyGridTransform, cancelWheelZoom]
       );
 
-      // Ctrl+scroll → zoom (trackpad pinch or mouse wheel with modifier).
-      // Plain wheel/trackpad scroll has to pan manually too, now that there's no
-      // native scrollable container to do it for free.
+      // Ctrl/Meta+wheel → pinch zoom. CSS previews only transform; real widths
+      // and the controlled zoom commit once after the final event settles.
       useEffect(() => {
         const el = containerRef.current;
         if (!el?.addEventListener) return;
         const handleWheel = (ev: WheelEvent) => {
-          const wheel = ev as WheelEvent & {
-            ctrlKey?: boolean;
-            metaKey?: boolean;
-            deltaX?: number;
-            deltaY?: number;
-          };
           ev.preventDefault();
-          if (wheel.ctrlKey || wheel.metaKey) {
-            const delta = (wheel.deltaY ?? 0) > 0 ? -0.25 : 0.25;
-            onZoomChange?.(Math.max(1, Math.min(3, zoomLevel + delta)));
+          if (pointerInteractionRef.current) return;
+          cancelMomentum();
+          if (ev.ctrlKey || ev.metaKey) {
+            if (
+              !callbacksRef.current.onZoomChange ||
+              !Number.isFinite(ev.deltaY) || ev.deltaY === 0
+            ) return;
+            const unit = ev.deltaMode === 1 ? 16
+              : ev.deltaMode === 2 ? Math.max(1, containerH) : 1;
+            const exponent = Math.max(-50, Math.min(50, -ev.deltaY * unit / 100));
+            const previous = wheelZoomRef.current?.target ?? zoomLevel;
+            const target = Math.max(1, Math.min(3, previous * Math.exp(exponent)));
+            if (target === previous) return;
+            clearWheelZoomTimer();
+            wheelZoomRef.current = { target };
+            zoomScaleRef.current = target / zoomLevel;
+            const reduced = window.matchMedia?.(
+              '(prefers-reduced-motion: reduce)'
+            ).matches;
+            applyGridTransform(panXRef.current, false, reduced ? 'none'
+              : `transform ${WHEEL_ZOOM_SETTLE_MS}ms ${WHEEL_ZOOM_EASING}`);
+            wheelZoomTimer.current = setTimeout(finishWheelZoom, WHEEL_ZOOM_SETTLE_MS);
             return;
           }
-          applyGridTransform(panXRef.current + (wheel.deltaX ?? 0));
-          applyOuterTransform(panYRef.current + (wheel.deltaY ?? 0));
+          // Native trackpad scroll already carries inertia. Don't add a second
+          // coast; stop a pending zoom at its visible value before panning.
+          pauseWheelZoom();
+          applyGridTransform(panXRef.current + (ev.deltaX ?? 0) / zoomScaleRef.current);
+          applyOuterTransform(panYRef.current + (ev.deltaY ?? 0));
+          finishWheelZoom();
         };
         el.addEventListener('wheel', handleWheel, { passive: false });
         return () => el.removeEventListener('wheel', handleWheel);
-      }, [onZoomChange, zoomLevel, applyGridTransform, applyOuterTransform]);
+      }, [
+        zoomLevel, containerH, applyGridTransform, applyOuterTransform,
+        cancelMomentum, clearWheelZoomTimer, finishWheelZoom, pauseWheelZoom,
+      ]);
 
       // Unlike native scrollLeft, a manual transform doesn't auto-correct itself
       // when the content shrinks (e.g. deleting a bar) — without this, a clip
@@ -618,9 +733,26 @@ export const SkiaPianoRollGrid = memo(
       // content size changes, not just when the user actively pans it — this
       // also covers reporting the initial visible range on mount, since it
       // always runs at least once (panXRef.current starts at 0).
+      useLayoutEffect(() => {
+        const anchor = committedZoomAnchor.current;
+        committedZoomAnchor.current = null;
+        if (anchor?.zoom === zoomLevel) {
+          panXRef.current = anchor.beat * beatWidth;
+        } else {
+          zoomReleaseMomentum.current = null;
+        }
+        // Also cancels stale settles after external zoom/viewport/clip changes.
+        cancelWheelZoom();
+      }, [zoomLevel, beatWidth, cancelWheelZoom]);
+
       useEffect(() => {
-        applyGridTransform(panXRef.current);
-      }, [applyGridTransform]);
+        const release = zoomReleaseMomentum.current;
+        if (release?.zoom !== zoomLevel) return;
+        zoomReleaseMomentum.current = null;
+        // The release coast must use the NEW geometry, not the closure from
+        // the pinch preview. The caller's anchor effects finish before RAF.
+        startMomentum(release.vx, release.vy);
+      }, [zoomLevel, startMomentum]);
 
       useEffect(() => {
         applyOuterTransform(panYRef.current);
@@ -725,6 +857,8 @@ export const SkiaPianoRollGrid = memo(
         const handleInterruption = () => {
           clearPointerInteraction();
           cancelMomentum();
+          zoomReleaseMomentum.current = null;
+          cancelWheelZoomRef.current();
         };
         const handleVisibilityChange = () => {
           if (document.hidden) handleInterruption();
@@ -737,16 +871,18 @@ export const SkiaPianoRollGrid = memo(
             'visibilitychange',
             handleVisibilityChange
           );
-          handleInterruption();
+          clearPointerInteraction();
+          cancelMomentum();
+          clearWheelZoomTimer();
         };
-      }, [clearPointerInteraction, cancelMomentum]);
+      }, [clearPointerInteraction, cancelMomentum, clearWheelZoomTimer]);
 
       const getPointerPoint = useCallback(
         (e: WebPointerEvent, cachedRect?: { left: number; top: number }) => {
           const rect = cachedRect ?? e.currentTarget.getBoundingClientRect();
           const nativeEvent = e.nativeEvent;
           return {
-            x: getWebGridTapX(e as WebGridTapEvent, rect),
+            x: getWebGridTapX(e as WebGridTapEvent, rect) / zoomScaleRef.current,
             y: nativeEvent.clientY - rect.top,
           };
         },
@@ -839,6 +975,7 @@ export const SkiaPianoRollGrid = memo(
             return;
           }
           if (nativeEvent.button != null && nativeEvent.button !== 0) return;
+          pauseWheelZoom();
           const rect = e.currentTarget.getBoundingClientRect();
           const { x, y } = getPointerPoint(e, rect);
           const hit = editable
@@ -879,7 +1016,10 @@ export const SkiaPianoRollGrid = memo(
             // ignore — capture is a nice-to-have, not required for the logic below
           }
         },
-        [getPointerPoint, notes, pianoRollMathContext, cancelMomentum, editable]
+        [
+          getPointerPoint, notes, pianoRollMathContext,
+          cancelMomentum, pauseWheelZoom, editable,
+        ]
       );
 
       const handlePointerMove = useCallback(
@@ -978,8 +1118,20 @@ export const SkiaPianoRollGrid = memo(
             if (!wasDragging && editable) {
               const target = getGridPointNoteTarget(x, y, pianoRollMathContext);
               if (target) onGridTap?.(target.noteNumber, target.position);
+              finishWheelZoom();
             } else {
-              startMomentum(interaction.velocityX, interaction.velocityY);
+              const pendingZoom = wheelZoomRef.current?.target;
+              if (pendingZoom != null && pendingZoom !== zoomLevel) {
+                zoomReleaseMomentum.current = {
+                  zoom: pendingZoom,
+                  vx: interaction.velocityX * zoomScaleRef.current,
+                  vy: interaction.velocityY,
+                };
+                finishWheelZoom();
+              } else {
+                finishWheelZoom();
+                startMomentum(interaction.velocityX, interaction.velocityY);
+              }
             }
             clearPointerInteraction();
             return;
@@ -1019,10 +1171,13 @@ export const SkiaPianoRollGrid = memo(
             onNotePress?.(interaction.noteIndex);
           }
 
+          finishWheelZoom();
           clearPointerInteraction();
         },
         [
           clearPointerInteraction,
+          finishWheelZoom,
+          zoomLevel,
           getPointerPoint,
           notes,
           onGridTap,
@@ -1044,10 +1199,11 @@ export const SkiaPianoRollGrid = memo(
             pointerInteractionRef.current?.pointerId === e.nativeEvent.pointerId
           ) {
             reportScroll(panXRef.current, true);
+            finishWheelZoom();
             clearPointerInteraction();
           }
         },
-        [clearPointerInteraction, reportScroll]
+        [clearPointerInteraction, finishWheelZoom, reportScroll]
       );
 
       const webPointerHandlers: WebPointerHandlers = {
@@ -1083,6 +1239,8 @@ export const SkiaPianoRollGrid = memo(
 
       const handleGridKeyDown = useCallback(
         (e: WebKeyboardEvent) => {
+          pauseWheelZoom();
+          finishWheelZoom();
           const key = e.nativeEvent?.key ?? e.key;
           const movement =
             key === 'ArrowLeft'
@@ -1102,7 +1260,7 @@ export const SkiaPianoRollGrid = memo(
             addNoteAtKeyboardCursor();
           }
         },
-        [addNoteAtKeyboardCursor, moveKeyboardCursor]
+        [addNoteAtKeyboardCursor, moveKeyboardCursor, pauseWheelZoom, finishWheelZoom]
       );
 
       const webGridHandlers = {

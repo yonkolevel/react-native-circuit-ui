@@ -1,6 +1,8 @@
 import React from 'react';
-import { Alert, ScrollView } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+import { Alert, ScrollView, View } from 'react-native';
+import { Canvas } from '@shopify/react-native-skia';
+import { NotePrecisionPanel } from '../../../../../components/NotePrecisionPanel';
+import { render, fireEvent, within } from '@testing-library/react-native';
 import { ThemeProvider } from '../../../../../theme';
 import { EditorPolicyProvider } from '../../../stores/editorPolicy';
 import { SkiaPianoRollGrid } from '../../../../../components/PianoRoll';
@@ -20,7 +22,10 @@ function renderWithTheme(ui: React.ReactElement) {
   return render(<ThemeProvider initialMode="dark">{ui}</ThemeProvider>);
 }
 
-beforeEach(() => resetMockIds());
+beforeEach(() => {
+  resetMockIds();
+  jest.clearAllMocks();
+});
 
 describe('ClipEditorView snapshots', () => {
   it('matches snapshot with drum clip', () => {
@@ -228,6 +233,38 @@ describe('ClipLengthBar range selection', () => {
 });
 
 describe('ClipEditorView interactions', () => {
+  it('keeps grid, precision scale and bar navigation aligned to the editor container', () => {
+    const clip = createMockDrumClip({ lengthInBars: 4, activeLengthInBars: 4 });
+    const view = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+      />
+    );
+    const editor = view.UNSAFE_getAllByType(View)[0]!;
+    const grid = view.UNSAFE_getByType(SkiaPianoRollGrid);
+    const layout = {
+      nativeEvent: { layout: { x: 0, y: 0, width: 660, height: 400 } },
+    };
+    fireEvent(editor, 'layout', layout);
+    fireEvent(grid.findAllByType(View)[0]!, 'layout', layout);
+
+    expect(grid.findByType(Canvas).parent!.props.style.width).toBe(4 * 600);
+    fireEvent.press(within(grid).getByText('Kick'));
+    expect(view.UNSAFE_getByType(NotePrecisionPanel).props.stepWidth).toBe(
+      600 / 16
+    );
+    fireEvent(view.getByLabelText('Bar 3'), 'accessibilityTap');
+    const horizontalScroll = grid
+      .findAllByType(ScrollView)
+      .find((node) => node.props.horizontal)!;
+    expect(horizontalScroll.instance.scrollTo).toHaveBeenLastCalledWith({
+      x: 1200,
+      animated: true,
+    });
+  });
+
   it('scrolls the piano roll when a bar is focused', () => {
     const clip = createMockDrumClip({ id: 5, trackID: 1, sectionID: 1 });
     const { getByLabelText, UNSAFE_getAllByType } = renderWithTheme(
