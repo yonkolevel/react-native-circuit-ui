@@ -77,6 +77,8 @@ export const PianoKeyboard = memo(function PianoKeyboard({
     disabledProp || !isEditorCapabilityAllowed(policy, 'liveRecording');
   const [pressed, setPressed] = useState<Set<number>>(new Set());
   const pressCounts = useRef(new Map<number, number>());
+  const onNoteOffRef = useRef(onNoteOff);
+  onNoteOffRef.current = onNoteOff;
 
   const totalKeys = numberOfOctaves * 12;
   const keys = useMemo(
@@ -149,13 +151,24 @@ export const PianoKeyboard = memo(function PianoKeyboard({
     [overlayToKey, onNoteOff]
   );
 
-  useEffect(() => {
-    if (!disabled || pressCounts.current.size === 0) return;
+  const releaseHeldKeys = useCallback((resetVisual: boolean) => {
     const heldKeys = [...pressCounts.current.keys()];
+    if (heldKeys.length === 0) return;
     pressCounts.current.clear();
-    setPressed(new Set());
-    heldKeys.forEach((key) => onNoteOff?.(key));
-  }, [disabled, onNoteOff]);
+    if (resetVisual) setPressed(new Set());
+    heldKeys.forEach((key) => onNoteOffRef.current?.(key));
+  }, []);
+
+  useEffect(() => {
+    if (disabled) releaseHeldKeys(true);
+  }, [disabled, releaseHeldKeys]);
+
+  useEffect(
+    () => () => {
+      releaseHeldKeys(false);
+    },
+    [releaseHeldKeys]
+  );
 
   const renderOctave = (octave: number) => {
     const start = octave * 12;

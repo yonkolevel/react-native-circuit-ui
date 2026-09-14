@@ -377,6 +377,17 @@ export const NotePrecisionPanel = memo(
           accessibilityLabel="Note precision editor"
           accessibilityState={!editable ? { disabled: true } : undefined}
         >
+          {!editable && (
+            <View
+              accessible
+              accessibilityRole="text"
+              accessibilityLabel="Note precision editor, read only"
+              accessibilityState={{ disabled: true }}
+              pointerEvents="none"
+              style={styles.accessibilityStatus}
+            />
+          )}
+
           {/* Header */}
           <View style={[styles.header, { backgroundColor: colors.mcBlack3 }]}>
             <Text
@@ -835,6 +846,14 @@ const VelDragTarget = memo(function VelDragTarget({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  accessibilityStatus: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 1,
+    height: 1,
+    opacity: 0.01,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

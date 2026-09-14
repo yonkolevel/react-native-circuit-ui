@@ -105,6 +105,25 @@ describe('web instrument QWERTY release', () => {
     expect(onPadRelease).toHaveBeenCalledTimes(2);
   });
 
+  it('releases every held drum pad on unmount', () => {
+    const onPadRelease = jest.fn();
+    const samples = Array.from({ length: 16 }, (_, noteNumber) => ({
+      id: String(noteNumber),
+      name: `Pad ${noteNumber}`,
+      fileName: `pad-${noteNumber}.wav`,
+      noteNumber,
+    }));
+    const view = render(
+      <DrumPadsView samples={samples} onPadRelease={onPadRelease} />
+    );
+
+    dispatch('keydown', { key: 'a' });
+    dispatch('keydown', { key: 's' });
+    view.unmount();
+
+    expect(onPadRelease.mock.calls).toEqual([[8], [9]]);
+  });
+
   it('releases every held drum pad on visibility loss', () => {
     const onPadRelease = jest.fn();
     const samples = Array.from({ length: 16 }, (_, noteNumber) => ({

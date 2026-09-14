@@ -9,7 +9,7 @@
  * - Divider between items in mcWhite6
  * - Full background: mcBlack4
  */
-import { memo, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
@@ -48,6 +48,12 @@ export const SoundBankView = memo(function SoundBankView({
   const [playingSlug, setPlayingSlug] = useState<string | null>(null);
   const policy = useResolvedEditorPolicy(editorPolicy);
   const canChangeSound = isEditorCapabilityAllowed(policy, 'sound');
+
+  useEffect(() => {
+    if (canChangeSound || playingSlug === null) return;
+    setPlayingSlug(null);
+    onStopPreview?.();
+  }, [canChangeSound, onStopPreview, playingSlug]);
 
   const filtered = useMemo(
     () =>

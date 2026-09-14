@@ -141,6 +141,9 @@ describe('guarded Song action surface', () => {
       (result.current.actions[name] as (...args: any[]) => any)()
     );
 
+    expect(result.current.actions.fetchSoundBanks()).toEqual(
+      expect.any(Promise)
+    );
     expect(guarded.setPlaying).toHaveBeenCalledWith(true);
     expect(guarded.toggleMetronome).toHaveBeenCalled();
     blocked.forEach((name) => expect(guarded[name]).not.toHaveBeenCalled());

@@ -1451,7 +1451,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1472,7 +1476,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1493,7 +1501,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1514,7 +1526,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1535,7 +1551,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1556,7 +1576,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1577,7 +1601,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1598,7 +1626,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1619,7 +1651,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1640,7 +1676,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1661,7 +1701,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1682,7 +1726,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4625,7 +4673,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4646,7 +4698,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4667,7 +4723,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4688,7 +4748,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4709,7 +4773,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4730,7 +4798,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4751,7 +4823,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4772,7 +4848,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4793,7 +4873,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4814,7 +4898,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4835,7 +4923,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4856,7 +4948,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -8930,7 +9026,11 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           <View
                             color="#ff5920"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={171.5}
@@ -8968,7 +9068,11 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           <View
                             color="#ff5920"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={171.5}
@@ -9006,7 +9110,11 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           <View
                             color="#ff5920"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={171.5}
@@ -9044,7 +9152,11 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           <View
                             color="#ff5920"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={171.5}
@@ -12019,7 +12131,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12040,7 +12156,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12061,7 +12181,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12082,7 +12206,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12103,7 +12231,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12124,7 +12256,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12145,7 +12281,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12166,7 +12306,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12187,7 +12331,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12208,7 +12356,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12229,7 +12381,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12250,7 +12406,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}

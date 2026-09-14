@@ -236,6 +236,25 @@ describe('SongView policy accessibility', () => {
       accessibilityRole: 'button',
     });
   });
+
+  it('disables empty clip creation when clip editing is unavailable', () => {
+    const track = createMockTrack({ clips: [] });
+    const store = createTestStore({ tracks: [track] });
+    const section = store.getState().sections[0]!;
+    const screen = renderWithStore(
+      <SongView editorPolicy={{ capabilities: { clips: false } }} />,
+      store
+    );
+    const emptyClip = screen.getByTestId(
+      `empty-clip-${track.id}-${section.id}`
+    );
+
+    expect(emptyClip.props.accessibilityState).toMatchObject({
+      disabled: true,
+    });
+    fireEvent.press(emptyClip);
+    expect(store.getState().createClip).not.toHaveBeenCalled();
+  });
 });
 
 describe('SongToolbar behavior', () => {
@@ -265,6 +284,19 @@ describe('SongToolbar behavior', () => {
     const { getByTestId } = renderWithStore(<SongToolbar />, store);
     fireEvent.press(getByTestId('transport-metronome'));
     expect(store.getState().toggleMetronome).toHaveBeenCalled();
+  });
+
+  it('hides transport controls when an external control owns playback', () => {
+    const store = createTestStore();
+    const { getByTestId, queryByTestId } = renderWithStore(
+      <SongToolbar editorPolicy={{ hideTransport: true }} />,
+      store
+    );
+
+    expect(queryByTestId('transport-play-pause')).toBeNull();
+    expect(queryByTestId('transport-loop')).toBeNull();
+    expect(queryByTestId('transport-metronome')).toBeNull();
+    expect(getByTestId('transport-bpm')).toBeTruthy();
   });
 });
 

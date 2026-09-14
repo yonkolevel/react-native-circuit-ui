@@ -100,8 +100,19 @@ describe('SkiaPianoRollGrid gestures', () => {
     });
   });
 
-  it('drops a target slot once the learner has filled that cell', () => {
+  it('animates fallback note bodies for consumers without velocity preview props', () => {
     const { UNSAFE_getAllByType } = renderWithTheme(
+      <SkiaPianoRollGrid {...baseProps} />
+    );
+    const noteBody = UNSAFE_getAllByType(RoundedRect).find(
+      (node) => node.props.style === undefined && node.props.opacity != null
+    );
+
+    expect(noteBody?.props.opacity).toEqual({ value: 1 });
+  });
+
+  it('drops a target slot and its semantic overlay once the learner has filled that cell', () => {
+    const { UNSAFE_getAllByType, queryByTestId } = renderWithTheme(
       <SkiaPianoRollGrid
         {...baseProps}
         notes={[{ noteNumber: 38, position: 1, duration: 0.25, velocity: 100 }]}
@@ -117,6 +128,7 @@ describe('SkiaPianoRollGrid gestures', () => {
         (node) => node.props.color === '#654321'
       )
     ).toBe(false);
+    expect(queryByTestId('piano-roll-target-0')).toBeNull();
   });
 
   it('rebuilds the gesture when zoom changes the underlying step/beat width', () => {

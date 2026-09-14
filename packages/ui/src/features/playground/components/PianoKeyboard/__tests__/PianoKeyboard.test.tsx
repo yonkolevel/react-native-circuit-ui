@@ -37,6 +37,18 @@ describe('PianoKeyboard snapshots', () => {
 });
 
 describe('PianoKeyboard interactions', () => {
+  it('releases every active native key when the view unmounts', () => {
+    const onNoteOff = jest.fn();
+    const view = renderWithTheme(
+      <PianoKeyboard numberOfOctaves={1} onNoteOff={onNoteOff} />
+    );
+
+    act(() => view.getByTestId('MultiTouchOverlay').props.onPadPress(7));
+    view.unmount();
+
+    expect(onNoteOff).toHaveBeenCalledWith(0);
+  });
+
   it('releases every active native key at a contextual read-only transition', () => {
     const onNoteOn = jest.fn();
     const onNoteOff = jest.fn();

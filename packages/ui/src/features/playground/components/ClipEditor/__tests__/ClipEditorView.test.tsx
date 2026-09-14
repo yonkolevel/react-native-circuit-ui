@@ -11,6 +11,7 @@ import {
   ClipLengthBar,
   rangeForBarDrag,
 } from '../ClipEditorView';
+import { ClipSettingsModal } from '../ClipSettingsModal';
 import {
   createMockDrumClip,
   createMockMelodyClip,
@@ -67,6 +68,25 @@ describe('ClipEditorView snapshots', () => {
       <ClipEditorView clip={clip} instrumentType="drum" isRecording />
     );
     expect(tree.toJSON()).toMatchSnapshot();
+  });
+});
+
+describe('ClipSettingsModal accessibility', () => {
+  it('disables audition when no toggle callback is provided', () => {
+    const { getByLabelText } = renderWithTheme(
+      <ClipSettingsModal
+        visible
+        tempo={120}
+        isMetronomeEnabled={false}
+        showNoteLabels={false}
+        onClose={jest.fn()}
+      />
+    );
+
+    expect(getByLabelText('Play notes as you add them').props).toMatchObject({
+      disabled: true,
+      accessibilityState: { disabled: true },
+    });
   });
 });
 
@@ -254,6 +274,27 @@ describe('ClipLengthBar range selection', () => {
       getByLabelText('Bar 2').props.style[1].backgroundColor
     );
     expect(getByLabelText('Bar 2').props.style[1].borderWidth).toBe(1);
+  });
+
+  it('keeps bar focus navigation available for read-only clips', () => {
+    const onNavigateToBar = jest.fn();
+    const { getByLabelText } = renderWithTheme(
+      <ClipLengthBar
+        lengthInBars={2}
+        activeBarStart={0}
+        activeLengthInBars={2}
+        trackColor="#FF6C3A"
+        notes={[]}
+        editable={false}
+        onNavigateToBar={onNavigateToBar}
+      />
+    );
+
+    const bar = getByLabelText('Bar 2');
+    fireEvent(bar, 'accessibilityTap');
+
+    expect(bar.props.accessibilityState).toEqual({ selected: true });
+    expect(onNavigateToBar).toHaveBeenCalledWith(1);
   });
 
   it('does not expose long-press duplicate or delete actions', () => {

@@ -86,6 +86,7 @@ const ClipCell = memo(function ClipCell({
   defaultOctave,
   onPress,
   onLongPress,
+  canEditClips,
   testID,
 }: {
   clip?: Clip;
@@ -95,15 +96,19 @@ const ClipCell = memo(function ClipCell({
   defaultOctave?: number;
   onPress?: () => void;
   onLongPress?: () => void;
+  canEditClips?: boolean;
   testID?: string;
 }) {
   if (!clip) {
+    const disabled = canEditClips === false;
     return (
       <Pressable
         onPress={onPress}
+        disabled={disabled ? true : undefined}
         testID={testID}
         accessibilityLabel="Create clip"
         accessibilityRole="button"
+        accessibilityState={disabled ? { disabled: true } : undefined}
         style={[s.emptyCell, { borderColor: color }]}
       >
         <Icon icon={Icons.plus} size={17} color={color} />
@@ -462,6 +467,7 @@ export const SongView = memo(function SongView({
                               instrumentType={t.type}
                               sampleCount={t.soundBank?.samples?.length}
                               defaultOctave={t.soundBank?.defaultOctave}
+                              canEditClips={canEditClips}
                               testID={
                                 clip
                                   ? `clip-${t.id}-${clip.id}`

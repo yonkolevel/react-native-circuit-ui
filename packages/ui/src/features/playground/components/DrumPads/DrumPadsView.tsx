@@ -51,6 +51,8 @@ export const DrumPadsView = memo(function DrumPadsView({
     disabledProp || !isEditorCapabilityAllowed(policy, 'liveRecording');
   const [pressedPads, setPressedPads] = useState<Set<number>>(new Set());
   const pressCounts = useRef(new Map<number, number>());
+  const onPadReleaseRef = useRef(onPadRelease);
+  onPadReleaseRef.current = onPadRelease;
 
   const handleNativePress = useCallback(
     (visualIdx: number) => {
@@ -86,13 +88,24 @@ export const DrumPadsView = memo(function DrumPadsView({
     [onPadRelease]
   );
 
-  useEffect(() => {
-    if (!disabled || pressCounts.current.size === 0) return;
+  const releaseHeldPads = useCallback((resetVisual: boolean) => {
     const heldPads = [...pressCounts.current.keys()];
+    if (heldPads.length === 0) return;
     pressCounts.current.clear();
-    setPressedPads(new Set());
-    heldPads.forEach((sampleIdx) => onPadRelease?.(sampleIdx));
-  }, [disabled, onPadRelease]);
+    if (resetVisual) setPressedPads(new Set());
+    heldPads.forEach((sampleIdx) => onPadReleaseRef.current?.(sampleIdx));
+  }, []);
+
+  useEffect(() => {
+    if (disabled) releaseHeldPads(true);
+  }, [disabled, releaseHeldPads]);
+
+  useEffect(
+    () => () => {
+      releaseHeldPads(false);
+    },
+    [releaseHeldPads]
+  );
 
   const handleAccessibleActivation = useCallback(
     (visualIdx: number) => {

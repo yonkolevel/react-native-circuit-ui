@@ -152,14 +152,13 @@ export const MissionRail = memo(function MissionRail({
   const feedbackColor = feedbackTone.color;
 
   useEffect(() => {
-    if (previousExpanded.current !== isExpanded) {
-      previousExpanded.current = isExpanded;
-      focusElement(detailsRef);
-      return;
-    }
+    const expansionChanged = previousExpanded.current !== isExpanded;
+    previousExpanded.current = isExpanded;
+
     if (focusTarget === 'feedback' && isExpanded) focusElement(feedbackRef);
     else if (focusTarget === 'details') focusElement(detailsRef);
     else if (focusTarget === 'primary') focusElement(primaryRef);
+    else if (expansionChanged) focusElement(detailsRef);
   }, [focusTarget, focusVersion, isExpanded]);
 
   const action = primaryAction ? (
@@ -302,11 +301,6 @@ export const MissionRail = memo(function MissionRail({
               style={styles.bodyScroll}
               contentContainerStyle={styles.bodyContent}
               nestedScrollEnabled
-              onContentSizeChange={() => {
-                if (helpMessage || contextAction) {
-                  bodyScrollRef.current?.scrollToEnd({ animated: false });
-                }
-              }}
             >
               <Text variant="body" color={colors.mcWhite2}>
                 {instructions}

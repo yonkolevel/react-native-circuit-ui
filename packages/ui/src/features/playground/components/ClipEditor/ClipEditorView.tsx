@@ -490,7 +490,7 @@ const ClipLengthBar = memo(function ClipLengthBar({
         if (!success) scheduleOnRN(cancelDrag);
       });
     const tap = Gesture.Tap()
-      .enabled(editable)
+      .enabled(true)
       .onEnd((e, success) => {
         'worklet';
         if (success)
@@ -603,7 +603,7 @@ const ClipLengthBar = memo(function ClipLengthBar({
                   isLast={i === barCount - 1}
                   trackColor={trackColor}
                   dashes={notesByBar[i] ?? []}
-                  onFocus={editable ? handleBarTap : undefined}
+                  onFocus={handleBarTap}
                 />
               );
             })}

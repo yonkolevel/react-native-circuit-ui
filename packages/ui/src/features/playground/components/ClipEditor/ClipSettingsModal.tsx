@@ -181,6 +181,10 @@ export const ClipSettingsModal = memo(function ClipSettingsModal({
             </View>
             <Switch
               value={auditionOnPlace}
+              disabled={!onToggleAuditionOnPlace}
+              accessibilityState={
+                onToggleAuditionOnPlace ? undefined : { disabled: true }
+              }
               accessibilityLabel="Play notes as you add them"
               onValueChange={() => onToggleAuditionOnPlace?.()}
               trackColor={{ false: colors.mcBlack4, true: colors.mcGreen }}

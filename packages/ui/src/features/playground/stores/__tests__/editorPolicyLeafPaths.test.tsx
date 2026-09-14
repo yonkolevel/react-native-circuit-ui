@@ -50,6 +50,9 @@ describe('contextual EditorPolicy leaf enforcement', () => {
         editorPolicy={permissive}
       />
     );
+    expect(sections.getByLabelText('Verse').props.accessibilityRole).toBe(
+      'button'
+    );
     fireEvent.press(sections.getByLabelText('Verse'));
     fireEvent.press(sections.getByLabelText('Add section'));
 
@@ -69,6 +72,40 @@ describe('contextual EditorPolicy leaf enforcement', () => {
     expect(onSectionAdd).not.toHaveBeenCalled();
     expect(onSoundSelect).not.toHaveBeenCalled();
     expect(onSoundPreview).not.toHaveBeenCalled();
+  });
+
+  it('stops an active sound preview when sound capability is revoked', () => {
+    const onPreview = jest.fn();
+    const onStopPreview = jest.fn();
+    const view = render(
+      <ThemeProvider initialMode="dark">
+        <EditorPolicyProvider policy={{ capabilities: { sound: true } }}>
+          <SoundBankView
+            soundBanks={[{ slug: 'kit', name: 'Kit' }]}
+            onPreview={onPreview}
+            onStopPreview={onStopPreview}
+          />
+        </EditorPolicyProvider>
+      </ThemeProvider>
+    );
+
+    fireEvent.press(view.getByLabelText('Preview sound'));
+    expect(onPreview).toHaveBeenCalledWith('kit');
+
+    view.rerender(
+      <ThemeProvider initialMode="dark">
+        <EditorPolicyProvider policy={{ capabilities: { sound: false } }}>
+          <SoundBankView
+            soundBanks={[{ slug: 'kit', name: 'Kit' }]}
+            onPreview={onPreview}
+            onStopPreview={onStopPreview}
+          />
+        </EditorPolicyProvider>
+      </ThemeProvider>
+    );
+
+    expect(onStopPreview).toHaveBeenCalledTimes(1);
+    expect(view.queryByLabelText('Stop preview')).toBeNull();
   });
 
   it('marks direct mixer-selection and live-input leaves disabled from context', () => {

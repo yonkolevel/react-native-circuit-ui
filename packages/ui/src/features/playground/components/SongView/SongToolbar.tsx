@@ -77,6 +77,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
     const canLoop = isEditorCapabilityAllowed(policy, 'loop');
     const canMetronome = isEditorCapabilityAllowed(policy, 'metronome');
     const canTempo = isEditorCapabilityAllowed(policy, 'tempo');
+    const hideTransport = policy.hideTransport === true;
 
     // BPM editor modal
     const [showBpmEditor, setShowBpmEditor] = useState(false);
@@ -155,71 +156,75 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
         <View style={styles.spacer} />
 
         {/* Transport Controls — centered */}
-        <View style={styles.transportGroup}>
-          {/* Play / Pause — bounce on tap */}
-          <WithHint hintID={HintIDs.playButton}>
+        {!hideTransport && (
+          <View style={styles.transportGroup}>
+            {/* Play / Pause — bounce on tap */}
+            <WithHint hintID={HintIDs.playButton}>
+              <AnimatedPressable
+                onPress={handlePlayPause}
+                disabled={canPlay ? undefined : true}
+                hitSlop={8}
+                accessibilityRole="button"
+                accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
+                accessibilityHint="Toggle playback"
+                accessibilityState={{
+                  selected: isPlaying,
+                  disabled: canPlay ? undefined : true,
+                }}
+                style={[styles.transportButton, playStyle]}
+                testID={testIDs?.playButton ?? 'transport-play-pause'}
+              >
+                {isPlaying ? (
+                  <Icon icon={Icons.pause} size={22} color={colors.mcWhite} />
+                ) : (
+                  <Icon icon={Icons.play} size={22} color={colors.mcWhite} />
+                )}
+              </AnimatedPressable>
+            </WithHint>
+
+            {/* Loop — bounce on tap */}
             <AnimatedPressable
-              onPress={handlePlayPause}
-              disabled={canPlay ? undefined : true}
+              onPress={handleToggleLoop}
+              disabled={canLoop ? undefined : true}
               hitSlop={8}
               accessibilityRole="button"
-              accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
-              accessibilityHint="Toggle playback"
+              accessibilityLabel="Loop"
+              accessibilityHint="Toggle loop"
               accessibilityState={{
-                selected: isPlaying,
-                disabled: canPlay ? undefined : true,
+                selected: isLoopEnabled,
+                disabled: canLoop ? undefined : true,
               }}
-              style={[styles.transportButton, playStyle]}
-              testID={testIDs?.playButton ?? 'transport-play-pause'}
+              style={[styles.transportButton, loopStyle]}
+              testID={testIDs?.loopButton ?? 'transport-loop'}
             >
-              {isPlaying ? (
-                <Icon icon={Icons.pause} size={22} color={colors.mcWhite} />
-              ) : (
-                <Icon icon={Icons.play} size={22} color={colors.mcWhite} />
-              )}
+              <Icon icon={Icons.loop} size={22} color={loopColor} />
             </AnimatedPressable>
-          </WithHint>
 
-          {/* Loop — bounce on tap */}
-          <AnimatedPressable
-            onPress={handleToggleLoop}
-            disabled={canLoop ? undefined : true}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Loop"
-            accessibilityHint="Toggle loop"
-            accessibilityState={{
-              selected: isLoopEnabled,
-              disabled: canLoop ? undefined : true,
-            }}
-            style={[styles.transportButton, loopStyle]}
-            testID={testIDs?.loopButton ?? 'transport-loop'}
-          >
-            <Icon icon={Icons.loop} size={22} color={loopColor} />
-          </AnimatedPressable>
-
-          {/* Metronome — bounce on tap */}
-          <AnimatedPressable
-            onPress={handleToggleMetronome}
-            disabled={canMetronome ? undefined : true}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Metronome"
-            accessibilityHint="Toggle metronome"
-            accessibilityState={{
-              selected: isMetronomeEnabled,
-              disabled: canMetronome ? undefined : true,
-            }}
-            style={[styles.transportButton, metroStyle]}
-            testID={testIDs?.metronomeButton ?? 'transport-metronome'}
-          >
-            <Icon
-              icon={isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff}
-              size={22}
-              color={colors.mcWhite}
-            />
-          </AnimatedPressable>
-        </View>
+            {/* Metronome — bounce on tap */}
+            <AnimatedPressable
+              onPress={handleToggleMetronome}
+              disabled={canMetronome ? undefined : true}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="Metronome"
+              accessibilityHint="Toggle metronome"
+              accessibilityState={{
+                selected: isMetronomeEnabled,
+                disabled: canMetronome ? undefined : true,
+              }}
+              style={[styles.transportButton, metroStyle]}
+              testID={testIDs?.metronomeButton ?? 'transport-metronome'}
+            >
+              <Icon
+                icon={
+                  isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff
+                }
+                size={22}
+                color={colors.mcWhite}
+              />
+            </AnimatedPressable>
+          </View>
+        )}
 
         {/* BPM display — tappable */}
         <Pressable

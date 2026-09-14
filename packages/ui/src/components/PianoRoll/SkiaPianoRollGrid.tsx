@@ -102,6 +102,16 @@ const SCROLL_OWNER_PANEL = 1;
 // matching the convention most DAWs use for an in-progress take.
 const RECORDING_OUTLINE_COLOR = '#FF3B30';
 
+function useNoteAppearanceOpacity(
+  appearKey: string,
+  appearingKey: SharedValue<string>,
+  appearProgress: SharedValue<number>
+): SharedValue<number> {
+  return useDerivedValue(() =>
+    appearingKey.value === appearKey ? appearProgress.value : 1
+  );
+}
+
 /**
  * Live preview of a note currently held during recording. Grows from its
  * press beat to the live playhead position via a SharedValue read on the UI
@@ -140,8 +150,10 @@ const VelocityAwareNoteBody = memo(function VelocityAwareNoteBody({
 }) {
   // Which note is arriving is read on the UI runtime, so placing a note costs
   // the one React render the new note already required — not three.
-  const opacity = useDerivedValue(() =>
-    appearingKey.value === appearKey ? appearProgress.value : 1
+  const opacity = useNoteAppearanceOpacity(
+    appearKey,
+    appearingKey,
+    appearProgress
   );
 
   const color = useDerivedValue(() => {
@@ -151,6 +163,46 @@ const VelocityAwareNoteBody = memo(function VelocityAwareNoteBody({
         : committedVelocity;
     return velocityColors[Math.max(0, Math.min(127, Math.round(velocity)))]!;
   });
+
+  return (
+    <RoundedRect
+      x={x}
+      y={y}
+      width={width}
+      height={height}
+      r={radius}
+      color={color}
+      opacity={opacity}
+    />
+  );
+});
+
+const AppearingNoteBody = memo(function AppearingNoteBody({
+  x,
+  y,
+  width,
+  height,
+  radius,
+  color,
+  appearKey,
+  appearingKey,
+  appearProgress,
+}: {
+  x: number | SharedValue<number>;
+  y: number | SharedValue<number>;
+  width: number | SharedValue<number>;
+  height: number;
+  radius: number;
+  color: string;
+  appearKey: string;
+  appearingKey: SharedValue<string>;
+  appearProgress: SharedValue<number>;
+}) {
+  const opacity = useNoteAppearanceOpacity(
+    appearKey,
+    appearingKey,
+    appearProgress
+  );
 
   return (
     <RoundedRect
@@ -738,7 +790,7 @@ export const SkiaPianoRollGrid = memo(
 
       const guidanceTargets = useMemo(
         () =>
-          (guidance?.targets ?? []).flatMap((target) => {
+          (guidance?.targets ?? []).flatMap((target, targetIndex) => {
             const row = getPianoRollGuidanceRow(target.noteNumber, pitchToMidi);
             if (row == null) return [];
             const label = isDrum
@@ -746,9 +798,21 @@ export const SkiaPianoRollGrid = memo(
                   (sample) => sample.noteNumber === target.noteNumber
                 )?.name ?? `MIDI ${target.noteNumber}`)
               : getNoteName(target.noteNumber);
-            return [{ ...target, row, label }];
+            return [{ ...target, row, label, targetIndex }];
           }),
         [guidance?.targets, isDrum, pitchToMidi, samples]
+      );
+      const pendingGuidanceTargets = useMemo(
+        () =>
+          guidanceTargets.filter(
+            (target) =>
+              !notes.some(
+                (note) =>
+                  note.noteNumber === target.noteNumber &&
+                  Math.abs(note.position - target.position) < 1e-6
+              )
+          ),
+        [guidanceTargets, notes]
       );
 
       const pianoRollMathContext = useMemo(
@@ -1257,16 +1321,7 @@ export const SkiaPianoRollGrid = memo(
                        * belongs there — same geometry, same colour — so placing
                        * one simply fills its own outline. Behind the notes layer,
                        * and dropped once the learner has filled the cell. */}
-                      {guidanceTargets.map((target, index) => {
-                        if (
-                          notes.some(
-                            (note) =>
-                              note.noteNumber === target.noteNumber &&
-                              Math.abs(note.position - target.position) < 1e-6
-                          )
-                        ) {
-                          return null;
-                        }
+                      {pendingGuidanceTargets.map((target) => {
                         const x = target.position * beatWidth;
                         const y = target.row * effectiveRowHeight + 1;
                         const w = Math.max(
@@ -1279,7 +1334,7 @@ export const SkiaPianoRollGrid = memo(
                           noteColors?.[target.noteNumber] ??
                           trackColor;
                         return (
-                          <React.Fragment key={`target-${index}`}>
+                          <React.Fragment key={`target-${target.targetIndex}`}>
                             <RoundedRect
                               x={x}
                               y={y}
@@ -1354,14 +1409,16 @@ export const SkiaPianoRollGrid = memo(
                                 }
                               />
                             ) : (
-                              <RoundedRect
+                              <AppearingNoteBody
                                 x={isDragging ? dragX : x}
                                 y={isDragging ? dragY : y}
                                 width={isDragging ? dragW : w}
                                 height={h}
-                                r={r}
+                                radius={r}
                                 color={velocityColors[note.velocity]!}
-                                opacity={1}
+                                appearKey={`${note.noteNumber}:${note.position}`}
+                                appearingKey={appearingKey}
+                                appearProgress={appearProgress}
                               />
                             )}
                             <RoundedRect
@@ -1536,16 +1593,16 @@ export const SkiaPianoRollGrid = memo(
                       }}
                     />
                   ))}
-                  {guidanceTargets.map((target, index) => (
+                  {pendingGuidanceTargets.map((target) => (
                     <View
-                      key={`target-a11y-${index}`}
+                      key={`target-a11y-${target.targetIndex}`}
                       pointerEvents="none"
                       accessible
                       accessibilityLabel={`Target ${target.label} at beat ${target.position}`}
                       accessibilityValue={{
                         text: `MIDI note ${target.noteNumber}`,
                       }}
-                      testID={`piano-roll-target-${index}`}
+                      testID={`piano-roll-target-${target.targetIndex}`}
                       style={{
                         position: 'absolute',
                         left: target.position * beatWidth,

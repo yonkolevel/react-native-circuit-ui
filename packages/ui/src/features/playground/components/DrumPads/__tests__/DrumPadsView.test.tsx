@@ -121,6 +121,19 @@ describe('DrumPadsView interactions', () => {
     expect(onPadRelease).toHaveBeenCalledTimes(2);
   });
 
+  it('releases every active native pad when the view unmounts', () => {
+    const samples = createDrumSamples();
+    const onPadRelease = jest.fn();
+    const view = renderWithTheme(
+      <DrumPadsView samples={samples} onPadRelease={onPadRelease} />
+    );
+
+    act(() => view.getByTestId('MultiTouchOverlay').props.onPadPress(12));
+    view.unmount();
+
+    expect(onPadRelease).toHaveBeenCalledWith(0);
+  });
+
   it('releases a held public DrumPad immediately when policy disables', () => {
     const onPress = jest.fn();
     const onRelease = jest.fn();

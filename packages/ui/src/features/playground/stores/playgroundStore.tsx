@@ -214,6 +214,8 @@ const ACTION_CAPABILITIES: Record<SongActionName, EditorCapability | null> = {
   toggleAuditionOnPlace: null,
 };
 
+const ASYNC_ACTIONS = new Set<SongActionName>(['fetchSoundBanks']);
+
 const NON_MUTATION_ACTIONS = new Set<SongActionName>([
   'showSongView',
   'showAddTrackMenu',
@@ -395,7 +397,7 @@ export function useSongActions(policyOverride?: EditorPolicy): SongActions {
       wrapped[name] = (...args: unknown[]) => {
         const capability = ACTION_CAPABILITIES[name];
         if (capability && !isEditorCapabilityAllowed(policy, capability))
-          return;
+          return ASYNC_ACTIONS.has(name) ? Promise.resolve() : undefined;
         if (NON_MUTATION_ACTIONS.has(name)) {
           return (actions[name] as (...values: unknown[]) => unknown)(...args);
         }

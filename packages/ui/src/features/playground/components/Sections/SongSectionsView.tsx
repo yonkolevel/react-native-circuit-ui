@@ -31,6 +31,7 @@ export const SectionPill = memo(function SectionPill({
   return (
     <Pressable
       onPress={() => onPress?.(section.id)}
+      accessibilityRole="button"
       disabled={disabled || undefined}
       style={[
         styles.pill,
