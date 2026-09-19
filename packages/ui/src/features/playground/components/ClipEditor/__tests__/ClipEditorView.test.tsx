@@ -1,13 +1,17 @@
 import React from 'react';
-import { Alert, ScrollView } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+import { Alert, ScrollView, View } from 'react-native';
+import { Canvas } from '@shopify/react-native-skia';
+import { NotePrecisionPanel } from '../../../../../components/NotePrecisionPanel';
+import { render, fireEvent, within } from '@testing-library/react-native';
 import { ThemeProvider } from '../../../../../theme';
+import { EditorPolicyProvider } from '../../../stores/editorPolicy';
 import { SkiaPianoRollGrid } from '../../../../../components/PianoRoll';
 import {
   ClipEditorView,
   ClipLengthBar,
   rangeForBarDrag,
 } from '../ClipEditorView';
+import { ClipSettingsModal } from '../ClipSettingsModal';
 import {
   createMockDrumClip,
   createMockMelodyClip,
@@ -19,7 +23,10 @@ function renderWithTheme(ui: React.ReactElement) {
   return render(<ThemeProvider initialMode="dark">{ui}</ThemeProvider>);
 }
 
-beforeEach(() => resetMockIds());
+beforeEach(() => {
+  resetMockIds();
+  jest.clearAllMocks();
+});
 
 describe('ClipEditorView snapshots', () => {
   it('matches snapshot with drum clip', () => {
@@ -61,6 +68,138 @@ describe('ClipEditorView snapshots', () => {
       <ClipEditorView clip={clip} instrumentType="drum" isRecording />
     );
     expect(tree.toJSON()).toMatchSnapshot();
+  });
+});
+
+describe('ClipSettingsModal accessibility', () => {
+  it('disables audition when no toggle callback is provided', () => {
+    const { getByLabelText } = renderWithTheme(
+      <ClipSettingsModal
+        visible
+        tempo={120}
+        isMetronomeEnabled={false}
+        showNoteLabels={false}
+        onClose={jest.fn()}
+      />
+    );
+
+    expect(getByLabelText('Play notes as you add them').props).toMatchObject({
+      disabled: true,
+      accessibilityState: { disabled: true },
+    });
+  });
+});
+
+describe('Melodic pitch-range integration', () => {
+  it('keeps precision editing on the selected MIDI pitch when the visible range changes', () => {
+    const clip = createMockMelodyClip({
+      id: 21,
+      notes: [
+        { noteNumber: 60, velocity: 100, position: 0, duration: 1 },
+        { noteNumber: 72, velocity: 100, position: 1, duration: 1 },
+      ],
+    });
+    const view = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="melodic"
+        melodicMinPitch={24}
+      />
+    );
+    const grid = view.UNSAFE_getByType(SkiaPianoRollGrid);
+    expect(grid.props.melodicMinPitch).toBe(60);
+    fireEvent(grid, 'pitchLabelTap', 12);
+    expect(
+      view.UNSAFE_getByType(NotePrecisionPanel).props.pitchMidiNumber
+    ).toBe(72);
+
+    const widened = {
+      ...clip,
+      notes: [
+        ...clip.notes,
+        { noteNumber: 12, velocity: 100, position: 2, duration: 1 },
+      ],
+    };
+    view.rerender(
+      <ThemeProvider initialMode="dark">
+        <ClipEditorView
+          clip={widened}
+          instrumentType="melodic"
+          melodicMinPitch={24}
+        />
+      </ThemeProvider>
+    );
+    expect(view.UNSAFE_getByType(SkiaPianoRollGrid).props.melodicMinPitch).toBe(
+      12
+    );
+    expect(
+      view.UNSAFE_getByType(SkiaPianoRollGrid).props.selectedPitchIndex
+    ).toBe(60);
+    expect(
+      view.UNSAFE_getByType(NotePrecisionPanel).props.pitchMidiNumber
+    ).toBe(72);
+    expect(clip.notes.map((note) => note.noteNumber)).toEqual([60, 72]);
+  });
+
+  it('keeps an empty selected melodic lane available without carrying it into another clip', () => {
+    const clip = createMockMelodyClip({ id: 21 });
+    const view = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="melodic"
+        melodicMinPitch={24}
+      />
+    );
+    fireEvent(view.UNSAFE_getByType(SkiaPianoRollGrid), 'pitchLabelTap', 12);
+    view.rerender(
+      <ThemeProvider initialMode="dark">
+        <ClipEditorView
+          clip={{ ...clip, notes: [] }}
+          instrumentType="melodic"
+          melodicMinPitch={24}
+        />
+      </ThemeProvider>
+    );
+    expect(
+      view.UNSAFE_getByType(NotePrecisionPanel).props.pitchMidiNumber
+    ).toBe(72);
+    view.rerender(
+      <ThemeProvider initialMode="dark">
+        <ClipEditorView
+          clip={{ ...clip, id: 22, notes: [] }}
+          instrumentType="melodic"
+          melodicMinPitch={24}
+        />
+      </ThemeProvider>
+    );
+    expect(view.UNSAFE_getByType(SkiaPianoRollGrid).props.melodicMinPitch).toBe(
+      24
+    );
+    expect(
+      view.UNSAFE_getByType(SkiaPianoRollGrid).props.selectedPitchIndex
+    ).toBeNull();
+  });
+
+  it('does not transpose the performance keyboard when reframing imported notes', () => {
+    const onKeyPress = jest.fn();
+    const onKeyRelease = jest.fn();
+    const view = renderWithTheme(
+      <ClipEditorView
+        clip={createMockMelodyClip()}
+        instrumentType="melodic"
+        melodicMinPitch={24}
+        pianoKeyCallbacks={{ onKeyPress, onKeyRelease }}
+      />
+    );
+    expect(view.UNSAFE_getByType(SkiaPianoRollGrid).props.melodicMinPitch).toBe(
+      60
+    );
+    expect(view.getByLabelText('Piano keyboard')).toBeTruthy();
+    const keyboard = view.UNSAFE_root.findByProps({ numberOfOctaves: 2 });
+    fireEvent(keyboard, 'noteOn', 0);
+    fireEvent(keyboard, 'noteOff', 0);
+    expect(onKeyPress).toHaveBeenCalledWith(24, 100);
+    expect(onKeyRelease).toHaveBeenCalledWith(24);
   });
 });
 
@@ -135,6 +274,27 @@ describe('ClipLengthBar range selection', () => {
       getByLabelText('Bar 2').props.style[1].backgroundColor
     );
     expect(getByLabelText('Bar 2').props.style[1].borderWidth).toBe(1);
+  });
+
+  it('keeps bar focus navigation available for read-only clips', () => {
+    const onNavigateToBar = jest.fn();
+    const { getByLabelText } = renderWithTheme(
+      <ClipLengthBar
+        lengthInBars={2}
+        activeBarStart={0}
+        activeLengthInBars={2}
+        trackColor="#FF6C3A"
+        notes={[]}
+        editable={false}
+        onNavigateToBar={onNavigateToBar}
+      />
+    );
+
+    const bar = getByLabelText('Bar 2');
+    fireEvent(bar, 'accessibilityTap');
+
+    expect(bar.props.accessibilityState).toEqual({ selected: true });
+    expect(onNavigateToBar).toHaveBeenCalledWith(1);
   });
 
   it('does not expose long-press duplicate or delete actions', () => {
@@ -227,6 +387,38 @@ describe('ClipLengthBar range selection', () => {
 });
 
 describe('ClipEditorView interactions', () => {
+  it('keeps grid, precision scale and bar navigation aligned to the editor container', () => {
+    const clip = createMockDrumClip({ lengthInBars: 4, activeLengthInBars: 4 });
+    const view = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+      />
+    );
+    const editor = view.UNSAFE_getAllByType(View)[0]!;
+    const grid = view.UNSAFE_getByType(SkiaPianoRollGrid);
+    const layout = {
+      nativeEvent: { layout: { x: 0, y: 0, width: 660, height: 400 } },
+    };
+    fireEvent(editor, 'layout', layout);
+    fireEvent(grid.findAllByType(View)[0]!, 'layout', layout);
+
+    expect(grid.findByType(Canvas).parent!.props.style.width).toBe(4 * 600);
+    fireEvent.press(within(grid).getByText('Kick'));
+    expect(view.UNSAFE_getByType(NotePrecisionPanel).props.stepWidth).toBe(
+      600 / 16
+    );
+    fireEvent(view.getByLabelText('Bar 3'), 'accessibilityTap');
+    const horizontalScroll = grid
+      .findAllByType(ScrollView)
+      .find((node) => node.props.horizontal)!;
+    expect(horizontalScroll.instance.scrollTo).toHaveBeenLastCalledWith({
+      x: 1200,
+      animated: true,
+    });
+  });
+
   it('scrolls the piano roll when a bar is focused', () => {
     const clip = createMockDrumClip({ id: 5, trackID: 1, sectionID: 1 });
     const { getByLabelText, UNSAFE_getAllByType } = renderWithTheme(
@@ -331,6 +523,262 @@ describe('ClipEditorView interactions', () => {
     );
     fireEvent.press(getByLabelText('Redo'));
     expect(onRedo).toHaveBeenCalled();
+  });
+
+  it('blocks note, precision, recording, clip, undo, and transport paths in read-only mode except Play', () => {
+    const callbacks = {
+      onNoteAdd: jest.fn(),
+      onNoteDelete: jest.fn(),
+      onNoteMove: jest.fn(),
+      onNoteResize: jest.fn(),
+      onVelocityChange: jest.fn(),
+      onUndo: jest.fn(),
+    };
+    const onPlayPause = jest.fn();
+    const onToggleRecord = jest.fn();
+    const clip = createMockDrumClip({ id: 8, trackID: 1, sectionID: 1 });
+    const { UNSAFE_getByType, getByLabelText } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        callbacks={callbacks}
+        onPlayPause={onPlayPause}
+        onToggleRecord={onToggleRecord}
+        canUndo
+        editorPolicy={{ readOnly: true }}
+      />
+    );
+    const grid = UNSAFE_getByType(SkiaPianoRollGrid);
+
+    grid.props.onGridTap(36, 0);
+    grid.props.onNotePress(0);
+    fireEvent.press(getByLabelText('Undo'));
+    fireEvent.press(getByLabelText('Record'));
+    fireEvent.press(getByLabelText('Play'));
+
+    expect(grid.props.editable).toBe(false);
+    expect(callbacks.onNoteAdd).not.toHaveBeenCalled();
+    expect(callbacks.onNoteDelete).not.toHaveBeenCalled();
+    expect(callbacks.onUndo).not.toHaveBeenCalled();
+    expect(onToggleRecord).not.toHaveBeenCalled();
+    expect(onPlayPause).toHaveBeenCalledTimes(1);
+    expect(getByLabelText('Record').props.accessibilityState.disabled).toBe(
+      true
+    );
+  });
+
+  it('does not let an optional prop bypass contextual read-only policy', () => {
+    const onToggleRecord = jest.fn();
+    const clip = createMockDrumClip({ id: 11, trackID: 1, sectionID: 1 });
+    const { getByLabelText } = renderWithTheme(
+      <EditorPolicyProvider policy={{ readOnly: true }}>
+        <ClipEditorView
+          clip={clip}
+          instrumentType="drum"
+          onToggleRecord={onToggleRecord}
+          editorPolicy={{
+            readOnly: false,
+            capabilities: { recording: true, notes: true },
+          }}
+        />
+      </EditorPolicyProvider>
+    );
+
+    fireEvent.press(getByLabelText('Record'));
+    expect(onToggleRecord).not.toHaveBeenCalled();
+    expect(getByLabelText('Record').props.accessibilityState.disabled).toBe(
+      true
+    );
+  });
+
+  it('sounds a note as it is placed, and on a move that changes pitch', () => {
+    const onAuditionNote = jest.fn();
+    const clip = createMockDrumClip({ id: 50, trackID: 1, sectionID: 1 });
+    const { UNSAFE_getByType } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        callbacks={{
+          onAuditionNote,
+          onNoteAdd: jest.fn(),
+          onNoteMove: jest.fn(),
+        }}
+      />
+    );
+    const grid = UNSAFE_getByType(SkiaPianoRollGrid);
+
+    grid.props.onGridTap(38, 1);
+    expect(onAuditionNote).toHaveBeenCalledWith(38);
+
+    onAuditionNote.mockClear();
+    const existing = clip.notes[0]!;
+    // Sliding a note along its own row is the same sound — do not retrigger.
+    grid.props.onNoteMove(0, existing.position + 0.25, existing.noteNumber);
+    expect(onAuditionNote).not.toHaveBeenCalled();
+
+    // Dragging it to another row is a different sound.
+    grid.props.onNoteMove(0, existing.position, existing.noteNumber + 2);
+    expect(onAuditionNote).toHaveBeenCalledWith(existing.noteNumber + 2);
+  });
+
+  it('does not audition placement or repitch rejected by the app', () => {
+    const onAuditionNote = jest.fn();
+    const clip = createMockDrumClip({ id: 55, trackID: 1, sectionID: 1 });
+    const { UNSAFE_getByType } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        callbacks={{
+          onAuditionNote,
+          onNoteAdd: () => false,
+          onNoteMove: () => false,
+        }}
+      />
+    );
+    const grid = UNSAFE_getByType(SkiaPianoRollGrid);
+    grid.props.onGridTap(38, 1);
+    grid.props.onNoteMove(0, 1, clip.notes[0]!.noteNumber + 2);
+    expect(onAuditionNote).not.toHaveBeenCalled();
+  });
+
+  it('stays silent when the learner has turned note preview off', () => {
+    const onAuditionNote = jest.fn();
+    const { UNSAFE_getByType } = renderWithTheme(
+      <ClipEditorView
+        clip={createMockDrumClip({ id: 52, trackID: 1, sectionID: 1 })}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        callbacks={{ onAuditionNote, onNoteAdd: jest.fn() }}
+        auditionOnPlace={false}
+      />
+    );
+    UNSAFE_getByType(SkiaPianoRollGrid).props.onGridTap(38, 1);
+    expect(onAuditionNote).not.toHaveBeenCalled();
+  });
+
+  it('takes the bar controls away when the clip length is fixed', () => {
+    const fixed = renderWithTheme(
+      <ClipEditorView
+        clip={createMockDrumClip({ id: 53, trackID: 1, sectionID: 1 })}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        editorPolicy={{ capabilities: { clips: false } }}
+      />
+    );
+    // Gone, not dimmed — a lesson that fixes the length should not frame the
+    // bar with two buttons that do nothing.
+    expect(fixed.queryByLabelText('Add bar')).toBeNull();
+    expect(fixed.queryByLabelText('Remove bar')).toBeNull();
+
+    const editable = renderWithTheme(
+      <ClipEditorView
+        clip={createMockDrumClip({ id: 54, trackID: 1, sectionID: 1 })}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+      />
+    );
+    // Both present and live: the mock clip is 4 bars, so removing is available.
+    expect(editable.queryByLabelText('Add bar')).toBeTruthy();
+    expect(
+      editable.getByLabelText('Remove bar').props.accessibilityState.disabled
+    ).toBeFalsy();
+  });
+
+  it('stays silent when the policy forbids note editing', () => {
+    const onAuditionNote = jest.fn();
+    const { UNSAFE_getByType } = renderWithTheme(
+      <ClipEditorView
+        clip={createMockDrumClip({ id: 51, trackID: 1, sectionID: 1 })}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        callbacks={{ onAuditionNote, onNoteAdd: jest.fn() }}
+        editorPolicy={{ readOnly: true }}
+      />
+    );
+    UNSAFE_getByType(SkiaPianoRollGrid).props.onGridTap(38, 1);
+    expect(onAuditionNote).not.toHaveBeenCalled();
+  });
+
+  it('gives the piano roll the full editor when performance controls are inert', () => {
+    const clip = createMockDrumClip({ id: 40, trackID: 1, sectionID: 1 });
+    const inert = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+        editorPolicy={{ capabilities: { liveRecording: false } }}
+      />
+    );
+
+    // Nothing can occupy the bottom half, so it is not rendered at all and the
+    // expand toggle disappears rather than becoming a no-op control.
+    expect(inert.queryByLabelText('Drum pads')).toBeNull();
+    expect(inert.queryByLabelText('Expand piano roll')).toBeNull();
+    expect(inert.queryByLabelText('Collapse piano roll')).toBeNull();
+
+    // The standalone editor is unchanged: pads render and the toggle is live.
+    const playable = renderWithTheme(
+      <ClipEditorView
+        clip={createMockDrumClip({ id: 41, trackID: 1, sectionID: 1 })}
+        instrumentType="drum"
+        samples={createDrumSamples()}
+      />
+    );
+    expect(playable.queryByLabelText('Drum pads')).toBeTruthy();
+    expect(playable.queryByLabelText('Expand piano roll')).toBeTruthy();
+  });
+
+  it('can hide the editor Play control when an external tray owns transport', () => {
+    const clip = createMockDrumClip({ id: 12, trackID: 1, sectionID: 1 });
+    const { getByLabelText, queryByLabelText } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        editorPolicy={{ hideTransport: true }}
+      />
+    );
+
+    expect(queryByLabelText('Play')).toBeNull();
+    expect(queryByLabelText('Record')).toBeNull();
+    expect(getByLabelText('Settings')).toBeTruthy();
+  });
+
+  it('applies individual capability restrictions', () => {
+    const onPlayPause = jest.fn();
+    const clip = createMockDrumClip({ id: 9, trackID: 1, sectionID: 1 });
+    const { getByLabelText } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        onPlayPause={onPlayPause}
+        editorPolicy={{ capabilities: { transport: false } }}
+      />
+    );
+    fireEvent.press(getByLabelText('Play'));
+    expect(onPlayPause).not.toHaveBeenCalled();
+    expect(getByLabelText('Play').props.accessibilityState.disabled).toBe(true);
+  });
+
+  it('keeps continuous scroll visual-only and emits edits only at semantic boundaries', () => {
+    const onNoteMove = jest.fn();
+    const clip = createMockDrumClip({ id: 10, trackID: 1, sectionID: 1 });
+    const { UNSAFE_getByType } = renderWithTheme(
+      <ClipEditorView
+        clip={clip}
+        instrumentType="drum"
+        callbacks={{ onNoteMove }}
+      />
+    );
+    const grid = UNSAFE_getByType(SkiaPianoRollGrid);
+
+    for (let x = 0; x < 100; x += 1) grid.props.onScrollXChange(x);
+    expect(onNoteMove).not.toHaveBeenCalled();
+
+    grid.props.onNoteMove(0, 1, 36);
+    expect(onNoteMove).toHaveBeenCalledTimes(1);
   });
 
   it('keeps the piano roll callback props stable across an unrelated re-render', () => {

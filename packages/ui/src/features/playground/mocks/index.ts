@@ -244,11 +244,10 @@ export function createMockSong(
     currentTab: 'song' as const,
     availableSoundBanks: [],
     selectedSoundBankSlug: null,
-    undoStacks: {},
-    redoStacks: {},
     liveRecordingNotes: {},
     isClipSettingsVisible: false,
     showPianoNoteNames: false,
+    auditionOnPlace: true,
     recordingCountIn: null,
     // UI-only state
     currentView: 'song',

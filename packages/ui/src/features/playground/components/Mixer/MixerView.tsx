@@ -23,6 +23,11 @@ import {
   useTrackMixer,
 } from '../../stores/playgroundStore';
 import { INSTRUMENT_COLORS } from '../../types';
+import {
+  isEditorCapabilityAllowed,
+  useResolvedEditorPolicy,
+  type EditorPolicy,
+} from '../../stores/editorPolicy';
 import { useShallow } from 'zustand/react/shallow';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -32,9 +37,11 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const MuteButton = memo(function MuteButton({
   isMuted,
   onToggle,
+  disabled = false,
 }: {
   isMuted: boolean;
   onToggle?: () => void;
+  disabled?: boolean;
 }) {
   const { colors } = useTheme();
   const scale = useSharedValue(1);
@@ -54,6 +61,7 @@ const MuteButton = memo(function MuteButton({
   return (
     <AnimatedPressable
       onPress={handlePress}
+      disabled={disabled || undefined}
       hitSlop={6}
       style={[
         styles.muteBtn,
@@ -62,7 +70,10 @@ const MuteButton = memo(function MuteButton({
       ]}
       accessibilityRole="button"
       accessibilityLabel="Mute track"
-      accessibilityState={{ selected: isMuted }}
+      accessibilityState={{
+        selected: isMuted,
+        disabled: disabled || undefined,
+      }}
     >
       <Text
         variant="buttonLabelBold"
@@ -79,9 +90,11 @@ const MuteButton = memo(function MuteButton({
 const SoloButton = memo(function SoloButton({
   isSoloed,
   onToggle,
+  disabled = false,
 }: {
   isSoloed: boolean;
   onToggle?: () => void;
+  disabled?: boolean;
 }) {
   const { colors } = useTheme();
   const scale = useSharedValue(1);
@@ -101,6 +114,7 @@ const SoloButton = memo(function SoloButton({
   return (
     <AnimatedPressable
       onPress={handlePress}
+      disabled={disabled || undefined}
       hitSlop={6}
       style={[
         styles.soloBtn,
@@ -109,7 +123,10 @@ const SoloButton = memo(function SoloButton({
       ]}
       accessibilityRole="button"
       accessibilityLabel="Solo track"
-      accessibilityState={{ selected: isSoloed }}
+      accessibilityState={{
+        selected: isSoloed,
+        disabled: disabled || undefined,
+      }}
     >
       <Text
         variant="buttonLabelBold"
@@ -125,10 +142,15 @@ const SoloButton = memo(function SoloButton({
 
 interface TrackStripProps {
   trackId: number;
+  editorPolicy?: EditorPolicy;
 }
 
-const TrackStrip = memo(function TrackStrip({ trackId }: TrackStripProps) {
+const TrackStrip = memo(function TrackStrip({
+  trackId,
+  editorPolicy,
+}: TrackStripProps) {
   const { colors } = useTheme();
+  const canMix = isEditorCapabilityAllowed(editorPolicy, 'mixer');
 
   // Fine-grained selectors — only this track's data
   const track = useSongContext(
@@ -141,7 +163,7 @@ const TrackStrip = memo(function TrackStrip({ trackId }: TrackStripProps) {
 
   // Actions — stable refs, no subscription
   const { setTrackVolume, setTrackPan, toggleTrackMute, toggleTrackSolo } =
-    useSongActions();
+    useSongActions(editorPolicy);
 
   if (!track || !mixer) return null;
 
@@ -167,10 +189,12 @@ const TrackStrip = memo(function TrackStrip({ trackId }: TrackStripProps) {
           <MuteButton
             isMuted={!isAudible}
             onToggle={() => toggleTrackMute(trackId)}
+            disabled={!canMix}
           />
           <SoloButton
             isSoloed={mixer.isSoloed && hasSoloedTracks}
             onToggle={() => toggleTrackSolo(trackId)}
+            disabled={!canMix}
           />
         </View>
       </View>
@@ -189,6 +213,8 @@ const TrackStrip = memo(function TrackStrip({ trackId }: TrackStripProps) {
             minimumTrackTintColor={isAudible ? trackColor : colors.mcBlack3}
             maximumTrackTintColor={colors.mcBlack3}
             thumbTintColor={colors.mcWhite}
+            disabled={canMix ? undefined : true}
+            accessibilityState={canMix ? undefined : { disabled: true }}
             onSlidingComplete={(v: number) => setTrackVolume(trackId, v)}
           />
           <Text
@@ -215,6 +241,8 @@ const TrackStrip = memo(function TrackStrip({ trackId }: TrackStripProps) {
             minimumTrackTintColor={colors.mcWhite2}
             maximumTrackTintColor={colors.mcWhite2}
             thumbTintColor={colors.mcWhite}
+            disabled={canMix ? undefined : true}
+            accessibilityState={canMix ? undefined : { disabled: true }}
             onSlidingComplete={(v: number) => setTrackPan(trackId, v)}
           />
           <Text
@@ -232,10 +260,15 @@ const TrackStrip = memo(function TrackStrip({ trackId }: TrackStripProps) {
 
 // ── MixerView ───────────────────────────────────────────────────────────────
 
-export interface MixerViewProps {}
+export interface MixerViewProps {
+  editorPolicy?: EditorPolicy;
+}
 
-export const MixerView = memo(function MixerView({}: MixerViewProps) {
+export const MixerView = memo(function MixerView({
+  editorPolicy,
+}: MixerViewProps) {
   const { colors } = useTheme();
+  const policy = useResolvedEditorPolicy(editorPolicy);
   const trackIds = useSongContext(useShallow((s) => s.tracks.map((t) => t.id)));
 
   return (
@@ -244,7 +277,7 @@ export const MixerView = memo(function MixerView({}: MixerViewProps) {
       contentContainerStyle={styles.scrollContent}
     >
       {trackIds.map((id) => (
-        <TrackStrip key={id} trackId={id} />
+        <TrackStrip key={id} trackId={id} editorPolicy={policy} />
       ))}
     </ScrollView>
   );

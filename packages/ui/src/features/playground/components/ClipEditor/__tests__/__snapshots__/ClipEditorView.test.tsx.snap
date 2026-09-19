@@ -2,6 +2,7 @@
 
 exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
 <View
+  onLayout={[Function]}
   style={
     [
       {
@@ -1450,7 +1451,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1471,7 +1476,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1492,7 +1501,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1513,7 +1526,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1534,7 +1551,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1555,7 +1576,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1576,7 +1601,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1597,7 +1626,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1618,7 +1651,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1639,7 +1676,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1660,7 +1701,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -1681,7 +1726,11 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -2895,6 +2944,7 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
 
 exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
 <View
+  onLayout={[Function]}
   style={
     [
       {
@@ -4623,7 +4673,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4644,7 +4698,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4665,7 +4723,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4686,7 +4748,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4707,7 +4773,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4728,7 +4798,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4749,7 +4823,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4770,7 +4848,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4791,7 +4873,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4812,7 +4898,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4833,7 +4923,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -4854,7 +4948,11 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -6639,6 +6737,7 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
 
 exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
 <View
+  onLayout={[Function]}
   style={
     [
       {
@@ -7042,6 +7141,846 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                     ]
                   }
                 >
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderColor": "rgba(0,0,0,0.5)",
+                          "borderWidth": 0.5,
+                          "justifyContent": "center",
+                          "padding": 2,
+                        },
+                        {
+                          "backgroundColor": "#FF6C3A",
+                          "height": 34,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={2}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "#000000",
+                          },
+                          {
+                            "fontSize": 10,
+                            "textAlign": "center",
+                          },
+                        ]
+                      }
+                    >
+                      B7
+                    </Text>
+                  </View>
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderColor": "rgba(0,0,0,0.5)",
+                          "borderWidth": 0.5,
+                          "justifyContent": "center",
+                          "padding": 2,
+                        },
+                        {
+                          "backgroundColor": "#FF6C3A",
+                          "height": 34,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={2}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "#000000",
+                          },
+                          {
+                            "fontSize": 10,
+                            "textAlign": "center",
+                          },
+                        ]
+                      }
+                    >
+                      A#7
+                    </Text>
+                  </View>
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderColor": "rgba(0,0,0,0.5)",
+                          "borderWidth": 0.5,
+                          "justifyContent": "center",
+                          "padding": 2,
+                        },
+                        {
+                          "backgroundColor": "#FF6C3A",
+                          "height": 34,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={2}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "#000000",
+                          },
+                          {
+                            "fontSize": 10,
+                            "textAlign": "center",
+                          },
+                        ]
+                      }
+                    >
+                      A7
+                    </Text>
+                  </View>
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderColor": "rgba(0,0,0,0.5)",
+                          "borderWidth": 0.5,
+                          "justifyContent": "center",
+                          "padding": 2,
+                        },
+                        {
+                          "backgroundColor": "#FF6C3A",
+                          "height": 34,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={2}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "#000000",
+                          },
+                          {
+                            "fontSize": 10,
+                            "textAlign": "center",
+                          },
+                        ]
+                      }
+                    >
+                      G#7
+                    </Text>
+                  </View>
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderColor": "rgba(0,0,0,0.5)",
+                          "borderWidth": 0.5,
+                          "justifyContent": "center",
+                          "padding": 2,
+                        },
+                        {
+                          "backgroundColor": "#FF6C3A",
+                          "height": 34,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={2}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "#000000",
+                          },
+                          {
+                            "fontSize": 10,
+                            "textAlign": "center",
+                          },
+                        ]
+                      }
+                    >
+                      G7
+                    </Text>
+                  </View>
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderColor": "rgba(0,0,0,0.5)",
+                          "borderWidth": 0.5,
+                          "justifyContent": "center",
+                          "padding": 2,
+                        },
+                        {
+                          "backgroundColor": "#FF6C3A",
+                          "height": 34,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={2}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "#000000",
+                          },
+                          {
+                            "fontSize": 10,
+                            "textAlign": "center",
+                          },
+                        ]
+                      }
+                    >
+                      F#7
+                    </Text>
+                  </View>
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderColor": "rgba(0,0,0,0.5)",
+                          "borderWidth": 0.5,
+                          "justifyContent": "center",
+                          "padding": 2,
+                        },
+                        {
+                          "backgroundColor": "#FF6C3A",
+                          "height": 34,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={2}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "#000000",
+                          },
+                          {
+                            "fontSize": 10,
+                            "textAlign": "center",
+                          },
+                        ]
+                      }
+                    >
+                      F7
+                    </Text>
+                  </View>
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderColor": "rgba(0,0,0,0.5)",
+                          "borderWidth": 0.5,
+                          "justifyContent": "center",
+                          "padding": 2,
+                        },
+                        {
+                          "backgroundColor": "#FF6C3A",
+                          "height": 34,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={2}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "#000000",
+                          },
+                          {
+                            "fontSize": 10,
+                            "textAlign": "center",
+                          },
+                        ]
+                      }
+                    >
+                      E7
+                    </Text>
+                  </View>
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderColor": "rgba(0,0,0,0.5)",
+                          "borderWidth": 0.5,
+                          "justifyContent": "center",
+                          "padding": 2,
+                        },
+                        {
+                          "backgroundColor": "#FF6C3A",
+                          "height": 34,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={2}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "#000000",
+                          },
+                          {
+                            "fontSize": 10,
+                            "textAlign": "center",
+                          },
+                        ]
+                      }
+                    >
+                      D#7
+                    </Text>
+                  </View>
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderColor": "rgba(0,0,0,0.5)",
+                          "borderWidth": 0.5,
+                          "justifyContent": "center",
+                          "padding": 2,
+                        },
+                        {
+                          "backgroundColor": "#FF6C3A",
+                          "height": 34,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={2}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "#000000",
+                          },
+                          {
+                            "fontSize": 10,
+                            "textAlign": "center",
+                          },
+                        ]
+                      }
+                    >
+                      D7
+                    </Text>
+                  </View>
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderColor": "rgba(0,0,0,0.5)",
+                          "borderWidth": 0.5,
+                          "justifyContent": "center",
+                          "padding": 2,
+                        },
+                        {
+                          "backgroundColor": "#FF6C3A",
+                          "height": 34,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={2}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "#000000",
+                          },
+                          {
+                            "fontSize": 10,
+                            "textAlign": "center",
+                          },
+                        ]
+                      }
+                    >
+                      C#7
+                    </Text>
+                  </View>
+                  <View
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
+                    }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      [
+                        {
+                          "alignItems": "center",
+                          "borderColor": "rgba(0,0,0,0.5)",
+                          "borderWidth": 0.5,
+                          "justifyContent": "center",
+                          "padding": 2,
+                        },
+                        {
+                          "backgroundColor": "#FF6C3A",
+                          "height": 34,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      accessibilityRole="text"
+                      numberOfLines={2}
+                      style={
+                        [
+                          {
+                            "fontFamily": "System",
+                            "fontSize": 8,
+                            "fontWeight": "400",
+                            "lineHeight": 12,
+                          },
+                          {
+                            "color": "#000000",
+                          },
+                          {
+                            "fontSize": 10,
+                            "textAlign": "center",
+                          },
+                        ]
+                      }
+                    >
+                      C7
+                    </Text>
+                  </View>
                   <View
                     accessibilityState={
                       {
@@ -7882,846 +8821,6 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                       C6
                     </Text>
                   </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "borderColor": "rgba(0,0,0,0.5)",
-                          "borderWidth": 0.5,
-                          "justifyContent": "center",
-                          "padding": 2,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "height": 34,
-                        },
-                      ]
-                    }
-                  >
-                    <Text
-                      accessibilityRole="text"
-                      numberOfLines={2}
-                      style={
-                        [
-                          {
-                            "fontFamily": "System",
-                            "fontSize": 8,
-                            "fontWeight": "400",
-                            "lineHeight": 12,
-                          },
-                          {
-                            "color": "#000000",
-                          },
-                          {
-                            "fontSize": 10,
-                            "textAlign": "center",
-                          },
-                        ]
-                      }
-                    >
-                      B5
-                    </Text>
-                  </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "borderColor": "rgba(0,0,0,0.5)",
-                          "borderWidth": 0.5,
-                          "justifyContent": "center",
-                          "padding": 2,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "height": 34,
-                        },
-                      ]
-                    }
-                  >
-                    <Text
-                      accessibilityRole="text"
-                      numberOfLines={2}
-                      style={
-                        [
-                          {
-                            "fontFamily": "System",
-                            "fontSize": 8,
-                            "fontWeight": "400",
-                            "lineHeight": 12,
-                          },
-                          {
-                            "color": "#000000",
-                          },
-                          {
-                            "fontSize": 10,
-                            "textAlign": "center",
-                          },
-                        ]
-                      }
-                    >
-                      A#5
-                    </Text>
-                  </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "borderColor": "rgba(0,0,0,0.5)",
-                          "borderWidth": 0.5,
-                          "justifyContent": "center",
-                          "padding": 2,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "height": 34,
-                        },
-                      ]
-                    }
-                  >
-                    <Text
-                      accessibilityRole="text"
-                      numberOfLines={2}
-                      style={
-                        [
-                          {
-                            "fontFamily": "System",
-                            "fontSize": 8,
-                            "fontWeight": "400",
-                            "lineHeight": 12,
-                          },
-                          {
-                            "color": "#000000",
-                          },
-                          {
-                            "fontSize": 10,
-                            "textAlign": "center",
-                          },
-                        ]
-                      }
-                    >
-                      A5
-                    </Text>
-                  </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "borderColor": "rgba(0,0,0,0.5)",
-                          "borderWidth": 0.5,
-                          "justifyContent": "center",
-                          "padding": 2,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "height": 34,
-                        },
-                      ]
-                    }
-                  >
-                    <Text
-                      accessibilityRole="text"
-                      numberOfLines={2}
-                      style={
-                        [
-                          {
-                            "fontFamily": "System",
-                            "fontSize": 8,
-                            "fontWeight": "400",
-                            "lineHeight": 12,
-                          },
-                          {
-                            "color": "#000000",
-                          },
-                          {
-                            "fontSize": 10,
-                            "textAlign": "center",
-                          },
-                        ]
-                      }
-                    >
-                      G#5
-                    </Text>
-                  </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "borderColor": "rgba(0,0,0,0.5)",
-                          "borderWidth": 0.5,
-                          "justifyContent": "center",
-                          "padding": 2,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "height": 34,
-                        },
-                      ]
-                    }
-                  >
-                    <Text
-                      accessibilityRole="text"
-                      numberOfLines={2}
-                      style={
-                        [
-                          {
-                            "fontFamily": "System",
-                            "fontSize": 8,
-                            "fontWeight": "400",
-                            "lineHeight": 12,
-                          },
-                          {
-                            "color": "#000000",
-                          },
-                          {
-                            "fontSize": 10,
-                            "textAlign": "center",
-                          },
-                        ]
-                      }
-                    >
-                      G5
-                    </Text>
-                  </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "borderColor": "rgba(0,0,0,0.5)",
-                          "borderWidth": 0.5,
-                          "justifyContent": "center",
-                          "padding": 2,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "height": 34,
-                        },
-                      ]
-                    }
-                  >
-                    <Text
-                      accessibilityRole="text"
-                      numberOfLines={2}
-                      style={
-                        [
-                          {
-                            "fontFamily": "System",
-                            "fontSize": 8,
-                            "fontWeight": "400",
-                            "lineHeight": 12,
-                          },
-                          {
-                            "color": "#000000",
-                          },
-                          {
-                            "fontSize": 10,
-                            "textAlign": "center",
-                          },
-                        ]
-                      }
-                    >
-                      F#5
-                    </Text>
-                  </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "borderColor": "rgba(0,0,0,0.5)",
-                          "borderWidth": 0.5,
-                          "justifyContent": "center",
-                          "padding": 2,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "height": 34,
-                        },
-                      ]
-                    }
-                  >
-                    <Text
-                      accessibilityRole="text"
-                      numberOfLines={2}
-                      style={
-                        [
-                          {
-                            "fontFamily": "System",
-                            "fontSize": 8,
-                            "fontWeight": "400",
-                            "lineHeight": 12,
-                          },
-                          {
-                            "color": "#000000",
-                          },
-                          {
-                            "fontSize": 10,
-                            "textAlign": "center",
-                          },
-                        ]
-                      }
-                    >
-                      F5
-                    </Text>
-                  </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "borderColor": "rgba(0,0,0,0.5)",
-                          "borderWidth": 0.5,
-                          "justifyContent": "center",
-                          "padding": 2,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "height": 34,
-                        },
-                      ]
-                    }
-                  >
-                    <Text
-                      accessibilityRole="text"
-                      numberOfLines={2}
-                      style={
-                        [
-                          {
-                            "fontFamily": "System",
-                            "fontSize": 8,
-                            "fontWeight": "400",
-                            "lineHeight": 12,
-                          },
-                          {
-                            "color": "#000000",
-                          },
-                          {
-                            "fontSize": 10,
-                            "textAlign": "center",
-                          },
-                        ]
-                      }
-                    >
-                      E5
-                    </Text>
-                  </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "borderColor": "rgba(0,0,0,0.5)",
-                          "borderWidth": 0.5,
-                          "justifyContent": "center",
-                          "padding": 2,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "height": 34,
-                        },
-                      ]
-                    }
-                  >
-                    <Text
-                      accessibilityRole="text"
-                      numberOfLines={2}
-                      style={
-                        [
-                          {
-                            "fontFamily": "System",
-                            "fontSize": 8,
-                            "fontWeight": "400",
-                            "lineHeight": 12,
-                          },
-                          {
-                            "color": "#000000",
-                          },
-                          {
-                            "fontSize": 10,
-                            "textAlign": "center",
-                          },
-                        ]
-                      }
-                    >
-                      D#5
-                    </Text>
-                  </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "borderColor": "rgba(0,0,0,0.5)",
-                          "borderWidth": 0.5,
-                          "justifyContent": "center",
-                          "padding": 2,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "height": 34,
-                        },
-                      ]
-                    }
-                  >
-                    <Text
-                      accessibilityRole="text"
-                      numberOfLines={2}
-                      style={
-                        [
-                          {
-                            "fontFamily": "System",
-                            "fontSize": 8,
-                            "fontWeight": "400",
-                            "lineHeight": 12,
-                          },
-                          {
-                            "color": "#000000",
-                          },
-                          {
-                            "fontSize": 10,
-                            "textAlign": "center",
-                          },
-                        ]
-                      }
-                    >
-                      D5
-                    </Text>
-                  </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "borderColor": "rgba(0,0,0,0.5)",
-                          "borderWidth": 0.5,
-                          "justifyContent": "center",
-                          "padding": 2,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "height": 34,
-                        },
-                      ]
-                    }
-                  >
-                    <Text
-                      accessibilityRole="text"
-                      numberOfLines={2}
-                      style={
-                        [
-                          {
-                            "fontFamily": "System",
-                            "fontSize": 8,
-                            "fontWeight": "400",
-                            "lineHeight": 12,
-                          },
-                          {
-                            "color": "#000000",
-                          },
-                          {
-                            "fontSize": 10,
-                            "textAlign": "center",
-                          },
-                        ]
-                      }
-                    >
-                      C#5
-                    </Text>
-                  </View>
-                  <View
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
-                        {
-                          "alignItems": "center",
-                          "borderColor": "rgba(0,0,0,0.5)",
-                          "borderWidth": 0.5,
-                          "justifyContent": "center",
-                          "padding": 2,
-                        },
-                        {
-                          "backgroundColor": "#FF6C3A",
-                          "height": 34,
-                        },
-                      ]
-                    }
-                  >
-                    <Text
-                      accessibilityRole="text"
-                      numberOfLines={2}
-                      style={
-                        [
-                          {
-                            "fontFamily": "System",
-                            "fontSize": 8,
-                            "fontWeight": "400",
-                            "lineHeight": 12,
-                          },
-                          {
-                            "color": "#000000",
-                          },
-                          {
-                            "fontSize": 10,
-                            "textAlign": "center",
-                          },
-                        ]
-                      }
-                    >
-                      C5
-                    </Text>
-                  </View>
                 </View>
                 <RCTScrollView
                   horizontal={true}
@@ -8927,12 +9026,16 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                           <View
                             color="#ff5920"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={171.5}
                             x={0}
-                            y={375}
+                            y={783}
                           />
                           <View
                             color="#000000"
@@ -8943,134 +9046,146 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                             testID="RoundedRect"
                             width={171.5}
                             x={0}
-                            y={375}
+                            y={783}
                           />
                           <View
                             color="rgba(0,0,0,0.3)"
                             p1={
                               {
                                 "x": 168.5,
+                                "y": 787,
+                              }
+                            }
+                            p2={
+                              {
+                                "x": 168.5,
+                                "y": 811,
+                              }
+                            }
+                            strokeWidth={2}
+                            testID="SkiaLine"
+                          />
+                          <View
+                            color="#ff5920"
+                            height={32}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
+                            r={3}
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={172.5}
+                            y={647}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={172.5}
+                            y={647}
+                          />
+                          <View
+                            color="rgba(0,0,0,0.3)"
+                            p1={
+                              {
+                                "x": 341,
+                                "y": 651,
+                              }
+                            }
+                            p2={
+                              {
+                                "x": 341,
+                                "y": 675,
+                              }
+                            }
+                            strokeWidth={2}
+                            testID="SkiaLine"
+                          />
+                          <View
+                            color="#ff5920"
+                            height={32}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
+                            r={3}
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={345}
+                            y={545}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={345}
+                            y={545}
+                          />
+                          <View
+                            color="rgba(0,0,0,0.3)"
+                            p1={
+                              {
+                                "x": 513.5,
+                                "y": 549,
+                              }
+                            }
+                            p2={
+                              {
+                                "x": 513.5,
+                                "y": 573,
+                              }
+                            }
+                            strokeWidth={2}
+                            testID="SkiaLine"
+                          />
+                          <View
+                            color="#ff5920"
+                            height={32}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
+                            r={3}
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={517.5}
+                            y={375}
+                          />
+                          <View
+                            color="#000000"
+                            height={32}
+                            r={3}
+                            strokeWidth={0.5}
+                            style="stroke"
+                            testID="RoundedRect"
+                            width={171.5}
+                            x={517.5}
+                            y={375}
+                          />
+                          <View
+                            color="rgba(0,0,0,0.3)"
+                            p1={
+                              {
+                                "x": 686,
                                 "y": 379,
                               }
                             }
                             p2={
                               {
-                                "x": 168.5,
+                                "x": 686,
                                 "y": 403,
-                              }
-                            }
-                            strokeWidth={2}
-                            testID="SkiaLine"
-                          />
-                          <View
-                            color="#ff5920"
-                            height={32}
-                            opacity={1}
-                            r={3}
-                            testID="RoundedRect"
-                            width={171.5}
-                            x={172.5}
-                            y={239}
-                          />
-                          <View
-                            color="#000000"
-                            height={32}
-                            r={3}
-                            strokeWidth={0.5}
-                            style="stroke"
-                            testID="RoundedRect"
-                            width={171.5}
-                            x={172.5}
-                            y={239}
-                          />
-                          <View
-                            color="rgba(0,0,0,0.3)"
-                            p1={
-                              {
-                                "x": 341,
-                                "y": 243,
-                              }
-                            }
-                            p2={
-                              {
-                                "x": 341,
-                                "y": 267,
-                              }
-                            }
-                            strokeWidth={2}
-                            testID="SkiaLine"
-                          />
-                          <View
-                            color="#ff5920"
-                            height={32}
-                            opacity={1}
-                            r={3}
-                            testID="RoundedRect"
-                            width={171.5}
-                            x={345}
-                            y={137}
-                          />
-                          <View
-                            color="#000000"
-                            height={32}
-                            r={3}
-                            strokeWidth={0.5}
-                            style="stroke"
-                            testID="RoundedRect"
-                            width={171.5}
-                            x={345}
-                            y={137}
-                          />
-                          <View
-                            color="rgba(0,0,0,0.3)"
-                            p1={
-                              {
-                                "x": 513.5,
-                                "y": 141,
-                              }
-                            }
-                            p2={
-                              {
-                                "x": 513.5,
-                                "y": 165,
-                              }
-                            }
-                            strokeWidth={2}
-                            testID="SkiaLine"
-                          />
-                          <View
-                            color="#ff5920"
-                            height={32}
-                            opacity={1}
-                            r={3}
-                            testID="RoundedRect"
-                            width={171.5}
-                            x={517.5}
-                            y={-33}
-                          />
-                          <View
-                            color="#000000"
-                            height={32}
-                            r={3}
-                            strokeWidth={0.5}
-                            style="stroke"
-                            testID="RoundedRect"
-                            width={171.5}
-                            x={517.5}
-                            y={-33}
-                          />
-                          <View
-                            color="rgba(0,0,0,0.3)"
-                            p1={
-                              {
-                                "x": 686,
-                                "y": -29,
-                              }
-                            }
-                            p2={
-                              {
-                                "x": 686,
-                                "y": -5,
                               }
                             }
                             strokeWidth={2}
@@ -10567,6 +10682,7 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
 
 exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = `
 <View
+  onLayout={[Function]}
   style={
     [
       {
@@ -12015,7 +12131,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12036,7 +12156,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12057,7 +12181,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12078,7 +12206,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#04ffa0"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12099,7 +12231,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12120,7 +12256,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12141,7 +12281,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12162,7 +12306,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12183,7 +12331,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12204,7 +12356,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12225,7 +12381,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00f497"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}
@@ -12246,7 +12406,11 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                           <View
                             color="#00e48d"
                             height={32}
-                            opacity={1}
+                            opacity={
+                              {
+                                "value": 1,
+                              }
+                            }
                             r={3}
                             testID="RoundedRect"
                             width={43.125}

@@ -1,5 +1,6 @@
 import {
   getDragPreviewSeed,
+  getPianoRollGuidanceRow,
   getPianoRollNoteRect,
   getResizedNoteDuration,
   hitTestPianoRollNote,
@@ -24,6 +25,14 @@ const makeNote = (overrides: Partial<ClipNote> = {}): ClipNote => ({
   position: 2,
   duration: 0.5,
   ...overrides,
+});
+
+describe('authored guidance mapping', () => {
+  it('maps drum sample MIDI rows and exact melodic MIDI pitches', () => {
+    expect(getPianoRollGuidanceRow(42, [36, 38, 42, 46])).toBe(1);
+    expect(getPianoRollGuidanceRow(60, [60, 61, 62, 63])).toBe(3);
+    expect(getPianoRollGuidanceRow(72, [60, 61, 62, 63])).toBeNull();
+  });
 });
 
 describe('getDragPreviewSeed', () => {

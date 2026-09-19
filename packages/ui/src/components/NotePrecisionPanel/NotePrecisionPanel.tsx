@@ -114,6 +114,8 @@ export interface NotePrecisionPanelProps {
   snapToGrid?: boolean;
   /** Drum one-shots omit duration editing when locked. */
   lockNoteDuration?: boolean;
+  editable?: boolean;
+  velocityEditable?: boolean;
 }
 
 /** Imperative handle for scrolling the panel programmatically (e.g. to mirror the piano roll grid's scroll position). */
@@ -143,6 +145,8 @@ export const NotePrecisionPanel = memo(
         zoomPreview,
         snapToGrid = false,
         lockNoteDuration = false,
+        editable = true,
+        velocityEditable = true,
       }: NotePrecisionPanelProps,
       ref
     ) {
@@ -264,7 +268,22 @@ export const NotePrecisionPanel = memo(
       );
 
       return (
-        <View style={[styles.container, { backgroundColor: colors.mcBlack2 }]}>
+        <View
+          style={[styles.container, { backgroundColor: colors.mcBlack2 }]}
+          accessibilityLabel="Note precision editor"
+          accessibilityState={!editable ? { disabled: true } : undefined}
+        >
+          {!editable && (
+            <View
+              accessible
+              accessibilityRole="text"
+              accessibilityLabel="Note precision editor, read only"
+              accessibilityState={{ disabled: true }}
+              pointerEvents="none"
+              style={styles.accessibilityStatus}
+            />
+          )}
+
           {/* Header */}
           <View style={[styles.header, { backgroundColor: colors.mcBlack3 }]}>
             <Text
@@ -421,52 +440,53 @@ export const NotePrecisionPanel = memo(
                     ))}
                   </Canvas>
                   {/* Gesture targets: body = position drag, right edge = duration drag */}
-                  {notesAtPitch.map(({ note }, i) => {
-                    const x = (note.position / 0.25) * stepWidth;
-                    const w = Math.max(
-                      (note.duration / 0.25) * stepWidth,
-                      stepWidth
-                    );
-                    const edgeW = 12;
-                    return (
-                      <React.Fragment key={`bg${i}`}>
-                        <PrecisionBlockDrag
-                          index={i}
-                          globalIndex={notesAtPitch[i]!.globalIdx}
-                          note={note}
-                          x={x}
-                          width={w - edgeW}
-                          type="position"
-                          stepWidth={stepWidth}
-                          beatWidth={beatWidth}
-                          totalBeats={totalBeats}
-                          totalWidth={totalWidth}
-                          snapToGrid={snapToGrid}
-                          dragIndex={positionDragIndex}
-                          dragDx={positionDragDx}
-                          onCommit={onPositionChange}
-                        />
-                        {!lockNoteDuration && (
+                  {editable &&
+                    notesAtPitch.map(({ note }, i) => {
+                      const x = (note.position / 0.25) * stepWidth;
+                      const w = Math.max(
+                        (note.duration / 0.25) * stepWidth,
+                        stepWidth
+                      );
+                      const edgeW = 12;
+                      return (
+                        <React.Fragment key={`bg${i}`}>
                           <PrecisionBlockDrag
                             index={i}
                             globalIndex={notesAtPitch[i]!.globalIdx}
                             note={note}
-                            x={x + w - edgeW}
-                            width={edgeW}
-                            type="duration"
+                            x={x}
+                            width={w - edgeW}
+                            type="position"
                             stepWidth={stepWidth}
                             beatWidth={beatWidth}
                             totalBeats={totalBeats}
                             totalWidth={totalWidth}
                             snapToGrid={snapToGrid}
-                            dragIndex={durationDragIndex}
-                            dragDx={durationDragDx}
-                            onCommit={onDurationChange}
+                            dragIndex={positionDragIndex}
+                            dragDx={positionDragDx}
+                            onCommit={onPositionChange}
                           />
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
+                          {!lockNoteDuration && (
+                            <PrecisionBlockDrag
+                              index={i}
+                              globalIndex={notesAtPitch[i]!.globalIdx}
+                              note={note}
+                              x={x + w - edgeW}
+                              width={edgeW}
+                              type="duration"
+                              stepWidth={stepWidth}
+                              beatWidth={beatWidth}
+                              totalBeats={totalBeats}
+                              totalWidth={totalWidth}
+                              snapToGrid={snapToGrid}
+                              dragIndex={durationDragIndex}
+                              dragDx={durationDragDx}
+                              onCommit={onDurationChange}
+                            />
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
                   {notesAtPitch.length === 0 && (
                     <View style={styles.emptyState}>
                       <Text variant="small" color={colors.mcWhite3}>
@@ -522,32 +542,34 @@ export const NotePrecisionPanel = memo(
                   </Canvas>
 
                   {/* Drag touch targets — INSIDE the scroll container */}
-                  {notesAtPitch.map(({ note }, i) => {
-                    // Keep the gesture target anchored while its visual handle
-                    // previews the dragged velocity; moving the target itself
-                    // would rebuild the active gesture mid-drag.
-                    const g = getVelocityGeometry(
-                      note,
-                      note.velocity,
-                      stepWidth,
-                      velAreaH
-                    );
-                    return (
-                      <VelDragTarget
-                        key={`dt${i}`}
-                        index={i}
-                        globalIndex={notesAtPitch[i]!.globalIdx}
-                        initialVelocity={note.velocity}
-                        x={g.handleX - 8}
-                        y={g.handleY - 8}
-                        usableHeight={velAreaH - BOTTOM_PAD - HANDLE_H}
-                        velocityDragIndex={velocityDragIndex}
-                        velocityPreviewNoteIndex={liveVelocityNoteIndex}
-                        velocityPreviewValue={liveVelocity}
-                        onCommit={onVelocityChange}
-                      />
-                    );
-                  })}
+                  {editable &&
+                    velocityEditable &&
+                    notesAtPitch.map(({ note }, i) => {
+                      // Keep the gesture target anchored while its visual handle
+                      // previews the dragged velocity; moving the target itself
+                      // would rebuild the active gesture mid-drag.
+                      const g = getVelocityGeometry(
+                        note,
+                        note.velocity,
+                        stepWidth,
+                        velAreaH
+                      );
+                      return (
+                        <VelDragTarget
+                          key={`dt${i}`}
+                          index={i}
+                          globalIndex={notesAtPitch[i]!.globalIdx}
+                          initialVelocity={note.velocity}
+                          x={g.handleX - 8}
+                          y={g.handleY - 8}
+                          usableHeight={velAreaH - BOTTOM_PAD - HANDLE_H}
+                          velocityDragIndex={velocityDragIndex}
+                          velocityPreviewNoteIndex={liveVelocityNoteIndex}
+                          velocityPreviewValue={liveVelocity}
+                          onCommit={onVelocityChange}
+                        />
+                      );
+                    })}
                 </View>
               </Animated.View>
             </AnimatedScrollView>
@@ -1016,6 +1038,14 @@ const VelDragTarget = memo(function VelDragTarget({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  accessibilityStatus: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 1,
+    height: 1,
+    opacity: 0.01,
+  },
   // Anchor the live-zoom scale to the left edge; the translate in
   // zoomPreviewStyle moves that anchor to the viewport.
   zoomPreviewLayer: { transformOrigin: 'left center' },
@@ -1038,7 +1068,7 @@ const styles = StyleSheet.create({
   rulerNum: { fontSize: 7, width: 20, textAlign: 'right', marginRight: 4 },
   rulerDash: { flex: 1, height: 0.5, backgroundColor: 'rgba(255,255,255,0.1)' },
   emptyState: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.flatten(StyleSheet.absoluteFill),
     justifyContent: 'center',
     alignItems: 'center',
   },

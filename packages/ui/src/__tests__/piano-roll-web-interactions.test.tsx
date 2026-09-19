@@ -94,6 +94,29 @@ describe('SkiaPianoRollGrid web pointer interactions', () => {
     expect(onGridTap).toHaveBeenCalledWith(69, 0.5);
   });
 
+  it('fits and hit-tests the last sixteenth inside the measured container after resizing', () => {
+    const onGridTap = jest.fn();
+    const view = renderGrid({ onGridTap });
+    const container = view
+      .UNSAFE_getByType(SkiaPianoRollGrid)
+      .findAllByType(View)[0]!;
+
+    for (const width of [660, 380, 1000]) {
+      fireEvent(container, 'layout', {
+        nativeEvent: { layout: { x: 0, y: 0, width, height: 400 } },
+      });
+      const gridWidth = width - 60;
+      // Center of the last sixteenth, inside the actual editor, not the window.
+      const overlay = pointerOverlay(view);
+      fireEvent(overlay, 'pointerDown', pointer((gridWidth * 15.5) / 16, 100));
+      fireEvent(overlay, 'pointerUp', pointer((gridWidth * 15.5) / 16, 100));
+      expect(onGridTap).toHaveBeenLastCalledWith(69, 3.75);
+      expect(view.getByLabelText(/Delete note/).props.style.left).toBe(
+        gridWidth / 4
+      );
+    }
+  });
+
   it('treats a drag starting on empty grid as panning, not a tap-to-add', () => {
     // The overlay has a static touch-action: pan-y, so the browser never
     // scrolls horizontally on its own — a drag over empty space has to be

@@ -47,6 +47,7 @@ import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useDerivedValue,
+  useReducedMotion,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
@@ -62,6 +63,7 @@ import type {
 } from '../../features/playground/types';
 import {
   getDragPreviewSeed,
+  getPianoRollGuidanceRow,
   getGridPointNoteTarget,
   getMovedGridTarget,
   getMovedNoteTarget,
@@ -74,8 +76,17 @@ import {
   UNSNAPPED_MIN_DURATION_STEPS,
   type RecordingNotePreviewData,
 } from './pianoRollMath';
+import type { PianoRollGuidance } from '../../features/playground/stores/editorPolicy';
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
+
+/**
+ * How much of an unfocused row survives while a lesson step focuses a few rows.
+ * The grid scrim and the pitch label read from the same number, or the labels
+ * look like a different amount of "off" than the rows they name.
+ */
+const UNFOCUSED_ROW_REMAINING = 0.45;
+const UNFOCUSED_ROW_SCRIM_OPACITY = 1 - UNFOCUSED_ROW_REMAINING;
 
 /** Which of the two horizontally-linked timelines (this grid, or the
  * NotePrecisionPanel below it) currently owns the shared scroll offset. The
@@ -90,6 +101,16 @@ const SCROLL_OWNER_PANEL = 1;
 // Bright red — reads as "actively recording" against any track color,
 // matching the convention most DAWs use for an in-progress take.
 const RECORDING_OUTLINE_COLOR = '#FF3B30';
+
+function useNoteAppearanceOpacity(
+  appearKey: string,
+  appearingKey: SharedValue<string>,
+  appearProgress: SharedValue<number>
+): SharedValue<number> {
+  return useDerivedValue(() =>
+    appearingKey.value === appearKey ? appearProgress.value : 1
+  );
+}
 
 /**
  * Live preview of a note currently held during recording. Grows from its
@@ -108,6 +129,9 @@ const VelocityAwareNoteBody = memo(function VelocityAwareNoteBody({
   velocityColors,
   velocityPreviewNoteIndex,
   velocityPreviewValue,
+  appearKey,
+  appearingKey,
+  appearProgress,
 }: {
   noteIndex: number;
   x: number | SharedValue<number>;
@@ -119,7 +143,19 @@ const VelocityAwareNoteBody = memo(function VelocityAwareNoteBody({
   velocityColors: string[];
   velocityPreviewNoteIndex: SharedValue<number>;
   velocityPreviewValue: SharedValue<number>;
+  /** Stable identity of this note, compared on the UI runtime. */
+  appearKey: string;
+  appearingKey: SharedValue<string>;
+  appearProgress: SharedValue<number>;
 }) {
+  // Which note is arriving is read on the UI runtime, so placing a note costs
+  // the one React render the new note already required — not three.
+  const opacity = useNoteAppearanceOpacity(
+    appearKey,
+    appearingKey,
+    appearProgress
+  );
+
   const color = useDerivedValue(() => {
     const velocity =
       velocityPreviewNoteIndex.value === noteIndex
@@ -136,7 +172,47 @@ const VelocityAwareNoteBody = memo(function VelocityAwareNoteBody({
       height={height}
       r={radius}
       color={color}
-      opacity={1}
+      opacity={opacity}
+    />
+  );
+});
+
+const AppearingNoteBody = memo(function AppearingNoteBody({
+  x,
+  y,
+  width,
+  height,
+  radius,
+  color,
+  appearKey,
+  appearingKey,
+  appearProgress,
+}: {
+  x: number | SharedValue<number>;
+  y: number | SharedValue<number>;
+  width: number | SharedValue<number>;
+  height: number;
+  radius: number;
+  color: string;
+  appearKey: string;
+  appearingKey: SharedValue<string>;
+  appearProgress: SharedValue<number>;
+}) {
+  const opacity = useNoteAppearanceOpacity(
+    appearKey,
+    appearingKey,
+    appearProgress
+  );
+
+  return (
+    <RoundedRect
+      x={x}
+      y={y}
+      width={width}
+      height={height}
+      r={radius}
+      color={color}
+      opacity={opacity}
     />
   );
 });
@@ -208,7 +284,6 @@ const SNAP_EASE_MS = 90;
 
 const LABEL_COL_WIDTH = 60;
 const DEFAULT_MELODIC_MIN_PITCH = 48;
-const MELODIC_PITCH_COUNT = 24;
 
 // Matches native's PianoRoll package: every grid line (step, beat, and bar
 // boundary alike) is drawn with the same uniform black stroke — no separate
@@ -261,6 +336,8 @@ export interface SkiaPianoRollGridProps {
   isExpanded?: boolean;
   selectedPitchIndex?: number | null;
   melodicMinPitch?: number;
+  /** Rows above melodicMinPitch; defaults to the existing two-octave window. */
+  melodicPitchCount?: number;
   onNotePress?: (index: number) => void;
   onNoteResize?: (index: number, newDuration: number) => void;
   onNoteMove?: (
@@ -321,6 +398,8 @@ export interface SkiaPianoRollGridProps {
   /** Shared velocity preview consumed directly by Skia on the UI runtime. */
   velocityPreviewNoteIndex?: SharedValue<number>;
   velocityPreviewValue?: SharedValue<number>;
+  editable?: boolean;
+  guidance?: PianoRollGuidance;
 }
 
 /** Imperative handle for scrolling the grid programmatically (e.g. to jump to an isolated bar, or to mirror another view's scroll position). */
@@ -342,6 +421,7 @@ export const SkiaPianoRollGrid = memo(
         isExpanded,
         selectedPitchIndex,
         melodicMinPitch,
+        melodicPitchCount = 24,
         onNotePress,
         onNoteResize,
         onNoteMove,
@@ -368,6 +448,8 @@ export const SkiaPianoRollGrid = memo(
         onScrollXChange,
         velocityPreviewNoteIndex,
         velocityPreviewValue,
+        editable = true,
+        guidance,
       }: SkiaPianoRollGridProps,
       ref
     ) {
@@ -405,12 +487,22 @@ export const SkiaPianoRollGrid = memo(
         ? 0
         : (melodicMinPitch ?? DEFAULT_MELODIC_MIN_PITCH);
       const totalPitches = isDrum
-        ? (samples ?? []).length || 12 // Use exact sample count (no minimum)
-        : MELODIC_PITCH_COUNT;
+        ? (samples ?? []).length || 12
+        : Math.max(
+            1,
+            Math.min(
+              128,
+              Number.isFinite(melodicPitchCount)
+                ? Math.trunc(melodicPitchCount)
+                : 24
+            )
+          );
 
-      // Measure available height for expanded mode
+      // Fit the actual editor pane, which can be narrower than the window.
+      const [containerW, setContainerW] = useState<number>();
       const [containerH, setContainerH] = useState(0);
       const onContainerLayout = useCallback((e: LayoutChangeEvent) => {
+        setContainerW(e.nativeEvent.layout.width);
         setContainerH(e.nativeEvent.layout.height);
       }, []);
 
@@ -426,6 +518,7 @@ export const SkiaPianoRollGrid = memo(
       // can retain an old offset after the content width shrinks, which exposes
       // the black viewport past the end of the Skia canvas.
       const hScrollRef = useAnimatedRef<any>();
+      const vScrollRef = useRef<any>(null);
       // Scroll bookkeeping lives in shared values, not refs: reportScroll is
       // handed to the UI runtime through scheduleOnRN, so its whole closure is
       // serialized — a captured React ref that JS keeps mutating is what
@@ -433,7 +526,10 @@ export const SkiaPianoRollGrid = memo(
       // worklet would be reading a stale copy anyway.
       const scrollXShared = useSharedValue(0);
 
-      const availableGridWidth = screenWidth - LABEL_COL_WIDTH;
+      const availableGridWidth = Math.max(
+        1,
+        (containerW ?? screenWidth) - LABEL_COL_WIDTH
+      );
       const stepWidth = (availableGridWidth / 16) * zoomLevel;
       const beatWidth = stepWidth * 4;
       const gridWidth = lengthInBeats * beatWidth;
@@ -641,6 +737,82 @@ export const SkiaPianoRollGrid = memo(
               )
             : Array.from({ length: totalPitches }, (_, i) => basePitch + i),
         [isDrum, totalPitches, samples, basePitch]
+      );
+
+      const guidanceRows = useMemo(
+        () =>
+          (guidance?.focusedNoteNumbers ?? []).flatMap((noteNumber) => {
+            const row = getPianoRollGuidanceRow(noteNumber, pitchToMidi);
+            if (row == null) return [];
+            const label = isDrum
+              ? ((samples ?? []).find(
+                  (sample) => sample.noteNumber === noteNumber
+                )?.name ?? `MIDI ${noteNumber}`)
+              : getNoteName(noteNumber);
+            return [{ noteNumber, row, label }];
+          }),
+        [guidance?.focusedNoteNumbers, isDrum, pitchToMidi, samples]
+      );
+      const firstGuidanceRow = guidanceRows[0]?.row;
+      useEffect(() => {
+        if (firstGuidanceRow == null) return;
+        vScrollRef.current?.scrollTo?.({
+          y: Math.max(0, (firstGuidanceRow - 2) * effectiveRowHeight),
+          animated: false,
+        });
+      }, [effectiveRowHeight, firstGuidanceRow]);
+
+      // A newly placed note fades in over the target slot it just filled.
+      // The slot shares its exact geometry and is drawn underneath, so the
+      // fade reads as the outline becoming the note rather than a note
+      // appearing on top of one.
+      const appearProgress = useSharedValue(1);
+      const appearingKey = useSharedValue('');
+      const previousNotesRef = useRef(notes);
+      const prefersReducedMotion = useReducedMotion();
+      useEffect(() => {
+        const previous = previousNotesRef.current;
+        previousNotesRef.current = notes;
+        if (prefersReducedMotion || notes.length <= previous.length) return;
+        const added = notes.find(
+          (note) =>
+            !previous.some(
+              (old) =>
+                old.noteNumber === note.noteNumber &&
+                old.position === note.position
+            )
+        );
+        if (!added) return;
+        appearingKey.value = `${added.noteNumber}:${added.position}`;
+        appearProgress.value = 0;
+        appearProgress.value = withTiming(1, { duration: 140 });
+      }, [notes, prefersReducedMotion, appearProgress, appearingKey]);
+
+      const guidanceTargets = useMemo(
+        () =>
+          (guidance?.targets ?? []).flatMap((target, targetIndex) => {
+            const row = getPianoRollGuidanceRow(target.noteNumber, pitchToMidi);
+            if (row == null) return [];
+            const label = isDrum
+              ? ((samples ?? []).find(
+                  (sample) => sample.noteNumber === target.noteNumber
+                )?.name ?? `MIDI ${target.noteNumber}`)
+              : getNoteName(target.noteNumber);
+            return [{ ...target, row, label, targetIndex }];
+          }),
+        [guidance?.targets, isDrum, pitchToMidi, samples]
+      );
+      const pendingGuidanceTargets = useMemo(
+        () =>
+          guidanceTargets.filter(
+            (target) =>
+              !notes.some(
+                (note) =>
+                  note.noteNumber === target.noteNumber &&
+                  Math.abs(note.position - target.position) < 1e-6
+              )
+          ),
+        [guidanceTargets, notes]
       );
 
       const pianoRollMathContext = useMemo(
@@ -862,17 +1034,19 @@ export const SkiaPianoRollGrid = memo(
       const tapGesture = useMemo(
         () =>
           Gesture.Tap()
+            .enabled(editable)
             .maxDuration(DRAG_HOLD_MS)
             .onEnd((e) => {
               'worklet';
               scheduleOnRN(handleTap, e.x, e.y);
             }),
-        [handleTap]
+        [editable, handleTap]
       );
 
       const panGesture = useMemo(
         () =>
           Gesture.Pan()
+            .enabled(editable)
             // Let an immediate horizontal swipe belong to the ScrollView. Note moves
             // still work after a short hold, matching the previous note-view gesture.
             // Vertical movement should fail quickly so the outer vertical ScrollView
@@ -964,6 +1138,7 @@ export const SkiaPianoRollGrid = memo(
             }),
         // eslint-disable-next-line react-hooks/exhaustive-deps -- Reanimated SharedValues (dragType, dragStartX/Y, dragBeginX/Y, dragOrig*, dragX/Y/W) are stable refs
         [
+          editable,
           handleDragStart,
           handleDragEnd,
           swRef,
@@ -1035,14 +1210,25 @@ export const SkiaPianoRollGrid = memo(
         () =>
           Gesture.Simultaneous(
             pinchGesture,
-            Gesture.Exclusive(panGesture, tapGesture)
+            // Tap must resolve before the delayed long-press pan. Giving pan
+            // priority makes Android consume the first touch while it waits.
+            Gesture.Exclusive(tapGesture, panGesture)
           ),
         [pinchGesture, panGesture, tapGesture]
       );
 
       return (
-        <View style={styles.container} onLayout={onContainerLayout}>
-          <ScrollView style={styles.scrollV} nestedScrollEnabled>
+        <View
+          style={styles.container}
+          onLayout={onContainerLayout}
+          accessibilityLabel={!editable ? 'Piano roll, read only' : undefined}
+          accessibilityState={!editable ? { disabled: true } : undefined}
+        >
+          <ScrollView
+            ref={vScrollRef}
+            style={styles.scrollV}
+            nestedScrollEnabled
+          >
             <View style={styles.row}>
               {/* Pitch labels — React Views (interactive, need text) */}
               <View style={[styles.labels, { width: LABEL_COL_WIDTH }]}>
@@ -1051,6 +1237,11 @@ export const SkiaPianoRollGrid = memo(
                   const noteNumber = pitchToMidi[pitchIdx] ?? pitchIdx;
                   const pitchColor = noteColors?.[noteNumber] ?? trackColor;
                   const hasName = !getPitchLabel(pitchIdx).startsWith('Note ');
+                  // Dim in step with the grid scrim, or the label reads as a
+                  // different amount of "off" than the row it names.
+                  const isUnfocused =
+                    guidanceRows.length > 0 &&
+                    !guidanceRows.some((focus) => focus.row === i);
                   return (
                     <Pressable
                       key={pitchIdx}
@@ -1058,6 +1249,9 @@ export const SkiaPianoRollGrid = memo(
                       style={[
                         styles.label,
                         {
+                          ...(isUnfocused
+                            ? { opacity: UNFOCUSED_ROW_REMAINING }
+                            : null),
                           height: effectiveRowHeight,
                           backgroundColor:
                             selectedPitchIndex === pitchIdx
@@ -1123,6 +1317,48 @@ export const SkiaPianoRollGrid = memo(
                         strokeWidth={0.5}
                       />
 
+                      {/* Target slots read as an empty version of the note that
+                       * belongs there — same geometry, same colour — so placing
+                       * one simply fills its own outline. Behind the notes layer,
+                       * and dropped once the learner has filled the cell. */}
+                      {pendingGuidanceTargets.map((target) => {
+                        const x = target.position * beatWidth;
+                        const y = target.row * effectiveRowHeight + 1;
+                        const w = Math.max(
+                          (target.duration ?? 0.25) * beatWidth - 1,
+                          stepWidth
+                        );
+                        const h = effectiveRowHeight - 2;
+                        const slotColor =
+                          guidance?.targetColor ??
+                          noteColors?.[target.noteNumber] ??
+                          trackColor;
+                        return (
+                          <React.Fragment key={`target-${target.targetIndex}`}>
+                            <RoundedRect
+                              x={x}
+                              y={y}
+                              width={w}
+                              height={h}
+                              r={3}
+                              color={slotColor}
+                              opacity={0.14}
+                            />
+                            <RoundedRect
+                              x={x}
+                              y={y}
+                              width={w}
+                              height={h}
+                              r={3}
+                              color={slotColor}
+                              style="stroke"
+                              strokeWidth={1.5}
+                              opacity={0.75}
+                            />
+                          </React.Fragment>
+                        );
+                      })}
+
                       {/* Notes — styled to match AudioKit PianoRoll */}
                       {notes.map((note, idx) => {
                         let pitchIdx: number;
@@ -1160,6 +1396,9 @@ export const SkiaPianoRollGrid = memo(
                                 width={isDragging ? dragW : w}
                                 height={h}
                                 radius={r}
+                                appearKey={`${note.noteNumber}:${note.position}`}
+                                appearingKey={appearingKey}
+                                appearProgress={appearProgress}
                                 committedVelocity={note.velocity}
                                 velocityColors={velocityColors}
                                 velocityPreviewNoteIndex={
@@ -1170,14 +1409,16 @@ export const SkiaPianoRollGrid = memo(
                                 }
                               />
                             ) : (
-                              <RoundedRect
+                              <AppearingNoteBody
                                 x={isDragging ? dragX : x}
                                 y={isDragging ? dragY : y}
                                 width={isDragging ? dragW : w}
                                 height={h}
-                                r={r}
+                                radius={r}
                                 color={velocityColors[note.velocity]!}
-                                opacity={1}
+                                appearKey={`${note.noteNumber}:${note.position}`}
+                                appearingKey={appearingKey}
+                                appearProgress={appearProgress}
                               />
                             )}
                             <RoundedRect
@@ -1293,6 +1534,27 @@ export const SkiaPianoRollGrid = memo(
                         );
                       })}
 
+                      {/* Focus dims what the step is not about, rather than
+                       * painting a band over what it is. Drawn after the notes so
+                       * unfocused rows recede with their contents, and only while
+                       * a step actually names rows. */}
+                      {guidanceRows.length > 0 &&
+                        Array.from({ length: totalPitches }, (_, rowIdx) =>
+                          guidanceRows.some(
+                            (focus) => focus.row === rowIdx
+                          ) ? null : (
+                            <Rect
+                              key={`unfocused-${rowIdx}`}
+                              x={0}
+                              y={rowIdx * effectiveRowHeight}
+                              width={gridWidth}
+                              height={effectiveRowHeight}
+                              color="#000000"
+                              opacity={UNFOCUSED_ROW_SCRIM_OPACITY}
+                            />
+                          )
+                        )}
+
                       {/* Keep the playhead in the same Skia content layer as the
                     notes. It then scrolls and composites with the grid as one
                     native-rendered surface instead of being a JS sibling. */}
@@ -1306,6 +1568,53 @@ export const SkiaPianoRollGrid = memo(
                       )}
                     </Group>
                   </Canvas>
+
+                  {/* Semantic guidance mirrors the Skia drawing without intercepting touch. */}
+                  {guidanceRows.map((focus) => (
+                    <View
+                      key={`focus-a11y-${focus.noteNumber}`}
+                      pointerEvents="none"
+                      accessible
+                      accessibilityLabel={
+                        isDrum
+                          ? `Focused drum row ${focus.label}`
+                          : `Focused pitch ${focus.label}`
+                      }
+                      accessibilityValue={{
+                        text: `MIDI note ${focus.noteNumber}`,
+                      }}
+                      testID={`piano-roll-focus-midi-${focus.noteNumber}`}
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: focus.row * effectiveRowHeight,
+                        width: gridWidth,
+                        height: effectiveRowHeight,
+                      }}
+                    />
+                  ))}
+                  {pendingGuidanceTargets.map((target) => (
+                    <View
+                      key={`target-a11y-${target.targetIndex}`}
+                      pointerEvents="none"
+                      accessible
+                      accessibilityLabel={`Target ${target.label} at beat ${target.position}`}
+                      accessibilityValue={{
+                        text: `MIDI note ${target.noteNumber}`,
+                      }}
+                      testID={`piano-roll-target-${target.targetIndex}`}
+                      style={{
+                        position: 'absolute',
+                        left: target.position * beatWidth,
+                        top: target.row * effectiveRowHeight + 2,
+                        width: Math.max(
+                          (target.duration ?? 0.25) * beatWidth,
+                          stepWidth
+                        ),
+                        height: effectiveRowHeight - 4,
+                      }}
+                    />
+                  ))}
 
                   {/* Touch overlay — gesture handler for tap/drag/resize */}
                   <GestureDetector gesture={composedGesture}>

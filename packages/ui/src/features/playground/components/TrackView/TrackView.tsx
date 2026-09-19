@@ -19,6 +19,11 @@ import type {
   InstrumentType,
 } from '../../types';
 import { INSTRUMENT_COLORS } from '../../types';
+import {
+  isEditorCapabilityAllowed,
+  useResolvedEditorPolicy,
+  type EditorPolicy,
+} from '../../stores/editorPolicy';
 
 // ── Icon mapping ────────────────────────────────────────────────────────────
 
@@ -120,6 +125,7 @@ export interface TrackViewProps {
   onClipPress?: (clipId: number) => void;
   onTrackPress?: (trackId: number) => void;
   onAddClip?: (trackId: number) => void;
+  editorPolicy?: EditorPolicy;
 }
 
 export const TrackView = memo(function TrackView({
@@ -127,10 +133,13 @@ export const TrackView = memo(function TrackView({
   isSelected,
   onClipPress,
   onTrackPress,
+  editorPolicy,
 }: TrackViewProps) {
   const { colors } = useTheme();
+  const policy = useResolvedEditorPolicy(editorPolicy);
   const trackColor = INSTRUMENT_COLORS[track.type] || colors.mcWhite;
   const trackIcon = TRACK_ICON_DEFS[track.type];
+  const canArrange = isEditorCapabilityAllowed(policy, 'arrangement');
 
   return (
     <View
@@ -142,6 +151,8 @@ export const TrackView = memo(function TrackView({
       {/* Full-height colored label strip */}
       <Pressable
         onPress={() => onTrackPress?.(track.id)}
+        disabled={canArrange ? undefined : true}
+        accessibilityState={canArrange ? undefined : { disabled: true }}
         style={[styles.label, { backgroundColor: trackColor }]}
         accessibilityRole="button"
         accessibilityLabel={`${TRACK_LABELS[track.type]} track`}
@@ -187,15 +198,21 @@ export const TrackView = memo(function TrackView({
 
 export interface AddTrackRowProps {
   onPress?: () => void;
+  editorPolicy?: EditorPolicy;
 }
 
 export const AddTrackRow = memo(function AddTrackRow({
   onPress,
+  editorPolicy,
 }: AddTrackRowProps) {
   const { colors } = useTheme();
+  const policy = useResolvedEditorPolicy(editorPolicy);
+  const canAddTrack = isEditorCapabilityAllowed(policy, 'tracks');
   return (
     <Pressable
       onPress={onPress}
+      disabled={canAddTrack ? undefined : true}
+      accessibilityState={canAddTrack ? undefined : { disabled: true }}
       style={styles.addTrackRow}
       accessibilityRole="button"
       accessibilityLabel="Add track"

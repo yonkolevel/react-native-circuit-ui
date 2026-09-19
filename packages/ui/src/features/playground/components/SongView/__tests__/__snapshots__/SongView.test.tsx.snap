@@ -4932,6 +4932,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
           </Text>
         </View>
         <View
+          accessibilityLabel="Add track"
+          accessibilityRole="button"
           accessibilityState={
             {
               "busy": undefined,
@@ -4970,6 +4972,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
               "width": 80,
             }
           }
+          testID="add-track-button"
         >
           <View>
             <View
@@ -5291,6 +5294,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                 </View>
               </View>
               <View
+                accessibilityLabel="Add section"
+                accessibilityRole="button"
                 accessibilityState={
                   {
                     "busy": undefined,
@@ -5334,6 +5339,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                     },
                   ]
                 }
+                testID="add-section-button"
               >
                 <View>
                   <View
@@ -5668,6 +5674,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   }
                 >
                   <View
+                    accessibilityLabel="Create clip"
+                    accessibilityRole="button"
                     accessibilityState={
                       {
                         "busy": undefined,
@@ -5712,6 +5720,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         },
                       ]
                     }
+                    testID="empty-clip-1-2"
                   >
                     <View>
                       <View
@@ -5924,6 +5933,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   }
                 >
                   <View
+                    accessibilityLabel="Create clip"
+                    accessibilityRole="button"
                     accessibilityState={
                       {
                         "busy": undefined,
@@ -5968,6 +5979,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         },
                       ]
                     }
+                    testID="empty-clip-2-2"
                   >
                     <View>
                       <View
@@ -5998,6 +6010,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   }
                 >
                   <View
+                    accessibilityLabel="Create clip"
+                    accessibilityRole="button"
                     accessibilityState={
                       {
                         "busy": undefined,
@@ -6042,6 +6056,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         },
                       ]
                     }
+                    testID="empty-clip-3-1"
                   >
                     <View>
                       <View
@@ -6062,6 +6077,8 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                   }
                 >
                   <View
+                    accessibilityLabel="Create clip"
+                    accessibilityRole="button"
                     accessibilityState={
                       {
                         "busy": undefined,
@@ -6106,6 +6123,7 @@ exports[`SongView snapshots matches snapshot for song view 1`] = `
                         },
                       ]
                     }
+                    testID="empty-clip-3-2"
                   >
                     <View>
                       <View

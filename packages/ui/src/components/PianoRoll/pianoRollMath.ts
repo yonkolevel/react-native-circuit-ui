@@ -24,6 +24,15 @@ export interface RecordingNotePreviewData {
   loopBeats?: number;
 }
 
+/** Maps an exact authored MIDI note number to the visual grid row. */
+export const getPianoRollGuidanceRow = (
+  noteNumber: number,
+  pitchToMidi: readonly number[]
+): number | null => {
+  const pitchIndex = pitchToMidi.indexOf(noteNumber);
+  return pitchIndex < 0 ? null : pitchToMidi.length - 1 - pitchIndex;
+};
+
 const TOUCH_PADDING = 12;
 const MIN_RESIZE_ZONE = 20;
 

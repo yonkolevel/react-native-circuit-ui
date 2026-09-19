@@ -5,6 +5,8 @@ import {
   Play,
   Pause,
   ChevronLeft,
+  ChevronUp,
+  ChevronDown,
   Settings,
   Repeat,
   Star,
@@ -73,6 +75,12 @@ export const Icons = {
 
   // Navigation
   back: { sf: 'chevron.left', fallback: ChevronLeft, android: 'chevron-left' },
+  chevronUp: { sf: 'chevron.up', fallback: ChevronUp, android: 'chevron-up' },
+  chevronDown: {
+    sf: 'chevron.down',
+    fallback: ChevronDown,
+    android: 'chevron-down',
+  },
   close: { sf: 'xmark', fallback: X, android: 'close' },
   settings: { sf: 'gearshape.fill', fallback: Settings, android: 'cog' },
   sidebar: { sf: 'sidebar.left', fallback: PanelLeft, android: 'dock-left' },

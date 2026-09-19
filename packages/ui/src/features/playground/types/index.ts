@@ -75,7 +75,7 @@ export interface Track {
 
 export type SongTab = 'song' | 'mixer' | 'settings';
 
-/** Matches midicircuit-rn SongState */
+/** Display state supplied by the app; undo history remains app-owned. */
 export interface SongState {
   id: string;
   isPlaying: boolean;
@@ -97,10 +97,6 @@ export interface SongState {
   /** Currently selected soundbank slug in the picker */
   selectedSoundBankSlug: string | null;
 
-  // Undo/Redo stacks (keyed by clipId)
-  undoStacks: Record<number, ClipNote[][]>;
-  redoStacks: Record<number, ClipNote[][]>;
-
   // Live recording state (keyed by noteNumber for tracking held notes)
   liveRecordingNotes: Record<
     number,
@@ -110,6 +106,7 @@ export interface SongState {
   // Clip editor UI state
   isClipSettingsVisible: boolean;
   showPianoNoteNames: boolean;
+  auditionOnPlace: boolean;
   recordingCountIn: number | null;
 }
 
@@ -187,13 +184,21 @@ export interface MixerCallbacks {
 }
 
 export interface ClipEditorCallbacks {
-  onNoteAdd?: (note: ClipNote) => void;
+  /** Return false when the app rejects the edit; rejected edits must not audition. */
+  onNoteAdd?: (note: ClipNote) => void | boolean;
+  /**
+   * Sound the note the editor just committed. Placing a note in a sequencer
+   * should be audible — without this the grid is the only silent instrument
+   * in the app. Called for a note added by tap and for a note dragged to a
+   * new pitch, never while merely nudging one along the same row.
+   */
+  onAuditionNote?: (noteNumber: number) => void;
   onNoteDelete?: (noteIndex: number) => void;
   onNoteMove?: (
     noteIndex: number,
     newPosition: number,
     newNoteNumber: number
-  ) => void;
+  ) => void | boolean;
   onNoteResize?: (noteIndex: number, newDuration: number) => void;
   onVelocityChange?: (noteIndex: number, velocity: number) => void;
   onQuantize?: (precision: NotePrecision) => void;

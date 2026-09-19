@@ -64,6 +64,7 @@ export const PlaygroundScreen = memo(function PlaygroundScreen({
     showClipSettings: noop,
     hideClipSettings: noop,
     togglePianoNoteNames: noop,
+    toggleAuditionOnPlace: noop,
     openClipEditor: noop,
     setCurrentTab: noop,
     setMasterVolume: noop,

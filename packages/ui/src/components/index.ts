@@ -141,3 +141,14 @@ export type { NotePrecisionPanelProps } from './NotePrecisionPanel';
 
 export { FeedbackView, FEEDBACK_EMOJIS } from './FeedbackView';
 export type { FeedbackViewProps } from './FeedbackView';
+
+export { MissionRail } from './MissionRail';
+export type {
+  MissionRailProps,
+  MissionMode,
+  MissionProgress,
+  MissionRailAction,
+  MissionRailFeedback,
+  MissionFeedbackTone,
+  MissionRailFocusTarget,
+} from './MissionRail';

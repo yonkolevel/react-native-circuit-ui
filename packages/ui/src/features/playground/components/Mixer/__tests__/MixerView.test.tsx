@@ -53,6 +53,7 @@ function createTestStore(tracks: ReturnType<typeof createMockTrack>[]) {
     showClipSettings: noop,
     hideClipSettings: noop,
     togglePianoNoteNames: noop,
+    toggleAuditionOnPlace: noop,
     openClipEditor: noop,
     setCurrentTab: noop,
     setMasterVolume: noop,

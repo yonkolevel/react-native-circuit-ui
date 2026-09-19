@@ -127,7 +127,7 @@ export const Modal: React.FC<ModalProps> = memo(function Modal({
 
 const styles = StyleSheet.create({
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.flatten(StyleSheet.absoluteFill),
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   centeredView: {
@@ -152,8 +152,12 @@ const styles = StyleSheet.create({
   closeButton: {
     padding: 4,
   },
+  // The card sizes to its content, so a `flex: 1` body would resolve to zero
+  // height and hide the children. Shrink-only lets it grow with the content and
+  // start scrolling once the card hits `maxHeight`.
   body: {
-    flex: 1,
+    flexGrow: 0,
+    flexShrink: 1,
   },
 });
 

@@ -25,3 +25,6 @@ export * from './theme';
 
 // Components
 export * from './components';
+
+// Reusable Playground editor contract and surfaces
+export * from './features/playground';

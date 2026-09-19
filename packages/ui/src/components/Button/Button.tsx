@@ -5,7 +5,7 @@
  * Supports all SwiftUI variants: primary, secondary, normal, outline, solid.
  * Press-state color inversion matches SwiftUI ButtonStyle implementations.
  */
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, type Ref } from 'react';
 import { Pressable, StyleSheet, ActivityIndicator, View } from 'react-native';
 import type { PressableProps, StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../Text';
@@ -48,6 +48,8 @@ export interface ButtonProps extends Omit<
   color?: string;
   /** Custom style for the outer pressable */
   style?: StyleProp<ViewStyle>;
+  /** Native view ref used for explicit accessibility focus restoration. */
+  buttonRef?: Ref<View>;
   a11yId?: string;
 }
 
@@ -65,6 +67,7 @@ export const Button: React.FC<ButtonProps> = memo(function Button({
   disabled = false,
   color,
   style,
+  buttonRef,
   a11yId,
   onPress,
   ...rest
@@ -166,6 +169,7 @@ export const Button: React.FC<ButtonProps> = memo(function Button({
 
   return (
     <Pressable
+      ref={buttonRef}
       onPress={onPress}
       disabled={disabled || loading}
       accessibilityRole="button"
@@ -203,7 +207,15 @@ export const Button: React.FC<ButtonProps> = memo(function Button({
         return (
           <View style={styles.content}>
             {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
-            <Text variant={textVariant} color={s.text} uppercase>
+            {/* A label must never paint outside its own button; at large text
+                or heavy zoom it truncates rather than overlapping a neighbour. */}
+            <Text
+              variant={textVariant}
+              color={s.text}
+              uppercase
+              numberOfLines={1}
+              style={styles.label}
+            >
               {label}
             </Text>
             {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
@@ -230,7 +242,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    minWidth: 0,
   },
+  label: { flexShrink: 1 },
   leftIcon: {
     marginRight: 8,
   },

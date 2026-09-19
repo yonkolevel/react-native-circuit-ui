@@ -165,7 +165,8 @@ exports[`EditProfileView matches snapshot (dark mode, visible) 1`] = `
         showsVerticalScrollIndicator={false}
         style={
           {
-            "flex": 1,
+            "flexGrow": 0,
+            "flexShrink": 1,
           }
         }
       >
@@ -534,11 +535,13 @@ exports[`EditProfileView matches snapshot (dark mode, visible) 1`] = `
                         "alignItems": "center",
                         "flexDirection": "row",
                         "justifyContent": "center",
+                        "minWidth": 0,
                       }
                     }
                   >
                     <Text
                       accessibilityRole="text"
+                      numberOfLines={1}
                       style={
                         [
                           {
@@ -552,6 +555,9 @@ exports[`EditProfileView matches snapshot (dark mode, visible) 1`] = `
                           },
                           {
                             "textTransform": "uppercase",
+                          },
+                          {
+                            "flexShrink": 1,
                           },
                         ]
                       }
@@ -783,11 +789,13 @@ exports[`EditProfileView matches snapshot (dark mode, visible) 1`] = `
                         "alignItems": "center",
                         "flexDirection": "row",
                         "justifyContent": "center",
+                        "minWidth": 0,
                       }
                     }
                   >
                     <Text
                       accessibilityRole="text"
+                      numberOfLines={1}
                       style={
                         [
                           {
@@ -801,6 +809,9 @@ exports[`EditProfileView matches snapshot (dark mode, visible) 1`] = `
                           },
                           {
                             "textTransform": "uppercase",
+                          },
+                          {
+                            "flexShrink": 1,
                           },
                         ]
                       }
@@ -986,7 +997,8 @@ exports[`EditProfileView matches snapshot (light mode, visible) 1`] = `
         showsVerticalScrollIndicator={false}
         style={
           {
-            "flex": 1,
+            "flexGrow": 0,
+            "flexShrink": 1,
           }
         }
       >
@@ -1355,11 +1367,13 @@ exports[`EditProfileView matches snapshot (light mode, visible) 1`] = `
                         "alignItems": "center",
                         "flexDirection": "row",
                         "justifyContent": "center",
+                        "minWidth": 0,
                       }
                     }
                   >
                     <Text
                       accessibilityRole="text"
+                      numberOfLines={1}
                       style={
                         [
                           {
@@ -1373,6 +1387,9 @@ exports[`EditProfileView matches snapshot (light mode, visible) 1`] = `
                           },
                           {
                             "textTransform": "uppercase",
+                          },
+                          {
+                            "flexShrink": 1,
                           },
                         ]
                       }
@@ -1604,11 +1621,13 @@ exports[`EditProfileView matches snapshot (light mode, visible) 1`] = `
                         "alignItems": "center",
                         "flexDirection": "row",
                         "justifyContent": "center",
+                        "minWidth": 0,
                       }
                     }
                   >
                     <Text
                       accessibilityRole="text"
+                      numberOfLines={1}
                       style={
                         [
                           {
@@ -1622,6 +1641,9 @@ exports[`EditProfileView matches snapshot (light mode, visible) 1`] = `
                           },
                           {
                             "textTransform": "uppercase",
+                          },
+                          {
+                            "flexShrink": 1,
                           },
                         ]
                       }

@@ -27,6 +27,11 @@ import { WithHint, HintIDs } from '../../../../components/Hint';
 import { useTheme } from '../../../../theme';
 import { makeSpacing } from '../../../../theme/spacing';
 import { useSongContext, useSongActions } from '../../stores/playgroundStore';
+import {
+  isEditorCapabilityAllowed,
+  useResolvedEditorPolicy,
+  type EditorPolicy,
+} from '../../stores/editorPolicy';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -49,13 +54,15 @@ export interface SongToolbarProps {
   style?: StyleProp<ViewStyle>;
   /** Override testID for sub-elements */
   testIDs?: SongToolbarTestIDs;
+  editorPolicy?: EditorPolicy;
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export const SongToolbar: React.FC<SongToolbarProps> = memo(
-  function SongToolbar({ onBack, style, testIDs }) {
+  function SongToolbar({ onBack, style, testIDs, editorPolicy }) {
     const { colors } = useTheme();
+    const policy = useResolvedEditorPolicy(editorPolicy);
 
     // State — fine-grained selectors, re-render only when these change
     const isPlaying = useSongContext((s) => s.isPlaying);
@@ -65,7 +72,12 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
 
     // Actions — stable refs, no subscription (getState)
     const { setPlaying, toggleLoop, toggleMetronome, setCurrentTab, setTempo } =
-      useSongActions();
+      useSongActions(policy);
+    const canPlay = isEditorCapabilityAllowed(policy, 'transport');
+    const canLoop = isEditorCapabilityAllowed(policy, 'loop');
+    const canMetronome = isEditorCapabilityAllowed(policy, 'metronome');
+    const canTempo = isEditorCapabilityAllowed(policy, 'tempo');
+    const hideTransport = policy.hideTransport === true;
 
     // BPM editor modal
     const [showBpmEditor, setShowBpmEditor] = useState(false);
@@ -144,67 +156,85 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
         <View style={styles.spacer} />
 
         {/* Transport Controls — centered */}
-        <View style={styles.transportGroup}>
-          {/* Play / Pause — bounce on tap */}
-          <WithHint hintID={HintIDs.playButton}>
+        {!hideTransport && (
+          <View style={styles.transportGroup}>
+            {/* Play / Pause — bounce on tap */}
+            <WithHint hintID={HintIDs.playButton}>
+              <AnimatedPressable
+                onPress={handlePlayPause}
+                disabled={canPlay ? undefined : true}
+                hitSlop={8}
+                accessibilityRole="button"
+                accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
+                accessibilityHint="Toggle playback"
+                accessibilityState={{
+                  selected: isPlaying,
+                  disabled: canPlay ? undefined : true,
+                }}
+                style={[styles.transportButton, playStyle]}
+                testID={testIDs?.playButton ?? 'transport-play-pause'}
+              >
+                {isPlaying ? (
+                  <Icon icon={Icons.pause} size={22} color={colors.mcWhite} />
+                ) : (
+                  <Icon icon={Icons.play} size={22} color={colors.mcWhite} />
+                )}
+              </AnimatedPressable>
+            </WithHint>
+
+            {/* Loop — bounce on tap */}
             <AnimatedPressable
-              onPress={handlePlayPause}
+              onPress={handleToggleLoop}
+              disabled={canLoop ? undefined : true}
               hitSlop={8}
               accessibilityRole="button"
-              accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
-              accessibilityHint="Toggle playback"
-              accessibilityState={{ selected: isPlaying }}
-              style={[styles.transportButton, playStyle]}
-              testID={testIDs?.playButton ?? 'transport-play-pause'}
+              accessibilityLabel="Loop"
+              accessibilityHint="Toggle loop"
+              accessibilityState={{
+                selected: isLoopEnabled,
+                disabled: canLoop ? undefined : true,
+              }}
+              style={[styles.transportButton, loopStyle]}
+              testID={testIDs?.loopButton ?? 'transport-loop'}
             >
-              {isPlaying ? (
-                <Icon icon={Icons.pause} size={22} color={colors.mcWhite} />
-              ) : (
-                <Icon icon={Icons.play} size={22} color={colors.mcWhite} />
-              )}
+              <Icon icon={Icons.loop} size={22} color={loopColor} />
             </AnimatedPressable>
-          </WithHint>
 
-          {/* Loop — bounce on tap */}
-          <AnimatedPressable
-            onPress={handleToggleLoop}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Loop"
-            accessibilityHint="Toggle loop"
-            accessibilityState={{ selected: isLoopEnabled }}
-            style={[styles.transportButton, loopStyle]}
-            testID={testIDs?.loopButton ?? 'transport-loop'}
-          >
-            <Icon icon={Icons.loop} size={22} color={loopColor} />
-          </AnimatedPressable>
-
-          {/* Metronome — bounce on tap */}
-          <AnimatedPressable
-            onPress={handleToggleMetronome}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Metronome"
-            accessibilityHint="Toggle metronome"
-            accessibilityState={{ selected: isMetronomeEnabled }}
-            style={[styles.transportButton, metroStyle]}
-            testID={testIDs?.metronomeButton ?? 'transport-metronome'}
-          >
-            <Icon
-              icon={isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff}
-              size={22}
-              color={colors.mcWhite}
-            />
-          </AnimatedPressable>
-        </View>
+            {/* Metronome — bounce on tap */}
+            <AnimatedPressable
+              onPress={handleToggleMetronome}
+              disabled={canMetronome ? undefined : true}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="Metronome"
+              accessibilityHint="Toggle metronome"
+              accessibilityState={{
+                selected: isMetronomeEnabled,
+                disabled: canMetronome ? undefined : true,
+              }}
+              style={[styles.transportButton, metroStyle]}
+              testID={testIDs?.metronomeButton ?? 'transport-metronome'}
+            >
+              <Icon
+                icon={
+                  isMetronomeEnabled ? Icons.metronomeOn : Icons.metronomeOff
+                }
+                size={22}
+                color={colors.mcWhite}
+              />
+            </AnimatedPressable>
+          </View>
+        )}
 
         {/* BPM display — tappable */}
         <Pressable
           onPress={() => setShowBpmEditor(true)}
+          disabled={canTempo ? undefined : true}
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel={`${Math.round(tempo)} BPM`}
           accessibilityHint="Adjust tempo"
+          accessibilityState={canTempo ? undefined : { disabled: true }}
           style={styles.bpmButton}
           testID={testIDs?.bpmButton ?? 'transport-bpm'}
         >
@@ -259,6 +289,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
                 </Text>
                 <View style={styles.bpmModalButtons}>
                   <TouchableOpacity
+                    disabled={!canTempo}
                     onPress={() => setTempo(Math.max(40, tempo - 5))}
                     style={styles.bpmAdjust}
                     accessibilityLabel="Decrease tempo"
@@ -270,6 +301,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
+                    disabled={!canTempo}
                     onPress={() => setTempo(Math.max(40, tempo - 1))}
                     style={styles.bpmAdjust}
                     accessibilityLabel="Decrease tempo by 1"
@@ -281,6 +313,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
+                    disabled={!canTempo}
                     onPress={() => setTempo(Math.min(300, tempo + 1))}
                     style={styles.bpmAdjust}
                     accessibilityLabel="Increase tempo by 1"
@@ -292,6 +325,7 @@ export const SongToolbar: React.FC<SongToolbarProps> = memo(
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
+                    disabled={!canTempo}
                     onPress={() => setTempo(Math.min(300, tempo + 5))}
                     style={styles.bpmAdjust}
                     accessibilityLabel="Increase tempo"

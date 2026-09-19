@@ -103,6 +103,7 @@ jest.mock('react-native-reanimated', () => {
       addWhitelistedUIProps: () => {},
     },
     useSharedValue: mockSharedValue,
+    useReducedMotion: () => false,
     useDerivedValue: (fn) => ({ value: fn() }),
     useAnimatedStyle: (fn) => fn(),
     useAnimatedProps: (fn) => fn(),
@@ -291,7 +292,8 @@ jest.mock('@shopify/react-native-skia', () => {
       Matrix: () => [],
     },
     useSharedValue: (init) => ({ value: init }),
-    matchFont: () => ({}),
+    // Precision-lane layout measures velocity labels; no native glyph rendering in Jest.
+    matchFont: () => ({ measureText: () => ({ x: 0, y: 0, width: 0, height: 0 }) }),
   };
 });
 

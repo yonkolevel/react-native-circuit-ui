@@ -29,8 +29,12 @@ import { MixerView } from '../Mixer';
 import { SongSettings } from '../Settings';
 import { ExportAudioView } from '../ExportAudio';
 import { useSongContext, useSongActions } from '../../stores/playgroundStore';
-import { useShallow } from 'zustand/react/shallow';
 import type { Clip, InstrumentType } from '../../types';
+import {
+  isEditorCapabilityAllowed,
+  useResolvedEditorPolicy,
+  type EditorPolicy,
+} from '../../stores/editorPolicy';
 import { INSTRUMENT_COLORS } from '../../types';
 
 const TRACK_ICONS: Record<string, any> = {
@@ -82,6 +86,7 @@ const ClipCell = memo(function ClipCell({
   defaultOctave,
   onPress,
   onLongPress,
+  canEditClips,
   testID,
 }: {
   clip?: Clip;
@@ -91,12 +96,19 @@ const ClipCell = memo(function ClipCell({
   defaultOctave?: number;
   onPress?: () => void;
   onLongPress?: () => void;
+  canEditClips?: boolean;
   testID?: string;
 }) {
   if (!clip) {
+    const disabled = canEditClips === false;
     return (
       <Pressable
         onPress={onPress}
+        disabled={disabled ? true : undefined}
+        testID={testID}
+        accessibilityLabel="Create clip"
+        accessibilityRole="button"
+        accessibilityState={disabled ? { disabled: true } : undefined}
         style={[s.emptyCell, { borderColor: color }]}
       >
         <Icon icon={Icons.plus} size={17} color={color} />
@@ -193,6 +205,8 @@ export interface SongViewProps {
   artistName?: string;
   /** Optional cover image URL for the export view. */
   coverImageUrl?: string;
+  /** Presentation guard for Circuit Learn/Practice/Recall/Creative hosts. */
+  editorPolicy?: EditorPolicy;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -204,17 +218,19 @@ export const SongView = memo(function SongView({
   playgroundName,
   artistName,
   coverImageUrl,
+  editorPolicy,
   style,
 }: SongViewProps) {
   const { colors } = useTheme();
+  const policy = useResolvedEditorPolicy(editorPolicy);
   const [exportVisible, setExportVisible] = useState(false);
   const [menuTarget, setMenuTarget] = useState<SongMenuTarget | null>(null);
   const [sectionName, setSectionName] = useState('');
 
   // State — fine-grained selectors
   const currentTab = useSongContext((s) => s.currentTab);
-  const tracks = useSongContext(useShallow((s) => s.tracks));
-  const sections = useSongContext(useShallow((s) => s.sections));
+  const tracks = useSongContext((s) => s.tracks);
+  const sections = useSongContext((s) => s.sections);
   const currentSectionId = useSongContext((s) => s.currentSectionId);
 
   // Actions — stable refs, no subscription
@@ -230,13 +246,25 @@ export const SongView = memo(function SongView({
     renameSection,
     duplicateSection,
     removeSection,
-  } = useSongActions();
+  } = useSongActions(policy);
 
+  const canArrange = isEditorCapabilityAllowed(policy, 'arrangement');
+  const canEditSections = isEditorCapabilityAllowed(policy, 'sections');
+  const canEditClips = isEditorCapabilityAllowed(policy, 'clips');
+  const canEditTracks = isEditorCapabilityAllowed(policy, 'tracks');
   const showTab = currentTab === 'song' || currentTab === 'mixer';
 
   return (
-    <View style={[s.root, { backgroundColor: colors.mcBlack }, style]}>
-      <SongToolbar onBack={onBack} />
+    <View
+      style={[s.root, { backgroundColor: colors.mcBlack }, style]}
+      accessibilityLabel={
+        policy.readOnly ? 'Song editor, read only' : undefined
+      }
+      accessibilityValue={
+        policy.readOnly ? { text: 'Read only; playback available' } : undefined
+      }
+    >
+      <SongToolbar onBack={onBack} editorPolicy={policy} />
 
       <View style={s.body}>
         {currentTab === 'song' && (
@@ -247,6 +275,10 @@ export const SongView = memo(function SongView({
               {tracks.map((t) => (
                 <Pressable
                   key={t.id}
+                  disabled={canEditTracks ? undefined : true}
+                  accessibilityState={
+                    !canEditTracks ? { disabled: true } : undefined
+                  }
                   onPress={() =>
                     setMenuTarget({
                       kind: 'track',
@@ -254,23 +286,28 @@ export const SongView = memo(function SongView({
                       title: t.title,
                     })
                   }
-                  onLongPress={() =>
-                    setMenuTarget({
-                      kind: 'track',
-                      trackId: t.id,
-                      title: t.title,
-                    })
+                  onLongPress={
+                    canEditTracks
+                      ? () =>
+                          setMenuTarget({
+                            kind: 'track',
+                            trackId: t.id,
+                            title: t.title,
+                          })
+                      : undefined
                   }
                   testID={`track-label-${t.id}`}
                   accessibilityLabel={`${t.title} track options`}
                   accessibilityRole="button"
-                  {...webContextMenu(() =>
-                    setMenuTarget({
-                      kind: 'track',
-                      trackId: t.id,
-                      title: t.title,
-                    })
-                  )}
+                  {...(canEditTracks
+                    ? webContextMenu(() =>
+                        setMenuTarget({
+                          kind: 'track',
+                          trackId: t.id,
+                          title: t.title,
+                        })
+                      )
+                    : {})}
                   style={[
                     s.label,
                     {
@@ -293,7 +330,19 @@ export const SongView = memo(function SongView({
                   </Text>
                 </Pressable>
               ))}
-              <Pressable onPress={showAddTrackMenu} style={s.addTrack}>
+              <Pressable
+                onPress={showAddTrackMenu}
+                disabled={canEditTracks ? undefined : true}
+                accessibilityLabel="Add track"
+                accessibilityRole="button"
+                accessibilityState={
+                  !canEditTracks ? { disabled: true } : undefined
+                }
+                testID="add-track-button"
+                style={
+                  canEditTracks ? s.addTrack : [s.addTrack, { opacity: 0.4 }]
+                }
+              >
                 <Icon icon={Icons.plus} size={12} color={colors.mcBlack5} />
                 <Text variant="small" color={colors.mcBlack5}>
                   Add track
@@ -321,9 +370,14 @@ export const SongView = memo(function SongView({
                       <View key={sec.id} style={s.secTabContainer}>
                         <Pressable
                           onPress={() => setCurrentSection(sec.id)}
-                          onLongPress={openSectionMenu}
+                          onLongPress={
+                            canEditSections ? openSectionMenu : undefined
+                          }
+                          disabled={canArrange ? undefined : true}
                           testID={`section-${sec.id}`}
-                          {...webContextMenu(openSectionMenu)}
+                          {...(canEditSections
+                            ? webContextMenu(openSectionMenu)
+                            : {})}
                           style={[
                             s.secTab,
                             {
@@ -334,6 +388,9 @@ export const SongView = memo(function SongView({
                           ]}
                           accessibilityLabel={`Section ${sec.name || index + 1}`}
                           accessibilityRole="button"
+                          accessibilityState={
+                            !canArrange ? { disabled: true } : undefined
+                          }
                         >
                           <Text
                             variant="small"
@@ -346,6 +403,10 @@ export const SongView = memo(function SongView({
                         </Pressable>
                         <Pressable
                           onPress={openSectionMenu}
+                          disabled={canEditSections ? undefined : true}
+                          accessibilityState={
+                            !canEditSections ? { disabled: true } : undefined
+                          }
                           style={s.itemMenuButton}
                           hitSlop={10}
                           accessibilityLabel={`Options for ${sec.name || `Section ${index + 1}`}`}
@@ -363,7 +424,21 @@ export const SongView = memo(function SongView({
                   })}
                   <Pressable
                     onPress={addSection}
-                    style={[s.addSecBtn, { borderColor: colors.black5 }]}
+                    disabled={canEditSections ? undefined : true}
+                    accessibilityLabel="Add section"
+                    accessibilityRole="button"
+                    accessibilityState={
+                      !canEditSections ? { disabled: true } : undefined
+                    }
+                    testID="add-section-button"
+                    style={
+                      canEditSections
+                        ? [s.addSecBtn, { borderColor: colors.black5 }]
+                        : [
+                            s.addSecBtn,
+                            { borderColor: colors.black5, opacity: 0.4 },
+                          ]
+                    }
                   >
                     <Icon icon={Icons.plus} size={16} color={colors.mcBlack5} />
                   </Pressable>
@@ -375,14 +450,15 @@ export const SongView = memo(function SongView({
                         const clip = t.clips.find(
                           (c) => c.sectionID === sec.id
                         );
-                        const openClipMenu = clip
-                          ? () =>
-                              setMenuTarget({
-                                kind: 'clip',
-                                trackId: t.id,
-                                clipId: clip.id,
-                              })
-                          : undefined;
+                        const openClipMenu =
+                          clip && canEditClips
+                            ? () =>
+                                setMenuTarget({
+                                  kind: 'clip',
+                                  trackId: t.id,
+                                  clipId: clip.id,
+                                })
+                            : undefined;
                         const cell = (
                           <View style={s.clipCellContainer}>
                             <ClipCell
@@ -391,14 +467,18 @@ export const SongView = memo(function SongView({
                               instrumentType={t.type}
                               sampleCount={t.soundBank?.samples?.length}
                               defaultOctave={t.soundBank?.defaultOctave}
+                              canEditClips={canEditClips}
                               testID={
-                                clip ? `clip-${t.id}-${clip.id}` : undefined
+                                clip
+                                  ? `clip-${t.id}-${clip.id}`
+                                  : `empty-clip-${t.id}-${sec.id}`
                               }
                               onLongPress={openClipMenu}
                               onPress={() => {
                                 if (clip) {
                                   openClipEditor(t.id, clip.id);
                                 } else {
+                                  if (!canEditClips) return;
                                   // Create clip then immediately open editor
                                   // Compute new ID using same logic as songStore.createClip
                                   const allClipIds = tracks.flatMap((tr) =>
@@ -447,9 +527,10 @@ export const SongView = memo(function SongView({
             </ScrollView>
           </View>
         )}
-        {currentTab === 'mixer' && <MixerView />}
+        {currentTab === 'mixer' && <MixerView editorPolicy={policy} />}
         {currentTab === 'settings' && (
           <SongSettings
+            editorPolicy={policy}
             onExportAudio={() => setExportVisible(true)}
             onExportBundle={onExportBundle}
             onShareBeat={onShareBeat}
@@ -769,7 +850,7 @@ const s = StyleSheet.create({
     padding: 24,
   },
   menuBackdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.flatten(StyleSheet.absoluteFill),
     backgroundColor: 'rgba(0,0,0,0.7)',
   },
   menuCard: {

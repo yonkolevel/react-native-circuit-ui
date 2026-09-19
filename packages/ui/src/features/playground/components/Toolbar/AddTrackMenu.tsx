@@ -4,6 +4,11 @@ import { Text } from '../../../../components/Text';
 import { useTheme } from '../../../../theme';
 import type { InstrumentType } from '../../types';
 import { Icon, Icons } from '../../../../components/SFSymbol';
+import {
+  isEditorCapabilityAllowed,
+  useResolvedEditorPolicy,
+  type EditorPolicy,
+} from '../../stores/editorPolicy';
 
 /** Matches Swift AddTrackMenuView — SF Symbol → Lucide mapping */
 const TRACK_OPTIONS: { type: InstrumentType; label: string; icon: any }[] = [
@@ -25,14 +30,18 @@ export interface AddTrackMenuProps {
   onSelect?: (type: InstrumentType) => void;
   onClose?: () => void;
   testIDs?: AddTrackMenuTestIDs;
+  editorPolicy?: EditorPolicy;
 }
 
 export const AddTrackMenu = memo(function AddTrackMenu({
   onSelect,
   onClose: _onClose,
   testIDs,
+  editorPolicy,
 }: AddTrackMenuProps) {
   const { colors } = useTheme();
+  const policy = useResolvedEditorPolicy(editorPolicy);
+  const canAddTrack = isEditorCapabilityAllowed(policy, 'tracks');
   return (
     <View
       style={[styles.container, { backgroundColor: colors.mcBlack3 }]}
@@ -54,6 +63,8 @@ export const AddTrackMenu = memo(function AddTrackMenu({
           <Pressable
             key={opt.type}
             onPress={() => onSelect?.(opt.type)}
+            disabled={canAddTrack ? undefined : true}
+            accessibilityState={canAddTrack ? undefined : { disabled: true }}
             style={[styles.option, { backgroundColor: colors.mcWhite4 }]}
             accessibilityRole="button"
             accessibilityLabel={`Add ${opt.label}`}

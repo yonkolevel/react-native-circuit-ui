@@ -12,6 +12,7 @@ import { SongView } from '../SongView';
 import { SongToolbar } from '../SongToolbar';
 import { SongMixerTabBar } from '../SongMixerTabBar';
 import { SongStoreProvider } from '../../../stores/playgroundStore';
+import { EditorPolicyProvider } from '../../../stores/editorPolicy';
 import type { SongStore } from '../../../stores/playgroundStore';
 import {
   createMockClip,
@@ -72,6 +73,7 @@ function createTestStore(
     showClipSettings: jest.fn(),
     hideClipSettings: jest.fn(),
     togglePianoNoteNames: jest.fn(),
+    toggleAuditionOnPlace: jest.fn(),
     openClipEditor: jest.fn(),
     setCurrentTab: jest.fn((tab: string) => set({ currentTab: tab as any })),
     setMasterVolume: jest.fn(),
@@ -143,6 +145,118 @@ describe('SongMixerTabBar snapshots', () => {
 
 // ─── Behavioral Tests ───────────────────────────────────────────────────────
 
+describe('SongView policy accessibility', () => {
+  it('does not let SongView, toolbar, mixer, or settings props bypass contextual read-only', () => {
+    const store = createTestStore();
+    const permissive = {
+      readOnly: false,
+      capabilities: { metronome: true, mixer: true, tempo: true },
+    } as const;
+    const { getByTestId, getByLabelText, getAllByLabelText } = render(
+      <ThemeProvider initialMode="dark">
+        <SongStoreProvider store={store as any}>
+          <EditorPolicyProvider policy={{ readOnly: true }}>
+            <SongView editorPolicy={permissive} />
+          </EditorPolicyProvider>
+        </SongStoreProvider>
+      </ThemeProvider>
+    );
+
+    // The metronome is playback control, not a musical mutation, so read-only
+    // leaves it working. Everything below is a real bypass attempt and stays
+    // blocked by the contextual policy.
+    fireEvent.press(getByTestId('transport-metronome'));
+    expect(store.getState().toggleMetronome).toHaveBeenCalled();
+
+    fireEvent.press(getByTestId('tab-mixer'));
+    expect(
+      getAllByLabelText('Mute track').every(
+        (control) => control.props.accessibilityState?.disabled === true
+      )
+    ).toBe(true);
+
+    fireEvent.press(getByTestId('transport-settings'));
+    expect(getByLabelText('Tempo').props.accessibilityState.disabled).toBe(
+      true
+    );
+    expect(
+      getByLabelText('Master volume').props.accessibilityState.disabled
+    ).toBe(true);
+  });
+
+  it('rerenders the whole editor when toolbar playback state changes', async () => {
+    const store = createTestStore({ isPlaying: false });
+    const screen = renderWithStore(<SongView />, store);
+
+    fireEvent.press(screen.getByTestId('transport-play-pause'));
+
+    await waitFor(() => {
+      expect(store.getState().isPlaying).toBe(true);
+      expect(
+        screen.getByTestId('transport-play-pause').props.accessibilityLabel
+      ).toBe('Pause');
+    });
+  });
+
+  it('announces read-only without disabling the editor container while Play remains enabled', () => {
+    const store = createTestStore();
+    const { getByLabelText, getByTestId } = renderWithStore(
+      <SongView editorPolicy={{ readOnly: true }} />,
+      store
+    );
+
+    const editor = getByLabelText('Song editor, read only');
+    expect(editor.props.accessibilityState?.disabled).not.toBe(true);
+    expect(editor.props.accessibilityValue).toEqual({
+      text: 'Read only; playback available',
+    });
+    expect(
+      getByTestId('transport-play-pause').props.accessibilityState.disabled
+    ).not.toBe(true);
+  });
+
+  it('exposes stable accessible controls for empty clips, tracks, and sections', () => {
+    const track = createMockTrack({ clips: [] });
+    const store = createTestStore({ tracks: [track] });
+    const section = store.getState().sections[0]!;
+    const screen = renderWithStore(<SongView />, store);
+
+    expect(screen.getByTestId('add-track-button').props).toMatchObject({
+      accessibilityLabel: 'Add track',
+      accessibilityRole: 'button',
+    });
+    expect(screen.getByTestId('add-section-button').props).toMatchObject({
+      accessibilityLabel: 'Add section',
+      accessibilityRole: 'button',
+    });
+    expect(
+      screen.getByTestId(`empty-clip-${track.id}-${section.id}`).props
+    ).toMatchObject({
+      accessibilityLabel: 'Create clip',
+      accessibilityRole: 'button',
+    });
+  });
+
+  it('disables empty clip creation when clip editing is unavailable', () => {
+    const track = createMockTrack({ clips: [] });
+    const store = createTestStore({ tracks: [track] });
+    const section = store.getState().sections[0]!;
+    const screen = renderWithStore(
+      <SongView editorPolicy={{ capabilities: { clips: false } }} />,
+      store
+    );
+    const emptyClip = screen.getByTestId(
+      `empty-clip-${track.id}-${section.id}`
+    );
+
+    expect(emptyClip.props.accessibilityState).toMatchObject({
+      disabled: true,
+    });
+    fireEvent.press(emptyClip);
+    expect(store.getState().createClip).not.toHaveBeenCalled();
+  });
+});
+
 describe('SongToolbar behavior', () => {
   it('calls setPlaying(true) when not playing', () => {
     const store = createTestStore({ isPlaying: false });
@@ -170,6 +284,19 @@ describe('SongToolbar behavior', () => {
     const { getByTestId } = renderWithStore(<SongToolbar />, store);
     fireEvent.press(getByTestId('transport-metronome'));
     expect(store.getState().toggleMetronome).toHaveBeenCalled();
+  });
+
+  it('hides transport controls when an external control owns playback', () => {
+    const store = createTestStore();
+    const { getByTestId, queryByTestId } = renderWithStore(
+      <SongToolbar editorPolicy={{ hideTransport: true }} />,
+      store
+    );
+
+    expect(queryByTestId('transport-play-pause')).toBeNull();
+    expect(queryByTestId('transport-loop')).toBeNull();
+    expect(queryByTestId('transport-metronome')).toBeNull();
+    expect(getByTestId('transport-bpm')).toBeTruthy();
   });
 });
 
