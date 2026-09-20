@@ -5,7 +5,8 @@
  * Tests create a real zustand store with mock data.
  */
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { act, render, fireEvent, waitFor } from '@testing-library/react-native';
+import { Modal, Platform } from 'react-native';
 import { create } from 'zustand';
 import { ThemeProvider } from '../../../../../theme';
 import { SongView } from '../SongView';
@@ -320,6 +321,16 @@ describe('SongMixerTabBar behavior', () => {
 });
 
 describe('SongView context menus', () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  function dismissContextMenu(screen: ReturnType<typeof renderWithStore>) {
+    const modal = screen
+      .UNSAFE_getAllByType(Modal)
+      .find((element) => element.props.testID === 'song-context-menu-modal');
+    expect(modal).toBeDefined();
+    act(() => modal!.props.onDismiss());
+  }
+
   const deniedSoundChangePolicies: [string, EditorPolicy][] = [
     ['sound capability', { capabilities: { sound: false } }],
     ['tracks capability', { capabilities: { tracks: false } }],
@@ -373,8 +384,32 @@ describe('SongView context menus', () => {
     expect(screen.queryByTestId('change-track-sound-action')).toBeNull();
   });
 
-  it('closes the track menu before calling Change Sound with the track id', async () => {
-    const onChangeTrackSound = jest.fn();
+  it.each(['android', 'web'] as const)(
+    'commits menu closure before calling Change Sound on %s',
+    async (platform) => {
+      jest.replaceProperty(Platform, 'OS', platform);
+      const onChangeTrackSound = jest.fn((): void => {
+        expect(screen.queryByTestId('song-context-menu')).toBeNull();
+      });
+      const store = createTestStore();
+      const screen = renderWithStore(
+        <SongView onChangeTrackSound={onChangeTrackSound} />,
+        store
+      );
+
+      fireEvent.press(screen.getByTestId('track-label-2'));
+      fireEvent.press(screen.getByTestId('change-track-sound-action'));
+
+      await waitFor(() => expect(onChangeTrackSound).toHaveBeenCalledTimes(1));
+      expect(onChangeTrackSound).toHaveBeenCalledWith(2);
+    }
+  );
+
+  it('waits for iOS dismissal and consumes the queued callback once', () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    const onChangeTrackSound = jest.fn((): void => {
+      expect(screen.queryByTestId('song-context-menu')).toBeNull();
+    });
     const store = createTestStore();
     const screen = renderWithStore(
       <SongView onChangeTrackSound={onChangeTrackSound} />,
@@ -383,12 +418,106 @@ describe('SongView context menus', () => {
 
     fireEvent.press(screen.getByTestId('track-label-2'));
     fireEvent.press(screen.getByTestId('change-track-sound-action'));
+    expect(onChangeTrackSound).not.toHaveBeenCalled();
 
+    dismissContextMenu(screen);
     expect(onChangeTrackSound).toHaveBeenCalledTimes(1);
     expect(onChangeTrackSound).toHaveBeenCalledWith(2);
-    await waitFor(() =>
-      expect(screen.queryByTestId('song-context-menu')).toBeNull()
+    dismissContextMenu(screen);
+    expect(onChangeTrackSound).toHaveBeenCalledTimes(1);
+  });
+
+  it('drops a queued sound change when the editor unmounts', () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    const onChangeTrackSound = jest.fn();
+    const screen = renderWithStore(
+      <SongView onChangeTrackSound={onChangeTrackSound} />,
+      createTestStore()
     );
+    fireEvent.press(screen.getByTestId('track-label-2'));
+    fireEvent.press(screen.getByTestId('change-track-sound-action'));
+    const onDismiss = screen
+      .UNSAFE_getAllByType(Modal)
+      .find((element) => element.props.testID === 'song-context-menu-modal')!
+      .props.onDismiss;
+    screen.unmount();
+
+    act(() => onDismiss());
+    expect(onChangeTrackSound).not.toHaveBeenCalled();
+  });
+
+  it.each(deniedSoundChangePolicies)(
+    'rechecks %s after iOS dismissal',
+    (_name, editorPolicy) => {
+      jest.replaceProperty(Platform, 'OS', 'ios');
+      const onChangeTrackSound = jest.fn();
+      const store = createTestStore();
+      const renderEditor = (policy: EditorPolicy) => (
+        <ThemeProvider initialMode="dark">
+          <SongStoreProvider store={store as any}>
+            <SongView
+              onChangeTrackSound={onChangeTrackSound}
+              editorPolicy={policy}
+            />
+          </SongStoreProvider>
+        </ThemeProvider>
+      );
+      const screen = render(renderEditor({}));
+      fireEvent.press(screen.getByTestId('track-label-2'));
+      fireEvent.press(screen.getByTestId('change-track-sound-action'));
+      screen.rerender(renderEditor(editorPolicy));
+
+      dismissContextMenu(screen);
+      expect(onChangeTrackSound).not.toHaveBeenCalled();
+    }
+  );
+
+  it.each(['removed', 'audio'] as const)(
+    'does not change sound when the queued track becomes %s',
+    (change) => {
+      jest.replaceProperty(Platform, 'OS', 'ios');
+      const onChangeTrackSound = jest.fn();
+      const store = createTestStore();
+      const screen = renderWithStore(
+        <SongView onChangeTrackSound={onChangeTrackSound} />,
+        store
+      );
+      fireEvent.press(screen.getByTestId('track-label-2'));
+      fireEvent.press(screen.getByTestId('change-track-sound-action'));
+      act(() => {
+        store.setState((state) => ({
+          tracks:
+            change === 'removed'
+              ? state.tracks.filter((track) => track.id !== 2)
+              : state.tracks.map((track) =>
+                  track.id === 2 ? { ...track, type: 'audio' as const } : track
+                ),
+        }));
+      });
+
+      dismissContextMenu(screen);
+      expect(onChangeTrackSound).not.toHaveBeenCalled();
+    }
+  );
+
+  it('rechecks the callback after iOS dismissal', () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    const onChangeTrackSound = jest.fn();
+    const store = createTestStore();
+    const renderEditor = (callback?: (id: number) => void) => (
+      <ThemeProvider initialMode="dark">
+        <SongStoreProvider store={store as any}>
+          <SongView onChangeTrackSound={callback} />
+        </SongStoreProvider>
+      </ThemeProvider>
+    );
+    const screen = render(renderEditor(onChangeTrackSound));
+    fireEvent.press(screen.getByTestId('track-label-2'));
+    fireEvent.press(screen.getByTestId('change-track-sound-action'));
+    screen.rerender(renderEditor());
+
+    dismissContextMenu(screen);
+    expect(onChangeTrackSound).not.toHaveBeenCalled();
   });
 
   it.each(deniedSoundChangePolicies)(

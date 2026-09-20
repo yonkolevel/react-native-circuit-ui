@@ -8,7 +8,14 @@
  * - Fixed track labels column (80px wide, left side)
  * - Horizontally scrollable section headers + clips (right side)
  */
-import { Fragment, memo, useState } from 'react';
+import {
+  Fragment,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   View,
   ScrollView,
@@ -199,7 +206,9 @@ export interface SongViewProps {
   onExportBundle?: () => void;
   /** Share the current beat as a remixable link. Omit when unavailable. */
   onShareBeat?: () => void | Promise<void>;
-  /** Open the app-owned sound browser for this track. Omit to hide the action. */
+  /** Open the app-owned browser after menu dismissal (onDismiss on iOS).
+   * Current track and editing permissions are rechecked before emitting intent.
+   * Omit to hide the action. */
   onChangeTrackSound?: (trackId: number) => void;
   /** Playground name shown in the export view. */
   playgroundName?: string;
@@ -228,6 +237,7 @@ export const SongView = memo(function SongView({
   const policy = useResolvedEditorPolicy(editorPolicy);
   const [exportVisible, setExportVisible] = useState(false);
   const [menuTarget, setMenuTarget] = useState<SongMenuTarget | null>(null);
+  const pendingSoundChange = useRef<number | null>(null);
   const [sectionName, setSectionName] = useState('');
 
   // State — fine-grained selectors
@@ -267,6 +277,42 @@ export const SongView = memo(function SongView({
     (trackMenuTrack?.type === 'drum' ||
       trackMenuTrack?.type === 'melodic' ||
       trackMenuTrack?.type === 'bass');
+
+  const finishSoundChange = useCallback(() => {
+    const trackId = pendingSoundChange.current;
+    // Consume before calling app code: duplicate dismissal events must not reopen it.
+    pendingSoundChange.current = null;
+    if (
+      trackId === null ||
+      menuTarget !== null ||
+      !canEditTracks ||
+      !isEditorCapabilityAllowed(policy, 'sound') ||
+      !onChangeTrackSound
+    ) {
+      return;
+    }
+    const track = tracks.find((candidate) => candidate.id === trackId);
+    if (
+      track?.type === 'drum' ||
+      track?.type === 'melodic' ||
+      track?.type === 'bass'
+    ) {
+      onChangeTrackSound(trackId);
+    }
+  }, [canEditTracks, menuTarget, onChangeTrackSound, policy, tracks]);
+
+  useEffect(() => {
+    // Android/web do not provide iOS's dismissal-completion event. Wait for the
+    // hidden menu to commit before the host can present its next surface.
+    if (Platform.OS !== 'ios' && menuTarget === null) finishSoundChange();
+  }, [finishSoundChange, menuTarget]);
+
+  useEffect(
+    () => () => {
+      pendingSoundChange.current = null;
+    },
+    []
+  );
 
   return (
     <View
@@ -555,9 +601,11 @@ export const SongView = memo(function SongView({
       {showTab && <SongMixerTabBar />}
 
       <Modal
+        testID="song-context-menu-modal"
         visible={menuTarget !== null}
         transparent
         animationType="fade"
+        onDismiss={finishSoundChange}
         onRequestClose={() => setMenuTarget(null)}
       >
         <View style={s.menuLayer}>
@@ -576,9 +624,8 @@ export const SongView = memo(function SongView({
               <Pressable
                 style={s.menuAction}
                 onPress={() => {
-                  const trackId = menuTarget.trackId;
+                  pendingSoundChange.current = menuTarget.trackId;
                   setMenuTarget(null);
-                  onChangeTrackSound?.(trackId);
                 }}
                 accessibilityLabel="Change sound"
                 accessibilityRole="button"
