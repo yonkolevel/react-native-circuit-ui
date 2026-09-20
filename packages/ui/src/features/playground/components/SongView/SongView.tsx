@@ -261,6 +261,8 @@ export const SongView = memo(function SongView({
       ? tracks.find((track) => track.id === menuTarget.trackId)
       : undefined;
   const canChangeTrackSound =
+    canEditTracks &&
+    isEditorCapabilityAllowed(policy, 'sound') &&
     !!onChangeTrackSound &&
     (trackMenuTrack?.type === 'drum' ||
       trackMenuTrack?.type === 'melodic' ||

@@ -12,7 +12,10 @@ import { SongView } from '../SongView';
 import { SongToolbar } from '../SongToolbar';
 import { SongMixerTabBar } from '../SongMixerTabBar';
 import { SongStoreProvider } from '../../../stores/playgroundStore';
-import { EditorPolicyProvider } from '../../../stores/editorPolicy';
+import {
+  EditorPolicyProvider,
+  type EditorPolicy,
+} from '../../../stores/editorPolicy';
 import type { SongStore } from '../../../stores/playgroundStore';
 import {
   createMockClip,
@@ -317,6 +320,12 @@ describe('SongMixerTabBar behavior', () => {
 });
 
 describe('SongView context menus', () => {
+  const deniedSoundChangePolicies: [string, EditorPolicy][] = [
+    ['sound capability', { capabilities: { sound: false } }],
+    ['tracks capability', { capabilities: { tracks: false } }],
+    ['read-only policy', { readOnly: true }],
+  ];
+
   it('hides Change Sound when no callback is provided', () => {
     const store = createTestStore();
     const screen = renderWithStore(<SongView />, store);
@@ -381,6 +390,64 @@ describe('SongView context menus', () => {
       expect(screen.queryByTestId('song-context-menu')).toBeNull()
     );
   });
+
+  it.each(deniedSoundChangePolicies)(
+    'does not offer Change Sound when denied by %s',
+    (_name, editorPolicy) => {
+      const onChangeTrackSound = jest.fn();
+      const store = createTestStore();
+      const screen = renderWithStore(
+        <SongView
+          onChangeTrackSound={onChangeTrackSound}
+          editorPolicy={editorPolicy}
+        />,
+        store
+      );
+
+      fireEvent.press(screen.getByTestId('track-label-2'));
+
+      expect(screen.queryByTestId('change-track-sound-action')).toBeNull();
+      expect(onChangeTrackSound).not.toHaveBeenCalled();
+    }
+  );
+
+  it.each(deniedSoundChangePolicies)(
+    'removes Change Sound when %s takes effect with the menu open',
+    (_name, policy) => {
+      const onChangeTrackSound = jest.fn();
+      const store = createTestStore();
+      const renderEditor = (inheritedPolicy: EditorPolicy) => (
+        <ThemeProvider initialMode="dark">
+          <SongStoreProvider store={store as any}>
+            <EditorPolicyProvider policy={inheritedPolicy}>
+              <SongView
+                onChangeTrackSound={onChangeTrackSound}
+                editorPolicy={{
+                  readOnly: false,
+                  capabilities: { sound: true, tracks: true },
+                }}
+              />
+            </EditorPolicyProvider>
+          </SongStoreProvider>
+        </ThemeProvider>
+      );
+      const screen = render(renderEditor({}));
+
+      fireEvent.press(screen.getByTestId('track-label-2'));
+      expect(screen.getByTestId('change-track-sound-action')).toBeTruthy();
+
+      screen.rerender(renderEditor(policy));
+
+      expect(screen.getByTestId('song-context-menu')).toBeTruthy();
+      const changeSoundAction = screen.queryByTestId(
+        'change-track-sound-action'
+      );
+      // Exercise a stale action if it is still exposed after the policy change.
+      if (changeSoundAction) fireEvent.press(changeSoundAction);
+      expect(onChangeTrackSound).not.toHaveBeenCalled();
+      expect(changeSoundAction).toBeNull();
+    }
+  );
 
   it('explains why the last track cannot be deleted', () => {
     const store = createTestStore({ tracks: [createMockTrack({ id: 1 })] });
