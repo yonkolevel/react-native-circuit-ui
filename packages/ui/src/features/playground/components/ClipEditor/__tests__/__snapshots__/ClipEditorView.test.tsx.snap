@@ -2114,15 +2114,15 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "0%",
                     "top": "85%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -2133,15 +2133,15 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "50%",
                     "top": "85%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -2152,15 +2152,15 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "25%",
                     "top": "66.66666666666667%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -2171,15 +2171,15 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "75%",
                     "top": "66.66666666666667%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -2190,15 +2190,15 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "0%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -2209,15 +2209,15 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "12.5%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -2228,15 +2228,15 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "25%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -2247,15 +2247,15 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "37.5%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -2266,15 +2266,15 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "50%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -2285,15 +2285,15 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "62.5%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -2304,15 +2304,15 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "75%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -2323,15 +2323,15 @@ exports[`ClipEditorView snapshots matches snapshot when playing 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "87.5%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -5315,15 +5315,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "0%",
                     "top": "85%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -5334,15 +5334,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "50%",
                     "top": "85%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -5353,15 +5353,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "25%",
                     "top": "66.66666666666667%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -5372,15 +5372,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "75%",
                     "top": "66.66666666666667%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -5391,15 +5391,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "0%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -5410,15 +5410,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "12.5%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -5429,15 +5429,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "25%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -5448,15 +5448,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "37.5%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -5467,15 +5467,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "50%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -5486,15 +5486,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "62.5%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -5505,15 +5505,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "75%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -5524,15 +5524,15 @@ exports[`ClipEditorView snapshots matches snapshot with drum clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "87.5%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -9536,15 +9536,15 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "0%",
                     "top": "85%",
+                    "width": "25%",
                   },
                 ]
               }
@@ -9555,15 +9555,15 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "25%",
                     "top": "66.66666666666667%",
+                    "width": "25%",
                   },
                 ]
               }
@@ -9574,15 +9574,15 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "50%",
                     "top": "41.666666666666664%",
+                    "width": "25%",
                   },
                 ]
               }
@@ -9593,15 +9593,15 @@ exports[`ClipEditorView snapshots matches snapshot with melody clip 1`] = `
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "75%",
                     "top": "15%",
+                    "width": "25%",
                   },
                 ]
               }
@@ -12773,15 +12773,15 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "0%",
                     "top": "85%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -12792,15 +12792,15 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "50%",
                     "top": "85%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -12811,15 +12811,15 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "25%",
                     "top": "66.66666666666667%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -12830,15 +12830,15 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "75%",
                     "top": "66.66666666666667%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -12849,15 +12849,15 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "0%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -12868,15 +12868,15 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "12.5%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -12887,15 +12887,15 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "25%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -12906,15 +12906,15 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "37.5%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -12925,15 +12925,15 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "50%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -12944,15 +12944,15 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "62.5%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -12963,15 +12963,15 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "75%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
@@ -12982,15 +12982,15 @@ exports[`ClipEditorView snapshots matches snapshot with recording enabled 1`] = 
                   {
                     "borderRadius": 1,
                     "height": 2,
-                    "marginLeft": -2,
                     "marginTop": -1,
+                    "minWidth": 4,
                     "position": "absolute",
-                    "width": 4,
                   },
                   {
                     "backgroundColor": "rgba(247, 247, 247, 0.80)",
                     "left": "87.5%",
                     "top": "15%",
+                    "width": "6.25%",
                   },
                 ]
               }
