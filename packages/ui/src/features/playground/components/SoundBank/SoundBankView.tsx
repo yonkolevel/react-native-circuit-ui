@@ -33,6 +33,10 @@ export interface SoundBankViewProps {
   editorPolicy?: EditorPolicy;
 }
 
+/**
+ * @deprecated App-domain sound browser behavior belongs in the consuming app.
+ * Midicircuit RN owns its YON-159 replacement in `src/features/sound-browser`.
+ */
 export const SoundBankView = memo(function SoundBankView({
   soundBanks,
   selectedSlug,
