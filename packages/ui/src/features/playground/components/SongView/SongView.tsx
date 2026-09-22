@@ -133,7 +133,13 @@ const ClipCell = memo(function ClipCell({
   const stepWidth = w / totalSteps;
 
   const isDrum = instrumentType === 'drum';
-  const pitchCount = Math.max(1, sampleCount ?? (isDrum ? 12 : 24));
+  // sampleCount is only a valid pitch-range proxy for drums, where one
+  // sample = one pad = one playable pitch. Melodic/bass instruments cover a
+  // couple of octaves from just a handful of multi-sampled (pitch-shifted)
+  // key zones, so reusing their raw sample-file count here collapsed
+  // pitchCount down to that small number — every note's rendered height
+  // (h / pitchCount) then ballooned toward the full cell height.
+  const pitchCount = Math.max(1, isDrum ? (sampleCount ?? 12) : 24);
   const noteNumbers = notes.map((n) => n.noteNumber);
   const effectiveBase =
     defaultOctave && defaultOctave > 0
