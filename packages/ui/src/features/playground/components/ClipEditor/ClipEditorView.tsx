@@ -327,7 +327,7 @@ const ClipLengthBarSegment = memo(function ClipLengthBarSegment({
   isFocused: boolean;
   isLast: boolean;
   trackColor: string;
-  dashes: { xFrac: number; yFrac: number }[];
+  dashes: { xFrac: number; yFrac: number; wFrac: number }[];
   /** Takes the 0-indexed bar so the parent can pass one stable callback —
    * an inline `() => onFocus(i)` per segment would change identity on every
    * ClipLengthBar render and defeat this component's memo(). */
@@ -373,6 +373,7 @@ const ClipLengthBarSegment = memo(function ClipLengthBarSegment({
             {
               left: `${d.xFrac * 100}%`,
               top: `${d.yFrac * 100}%`,
+              width: `${d.wFrac * 100}%`,
               backgroundColor: colors.mcWhite2,
             },
           ]}
@@ -515,10 +516,8 @@ const ClipLengthBar = memo(function ClipLengthBar({
   // normalized against the clip's own min/max pitch so the shape stays
   // legible regardless of instrument range.
   const notesByBar = useMemo(() => {
-    const perBar: { xFrac: number; yFrac: number }[][] = Array.from(
-      { length: barCount },
-      () => []
-    );
+    const perBar: { xFrac: number; yFrac: number; wFrac: number }[][] =
+      Array.from({ length: barCount }, () => []);
     if (!notes.length) return perBar;
     let minPitch = Infinity;
     let maxPitch = -Infinity;
@@ -528,14 +527,32 @@ const ClipLengthBar = memo(function ClipLengthBar({
     }
     const pitchSpan = Math.max(1, maxPitch - minPitch);
     for (const n of notes) {
-      const bar = Math.floor(n.position / 4);
-      if (bar < 0 || bar >= barCount) continue;
-      const xFrac = (n.position - bar * 4) / 4;
-      const yFrac = 1 - (n.noteNumber - minPitch) / pitchSpan;
-      perBar[bar]?.push({
-        xFrac: Math.min(0.92, Math.max(0, xFrac)),
-        yFrac: Math.min(0.85, Math.max(0.15, yFrac)),
-      });
+      const noteStartBeat = n.position;
+      const noteEndBeat = n.position + n.duration;
+      const startBar = Math.floor(noteStartBeat / 4);
+      if (startBar >= barCount || noteEndBeat <= noteStartBeat) continue;
+      const yFrac = Math.min(
+        0.85,
+        Math.max(0.15, 1 - (n.noteNumber - minPitch) / pitchSpan)
+      );
+      // A note ending exactly on a bar boundary shouldn't spill an extra
+      // (zero-width) dash into the bar it's touching but not sounding in.
+      const lastBar = Math.min(barCount - 1, Math.ceil(noteEndBeat / 4) - 1);
+      for (let bar = Math.max(0, startBar); bar <= lastBar; bar++) {
+        const barStartBeat = bar * 4;
+        // Only the note's own starting bar gets an inset x — every bar it
+        // carries into after that is covered from the bar's left edge.
+        const xFrac =
+          bar === startBar
+            ? Math.min(0.92, Math.max(0, (noteStartBeat - barStartBeat) / 4))
+            : 0;
+        const segEndBeat = Math.min(noteEndBeat, barStartBeat + 4);
+        const wFrac = Math.max(
+          0,
+          Math.min(1 - xFrac, (segEndBeat - barStartBeat) / 4 - xFrac)
+        );
+        perBar[bar]?.push({ xFrac, yFrac, wFrac });
+      }
     }
     return perBar;
   }, [notes, barCount]);
@@ -1623,10 +1640,9 @@ const styles = StyleSheet.create({
   },
   clipLengthDash: {
     position: 'absolute',
-    width: 4,
+    minWidth: 4,
     height: 2,
     borderRadius: 1,
-    marginLeft: -2,
     marginTop: -1,
   },
 
